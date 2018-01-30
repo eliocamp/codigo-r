@@ -34,6 +34,7 @@ canonifyurls = true
   archive = "archives"
 
 [author]
+  name = "Elio Campitelli"
   bio = ""
   job = ""
   location = "Argentina"
