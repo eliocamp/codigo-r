@@ -14,6 +14,7 @@ enableEmoji = true
 # For developpers, if you modify this theme, put your images in `source/images` folder and
 # use grunt task `build` to synchronize assets
 
+relativeURLs = true
 publishDir = "docs"
 baseURL = "https://eliocamp.github.io/codigo-r/"
 languageCode = "es-es"
