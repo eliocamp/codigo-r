@@ -1,0 +1,11 @@
+---
+title: Cómo uar `opts_hooks` para hacer figuras fáciles en knitr
+author: Elio Campitelli
+date: '2018-01-06'
+slug: opts-hooks-figuras-fáciles-en-knitr
+categories:
+  - R
+tags: []
+draft: true
+---
+

@@ -1,0 +1,686 @@
+
+
+  
+    
+  
+
+
+  
+
+
+
+
+  
+
+
+  
+
+<!DOCTYPE html>
+<html lang="es-es">
+  <head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hugo 0.31.1 with theme Tranquilpeak 0.4.3-BETA">
+    <title>Cómo hacer un buen ejemplo reproducible en R</title>
+    <meta name="author" content="Elio Campitleli">
+    <meta name="keywords" content=", R">
+
+    <link rel="icon" href="/favicon.png">
+    
+
+    
+    <meta name="description" content="Es muy difícil dar ayuda si no se sabe cuál es el problema. Un buen ejemplo de lo que está mal que cualquiera pueda correr en sus computadoras es casi esencial para recibir ayuda.
+Un buen ejemplo reproducible (o reprex) es básicamente el feliz matrimonio entre un set de datos mínimo y un código mínimo que ilustre el problema y que cualquiera pueda copiar, pegar en un script y obtener exactamente los mismos resultados.">
+    <meta property="og:description" content="Es muy difícil dar ayuda si no se sabe cuál es el problema. Un buen ejemplo de lo que está mal que cualquiera pueda correr en sus computadoras es casi esencial para recibir ayuda.
+Un buen ejemplo reproducible (o reprex) es básicamente el feliz matrimonio entre un set de datos mínimo y un código mínimo que ilustre el problema y que cualquiera pueda copiar, pegar en un script y obtener exactamente los mismos resultados.">
+    <meta property="og:type" content="blog">
+    <meta property="og:title" content="Cómo hacer un buen ejemplo reproducible en R">
+    <meta property="og:url" content="/2018/01/buen-ejemplo-reproducible-en-r/">
+    <meta property="og:site_name" content="Código R">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Código R">
+    <meta name="twitter:description" content="Es muy difícil dar ayuda si no se sabe cuál es el problema. Un buen ejemplo de lo que está mal que cualquiera pueda correr en sus computadoras es casi esencial para recibir ayuda.
+Un buen ejemplo reproducible (o reprex) es básicamente el feliz matrimonio entre un set de datos mínimo y un código mínimo que ilustre el problema y que cualquiera pueda copiar, pegar en un script y obtener exactamente los mismos resultados.">
+    
+      <meta name="twitter:creator" content="@d_olivaw">
+    
+    
+
+    
+    
+
+    
+      <meta property="og:image" content="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=640">
+    
+
+    
+    
+    
+
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="/css/style-jsjn0006wyhpyzivf6yceb31gvpjatbcs3qzjvlumobfnugccvobqwxnnaj8.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="2">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="/">Código R</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=90" alt="Foto de autor" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="2">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="/#about">
+          <img class="sidebar-profile-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=110" alt="Foto de autor" />
+        </a>
+        <h4 class="sidebar-profile-name">Elio Campitleli</h4>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Inicio</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">Categorías</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archivos</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">Acerca de</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/https://github.com/eliocamp">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="2"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Cómo hacer un buen ejemplo reproducible en R
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2018-01-06T00:00:00Z">
+        
+  
+  
+  
+  
+    6 de Enero 2018
+  
+
+      </time>
+    
+    
+  
+  
+    <span>en</span>
+    
+      <a class="category-link" href="/categories/r">R</a>
+    
+  
+
+  </div>
+
+</div>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    });
+    </script>
+    <script type="text/javascript"
+      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              <p>Es muy difícil dar ayuda si no se sabe cuál es el problema. Un buen ejemplo de lo que está mal que cualquiera pueda correr en sus computadoras es casi esencial para recibir ayuda.</p>
+<p>Un buen ejemplo reproducible (o reprex) es básicamente el feliz matrimonio entre un set de datos <strong>mínimo</strong> y un código <strong>mínimo</strong> que ilustre el problema y que cualquiera pueda copiar, pegar en un script y obtener <strong>exactamente los mismos resultados</strong>.</p>
+<p>Obtener un reprex mínimo no es una tarea trivial. A veces puede tomar más de media hora y dar maś de un dolor de cabeza. Pero en el proceso uno aprende mucho sobre las características específicas de su problema y a veces incluso termina por resolverlo solo. Aún si no se resuelve, el tiempo que uno invierte en hacer el ejemplo reproducible implican más chances de que algún usuario responda, más rápido y con más claridad.</p>
+<div id="datos-minimos" class="section level2">
+<h2>Datos mínimos</h2>
+<p>Hay dos formas principales de obtener sets de datos para ejemplos reproducibles, creándolos uno mismo o usando datos que vienen en distintos paquetes. La cantidad de sets de datos a los que cualquier usuario de R puede tener acceso sin salir de casa <a href="http://vincentarelbundock.github.io/Rdatasets/datasets.html">es inmensa</a>. Distintos datos sirven para ilustrar distintos problemas.</p>
+<p>Por ejemplo, yo trabajo mucho con datos espaciales en grillas regulares y si quiero probar algo uso mucho el dataset <code>volcano</code>, que tiene información topográfica del volcán Maunga Whau en Auckland con una resolución de 10m. Como es una matriz y en general prefiero trabajar con data.frames, para usarla tengo que usar <code>reshape2::melt()</code></p>
+<pre class="r"><code>library(ggplot2)
+ggplot(reshape2::melt(volcano), aes(Var1, Var2)) +
+   geom_contour(aes(z = value, color = ..level..)) +
+   coord_equal()</code></pre>
+<p><img src="/post/2018-01-06-buen-ejemplo-reproducible_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Para datos más puntales, <code>ggplot2</code> tiene el dataset <code>diamonds</code> que contiene más de 50.000 filas de datos numéricos y factores</p>
+<pre class="r"><code>ggplot(diamonds, aes(carat, price)) +
+   geom_point(aes(color = clarity)) +
+   facet_grid(color ~ cut)</code></pre>
+<p><img src="/post/2018-01-06-buen-ejemplo-reproducible_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Y para el que prefiera autos de lujo a anillos de diamnates, está <code>mtcars</code>.</p>
+<p>Si uno prefiere usar datos ficticios, siempre puede generar números aleatorios con <code>rnorm</code>, <code>runif</code>, <code>rgamma</code> o cualquier otra distribución (ver <code>?distributions</code> para una lista). <strong>Siempre</strong> que uno use alguna de estas funciones tiene que setear la semilla del generador de números aleatorios con <code>set.seed()</code>. De esta forma uno se asegura que todo aquel que ejecute el código obtenga exactamente los mismos números (pero aleatorios 🤔).</p>
+<p>Una función que a mí me resolvió muchísimos problemas es <code>expand.grid</code>. Devuelve un data.frame con todas las combinaciones de los elementos de distintos vectores. Es una función muy flexible que puede ser usada para generar una grilla regular</p>
+<pre class="r"><code>df &lt;- expand.grid(x = 1:10, y = 1:10)
+df$z &lt;- with(df, x*y)
+ggplot(df, aes(x, y)) +
+   geom_tile(aes(fill = z))</code></pre>
+<p><img src="/post/2018-01-06-buen-ejemplo-reproducible_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>o para asignar valores a distintos factores</p>
+<pre class="r"><code>df &lt;- expand.grid(tiempo = 1:30, sujeto = factor(letters[1:3]))
+df$valor &lt;- with(df, tiempo*0.1*as.numeric(sujeto) + rnorm(nrow(df)))
+ggplot(df, aes(tiempo, valor, color = sujeto)) +
+   geom_line()</code></pre>
+<p><img src="/post/2018-01-06-buen-ejemplo-reproducible_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>A veces los problemas dependen de los datos utilizados. Si resulta imposible reproducir un problema con datos públicos o artificiales, la última opción es compartir los datos propios. En ese caso, lo que uno debe hacer es minimizar los datos para que puedan ser compartidos fácilmente. Por ejemplo, yo estaba teniendo unos problemas con unos datos de <a href="https://en.wikipedia.org/wiki/Stream_function">función corriente</a> para distintos modelos climáticos y distintas estaciones. Parte de resolverlo implicó reducirlo a sólo un campo.</p>
+<p>Si los datos reducidos quedan bastante chicos, la manera más fácil de compartirlos es con la función <code>dput</code>, que convierte un objeto de R en un código que lo reproduce:</p>
+<pre class="r"><code>dput(cars)</code></pre>
+<pre><code>## structure(list(speed = c(4, 4, 7, 7, 8, 9, 10, 10, 10, 11, 11, 
+## 12, 12, 12, 12, 13, 13, 13, 13, 14, 14, 14, 14, 15, 15, 15, 16, 
+## 16, 17, 17, 17, 18, 18, 18, 18, 19, 19, 19, 20, 20, 20, 20, 20, 
+## 22, 23, 24, 24, 24, 24, 25), dist = c(2, 10, 4, 22, 16, 10, 18, 
+## 26, 34, 17, 28, 14, 20, 24, 28, 26, 34, 34, 46, 26, 36, 60, 80, 
+## 20, 26, 54, 32, 40, 32, 40, 50, 42, 56, 76, 84, 36, 46, 68, 32, 
+## 48, 52, 56, 64, 66, 54, 70, 92, 93, 120, 85)), .Names = c(&quot;speed&quot;, 
+## &quot;dist&quot;), row.names = c(NA, -50L), class = &quot;data.frame&quot;)</code></pre>
+<p>Si aún reduciéndolo al mínimo los datos son demasiado grandes o complicados para compartirlos como texto, la mejor opción es guardarlo como un archivo .Rds</p>
+<pre class="r"><code>saveRDS(diamonds, file = &quot;diamonds.Rds&quot;)</code></pre>
+<p>y luego subir el archivo a algún sitio de intercambio.</p>
+<p>En el código de ejemplo, leer los archivos con</p>
+<pre class="r"><code>diamonds &lt;- readRDS(&quot;diamonds.Rds&quot;)</code></pre>
+</div>
+<div id="codigo-minimo" class="section level2">
+<h2>Código mínimo</h2>
+<p>Una vez que se tiene la menor cantidad de datos que reproducen un problema, lo que sigue es minimizar el código. A veces puede ser complicado, pero a grandes rasgos son cuestiones obvias.</p>
+<p>Cargar la menor cantidad de paquetes posibles. No crear variables innecesariamente. Si es una cuestión con gráficos, sacar la mayor cantidad de personalización posible (usar las escalas default en <code>ggplot2</code>, por ejemplo).</p>
+<p>Personalmente, si el código original usa sintaxis de <code>dplyr</code> o <code>data.table</code> (mi favorita 💜), trato de reducir todo a R base. Casi seguro que el problema no está ahí y no está bueno obligar a otros a instalar paquetes nuevos para ayudar.</p>
+<p>Todo esto requiere una intuición de dónde podría estar el error pero en caso de no tenerla, ayuda a desarrollarla. Ir sacando pedazos de código y chequeando si el problema continua es una buena forma de encontrar la causa del problema. Como dijo Sherlock:</p>
+<blockquote>
+<p>Una vez descartado lo imposible, el código que queda, por improbable que parezca, debe ser la causa del error.</p>
+</blockquote>
+<p>(o algo así)</p>
+</div>
+<div id="finalmente" class="section level2">
+<h2>Finalmente</h2>
+<p>Una vez que están los datos mínimos y el código mínimo, hay que compartir todo eso. Uno de mis paquetes favoritos y que uso constantemente es <a href="https://github.com/tidyverse/reprex"><code>reprex</code></a>. Es un paquete pensado especialmente para hacer desaparecer todas las dificultades de compartir código y es increíblemente fácil de usar.</p>
+<p>Una vez que se tiene el código escrito, lo único que hay que hacer es copiarlo todo al portapapeles y correr <code>reprex::reprex()</code> para que lo corra y copie el resultado en el portapapeles. Si hay gráficos, los sube automáticamente a imgur y genera los tags correctos para que se vean bien. Muestra los mensajes de error que aparezcan y permite elegir distintas convenciones de código según si queremos compartir nuestro ejemplo en GitHub, StackOverflow o un script de R.</p>
+<p>Por ejemplo, dándole el código anterior, <code>reprex</code> devuelve esto:</p>
+<pre><code>```r
+library(ggplot2)
+df &lt;- expand.grid(tiempo = 1:30, sujeto = factor(letters[1:3]))
+df$valor &lt;- with(df, tiempo*0.1*as.numeric(sujeto) + rnorm(nrow(df)))
+ggplot(df, aes(tiempo, valor, color = sujeto)) +
+   geom_line()
+```
+
+![](https://i.imgur.com/51BdMze.png)
+</code></pre>
+<p>Que está listo para pegar en GitHub y que salga todo perfecto.</p>
+</div>
+<div id="buen-reprex-mata-galan" class="section level2">
+<h2>Buen reprex mata galán</h2>
+<p>Pedir ayuda o reportar bugs con un buen ejemplo mínimo reproducible mejora la calidad de las consultas, ayuda a los que quieren ayudar, te hace ganar amigos y bajar 7 libras en 2 semanas. Sea bueno, haga un reprex.</p>
+</div>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+            
+            
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/c%C3%B3mo-hacer-efecto-de-relieve-en-r/" data-tooltip="Cómo hacer un efecto de relieve en R">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2017/12/calcular-ipe-r/" data-tooltip="Cómo calcular el Índice de Precipitación Estandarizado en R">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2018/01/buen-ejemplo-reproducible-en-r/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2018/01/buen-ejemplo-reproducible-en-r/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2018/01/buen-ejemplo-reproducible-en-r/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+            
+              
+                <div id="disqus_thread">
+  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2018 Elio Campitleli. Todos los derechos reservados
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
+        
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/c%C3%B3mo-hacer-efecto-de-relieve-en-r/" data-tooltip="Cómo hacer un efecto de relieve en R">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2017/12/calcular-ipe-r/" data-tooltip="Cómo calcular el Índice de Precipitación Estandarizado en R">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2018/01/buen-ejemplo-reproducible-en-r/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2018/01/buen-ejemplo-reproducible-en-r/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2018/01/buen-ejemplo-reproducible-en-r/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2F2018%2F01%2Fbuen-ejemplo-reproducible-en-r%2F">
+          <i class="fa fa-facebook-official"></i><span>Compartir en Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2F2018%2F01%2Fbuen-ejemplo-reproducible-en-r%2F">
+          <i class="fa fa-twitter"></i><span>Compartir en Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2F2018%2F01%2Fbuen-ejemplo-reproducible-en-r%2F">
+          <i class="fa fa-google-plus"></i><span>Compartir en Google&#43;</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=110" alt="Foto de autor" />
+    
+    <h4 id="about-card-name">Elio Campitleli</h4>
+    
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Argentina
+      </div>
+    
+  </div>
+</div>
+
+    <div id="algolia-search-modal" class="modal-container">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="close-button"><i class="fa fa-close"></i></span>
+      <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+        <span class="searchby-algolia-text text-color-light text-small">by</span>
+        <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+      </a>
+      <i class="search-icon fa fa-search"></i>
+      <form id="algolia-search-form">
+        <input type="text" id="algolia-search-input" name="search"
+          class="form-control input--large search-input" placeholder="Buscar" />
+      </form>
+    </div>
+    <div class="modal-body">
+      <div class="no-result text-color-light text-center">no se encontraron artículos</div>
+      <div class="results">
+        
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2018/01/c%C3%B3mo-hacer-efecto-de-relieve-en-r/">
+                <h3 class="media-heading">Cómo hacer un efecto de relieve en R</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jan 1, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
+Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.
+library(data.table) library(ggplot2) data(volcano) volcano &lt;- as.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2018/01/buen-ejemplo-reproducible-en-r/">
+                <h3 class="media-heading">Cómo hacer un buen ejemplo reproducible en R</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jan 1, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Es muy difícil dar ayuda si no se sabe cuál es el problema. Un buen ejemplo de lo que está mal que cualquiera pueda correr en sus computadoras es casi esencial para recibir ayuda.
+Un buen ejemplo reproducible (o reprex) es básicamente el feliz matrimonio entre un set de datos mínimo y un código mínimo que ilustre el problema y que cualquiera pueda copiar, pegar en un script y obtener exactamente los mismos resultados.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="/2017/12/calcular-ipe-r/">
+                <h3 class="media-heading">Cómo calcular el Índice de Precipitación Estandarizado en R</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Dec 12, 2017
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">El Índice de Precipitación Estandarizado (SPI por Standarized Precipitation Index) es un índice para evaluar el estado de sequía o exceso de lluvia. La idea del SPI es tener una idea de qué tan probable es tener una cantidad de lluvia igual o menor. Valores altos del SPI están asociados con épocas muy húmedas mientras que valores bajos indican sequía.
+En la práctica lo que se hace es la función de probabilidad acumulada a partir de los registros históricos y luego estimar la probabilidad para la cantidad observada en cada mes.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+      </div>
+    </div>
+    <div class="modal-footer">
+      <p class="results-count text-medium"
+         data-message-zero="no se encontraron artículos"
+         data-message-one="1 artículo encontrado"
+         data-message-other="{n} artículos encontrados">
+         3 posts found
+      </p>
+    </div>
+  </div>
+</div>
+    
+  
+    
+    <div id="cover" style="background-image:url('images/cover2.jpg');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js" integrity="sha256-XrZQp+ZMfovqr6Hb2M6okHvSEYaB/+Xbx7toWmOOZUM=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-light.min.css" integrity="sha256-KacbO6Nou2geGJEUzQeKzKEdp/DENVGJKAd2v37moh0=" crossorigin="anonymous" />
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="/js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
+
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+      <script>
+        var disqus_config = function () {
+          this.page.url = '\/2018\/01\/buen-ejemplo-reproducible-en-r\/';
+          
+            this.page.identifier = '\/2018\/01\/buen-ejemplo-reproducible-en-r\/'
+          
+        };
+        (function() {
+          
+          
+          if (window.location.hostname == "localhost") {
+            return;
+          }
+          var d = document, s = d.createElement('script');
+          var disqus_shortname = 'hugo-tranquilpeak-theme';
+          s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+      </script>
+    
+  
+
+
+
+    
+  </body>
+</html>
+
