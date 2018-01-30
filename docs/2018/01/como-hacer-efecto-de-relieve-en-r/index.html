@@ -22,7 +22,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Hugo 0.31.1 with theme Tranquilpeak 0.4.3-BETA">
-    <title>Cómo calcular el Índice de Precipitación Estandarizado en R</title>
+    <title>Cómo hacer un efecto de relieve en R</title>
     <meta name="author" content="Elio Campitleli">
     <meta name="keywords" content=", R">
 
@@ -30,18 +30,21 @@
     
 
     
-    <meta name="description" content="El Índice de Precipitación Estandarizado (SPI por Standarized Precipitation Index) es un índice para evaluar el estado de sequía o exceso de lluvia. La idea del SPI es tener una idea de qué tan probable es tener una cantidad de lluvia igual o menor. Valores altos del SPI están asociados con épocas muy húmedas mientras que valores bajos indican sequía.
-En la práctica lo que se hace es la función de probabilidad acumulada a partir de los registros históricos y luego estimar la probabilidad para la cantidad observada en cada mes.">
-    <meta property="og:description" content="El Índice de Precipitación Estandarizado (SPI por Standarized Precipitation Index) es un índice para evaluar el estado de sequía o exceso de lluvia. La idea del SPI es tener una idea de qué tan probable es tener una cantidad de lluvia igual o menor. Valores altos del SPI están asociados con épocas muy húmedas mientras que valores bajos indican sequía.
-En la práctica lo que se hace es la función de probabilidad acumulada a partir de los registros históricos y luego estimar la probabilidad para la cantidad observada en cada mes.">
+    <meta name="description" content="Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
+Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.
+library(data.table) library(ggplot2) data(volcano) volcano &lt;- as.">
+    <meta property="og:description" content="Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
+Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.
+library(data.table) library(ggplot2) data(volcano) volcano &lt;- as.">
     <meta property="og:type" content="blog">
-    <meta property="og:title" content="Cómo calcular el Índice de Precipitación Estandarizado en R">
-    <meta property="og:url" content="/2017/12/calcular-ipe-r/">
+    <meta property="og:title" content="Cómo hacer un efecto de relieve en R">
+    <meta property="og:url" content="/2018/01/como-hacer-efecto-de-relieve-en-r/">
     <meta property="og:site_name" content="Código R">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Código R">
-    <meta name="twitter:description" content="El Índice de Precipitación Estandarizado (SPI por Standarized Precipitation Index) es un índice para evaluar el estado de sequía o exceso de lluvia. La idea del SPI es tener una idea de qué tan probable es tener una cantidad de lluvia igual o menor. Valores altos del SPI están asociados con épocas muy húmedas mientras que valores bajos indican sequía.
-En la práctica lo que se hace es la función de probabilidad acumulada a partir de los registros históricos y luego estimar la probabilidad para la cantidad observada en cada mes.">
+    <meta name="twitter:description" content="Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
+Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.
+library(data.table) library(ggplot2) data(volcano) volcano &lt;- as.">
     
       <meta name="twitter:creator" content="@d_olivaw">
     
@@ -196,19 +199,19 @@ En la práctica lo que se hace es la función de probabilidad acumulada a partir
             <div class="post-header main-content-wrap text-left">
   
     <h1 class="post-title" itemprop="headline">
-      Cómo calcular el Índice de Precipitación Estandarizado en R
+      Cómo hacer un efecto de relieve en R
     </h1>
   
   
   <div class="postShorten-meta post-meta">
     
-      <time itemprop="datePublished" datetime="2017-12-21T00:00:00Z">
+      <time itemprop="datePublished" datetime="2018-01-24T00:00:00Z">
         
   
   
   
   
-    21 de Diciembre 2017
+    24 de Enero 2018
   
 
       </time>
@@ -239,139 +242,199 @@ En la práctica lo que se hace es la función de probabilidad acumulada a partir
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              <p>El Índice de Precipitación Estandarizado (SPI por Standarized Precipitation Index) es un índice para evaluar el estado de sequía o exceso de lluvia. La idea del SPI es tener una idea de qué tan probable es tener una cantidad de lluvia igual o menor. Valores altos del SPI están asociados con épocas muy húmedas mientras que valores bajos indican sequía.</p>
-<p>En la práctica lo que se hace es la función de probabilidad acumulada a partir de los registros históricos y luego estimar la probabilidad para la cantidad observada en cada mes. Luego, esa probabildiad se convierte a su cuantil apropiado según una distribución normal estándar. De manera que, al final, el SPI indica cuántos desvíos estándar lejos de la media es la precipitación en cada mes.</p>
-<p>En otras palabras, a grandes razgos:</p>
-<pre class="r"><code>spi &lt;- qnorm(ecdf(precipitacion)(precipitacion))</code></pre>
-<p>Algunos detalles extra:</p>
-<ul>
-<li><p>antes se suele aplica un promedio móvil para capturar las variaciones de precipitación en determinadas escalas temporales.</p></li>
-<li><p>el SPI calculado de esta manera da casos con precipitación tan extrema que R tira <span class="math inline">\(\pm \infty\)</span>. Entonces hay que rellenar esos datos de manera que el desvío etándar de toda la serie siga siendo 1 y luego restar la media para que quede centrado en 0.</p></li>
-</ul>
-<p>En R existe un paquete llamado <code>spi</code>, pero analizando el código fuente de <code>spi::spi</code>, me parece que tiene algunos bugs importantes que hacen que su resultado no sea fiable. Aparentemente una traducción de un código de FORTRAN o algún otro lenguaje de bajo nivel, en un bloque <code>if</code> en el que debería transponer la matriz de datos, en realidad resulta una matriz con sólo 3 columnas.</p>
-<pre class="r"><code>for (i in 2:ncolumn) {
-   if (i == 2) {
-      data_aux1 = rbind(t(data[i - 1, ]), t(data[i, ]))
-   }
-   else {
-      data_aux = rbind(data_aux1, t(data[i, ]))    # acá está el problema
-   }
-}</code></pre>
-<p>Siguiendo lo que hace el <code>for</code>, se ve que al final el <code>data_aux</code> es una matriz transpuesta pero sólo de las columnas de <code>data</code> 1, 2 y <code>ncolum</code>. La matriz <code>data_aux</code> es la que luego se usa para estimar la función de probabilidad acumulada; en vez de hacerse sobre toda la serie, se hace sobre 3 años.</p>
-<p>Además, el SPI debe estimarse <strong>para cada mes por separado</strong> de manera de filtrar cualquier ciclo estacional. Pero <code>spi::spi</code> hace el cálculo sobre todo junto. Esto explica por qué en el gráfico de ejemplo se ve un claro ciclo estacional que no debería estar ahí.</p>
-<pre class="r"><code>library(spi)
-data(spi_data)
-write.table(spi_data,file=&quot;spi.txt&quot;,quote=FALSE,row.names=TRUE)
-spi::spi(7,&quot;spi.txt&quot;,1963,2010,&quot;Standardized Precipitation Index - Rio Grande do Norte State&quot;,1,&quot;years&quot;,&quot;months&quot;)</code></pre>
-<p><img src="https://eliocamp.github.io/codigo-r/codigo-rpost/2017-12-21-como-calcular-spi-r_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<p>Existe otro paquete, <a href="https://cran.r-project.org/web/packages/precintcon/index.html"><code>precintcon</code></a>, que no parece tener esos problemas y además en vez de estimar la distribución de probabilidad acumulada, le ajusta una distribución Gamma, que es bastante usada para modelar precipitación. El problema, para mí, es que las funciones relacionadas con PSI sólo se pueden aplicar sobre data.frames enteros y con clases especiales. Yo prefiero trabajar con clases primitas que sé lo que hacen y qué son y que brinden más libertad al usuario. En particular, prefiero datos que estén en formato <em>tidy</em>.</p>
-<p>Pero entonces hay que armarse la función propia:</p>
-<pre class="r"><code># Media movil
-rollmean &lt;- function(x, k = 3, na.rm = TRUE) {
-   lapply(k, function(e) .rollmean(x, e, na.rm = na.rm))
-}
-
-.rollmean &lt;- function(x, k, na.rm ) {
-   i &lt;- seq_along(x)
-   j &lt;- i - k + 1
-   j &lt;- ifelse(j &lt;= 0, 1, j)
-   pp &lt;- sapply(i, function (e)  mean(x[j[e]:e], na.rm = na.rm))
-}
-
-# SPI
-spi &lt;- function(pp) {
-   norm &lt;- qnorm(ecdf(pp)(pp))
-   
-   # de http://www.cmc.org.ve/mediawiki/index.php?title=Herramienta_en_R_para_diagn%C3%B3stico
-   norm.fin &lt;- norm[norm != Inf &amp; norm != -Inf]
-   minimize &lt;- function(x) (1 - sd(c(x, norm.fin)))^2
-   norm[norm == Inf] &lt;- optimize(minimize, lower=0, upper=100)$minimum
-   return(norm - mean(norm))
-}</code></pre>
-<p>La razón por la cual hay 2 funciones de media móvil es que la primera está vectorizada en <code>k</code>, lo que significa que se puede hacer <code>roll &lt;- rollmean(x, 1:3)</code> para obtener una lista con 3 medias móviles con distinto <code>k</code>.</p>
-<p>Y listo. Para probar la función con los datos de <code>spi</code>, primero hay que tenerlos en un formato razonable.</p>
+              <p>Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.</p>
+<p>Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida <code>volcano</code>.</p>
 <pre class="r"><code>library(data.table)
-pp &lt;- setDT(melt(spi_data, id.vars = &quot;Months&quot;, variable.name = &quot;year&quot;, value.name = &quot;pp&quot;))
-pp[, year := as.numeric(substr(year, 2, 5))]
-pp[, month.n := 1:7, by = year]
-pp[, date := lubridate::ymd(paste0(year, &quot;-&quot;, month.n, &quot;-15&quot;))]
-
-pp &lt;- pp[, .(date, pp)]
-knitr::kable(head(pp))</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="left">date</th>
-<th align="right">pp</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">1963-01-15</td>
-<td align="right">74.1</td>
-</tr>
-<tr class="even">
-<td align="left">1963-02-15</td>
-<td align="right">155.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1963-03-15</td>
-<td align="right">226.4</td>
-</tr>
-<tr class="even">
-<td align="left">1963-04-15</td>
-<td align="right">186.7</td>
-</tr>
-<tr class="odd">
-<td align="left">1963-05-15</td>
-<td align="right">37.2</td>
-</tr>
-<tr class="even">
-<td align="left">1963-06-15</td>
-<td align="right">23.6</td>
-</tr>
-</tbody>
-</table>
-<p>Así, con una observación de precipitación para cada fecha, podemos calcular el SPI en una sola línea:</p>
-<pre class="r"><code>pp[, pp.roll := rollmean(pp, k = 3)]
-pp[, SPI := spi(pp.roll), by = month(date)]
-
-meses &lt;- c(&quot;Ene&quot;, &quot;Feb&quot;, &quot;Mar&quot;, &quot;Abr&quot;, &quot;May&quot;, &quot;Jun&quot;, 
-           &quot;Jul&quot;, &quot;Ago&quot;, &quot;Sep&quot;, &quot;Oct&quot;, &quot;Nov&quot;, &quot;Dic&quot;)
-spi.breaks &lt;- c(-2.4, -2, -1.6, -1.3, -0.8, -0.5, 0.5, 0.8, 1.3, 1.6, 2, 2.4)
 library(ggplot2)
-ggplot(pp, aes(month(date), year(date))) +
-   geom_contour(aes(z = SPI, color = ..level..), breaks = spi.breaks) +
-   scale_color_distiller(name = &quot;SPI&quot;, 
-                         palette = &quot;BrBG&quot;, direction = 1) +
-   scale_x_continuous(name = &quot;Mes&quot;, expand = c(0, 0), 
-                      breaks = 1:7, 
-                      labels = meses[1:7]) +
-   scale_y_continuous(name = &quot;Año&quot;, expand = c(0, 0), trans = &quot;reverse&quot;) +
-   theme_minimal()</code></pre>
-<p><img src="https://eliocamp.github.io/codigo-r/codigo-rpost/2017-12-21-como-calcular-spi-r_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<p>Cabe aclarar que como los datos no cubren todo el año, en realidad el promedio movil no tiene sentido. Para probarlo voy a primero crear una serie de datos sintética con un ciclo anual.</p>
-<pre class="r"><code>pp2 &lt;- data.table(date = seq.Date(as.Date(&quot;1985-01-01&quot;), as.Date(&quot;2015-12-01&quot;), 
-                                  by = &quot;1 month&quot;))
-set.seed(42)    # ¡reproducible!
-pp2[, pp := rgamma(.N, shape = 1, scale = 10*(cos((month(date) - 1)/11*pi*2) + 1))]</code></pre>
-<p>Y ahora sí, calcular el SPI como se debe y para todas las escalas de tiempo que queramos.</p>
-<pre class="r"><code>pp2[, as.character(1:12) := rollmean(pp, 1:12)]
-pp.long &lt;- melt(pp2[, -&quot;pp&quot;], id.vars = &quot;date&quot;, variable.name = &quot;k&quot;, value.name = &quot;pp&quot;)
-pp.long[, k := as.numeric(as.character(k))]
-pp.long[, SPI := spi(pp), by = .(month(date), k)]
+data(volcano)
+volcano &lt;- as.data.table(melt(volcano, varnames = c(&quot;x&quot;, &quot;y&quot;),
+                              value.name = &quot;h&quot;))</code></pre>
+<p>La forma más básica de visualizarlos (en <code>ggplot2</code>) es con un <code>geom_raster()</code> (o <code>geom_tile()</code>):</p>
+<pre class="r"><code>ggplot(volcano, aes(x, y)) + 
+   geom_raster(aes(fill = h), interpolate = TRUE) +
+   scale_fill_viridis_c(option = &quot;A&quot;, guide = &quot;none&quot;) +
+   coord_fixed() +
+   theme_void()</code></pre>
+<p><img src="https://eliocamp.github.io/codigo-r/codigo-rpost/2018-01-24-c%C3%B3mo-hacer-efecto-de-relieve-en-r_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Y está bien. Grafica los datos correctamente y encima elegimos una escala de colores uniforme y no asquerosa. Pero si uno quiere que tenga un poco más de <em>punch</em>, y quizás está dispuesto a perder un poco de exactitud en la representación en favor de una impresión más instintiva de la forma de este volcán, podría preferir que tuviera algún sombreado que de una idea del relieve. Algo llamativo como esto:</p>
+<p align="center">
+<img src = "/images/shading.jpg">
+</p>
+<p>Lindo, ¿no? En R podemos hacer algo aproximado. Lo que vamos a hacer es calcular la pendiente en cada punto de grilla y luego pensar que la intensidad de las luces y sombras son proporcionales al producto escalar entre ésta y el ángulo con el que llega el Sol.</p>
+<p>Tomando que el Sol brilla desde arriba a la izquierda, si una región tiene pendiente hacia arriba a la derecha, el producto escalar es negativo y tenemos una región de sombra. Lo mismo pasa al contrario… creo. En realidad no pensé esta parte demasiado bien, ¡pero el resultado en el gráfico es bueno! (Créanme 🙏).</p>
+<p>Primero, tenemos que calcular el gradiente de la altura en cada punto. Acá estoy usando una función de mi paquete personal (que ustedes pueden adquirir en el puesto instalado en el hall del teatro… digo, <a href="https://github.com/eliocamp/metR">en github</a>).</p>
+<pre class="r"><code>volcano[, c(&quot;dx&quot;, &quot;dy&quot;) := metR::Derivate(h ~ x + y)]
+volcano[, angle := atan2(-dy, -dx)]</code></pre>
+<p>Ya con esto simplemente mapeamos el coseno del ángulo (por el producto vectorial) a una escala de grises que empiece y termine en el mismo color.</p>
+<pre class="r"><code>sun.angle &lt;- pi/3
+ggplot(volcano, aes(x, y)) +
+   geom_raster(aes(fill = cos(angle + sun.angle)), alpha = 1, interpolate = TRUE) +
+   scale_fill_gradient2(low = &quot;white&quot;, high = &quot;white&quot;, mid = &quot;gray20&quot;, 
+                        midpoint = sun.angle, guide = &quot;none&quot;) +
+   coord_fixed() +
+   theme_void() </code></pre>
+<p><img src="https://eliocamp.github.io/codigo-r/codigo-rpost/2018-01-24-c%C3%B3mo-hacer-efecto-de-relieve-en-r_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>¡Hermoso!💙 Si queremos cambiar la hora del día, sólo basta con cambiar el ángulo del sol. Esas áreas horribles en gris llano son regiones con errores, donde los datos son constantes, la derivada es nula y el ángulo entonces es cero. Por ahora dejémoslas ser porque todavía hay una última cosa que hacer.</p>
+<p>¿Qué tal si además de este sombreado genial queremos de alguna mantera mostrar la altura? ¿U otra variable como la temperatura o el uso del terreno o lo que sea? Como nuestra <code>scale_fill()</code> está siendo usada por el relieve, no podemos mapear otras variables a ese parámetro. Es decir, no podemos usar un <code>geom_tile()</code> con transparencia, por ejemplo. Que yo sepa hay dos formas de solucionar esto. Una fácil y una difícil.</p>
+<p>La primera implica hacer un poco de cirugía de plots. Primero, creamos un plot similar al anterior pero con transparencia y sin tanta fanfarria y más contraste. Después lo convertimos en un grob (GRaphical OBject) y luego le extraemos la parte que nos interesa. Esto acá está hecho manual pero podría automatizarse. Hay que buscar primero el grob que sea <code>gTree</code> (el 5, en este caso) y luego, entre sus <code>children</code>, encontrar el que sea un <code>rect</code> (el 3).</p>
+<p>Finalmente, con el grob del sombreado ya en nuestras manos, hacemos el gráfico que queremos, con las escalas que se nos ocurra, pero le agregamos el sombreado como una anotación con <code>annotation_custom()</code>.</p>
+<pre class="r"><code>shade &lt;- ggplot(volcano, aes(x, y)) +
+   geom_raster(aes(fill = cos(angle + sun.angle)), alpha = 0.5, interpolate = TRUE) +
+   scale_fill_gradient2(low = &quot;white&quot;, high = &quot;white&quot;, mid = &quot;black&quot;, 
+                        midpoint = sun.angle, guide = &quot;none&quot;)
 
-ggplot(pp.long, aes(date, k)) +
-   geom_tile(aes(fill = SPI, color = SPI)) +
-   scale_fill_distiller(name = &quot;SPI&quot;, 
-                         palette = &quot;BrBG&quot;, direction = 1) +
-      scale_color_distiller(name = &quot;SPI&quot;, 
-                         palette = &quot;BrBG&quot;, direction = 1) +
-   scale_x_date(name = &quot;Fecha&quot;, expand = c(0, 0)) +
-   scale_y_continuous(name = &quot;Escala temporal&quot;, expand = c(0, 0), 
-                      breaks = 1:12) +
-   theme_minimal()</code></pre>
-<p><img src="https://eliocamp.github.io/codigo-r/codigo-rpost/2017-12-21-como-calcular-spi-r_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+grob.shade &lt;- ggplotGrob(shade)
+grob.shade &lt;- grob.shade$grobs[[6]]$children[[3]]
+
+ggplot(volcano, aes(x, y)) +
+   geom_raster(aes(fill = h), alpha = 1, interpolate = TRUE) +
+   annotation_custom(grob = grob.shade) +
+   scale_fill_viridis_c(guide = &quot;none&quot;, option = &quot;A&quot;) +
+   coord_fixed() +
+   theme_void() </code></pre>
+<p><img src="https://eliocamp.github.io/codigo-r/codigo-rpost/2018-01-24-c%C3%B3mo-hacer-efecto-de-relieve-en-r_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>La forma más difícil en realidad es difícil para quien escribe, pero mucho más fácil para quien lee: hacer un <code>geom</code> propio. Una vez que uno se mete en las entrañas de <code>ggplot2</code>, puede liberarse de las cadenas de las escalas y hacer <code>geoms</code> que dibujen las cosas como uno quiera. En este caso, cramos una versión de <code>geom_tile()</code> que, además de hacer los cálculos de derivadas internamente, genera el degradé (que puede ser modificado por el usuario mediante los parámetros <code>light</code> y <code>dark</code>) sin tocar ninguna escala. Además, se puede cambiar el ángulo del sol con <code>sun.angle</code>, decidir si se usa <code>raster</code> (rápido y permite interpolación, pero sólo en coordenadas cartesianas) o <code>rect</code> (más lento) y si interpola para un efecto más lindo. Les presento a <code>geom_relief()</code>:</p>
+<pre class="r"><code>geom_relief &lt;- function(mapping = NULL, data = NULL,
+                        stat = &quot;identity&quot;, position = &quot;identity&quot;,
+                        ...,
+                        raster = TRUE,
+                        interpolate = TRUE,
+                        na.rm = FALSE,
+                        show.legend = NA,
+                        inherit.aes = TRUE) {
+   ggplot2::layer(
+      data = data,
+      mapping = mapping,
+      stat = stat,
+      geom = GeomRelief,
+      position = position,
+      show.legend = show.legend,
+      inherit.aes = inherit.aes,
+      params = list(
+         raster = raster,
+         interpolate = interpolate,
+         na.rm = na.rm,
+         ...
+      )
+   )
+}
+
+GeomRelief &lt;- ggplot2::ggproto(&quot;GeomRelief&quot;, GeomTile,
+  required_aes = c(&quot;x&quot;, &quot;y&quot;, &quot;z&quot;),
+  default_aes = ggplot2::aes(color = NA, fill = &quot;grey35&quot;, size = 0.5, linetype = 1,
+                             alpha = NA, light = &quot;white&quot;, dark = &quot;gray20&quot;, sun.angle = 60),
+  draw_panel = function(data, panel_scales, coord, raster, interpolate) {
+     if (!coord$is_linear()) {
+        stop(&quot;non lineal coordinates are not implemented in GeomRelief&quot;, call. = FALSE)
+     } else {
+        coords &lt;- as.data.table(coord$transform(data, panel_scales))
+        
+        # Esto es lo único que es nuevo. El resto es básicamente copy-paste
+        # de geom_raster y geom_tile.
+        coords[, sun.angle := (sun.angle + 90)*pi/180]
+        coords[, dx := .derv(z, x), by = y]
+        coords[, dy := .derv(z, y), by = x]
+        coords[, shade := (cos(atan2(-dy, -dx) - sun.angle) + 1)/2]
+        coords[is.na(shade), shade := 0]
+        coords[, fill := .rgb2hex(colorRamp(c(dark, light), space = &quot;Lab&quot;)(shade)),
+               by = .(dark, light)]
+        
+        # Desde geom_raster y geom_tile
+        if (raster == TRUE){
+           if (!inherits(coord, &quot;CoordCartesian&quot;)) {
+              stop(&quot;geom_raster only works with Cartesian coordinates&quot;, call. = FALSE)
+           }
+           # Convert vector of data to raster
+           x_pos &lt;- as.integer((coords$x - min(coords$x)) / resolution(coords$x, FALSE))
+           y_pos &lt;- as.integer((coords$y - min(coords$y)) / resolution(coords$y, FALSE))
+           
+           nrow &lt;- max(y_pos) + 1
+           ncol &lt;- max(x_pos) + 1
+           
+           raster &lt;- matrix(NA_character_, nrow = nrow, ncol = ncol)
+           raster[cbind(nrow - y_pos, x_pos + 1)] &lt;- alpha(coords$fill, coords$alpha)
+           
+           # Figure out dimensions of raster on plot
+           x_rng &lt;- c(min(coords$xmin, na.rm = TRUE), max(coords$xmax, na.rm = TRUE))
+           y_rng &lt;- c(min(coords$ymin, na.rm = TRUE), max(coords$ymax, na.rm = TRUE))
+           
+           grid::rasterGrob(raster,
+                            x = mean(x_rng), y = mean(y_rng),
+                            width = diff(x_rng), height = diff(y_rng),
+                            default.units = &quot;native&quot;, interpolate = interpolate
+           )
+           
+        } else {
+           ggplot2:::ggname(&quot;geom_rect&quot;, grid::rectGrob(
+              coords$xmin, coords$ymax,
+              width = coords$xmax - coords$xmin,
+              height = coords$ymax - coords$ymin,
+              default.units = &quot;native&quot;,
+              just = c(&quot;left&quot;, &quot;top&quot;),
+              gp = grid::gpar(
+                 col = coords$fill,
+                 fill = alpha(coords$fill, coords$alpha),
+                 lwd = coords$size * .pt,
+                 lty = coords$linetype,
+                 lineend = &quot;butt&quot;
+              )
+           ))
+           
+        }
+     }
+  }
+)
+
+rect_to_poly &lt;- function(xmin, xmax, ymin, ymax) {
+   data.frame(
+      y = c(ymax, ymax, ymin, ymin, ymax),
+      x = c(xmin, xmax, xmax, xmin, xmin)
+   )
+}
+
+
+.rgb2hex &lt;- function(array) {
+   rgb(array[, 1], array[, 3], array[, 3], maxColorValue = 255)
+}
+
+.derv &lt;- function(x, y, order = 1, cyclical = FALSE, fill = FALSE) {
+   N &lt;- length(x)
+   d &lt;- y[2] - y[1]
+   if (order &gt;= 3) {
+      dxdy &lt;- .derv(.derv(x, y, order = 2, cyclical = cyclical, fill = fill),
+                    y, order = order - 2, cyclical = cyclical, fill = fill)
+   } else {
+      if (order == 1) {
+         dxdy &lt;- (x[c(2:N, 1)] - x[c(N, 1:(N-1))])/(2*d)
+      } else if (order == 2) {
+         dxdy &lt;- (x[c(2:N, 1)] + x[c(N, 1:(N-1))] - 2*x)/d^2
+      }
+      if (!cyclical) {
+         if (!fill) {
+            dxdy[c(1, N)] &lt;- NA
+         }
+         if (fill) {
+            dxdy[1] &lt;- (-11/6*x[1] + 3*x[2] - 3/2*x[3] + 1/3*x[4])/d
+            dxdy[N] &lt;- (11/6*x[N] - 3*x[N-1] + 3/2*x[N-2] - 1/3*x[N-3])/d
+         }
+      }
+      
+   }
+   return(dxdy)
+}</code></pre>
+<p>De yapa, apliquemos esta técnica a datos topográficos reales de la Coordillera de los Andes cerca del Aconcagua, provistos por <a href="https://www.ngdc.noaa.gov/mgg/global/">ETOPO1 de la NOAA</a>.</p>
+<pre class="r"><code>aconcagua &lt;- metR::GetTopography(-70.0196223 - 3 + 360, -70.0196223 + 3 + 360,
+                                 -32.6531782 + 2, -32.6531782 - 2, 
+                                 resolution = 1/60)
+aconcagua[, c(&quot;light&quot;, &quot;dark&quot;) := .(ifelse(h &gt; 0, &quot;white&quot;, &quot;slategray2&quot;),
+                                ifelse(h &gt; 0, &quot;gray20&quot;, &quot;midnightblue&quot;))] 
+ggplot(aconcagua, aes(lon, lat)) +
+   geom_relief(aes(z = h, light = light, dark = dark), 
+               raster = TRUE, interpolate = TRUE, sun.angle = 60) +
+   coord_fixed(expand = FALSE) +
+   theme_void()</code></pre>
+<p><img src="https://eliocamp.github.io/codigo-r/codigo-rpost/2018-01-24-c%C3%B3mo-hacer-efecto-de-relieve-en-r_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>El resultado, para chuparse los dedos. 👌</p>
 
               
             </div>
@@ -387,7 +450,7 @@ ggplot(pp.long, aes(date, k)) +
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="https://eliocamp.github.io/codigo-r/2018/01/buen-ejemplo-reproducible-en-r/" data-tooltip="Cómo hacer un buen ejemplo reproducible en R">
+                <a class="post-action-btn btn btn--disabled">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
@@ -395,7 +458,7 @@ ggplot(pp.long, aes(date, k)) +
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--disabled">
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://eliocamp.github.io/codigo-r/2018/01/buen-ejemplo-reproducible-en-r/" data-tooltip="Cómo hacer un buen ejemplo reproducible en R">
               
                   <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
                   <i class="fa fa-angle-right"></i>
@@ -413,19 +476,19 @@ ggplot(pp.long, aes(date, k)) +
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2017/12/calcular-ipe-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2017/12/calcular-ipe-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2017/12/calcular-ipe-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -473,7 +536,7 @@ ggplot(pp.long, aes(date, k)) +
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="https://eliocamp.github.io/codigo-r/2018/01/buen-ejemplo-reproducible-en-r/" data-tooltip="Cómo hacer un buen ejemplo reproducible en R">
+                <a class="post-action-btn btn btn--disabled">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
@@ -481,7 +544,7 @@ ggplot(pp.long, aes(date, k)) +
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--disabled">
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://eliocamp.github.io/codigo-r/2018/01/buen-ejemplo-reproducible-en-r/" data-tooltip="Cómo hacer un buen ejemplo reproducible en R">
               
                   <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
                   <i class="fa fa-angle-right"></i>
@@ -499,19 +562,19 @@ ggplot(pp.long, aes(date, k)) +
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2017/12/calcular-ipe-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2017/12/calcular-ipe-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2017/12/calcular-ipe-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -541,19 +604,19 @@ ggplot(pp.long, aes(date, k)) +
   <ul class="share-options">
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2017%2F12%2Fcalcular-ipe-r%2F">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F01%2Fcomo-hacer-efecto-de-relieve-en-r%2F">
           <i class="fa fa-facebook-official"></i><span>Compartir en Facebook</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2017%2F12%2Fcalcular-ipe-r%2F">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F01%2Fcomo-hacer-efecto-de-relieve-en-r%2F">
           <i class="fa fa-twitter"></i><span>Compartir en Twitter</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2017%2F12%2Fcalcular-ipe-r%2F">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F01%2Fcomo-hacer-efecto-de-relieve-en-r%2F">
           <i class="fa fa-google-plus"></i><span>Compartir en Google&#43;</span>
         </a>
       </li>
@@ -709,9 +772,9 @@ $(document).ready(function() {
     
       <script>
         var disqus_config = function () {
-          this.page.url = 'https:\/\/eliocamp.github.io\/codigo-r\/2017\/12\/calcular-ipe-r\/';
+          this.page.url = 'https:\/\/eliocamp.github.io\/codigo-r\/2018\/01\/como-hacer-efecto-de-relieve-en-r\/';
           
-            this.page.identifier = '\/2017\/12\/calcular-ipe-r\/'
+            this.page.identifier = '\/2018\/01\/como-hacer-efecto-de-relieve-en-r\/'
           
         };
         (function() {

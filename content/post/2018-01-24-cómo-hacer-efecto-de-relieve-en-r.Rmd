@@ -2,7 +2,7 @@
 title: Cómo hacer un efecto de relieve en R
 author: Elio Campitelli
 date: '2018-01-24'
-slug: cómo-hacer-efecto-de-relieve-en-r
+slug: como-hacer-efecto-de-relieve-en-r
 categories:
   - R
 tags: []
