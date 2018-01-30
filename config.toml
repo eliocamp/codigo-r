@@ -15,7 +15,7 @@ enableEmoji = true
 # use grunt task `build` to synchronize assets
 
 publishDir = "docs"
-baseURL = ""
+baseURL = "https://eliocamp.github.io/codigo-r/"
 languageCode = "es-es"
 defaultContentLanguage = "es-es"
 title = "Código R"
