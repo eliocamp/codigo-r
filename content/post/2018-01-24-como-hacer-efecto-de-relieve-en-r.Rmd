@@ -214,9 +214,7 @@ rect_to_poly <- function(xmin, xmax, ymin, ymax) {
    }
    return(dxdy)
 }
-
-
-`
+```
 
 De yapa, apliquemos esta técnica a datos topográficos reales de la Cordillera de los Andes cerca del Aconcagua, provistos por [ETOPO1 de la NOAA](https://www.ngdc.noaa.gov/mgg/global/).
 
