@@ -27,7 +27,7 @@ ggplot(reshape2::melt(volcano), aes(Var1, Var2)) +
    geom_point(aes(color = clarity)) +
    facet_grid(color ~ cut)</code></pre>
 <p><img src="/post/2018-01-06-buen-ejemplo-reproducible_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<p>Y para el que prefiera autos de lujo a anillos de diamnates, está <code>mtcars</code>.</p>
+<p>Y para el que prefiera autos de lujo a anillos de diamantes, está <code>mtcars</code>.</p>
 <p>Si uno prefiere usar datos ficticios, siempre puede generar números aleatorios con <code>rnorm</code>, <code>runif</code>, <code>rgamma</code> o cualquier otra distribución (ver <code>?distributions</code> para una lista). <strong>Siempre</strong> que uno use alguna de estas funciones tiene que setear la semilla del generador de números aleatorios con <code>set.seed()</code>. De esta forma uno se asegura que todo aquel que ejecute el código obtenga exactamente los mismos números (pero aleatorios 🤔).</p>
 <p>Una función que a mí me resolvió muchísimos problemas es <code>expand.grid</code>. Devuelve un data.frame con todas las combinaciones de los elementos de distintos vectores. Es una función muy flexible que puede ser usada para generar una grilla regular</p>
 <pre class="r"><code>df &lt;- expand.grid(x = 1:10, y = 1:10)

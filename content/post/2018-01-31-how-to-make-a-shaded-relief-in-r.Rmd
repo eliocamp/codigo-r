@@ -1,16 +1,17 @@
 ---
-title: Cómo hacer un efecto de relieve en R
+title: How to make a shaded relief in R
 author: Elio Campitelli
-date: '2018-01-24'
-slug: como-hacer-efecto-de-relieve-en-r
+date: '2018-01-31'
+slug: how-to-make-a-shaded-relief-in-r
 categories:
   - R
 tags: []
+draft: true
 ---
 
-Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía. 
+I was trying to come up with a circular color scale (one in which the extremes have the same color) to plot angles and win directin when I discovered an interesting way of creating a shading relief effect for topography maps.
 
-Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida `volcano`.
+Let's say we have topographic data in a regular grid. For example, we can use our old and loved `volcano`
 
 ```{r}
 library(data.table)
@@ -20,7 +21,7 @@ volcano <- as.data.table(melt(volcano, varnames = c("x", "y"),
                               value.name = "h"))
 ```
 
-La forma más básica de visualizarlos (en `ggplot2`) es con un `geom_raster()` (o `geom_tile()`):
+The most basic way of visualizing the data (in `ggplot2`) is with `geom_raster()` (or `geom_tile()`):
 
 ```{r}
 ggplot(volcano, aes(x, y)) + 
@@ -29,6 +30,8 @@ ggplot(volcano, aes(x, y)) +
    coord_fixed() +
    theme_void()
 ```
+
+And it great. The data is correctly plotted and we chose a perceptually uniform color scale. But maybe we want something more visually appealing and is ok with losing 
 
 Y está bien. Grafica los datos correctamente y encima elegimos una escala de colores uniforme y no asquerosa. Pero si uno quiere que tenga un poco más de *punch*, y quizás está dispuesto a perder un poco de exactitud en la representación en favor de una impresión más instintiva de la forma de este volcán, podría preferir que tuviera algún sombreado que de una idea del relieve. Algo llamativo como esto: 
 
@@ -216,7 +219,7 @@ rect_to_poly <- function(xmin, xmax, ymin, ymax) {
 }
 
 
-`
+```
 
 De yapa, apliquemos esta técnica a datos topográficos reales de la Cordillera de los Andes cerca del Aconcagua, provistos por [ETOPO1 de la NOAA](https://www.ngdc.noaa.gov/mgg/global/).
 

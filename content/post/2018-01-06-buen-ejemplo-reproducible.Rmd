@@ -35,7 +35,7 @@ ggplot(diamonds, aes(carat, price)) +
    facet_grid(color ~ cut)
 ```
 
-Y para el que prefiera autos de lujo a anillos de diamnates, está `mtcars`. 
+Y para el que prefiera autos de lujo a anillos de diamantes, está `mtcars`. 
 
 Si uno prefiere usar datos ficticios, siempre puede generar números aleatorios con `rnorm`, `runif`, `rgamma` o cualquier otra distribución (ver `?distributions` para una lista). **Siempre** que uno use alguna de estas funciones tiene que setear la semilla del generador de números aleatorios con `set.seed()`. De esta forma uno se asegura que todo aquel que ejecute el código obtenga exactamente los mismos números (pero aleatorios 🤔).
 

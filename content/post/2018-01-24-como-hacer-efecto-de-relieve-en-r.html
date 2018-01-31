@@ -61,7 +61,7 @@ ggplot(volcano, aes(x, y)) +
    coord_fixed() +
    theme_void() </code></pre>
 <p><img src="/post/2018-01-24-como-hacer-efecto-de-relieve-en-r_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<p>La forma más difícil en realidad es difícil para quien escribe, pero mucho más fácil para quien lee: hacer un <code>geom</code> propio. Una vez que uno se mete en las entrañas de <code>ggplot2</code>, puede liberarse de las cadenas de las escalas y hacer <code>geoms</code> que dibujen las cosas como uno quiera. En este caso, cramos una versión de <code>geom_tile()</code> que, además de hacer los cálculos de derivadas internamente, genera el degradé (que puede ser modificado por el usuario mediante los parámetros <code>light</code> y <code>dark</code>) sin tocar ninguna escala. Además, se puede cambiar el ángulo del sol con <code>sun.angle</code>, decidir si se usa <code>raster</code> (rápido y permite interpolación, pero sólo en coordenadas cartesianas) o <code>rect</code> (más lento) y si interpola para un efecto más lindo. Les presento a <code>geom_relief()</code>:</p>
+<p>La forma más difícil en realidad es difícil para quien escribe, pero mucho más fácil para quien lee: hacer un <code>geom</code> propio. Una vez que uno se mete en las entrañas de <code>ggplot2</code>, puede liberarse de las cadenas de las escalas y hacer <code>geoms</code> que dibujen las cosas como uno quiera. En este caso, creamos una versión de <code>geom_tile()</code> que, además de hacer los cálculos de derivadas internamente, genera el degradé (que puede ser modificado por el usuario mediante los parámetros <code>light</code> y <code>dark</code>) sin tocar ninguna escala. Además, se puede cambiar el ángulo del sol con <code>sun.angle</code>, decidir si se usa <code>raster</code> (rápido y permite interpolación, pero sólo en coordenadas cartesianas) o <code>rect</code> (más lento) y si interpola para un efecto más lindo. Les presento a <code>geom_relief()</code>:</p>
 <pre class="r"><code>geom_relief &lt;- function(mapping = NULL, data = NULL,
                         stat = &quot;identity&quot;, position = &quot;identity&quot;,
                         ...,
@@ -190,7 +190,7 @@ rect_to_poly &lt;- function(xmin, xmax, ymin, ymax) {
    }
    return(dxdy)
 }</code></pre>
-<p>De yapa, apliquemos esta técnica a datos topográficos reales de la Coordillera de los Andes cerca del Aconcagua, provistos por <a href="https://www.ngdc.noaa.gov/mgg/global/">ETOPO1 de la NOAA</a>.</p>
+<p>De yapa, apliquemos esta técnica a datos topográficos reales de la Cordillera de los Andes cerca del Aconcagua, provistos por <a href="https://www.ngdc.noaa.gov/mgg/global/">ETOPO1 de la NOAA</a>.</p>
 <pre class="r"><code>aconcagua &lt;- metR::GetTopography(-70.0196223 - 3 + 360, -70.0196223 + 3 + 360,
                                  -32.6531782 + 2, -32.6531782 - 2, 
                                  resolution = 1/60)
