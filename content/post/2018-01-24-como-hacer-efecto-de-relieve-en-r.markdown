@@ -1,19 +1,19 @@
 ---
-title: How to make a shaded relief in R
+title: Cómo hacer un efecto de relieve en R
 author: Elio Campitelli
-date: '2018-01-31'
-slug: how-to-make-a-shaded-relief-in-r
+date: '2018-01-24'
+slug: como-hacer-efecto-de-relieve-en-r
 categories:
   - R
 tags: []
-draft: true
 ---
 
-I was trying to come up with a circular color scale (one in which the extremes have the same color) to plot angles and win directin when I discovered an interesting way of creating a shading relief effect for topography maps.
+Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía. 
 
-Let's say we have topographic data in a regular grid. For example, we can use our old and loved `volcano`
+Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida `volcano`.
 
-```{r}
+
+```r
 library(data.table)
 library(ggplot2)
 data(volcano)
@@ -21,9 +21,10 @@ volcano <- as.data.table(melt(volcano, varnames = c("x", "y"),
                               value.name = "h"))
 ```
 
-The most basic way of visualizing the data (in `ggplot2`) is with `geom_raster()` (or `geom_tile()`):
+La forma más básica de visualizarlos (en `ggplot2`) es con un `geom_raster()` (o `geom_tile()`):
 
-```{r}
+
+```r
 ggplot(volcano, aes(x, y)) + 
    geom_raster(aes(fill = h), interpolate = TRUE) +
    scale_fill_viridis_c(option = "A", guide = "none") +
@@ -31,26 +32,28 @@ ggplot(volcano, aes(x, y)) +
    theme_void()
 ```
 
-And it great. The data is correctly plotted and we chose a perceptually uniform color scale. But maybe we want something more visually appealing and is ok with losing 
+<img src="/post/2018-01-24-como-hacer-efecto-de-relieve-en-r_files/figure-html/unnamed-chunk-2-1.png" width="672" />
 
 Y está bien. Grafica los datos correctamente y encima elegimos una escala de colores uniforme y no asquerosa. Pero si uno quiere que tenga un poco más de *punch*, y quizás está dispuesto a perder un poco de exactitud en la representación en favor de una impresión más instintiva de la forma de este volcán, podría preferir que tuviera algún sombreado que de una idea del relieve. Algo llamativo como esto: 
 
-<p align = "center">![](/images/shading.jpg)</p>
+<p align = "center"><img scr = "/images/shading.jpg" /></p>
 
 Lindo, ¿no? En R podemos hacer algo aproximado. Lo que vamos a hacer es calcular la pendiente en cada punto de grilla y luego pensar que la intensidad de las luces y sombras son proporcionales al producto escalar entre ésta y el ángulo con el que llega el Sol. 
 
-Tomando que el Sol brilla desde arriba a la izquierda, si una región tiene pendiente hacia arriba a la derecha, el producto escalar es negativo y tenemos una región de sombra. Lo mismo pasa al contrario... creo. En realidad no pensé esta parte demasiado bien, ¡pero el resultado en el gráfico es bueno! (Créanme 🙏).
+Tomando que el Sol brilla desde arriba a la izquierda, si una región tiene pendiente hacia arriba a la derecha, el producto escalar es negativo y tenemos una región de sombra. Lo mismo pasa al contrario... creo. En realidad no pensé esta parte demasiado bien, ¡pero el resultado en el gráfico es bueno y creo que que [coincide con métodos existentes](http://www.reliefshading.com/analytical/shading-methods/)! (Créanme :pray:).
 
 Primero, tenemos que calcular el gradiente de la altura en cada punto. Acá estoy usando una función de mi paquete personal (que ustedes pueden adquirir en el puesto instalado en el hall del teatro... digo, [en github](https://github.com/eliocamp/metR)).
 
-```{r}
+
+```r
 volcano[, c("dx", "dy") := metR::Derivate(h ~ x + y)]
 volcano[, angle := atan2(-dy, -dx)]
 ```
 
 Ya con esto simplemente mapeamos el coseno del ángulo (por el producto vectorial) a una escala de grises que empiece y termine en el mismo color.  
 
-```{r}
+
+```r
 sun.angle <- pi/3
 ggplot(volcano, aes(x, y)) +
    geom_raster(aes(fill = cos(angle + sun.angle)), alpha = 1, interpolate = TRUE) +
@@ -60,7 +63,9 @@ ggplot(volcano, aes(x, y)) +
    theme_void() 
 ```
 
-¡Hermoso!💙 Si queremos cambiar la hora del día, sólo basta con cambiar el ángulo del sol. Esas áreas horribles en gris llano son regiones con errores, donde los datos son constantes, la derivada es nula y el ángulo entonces es cero. Por ahora dejémoslas ser porque todavía hay una última cosa que hacer. 
+<img src="/post/2018-01-24-como-hacer-efecto-de-relieve-en-r_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+
+¡Hermoso! :purple_heart: Si queremos cambiar la hora del día, sólo basta con cambiar el ángulo del sol. Esas áreas horribles en gris llano son regiones con errores, donde los datos son constantes, la derivada es nula y el ángulo entonces es cero. Por ahora dejémoslas ser porque todavía hay una última cosa que hacer. 
 
 ¿Qué tal si además de este sombreado genial queremos de alguna mantera mostrar la altura? ¿U otra variable como la temperatura o el uso del terreno o lo que sea? Como nuestra `scale_fill()` está siendo usada por el relieve, no podemos mapear otras variables a ese parámetro. Es decir, no podemos usar un `geom_tile()` con transparencia, por ejemplo. Que yo sepa hay dos formas de solucionar esto. Una fácil y una difícil. 
 
@@ -68,7 +73,8 @@ La primera implica hacer un poco de cirugía de plots. Primero, creamos un plot 
 
 Finalmente, con el grob del sombreado ya en nuestras manos, hacemos el gráfico que queremos, con las escalas que se nos ocurra, pero le agregamos el sombreado como una anotación con `annotation_custom()`. 
 
-```{r}
+
+```r
 shade <- ggplot(volcano, aes(x, y)) +
    geom_raster(aes(fill = cos(angle + sun.angle)), alpha = 0.5, interpolate = TRUE) +
    scale_fill_gradient2(low = "white", high = "white", mid = "black", 
@@ -83,12 +89,14 @@ ggplot(volcano, aes(x, y)) +
    scale_fill_viridis_c(guide = "none", option = "A") +
    coord_fixed() +
    theme_void() 
-
 ```
+
+<img src="/post/2018-01-24-como-hacer-efecto-de-relieve-en-r_files/figure-html/unnamed-chunk-5-1.png" width="672" />
 
 La forma más difícil en realidad es difícil para quien escribe, pero mucho más fácil para quien lee: hacer un `geom` propio. Una vez que uno se mete en las entrañas de `ggplot2`, puede liberarse de las cadenas de las escalas y hacer `geoms` que dibujen las cosas como uno quiera. En este caso, creamos una versión de `geom_tile()` que, además de hacer los cálculos de derivadas internamente, genera el degradé (que puede ser modificado por el usuario mediante los parámetros `light` y `dark`) sin tocar ninguna escala. Además, se puede cambiar el ángulo del sol con `sun.angle`, decidir si se usa `raster` (rápido y permite interpolación, pero sólo en coordenadas cartesianas) o `rect` (más lento) y si interpola para un efecto más lindo. Les presento a `geom_relief()`: 
 
-```{r include=TRUE}
+
+```r
 geom_relief <- function(mapping = NULL, data = NULL,
                         stat = "identity", position = "identity",
                         ...,
@@ -187,10 +195,10 @@ rect_to_poly <- function(xmin, xmax, ymin, ymax) {
    )
 }
 
-
 .rgb2hex <- function(array) {
-   rgb(array[, 1], array[, 3], array[, 3], maxColorValue = 255)
+   rgb(array[, 1], array[, 2], array[, 3], maxColorValue = 255)
 }
+
 
 .derv <- function(x, y, order = 1, cyclical = FALSE, fill = FALSE) {
    N <- length(x)
@@ -217,13 +225,12 @@ rect_to_poly <- function(xmin, xmax, ymin, ymax) {
    }
    return(dxdy)
 }
-
-
 ```
 
 De yapa, apliquemos esta técnica a datos topográficos reales de la Cordillera de los Andes cerca del Aconcagua, provistos por [ETOPO1 de la NOAA](https://www.ngdc.noaa.gov/mgg/global/).
 
-```{r}
+
+```r
 aconcagua <- metR::GetTopography(-70.0196223 - 3 + 360, -70.0196223 + 3 + 360,
                                  -32.6531782 + 2, -32.6531782 - 2, 
                                  resolution = 1/60)
@@ -236,4 +243,6 @@ ggplot(aconcagua, aes(lon, lat)) +
    theme_void()
 ```
 
-El resultado, para chuparse los dedos. 👌
+<img src="/post/2018-01-24-como-hacer-efecto-de-relieve-en-r_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+
+El resultado, para chuparse los dedos. :ok_hand: 

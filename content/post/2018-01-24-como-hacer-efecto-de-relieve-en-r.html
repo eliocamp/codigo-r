@@ -29,7 +29,7 @@ volcano &lt;- as.data.table(melt(volcano, varnames = c(&quot;x&quot;, &quot;y&qu
 <img src="/images/shading.jpg" />
 </p>
 <p>Lindo, ¿no? En R podemos hacer algo aproximado. Lo que vamos a hacer es calcular la pendiente en cada punto de grilla y luego pensar que la intensidad de las luces y sombras son proporcionales al producto escalar entre ésta y el ángulo con el que llega el Sol.</p>
-<p>Tomando que el Sol brilla desde arriba a la izquierda, si una región tiene pendiente hacia arriba a la derecha, el producto escalar es negativo y tenemos una región de sombra. Lo mismo pasa al contrario… creo. En realidad no pensé esta parte demasiado bien, ¡pero el resultado en el gráfico es bueno! (Créanme 🙏).</p>
+<p>Tomando que el Sol brilla desde arriba a la izquierda, si una región tiene pendiente hacia arriba a la derecha, el producto escalar es negativo y tenemos una región de sombra. Lo mismo pasa al contrario… creo. En realidad no pensé esta parte demasiado bien, ¡pero el resultado en el gráfico es bueno! (Créanme).</p>
 <p>Primero, tenemos que calcular el gradiente de la altura en cada punto. Acá estoy usando una función de mi paquete personal (que ustedes pueden adquirir en el puesto instalado en el hall del teatro… digo, <a href="https://github.com/eliocamp/metR">en github</a>).</p>
 <pre class="r"><code>volcano[, c(&quot;dx&quot;, &quot;dy&quot;) := metR::Derivate(h ~ x + y)]
 volcano[, angle := atan2(-dy, -dx)]</code></pre>
@@ -42,7 +42,7 @@ ggplot(volcano, aes(x, y)) +
    coord_fixed() +
    theme_void() </code></pre>
 <p><img src="/post/2018-01-24-como-hacer-efecto-de-relieve-en-r_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>¡Hermoso!💙 Si queremos cambiar la hora del día, sólo basta con cambiar el ángulo del sol. Esas áreas horribles en gris llano son regiones con errores, donde los datos son constantes, la derivada es nula y el ángulo entonces es cero. Por ahora dejémoslas ser porque todavía hay una última cosa que hacer.</p>
+<p>¡Hermoso! Si queremos cambiar la hora del día, sólo basta con cambiar el ángulo del sol. Esas áreas horribles en gris llano son regiones con errores, donde los datos son constantes, la derivada es nula y el ángulo entonces es cero. Por ahora dejémoslas ser porque todavía hay una última cosa que hacer.</p>
 <p>¿Qué tal si además de este sombreado genial queremos de alguna mantera mostrar la altura? ¿U otra variable como la temperatura o el uso del terreno o lo que sea? Como nuestra <code>scale_fill()</code> está siendo usada por el relieve, no podemos mapear otras variables a ese parámetro. Es decir, no podemos usar un <code>geom_tile()</code> con transparencia, por ejemplo. Que yo sepa hay dos formas de solucionar esto. Una fácil y una difícil.</p>
 <p>La primera implica hacer un poco de cirugía de plots. Primero, creamos un plot similar al anterior pero con transparencia y sin tanta fanfarria y más contraste. Después lo convertimos en un grob (GRaphical OBject) y luego le extraemos la parte que nos interesa. Esto acá está hecho manual pero podría automatizarse. Hay que buscar primero el grob que sea <code>gTree</code> (el 5, en este caso) y luego, entre sus <code>children</code>, encontrar el que sea un <code>rect</code> (el 3).</p>
 <p>Finalmente, con el grob del sombreado ya en nuestras manos, hacemos el gráfico que queremos, con las escalas que se nos ocurra, pero le agregamos el sombreado como una anotación con <code>annotation_custom()</code>.</p>
@@ -160,10 +160,10 @@ rect_to_poly &lt;- function(xmin, xmax, ymin, ymax) {
    )
 }
 
-
 .rgb2hex &lt;- function(array) {
-   rgb(array[, 1], array[, 3], array[, 3], maxColorValue = 255)
+   rgb(array[, 1], array[, 2], array[, 3], maxColorValue = 255)
 }
+
 
 .derv &lt;- function(x, y, order = 1, cyclical = FALSE, fill = FALSE) {
    N &lt;- length(x)
@@ -202,4 +202,4 @@ ggplot(aconcagua, aes(lon, lat)) +
    coord_fixed(expand = FALSE) +
    theme_void()</code></pre>
 <p><img src="/post/2018-01-24-como-hacer-efecto-de-relieve-en-r_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<p>El resultado, para chuparse los dedos. 👌</p>
+<p>El resultado, para chuparse los dedos.</p>

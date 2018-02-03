@@ -32,11 +32,11 @@ ggplot(volcano, aes(x, y)) +
 
 Y está bien. Grafica los datos correctamente y encima elegimos una escala de colores uniforme y no asquerosa. Pero si uno quiere que tenga un poco más de *punch*, y quizás está dispuesto a perder un poco de exactitud en la representación en favor de una impresión más instintiva de la forma de este volcán, podría preferir que tuviera algún sombreado que de una idea del relieve. Algo llamativo como esto: 
 
-<p align = "center">![](/images/shading.jpg)</p>
+<p align = "center"><img scr = "/images/shading.jpg" /></p>
 
 Lindo, ¿no? En R podemos hacer algo aproximado. Lo que vamos a hacer es calcular la pendiente en cada punto de grilla y luego pensar que la intensidad de las luces y sombras son proporcionales al producto escalar entre ésta y el ángulo con el que llega el Sol. 
 
-Tomando que el Sol brilla desde arriba a la izquierda, si una región tiene pendiente hacia arriba a la derecha, el producto escalar es negativo y tenemos una región de sombra. Lo mismo pasa al contrario... creo. En realidad no pensé esta parte demasiado bien, ¡pero el resultado en el gráfico es bueno! (Créanme 🙏).
+Tomando que el Sol brilla desde arriba a la izquierda, si una región tiene pendiente hacia arriba a la derecha, el producto escalar es negativo y tenemos una región de sombra. Lo mismo pasa al contrario... creo. En realidad no pensé esta parte demasiado bien, ¡pero el resultado en el gráfico es bueno y creo que que [coincide con métodos existentes](http://www.reliefshading.com/analytical/shading-methods/)! (Créanme :pray:).
 
 Primero, tenemos que calcular el gradiente de la altura en cada punto. Acá estoy usando una función de mi paquete personal (que ustedes pueden adquirir en el puesto instalado en el hall del teatro... digo, [en github](https://github.com/eliocamp/metR)).
 
@@ -57,7 +57,7 @@ ggplot(volcano, aes(x, y)) +
    theme_void() 
 ```
 
-¡Hermoso!💙 Si queremos cambiar la hora del día, sólo basta con cambiar el ángulo del sol. Esas áreas horribles en gris llano son regiones con errores, donde los datos son constantes, la derivada es nula y el ángulo entonces es cero. Por ahora dejémoslas ser porque todavía hay una última cosa que hacer. 
+¡Hermoso! :purple_heart: Si queremos cambiar la hora del día, sólo basta con cambiar el ángulo del sol. Esas áreas horribles en gris llano son regiones con errores, donde los datos son constantes, la derivada es nula y el ángulo entonces es cero. Por ahora dejémoslas ser porque todavía hay una última cosa que hacer. 
 
 ¿Qué tal si además de este sombreado genial queremos de alguna mantera mostrar la altura? ¿U otra variable como la temperatura o el uso del terreno o lo que sea? Como nuestra `scale_fill()` está siendo usada por el relieve, no podemos mapear otras variables a ese parámetro. Es decir, no podemos usar un `geom_tile()` con transparencia, por ejemplo. Que yo sepa hay dos formas de solucionar esto. Una fácil y una difícil. 
 
@@ -184,10 +184,10 @@ rect_to_poly <- function(xmin, xmax, ymin, ymax) {
    )
 }
 
-
 .rgb2hex <- function(array) {
-   rgb(array[, 1], array[, 3], array[, 3], maxColorValue = 255)
+   rgb(array[, 1], array[, 2], array[, 3], maxColorValue = 255)
 }
+
 
 .derv <- function(x, y, order = 1, cyclical = FALSE, fill = FALSE) {
    N <- length(x)
@@ -231,4 +231,4 @@ ggplot(aconcagua, aes(lon, lat)) +
    theme_void()
 ```
 
-El resultado, para chuparse los dedos. 👌
+El resultado, para chuparse los dedos. :ok_hand: 

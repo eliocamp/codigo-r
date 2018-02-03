@@ -23,6 +23,17 @@ library(data.table) library(ggplot2) data(volcano) volcano &amp;lt;- as.</descri
     </item>
     
     <item>
+      <title>Cómo hacer un efecto de relieve en R</title>
+      <link>https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/</link>
+      <pubDate>Wed, 24 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/</guid>
+      <description>Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
+Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.
+library(data.table) library(ggplot2) data(volcano) volcano &amp;lt;- as.</description>
+    </item>
+    
+    <item>
       <title>Cómo hacer un buen ejemplo reproducible en R</title>
       <link>https://eliocamp.github.io/codigo-r/2018/01/buen-ejemplo-reproducible-en-r/</link>
       <pubDate>Sat, 06 Jan 2018 00:00:00 +0000</pubDate>
