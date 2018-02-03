@@ -266,7 +266,7 @@ volcano &lt;- as.data.table(melt(volcano, varnames = c(&quot;x&quot;, &quot;y&qu
 
 <p>Y está bien. Grafica los datos correctamente y encima elegimos una escala de colores uniforme y no asquerosa. Pero si uno quiere que tenga un poco más de <em>punch</em>, y quizás está dispuesto a perder un poco de exactitud en la representación en favor de una impresión más instintiva de la forma de este volcán, podría preferir que tuviera algún sombreado que de una idea del relieve. Algo llamativo como esto:</p>
 
-<p align = "center"><img scr = "/images/shading.jpg" /></p>
+<p><img src="../../../images/shading.jpg" alt="" /></p>
 
 <p>Lindo, ¿no? En R podemos hacer algo aproximado. Lo que vamos a hacer es calcular la pendiente en cada punto de grilla y luego pensar que la intensidad de las luces y sombras son proporcionales al producto escalar entre ésta y el ángulo con el que llega el Sol.</p>
 
