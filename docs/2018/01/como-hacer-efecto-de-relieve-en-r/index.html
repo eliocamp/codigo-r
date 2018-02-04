@@ -30,21 +30,21 @@
     
 
     
-    <meta name="description" content="Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
-Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.
-library(data.table) library(ggplot2) data(volcano) volcano &lt;- as.">
-    <meta property="og:description" content="Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
-Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.
-library(data.table) library(ggplot2) data(volcano) volcano &lt;- as.">
+    <meta name="description" content="(Versión en inglés)
+Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
+Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.">
+    <meta property="og:description" content="(Versión en inglés)
+Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
+Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.">
     <meta property="og:type" content="blog">
     <meta property="og:title" content="Cómo hacer un efecto de relieve en R">
     <meta property="og:url" content="/2018/01/como-hacer-efecto-de-relieve-en-r/">
     <meta property="og:site_name" content="Código R">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Código R">
-    <meta name="twitter:description" content="Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
-Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.
-library(data.table) library(ggplot2) data(volcano) volcano &lt;- as.">
+    <meta name="twitter:description" content="(Versión en inglés)
+Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
+Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.">
     
       <meta name="twitter:creator" content="@d_olivaw">
     
@@ -160,7 +160,7 @@ library(data.table) library(ggplot2) data(volcano) volcano &lt;- as.">
       
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="https://github.com/eliocamp">
+      <a class="sidebar-button-link " href="https://github.com/eliocamp" target="_blank" rel="noopener">
     
       <i class="sidebar-button-icon fa fa-lg fa-github"></i>
       
@@ -242,43 +242,66 @@ library(data.table) library(ggplot2) data(volcano) volcano &lt;- as.">
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              <p>Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.</p>
+              <p>(<a href="../../../2018/02/how-to-make-shaded-relief-in-r/">Versión en inglés</a>)</p>
+
+<p>Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.</p>
+
 <p>Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida <code>volcano</code>.</p>
-<pre class="r"><code>library(data.table)
+
+<pre><code class="language-r">library(data.table)
 library(ggplot2)
 data(volcano)
 volcano &lt;- as.data.table(melt(volcano, varnames = c(&quot;x&quot;, &quot;y&quot;),
-                              value.name = &quot;h&quot;))</code></pre>
+                              value.name = &quot;h&quot;))
+</code></pre>
+
 <p>La forma más básica de visualizarlos (en <code>ggplot2</code>) es con un <code>geom_raster()</code> (o <code>geom_tile()</code>):</p>
-<pre class="r"><code>ggplot(volcano, aes(x, y)) + 
+
+<pre><code class="language-r">ggplot(volcano, aes(x, y)) + 
    geom_raster(aes(fill = h), interpolate = TRUE) +
    scale_fill_viridis_c(option = &quot;A&quot;, guide = &quot;none&quot;) +
    coord_fixed() +
-   theme_void()</code></pre>
+   theme_void()
+</code></pre>
+
 <p><img src="../../../post/2018-01-24-como-hacer-efecto-de-relieve-en-r_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+
 <p>Y está bien. Grafica los datos correctamente y encima elegimos una escala de colores uniforme y no asquerosa. Pero si uno quiere que tenga un poco más de <em>punch</em>, y quizás está dispuesto a perder un poco de exactitud en la representación en favor de una impresión más instintiva de la forma de este volcán, podría preferir que tuviera algún sombreado que de una idea del relieve. Algo llamativo como esto:</p>
-<p align="center">
-<img src="../../../images/shading.jpg" />
-</p>
+
+<p><img src="../../../images/shading.jpg" alt="" /></p>
+
 <p>Lindo, ¿no? En R podemos hacer algo aproximado. Lo que vamos a hacer es calcular la pendiente en cada punto de grilla y luego pensar que la intensidad de las luces y sombras son proporcionales al producto escalar entre ésta y el ángulo con el que llega el Sol.</p>
-<p>Tomando que el Sol brilla desde arriba a la izquierda, si una región tiene pendiente hacia arriba a la derecha, el producto escalar es negativo y tenemos una región de sombra. Lo mismo pasa al contrario… creo. En realidad no pensé esta parte demasiado bien, ¡pero el resultado en el gráfico es bueno! (Créanme).</p>
-<p>Primero, tenemos que calcular el gradiente de la altura en cada punto. Acá estoy usando una función de mi paquete personal (que ustedes pueden adquirir en el puesto instalado en el hall del teatro… digo, <a href="https://github.com/eliocamp/metR">en github</a>).</p>
-<pre class="r"><code>volcano[, c(&quot;dx&quot;, &quot;dy&quot;) := metR::Derivate(h ~ x + y)]
-volcano[, angle := atan2(-dy, -dx)]</code></pre>
+
+<p>Tomando que el Sol brilla desde arriba a la izquierda, si una región tiene pendiente hacia arriba a la derecha, el producto escalar es negativo y tenemos una región de sombra. Lo mismo pasa al contrario&hellip; creo. En realidad no pensé esta parte demasiado bien, ¡pero el resultado en el gráfico es bueno y creo que que <a href="http://www.reliefshading.com/analytical/shading-methods/">coincide con métodos existentes</a>! (Créanme 🙏).</p>
+
+<p>Primero, tenemos que calcular el gradiente de la altura en cada punto. Acá estoy usando una función de mi paquete personal (que ustedes pueden adquirir en el puesto instalado en el hall del teatro&hellip; digo, <a href="https://github.com/eliocamp/metR">en github</a>).</p>
+
+<pre><code class="language-r">volcano[, c(&quot;dx&quot;, &quot;dy&quot;) := metR::Derivate(h ~ x + y)]
+volcano[, angle := atan2(-dy, -dx)]
+</code></pre>
+
 <p>Ya con esto simplemente mapeamos el coseno del ángulo (por el producto vectorial) a una escala de grises que empiece y termine en el mismo color.</p>
-<pre class="r"><code>sun.angle &lt;- pi/3
+
+<pre><code class="language-r">sun.angle &lt;- pi/3
 ggplot(volcano, aes(x, y)) +
    geom_raster(aes(fill = cos(angle + sun.angle)), alpha = 1, interpolate = TRUE) +
    scale_fill_gradient2(low = &quot;white&quot;, high = &quot;white&quot;, mid = &quot;gray20&quot;, 
                         midpoint = sun.angle, guide = &quot;none&quot;) +
    coord_fixed() +
-   theme_void() </code></pre>
+   theme_void() 
+</code></pre>
+
 <p><img src="../../../post/2018-01-24-como-hacer-efecto-de-relieve-en-r_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>¡Hermoso! Si queremos cambiar la hora del día, sólo basta con cambiar el ángulo del sol. Esas áreas horribles en gris llano son regiones con errores, donde los datos son constantes, la derivada es nula y el ángulo entonces es cero. Por ahora dejémoslas ser porque todavía hay una última cosa que hacer.</p>
+
+<p>¡Hermoso! 💜 Si queremos cambiar la hora del día, sólo basta con cambiar el ángulo del sol. Esas áreas horribles en gris llano son regiones con errores, donde los datos son constantes, la derivada es nula y el ángulo entonces es cero. Por ahora dejémoslas ser porque todavía hay una última cosa que hacer.</p>
+
 <p>¿Qué tal si además de este sombreado genial queremos de alguna mantera mostrar la altura? ¿U otra variable como la temperatura o el uso del terreno o lo que sea? Como nuestra <code>scale_fill()</code> está siendo usada por el relieve, no podemos mapear otras variables a ese parámetro. Es decir, no podemos usar un <code>geom_tile()</code> con transparencia, por ejemplo. Que yo sepa hay dos formas de solucionar esto. Una fácil y una difícil.</p>
+
 <p>La primera implica hacer un poco de cirugía de plots. Primero, creamos un plot similar al anterior pero con transparencia y sin tanta fanfarria y más contraste. Después lo convertimos en un grob (GRaphical OBject) y luego le extraemos la parte que nos interesa. Esto acá está hecho manual pero podría automatizarse. Hay que buscar primero el grob que sea <code>gTree</code> (el 5, en este caso) y luego, entre sus <code>children</code>, encontrar el que sea un <code>rect</code> (el 3).</p>
+
 <p>Finalmente, con el grob del sombreado ya en nuestras manos, hacemos el gráfico que queremos, con las escalas que se nos ocurra, pero le agregamos el sombreado como una anotación con <code>annotation_custom()</code>.</p>
-<pre class="r"><code>shade &lt;- ggplot(volcano, aes(x, y)) +
+
+<pre><code class="language-r">shade &lt;- ggplot(volcano, aes(x, y)) +
    geom_raster(aes(fill = cos(angle + sun.angle)), alpha = 0.5, interpolate = TRUE) +
    scale_fill_gradient2(low = &quot;white&quot;, high = &quot;white&quot;, mid = &quot;black&quot;, 
                         midpoint = sun.angle, guide = &quot;none&quot;)
@@ -291,10 +314,14 @@ ggplot(volcano, aes(x, y)) +
    annotation_custom(grob = grob.shade) +
    scale_fill_viridis_c(guide = &quot;none&quot;, option = &quot;A&quot;) +
    coord_fixed() +
-   theme_void() </code></pre>
+   theme_void() 
+</code></pre>
+
 <p><img src="../../../post/2018-01-24-como-hacer-efecto-de-relieve-en-r_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+
 <p>La forma más difícil en realidad es difícil para quien escribe, pero mucho más fácil para quien lee: hacer un <code>geom</code> propio. Una vez que uno se mete en las entrañas de <code>ggplot2</code>, puede liberarse de las cadenas de las escalas y hacer <code>geoms</code> que dibujen las cosas como uno quiera. En este caso, creamos una versión de <code>geom_tile()</code> que, además de hacer los cálculos de derivadas internamente, genera el degradé (que puede ser modificado por el usuario mediante los parámetros <code>light</code> y <code>dark</code>) sin tocar ninguna escala. Además, se puede cambiar el ángulo del sol con <code>sun.angle</code>, decidir si se usa <code>raster</code> (rápido y permite interpolación, pero sólo en coordenadas cartesianas) o <code>rect</code> (más lento) y si interpola para un efecto más lindo. Les presento a <code>geom_relief()</code>:</p>
-<pre class="r"><code>geom_relief &lt;- function(mapping = NULL, data = NULL,
+
+<pre><code class="language-r">geom_relief &lt;- function(mapping = NULL, data = NULL,
                         stat = &quot;identity&quot;, position = &quot;identity&quot;,
                         ...,
                         raster = TRUE,
@@ -421,9 +448,12 @@ rect_to_poly &lt;- function(xmin, xmax, ymin, ymax) {
       
    }
    return(dxdy)
-}</code></pre>
+}
+</code></pre>
+
 <p>De yapa, apliquemos esta técnica a datos topográficos reales de la Cordillera de los Andes cerca del Aconcagua, provistos por <a href="https://www.ngdc.noaa.gov/mgg/global/">ETOPO1 de la NOAA</a>.</p>
-<pre class="r"><code>aconcagua &lt;- metR::GetTopography(-70.0196223 - 3 + 360, -70.0196223 + 3 + 360,
+
+<pre><code class="language-r">aconcagua &lt;- metR::GetTopography(-70.0196223 - 3 + 360, -70.0196223 + 3 + 360,
                                  -32.6531782 + 2, -32.6531782 - 2, 
                                  resolution = 1/60)
 aconcagua[, c(&quot;light&quot;, &quot;dark&quot;) := .(ifelse(h &gt; 0, &quot;white&quot;, &quot;slategray2&quot;),
@@ -432,9 +462,12 @@ ggplot(aconcagua, aes(lon, lat)) +
    geom_relief(aes(z = h, light = light, dark = dark), 
                raster = TRUE, interpolate = TRUE, sun.angle = 60) +
    coord_fixed(expand = FALSE) +
-   theme_void()</code></pre>
+   theme_void()
+</code></pre>
+
 <p><img src="../../../post/2018-01-24-como-hacer-efecto-de-relieve-en-r_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<p>El resultado, para chuparse los dedos.</p>
+
+<p>El resultado, para chuparse los dedos. 👌</p>
 
               
             </div>
@@ -450,7 +483,7 @@ ggplot(aconcagua, aes(lon, lat)) +
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/02/how-to-make-shaded-relief-in-r/" data-tooltip="How to make a shaded relief in R">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/01/como-hacer-efecto-de-relieve-en-r/" data-tooltip="Cómo hacer un efecto de relieve en R">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
@@ -458,7 +491,7 @@ ggplot(aconcagua, aes(lon, lat)) +
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/01/como-hacer-efecto-de-relieve-en-r/" data-tooltip="Cómo hacer un efecto de relieve en R">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/01/buen-ejemplo-reproducible-en-r/" data-tooltip="Cómo hacer un buen ejemplo reproducible en R">
               
                   <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
                   <i class="fa fa-angle-right"></i>
@@ -476,19 +509,19 @@ ggplot(aconcagua, aes(lon, lat)) +
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2018/01/como-hacer-efecto-de-relieve-en-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2018/01/como-hacer-efecto-de-relieve-en-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2018/01/como-hacer-efecto-de-relieve-en-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -536,7 +569,7 @@ ggplot(aconcagua, aes(lon, lat)) +
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/02/how-to-make-shaded-relief-in-r/" data-tooltip="How to make a shaded relief in R">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/01/como-hacer-efecto-de-relieve-en-r/" data-tooltip="Cómo hacer un efecto de relieve en R">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
@@ -544,7 +577,7 @@ ggplot(aconcagua, aes(lon, lat)) +
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/01/como-hacer-efecto-de-relieve-en-r/" data-tooltip="Cómo hacer un efecto de relieve en R">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/01/buen-ejemplo-reproducible-en-r/" data-tooltip="Cómo hacer un buen ejemplo reproducible en R">
               
                   <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
                   <i class="fa fa-angle-right"></i>
@@ -562,19 +595,19 @@ ggplot(aconcagua, aes(lon, lat)) +
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2018/01/como-hacer-efecto-de-relieve-en-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2018/01/como-hacer-efecto-de-relieve-en-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2018/01/como-hacer-efecto-de-relieve-en-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -604,19 +637,19 @@ ggplot(aconcagua, aes(lon, lat)) +
   <ul class="share-options">
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2F2018%2F01%2Fcomo-hacer-efecto-de-relieve-en-r%2F">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F01%2Fcomo-hacer-efecto-de-relieve-en-r%2F">
           <i class="fa fa-facebook-official"></i><span>Compartir en Facebook</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2F2018%2F01%2Fcomo-hacer-efecto-de-relieve-en-r%2F">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F01%2Fcomo-hacer-efecto-de-relieve-en-r%2F">
           <i class="fa fa-twitter"></i><span>Compartir en Twitter</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2F2018%2F01%2Fcomo-hacer-efecto-de-relieve-en-r%2F">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F01%2Fcomo-hacer-efecto-de-relieve-en-r%2F">
           <i class="fa fa-google-plus"></i><span>Compartir en Google&#43;</span>
         </a>
       </li>
@@ -669,7 +702,7 @@ ggplot(aconcagua, aes(lon, lat)) +
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../2018/02/how-to-make-shaded-relief-in-r/">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/02/how-to-make-shaded-relief-in-r/">
                 <h3 class="media-heading">How to make a shaded relief in R</h3>
               </a>
               <span class="media-meta">
@@ -678,7 +711,7 @@ ggplot(aconcagua, aes(lon, lat)) +
                 </span>
               </span>
               <div class="media-content hide-xs font-merryweather">Spanish version of this post
-While trying to build a with a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
+While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
 What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun.</div>
             </div>
             <div style="clear:both;"></div>
@@ -688,7 +721,7 @@ What I accidentally discovered is that one way of approximating this look is by 
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../2018/01/como-hacer-efecto-de-relieve-en-r/">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
                 <h3 class="media-heading">Cómo hacer un efecto de relieve en R</h3>
               </a>
               <span class="media-meta">
@@ -707,7 +740,7 @@ library(data.table) library(ggplot2) data(volcano) volcano &lt;- as.</div>
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../2018/01/como-hacer-efecto-de-relieve-en-r/">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
                 <h3 class="media-heading">Cómo hacer un efecto de relieve en R</h3>
               </a>
               <span class="media-meta">
@@ -726,7 +759,7 @@ Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una gril
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../2018/01/buen-ejemplo-reproducible-en-r/">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/01/buen-ejemplo-reproducible-en-r/">
                 <h3 class="media-heading">Cómo hacer un buen ejemplo reproducible en R</h3>
               </a>
               <span class="media-meta">
@@ -744,24 +777,7 @@ Un buen ejemplo reproducible (o reprex) es básicamente el feliz matrimonio entr
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../2018/01/opts-hooks-figuras-f%C3%A1ciles-en-knitr/">
-                <h3 class="media-heading">Cómo uar `opts_hooks` para hacer figuras fáciles en knitr</h3>
-              </a>
-              <span class="media-meta">
-                <span class="media-date text-small">
-                  Jan 1, 2018
-                </span>
-              </span>
-              <div class="media-content hide-xs font-merryweather"></div>
-            </div>
-            <div style="clear:both;"></div>
-            <hr>
-          </div>
-        
-          <div class="media">
-            
-            <div class="media-body">
-              <a class="link-unstyled" href="../../../2017/12/calcular-ipe-r/">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2017/12/calcular-ipe-r/">
                 <h3 class="media-heading">Cómo calcular el Índice de Precipitación Estandarizado en R</h3>
               </a>
               <span class="media-meta">
@@ -783,7 +799,7 @@ En la práctica lo que se hace es la función de probabilidad acumulada a partir
          data-message-zero="no se encontraron artículos"
          data-message-one="1 artículo encontrado"
          data-message-other="{n} artículos encontrados">
-         6 posts found
+         5 posts found
       </p>
     </div>
   </div>
@@ -791,7 +807,7 @@ En la práctica lo que se hace es la función de probabilidad acumulada a partir
     
   
     
-    <div id="cover" style="background-image:url('/images/cover2.jpg');"></div>
+    <div id="cover" style="background-image:url('https://eliocamp.github.io/codigo-r/images/cover2.jpg');"></div>
   
 
 
@@ -827,7 +843,7 @@ $(document).ready(function() {
     
       <script>
         var disqus_config = function () {
-          this.page.url = '\/2018\/01\/como-hacer-efecto-de-relieve-en-r\/';
+          this.page.url = 'https:\/\/eliocamp.github.io\/codigo-r\/2018\/01\/como-hacer-efecto-de-relieve-en-r\/';
           
             this.page.identifier = '\/2018\/01\/como-hacer-efecto-de-relieve-en-r\/'
           
