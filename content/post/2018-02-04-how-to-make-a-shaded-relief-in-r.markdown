@@ -1,20 +1,24 @@
 ---
-title: Cómo hacer un efecto de relieve en R
+title: How to make a shaded relief in R
 author: Elio Campitelli
-date: '2018-01-24'
-slug: como-hacer-efecto-de-relieve-en-r
+date: '2018-02-04'
+slug: how-to-make-shaded-relief-in-r
 categories:
   - R
 tags: []
 ---
 
-([Versión en inglés](/2018/02/how-to-make-shaded-relief-in-r/))
+[Spanish version of this post](/2018/02/como-hacer-efecto-de-relieve-en-r)
 
-Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía. 
+While trying to build a with a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
 
-Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida `volcano`.
+![](/images/shading.jpg)
 
-```{r}
+What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun. After some further research I learned that this is actually done in cartography and is called [*aspect-based shading*](http://www.reliefshading.com/analytical/shading-methods/). I also learned that it's not the best method, and I'm itching to try others. But for now, let's keep things simple and [get stuff actually done](https://kkulma.github.io/2017-12-29-end-of-year-thoughts/).
+
+Just as an example, I will be using our old friend, the `volcano` database. I will be also using `data.table` syntax because that how I roll. Deal with it, `dplyr` lovers :sunglasses:.
+
+```r
 library(data.table)
 library(ggplot2)
 data(volcano)
@@ -22,34 +26,18 @@ volcano <- as.data.table(melt(volcano, varnames = c("x", "y"),
                               value.name = "h"))
 ```
 
-La forma más básica de visualizarlos (en `ggplot2`) es con un `geom_raster()` (o `geom_tile()`):
+So then I take the derivative (this is a function I made in my personal package, but bear with me :pray:) and take the angle. The minus sign are there... well, because it works --I'm not sure about the exact maths here.
 
-```{r}
-ggplot(volcano, aes(x, y)) + 
-   geom_raster(aes(fill = h), interpolate = TRUE) +
-   scale_fill_viridis_c(option = "A", guide = "none") +
-   coord_fixed() +
-   theme_void()
-```
 
-Y está bien. Grafica los datos correctamente y encima elegimos una escala de colores uniforme y no asquerosa. Pero si uno quiere que tenga un poco más de *punch*, y quizás está dispuesto a perder un poco de exactitud en la representación en favor de una impresión más instintiva de la forma de este volcán, podría preferir que tuviera algún sombreado que de una idea del relieve. Algo llamativo como esto: 
-
-![](/images/shading.jpg)
-
-Lindo, ¿no? En R podemos hacer algo aproximado. Lo que vamos a hacer es calcular la pendiente en cada punto de grilla y luego pensar que la intensidad de las luces y sombras son proporcionales al producto escalar entre ésta y el ángulo con el que llega el Sol. 
-
-Tomando que el Sol brilla desde arriba a la izquierda, si una región tiene pendiente hacia arriba a la derecha, el producto escalar es negativo y tenemos una región de sombra. Lo mismo pasa al contrario... creo. En realidad no pensé esta parte demasiado bien, ¡pero el resultado en el gráfico es bueno y creo que que [coincide con métodos existentes](http://www.reliefshading.com/analytical/shading-methods/)! (Créanme :pray:).
-
-Primero, tenemos que calcular el gradiente de la altura en cada punto. Acá estoy usando una función de mi paquete personal (que ustedes pueden adquirir en el puesto instalado en el hall del teatro... digo, [en github](https://github.com/eliocamp/metR)).
-
-```{r}
+```r
 volcano[, c("dx", "dy") := metR::Derivate(h ~ x + y)]
 volcano[, angle := atan2(-dy, -dx)]
 ```
 
-Ya con esto simplemente mapeamos el coseno del ángulo (por el producto vectorial) a una escala de grises que empiece y termine en el mismo color.  
+And with that, we can set the angle from which the Sun is shinning (usually from the top left) and with a little bit of code, we get an acceptable result.
 
-```{r}
+
+```r
 sun.angle <- pi/3
 ggplot(volcano, aes(x, y)) +
    geom_raster(aes(fill = cos(angle + sun.angle)), alpha = 1, interpolate = TRUE) +
@@ -59,15 +47,16 @@ ggplot(volcano, aes(x, y)) +
    theme_void() 
 ```
 
-¡Hermoso! :purple_heart: Si queremos cambiar la hora del día, sólo basta con cambiar el ángulo del sol. Esas áreas horribles en gris llano son regiones con errores, donde los datos son constantes, la derivada es nula y el ángulo entonces es cero. Por ahora dejémoslas ser porque todavía hay una última cosa que hacer. 
+<img src="/post/2018-02-04-how-to-make-a-shaded-relief-in-r_files/figure-html/unnamed-chunk-3-1.png" width="672" />
 
-¿Qué tal si además de este sombreado genial queremos de alguna mantera mostrar la altura? ¿U otra variable como la temperatura o el uso del terreno o lo que sea? Como nuestra `scale_fill()` está siendo usada por el relieve, no podemos mapear otras variables a ese parámetro. Es decir, no podemos usar un `geom_tile()` con transparencia, por ejemplo. Que yo sepa hay dos formas de solucionar esto. Una fácil y una difícil. 
+Excellent! :purple_heart:
 
-La primera implica hacer un poco de cirugía de plots. Primero, creamos un plot similar al anterior pero con transparencia y sin tanta fanfarria y más contraste. Después lo convertimos en un grob (GRaphical OBject) y luego le extraemos la parte que nos interesa. Esto acá está hecho manual pero podría automatizarse. Hay que buscar primero el grob que sea `gTree` (el 5, en este caso) y luego, entre sus `children`, encontrar el que sea un `rect` (el 3). 
+But hey, don't leave, there's more. What if you want to use this *gorgeous* shading as a background to map *other* data? For example, let's say you had surface temperature readings, or sulphur concentration data. Since our `scale_fill` is being taken by the shading and `ggplot2` does not allow for more than one scale per aesthetic, you couldn't use another `geom_raster()` to "paint" the data over this background. 
 
-Finalmente, con el grob del sombreado ya en nuestras manos, hacemos el gráfico que queremos, con las escalas que se nos ocurra, pero le agregamos el sombreado como una anotación con `annotation_custom()`. 
+One solution is to take the plot we made above, extract the raster grob (GRaphical OBject) and put it over another plot as an annotation. This is akin to a plot transplant and --just as organ transplants-- it's an ugly mess that will become a forgotten practice of a less civilized age once we master 3D printing of organs. But it works and is the best we've got so far. 
 
-```{r}
+
+```r
 shade <- ggplot(volcano, aes(x, y)) +
    geom_raster(aes(fill = cos(angle + sun.angle)), alpha = 0.5, interpolate = TRUE) +
    scale_fill_gradient2(low = "white", high = "white", mid = "black", 
@@ -82,12 +71,14 @@ ggplot(volcano, aes(x, y)) +
    scale_fill_viridis_c(guide = "none", option = "A") +
    coord_fixed() +
    theme_void() 
-
 ```
 
-La forma más difícil en realidad es difícil para quien escribe, pero mucho más fácil para quien lee: hacer un `geom` propio. Una vez que uno se mete en las entrañas de `ggplot2`, puede liberarse de las cadenas de las escalas y hacer `geoms` que dibujen las cosas como uno quiera. En este caso, creamos una versión de `geom_tile()` que, además de hacer los cálculos de derivadas internamente, genera el degradé (que puede ser modificado por el usuario mediante los parámetros `light` y `dark`) sin tocar ninguna escala. Además, se puede cambiar el ángulo del sol con `sun.angle`, decidir si se usa `raster` (rápido y permite interpolación, pero sólo en coordenadas cartesianas) o `rect` (más lento) y si interpola para un efecto más lindo. Les presento a `geom_relief()`: 
+<img src="/post/2018-02-04-how-to-make-a-shaded-relief-in-r_files/figure-html/unnamed-chunk-4-1.png" width="672" />
 
-```{r include=TRUE}
+Lucky for us, at least for this kind of plot transplant, there's already a better way: just make a `geom`! Once we are inside the guts of `ggplot2` we are no longer bound by the tyranny of scales can do the craziest things. In this case, we use a modified version of `geom_tile()` that performs all the calculations we need and builds the grayscale pattern (modifiable by the user via the `light` and `dark` aesthetics). It allows changing `sun.angle` and decide whether to use `raster` or `rect` and whether to interpolate for a smoother finish. I give to you `geom_relief()`: 
+
+
+```r
 geom_relief <- function(mapping = NULL, data = NULL,
                         stat = "identity", position = "identity",
                         ...,
@@ -123,8 +114,8 @@ GeomRelief <- ggplot2::ggproto("GeomRelief", GeomTile,
      } else {
         coords <- as.data.table(coord$transform(data, panel_scales))
         
-        # Esto es lo único que es nuevo. El resto es básicamente copy-paste
-        # de geom_raster y geom_tile.
+        # This is the only part that's actually new. The rest is essentially 
+        # copy-pasted from geom_raster and geom_tile
         coords[, sun.angle := (sun.angle + 90)*pi/180]
         coords[, dx := .derv(z, x), by = y]
         coords[, dy := .derv(z, y), by = x]
@@ -133,7 +124,7 @@ GeomRelief <- ggplot2::ggproto("GeomRelief", GeomTile,
         coords[, fill := .rgb2hex(colorRamp(c(dark, light), space = "Lab")(shade)),
                by = .(dark, light)]
         
-        # Desde geom_raster y geom_tile
+        # From geom_raster and geom_tile
         if (raster == TRUE){
            if (!inherits(coord, "CoordCartesian")) {
               stop("geom_raster only works with Cartesian coordinates", call. = FALSE)
@@ -218,9 +209,10 @@ rect_to_poly <- function(xmin, xmax, ymin, ymax) {
 }
 ```
 
-De yapa, apliquemos esta técnica a datos topográficos reales de la Cordillera de los Andes cerca del Aconcagua, provistos por [ETOPO1 de la NOAA](https://www.ngdc.noaa.gov/mgg/global/).
+Let's use it to show real topographic data from The Andes near the Aconcagua, courtesy of [NOAA's ETOPO1](https://www.ngdc.noaa.gov/mgg/global/).
 
-```{r}
+
+```r
 aconcagua <- metR::GetTopography(-70.0196223 - 3 + 360, -70.0196223 + 3 + 360,
                                  -32.6531782 + 2, -32.6531782 - 2, 
                                  resolution = 1/60)
@@ -233,4 +225,6 @@ ggplot(aconcagua, aes(lon, lat)) +
    theme_void()
 ```
 
-El resultado, para chuparse los dedos. :ok_hand: 
+<img src="/post/2018-02-04-how-to-make-a-shaded-relief-in-r_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+
+The result, if you ask me: delicious  :ok_hand: 
