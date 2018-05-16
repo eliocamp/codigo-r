@@ -1,5 +1,5 @@
 ---
-title: Cómo uar `opts_hooks` para hacer figuras fáciles en knitr
+title: Cómo usar `opts_hooks` en knitr.
 author: Elio Campitelli
 date: '2018-01-06'
 slug: opts-hooks-figuras-fáciles-en-knitr
@@ -11,4 +11,43 @@ draft: true
 
 
 
+<p>Si hay algo que me encanta de <code>knitr</code> es la capacidad de crear “macros” para no repetir una y otra vez lo mismo en distintas partes de un documento. En particular, estoy hablando de poner el tamaño de las figuras en cada <em>chunk</em>. Hacerlo a mano es molesto, lento, proclive a la equivocación y si quiero cambiar el tamaño de todas las figuras del documento, tengo que hacerlo uno por uno o confiar en el Buscar y Reemplazar, que es lo suficientemente tonto para romper todo.</p>
+<p>Pero no hace falta. Este pequeño truco usa el concepto de <code>opts_hook</code>, que son funciones creadas por el usuario que se ejecutan cada vez que un <em>chunk</em> y pueden modificar las opciones del mismo programáticamente. El uso que le encontré yo, principalmente, fue el de poder definir “clases” de figuras de manera que haya cierta uniformidad en los gráficos. Así, si quiero que una figura me ocupe toda una página, en vez de poner a mano el valor de <code>fig.width</code>, <code>fig.height</code>, etc…, lo único que tegno que hacer es poner <code>fig.class = &quot;fullpage&quot;</code>, así:</p>
+<!-- ```` -->
+<!-- ```{r, fig.class = "fullpage"} -->
+<!-- ggplot(data, aes(x, y)) + -->
+<!--    geom_point() -->
+<!-- ``` -->
+<!-- ```` -->
+<p>Si quiero que la figura ocupe todo el ancho de la hoja, <code>fig.class = &quot;pagewidth&quot;</code>, si quiero que sea sólo el ancho del texto (que puede ser distinto), <code>fig.class = &quot;textwidth&quot;</code>, etc… ¡Es automágico!</p>
+<p>El secreto es, en el primer <em>chunk</em> del documento, definir un <em>hook</em> como este:</p>
+<!-- ```` -->
+<!-- ```{r } -->
+<!-- knitr::opts_hooks$set( -->
+<!--    fig.class = function(options) { -->
+<!--       if (options$fig.class == "fullpage") { -->
+<!--          options$fig.width <- (210 - 50)/25.4   # 210mm (ancho de página) - 50mm (márgenes) -->
+<!--          options$fig.height <- (297 - 50)/25.4  # 297mm (alto de página) - 50mm (márgentes) -->
+<!--       } -->
+<!--       return(options) -->
+<!--    } -->
+<!-- ) -->
+<!-- ``` -->
+<!-- ```` -->
+<p>Lo que significa esto es que si en alǵun <em>chunk</em> pongo la opción <code>fig.class</code> (y no es igual a <code>NULL</code>), knitr va a ejecutar una función que si la opción <code>fig.class</code> es <code>&quot;fullpage&quot;</code>, cambia el ancho y alto de la figura para que ocupe toda la página. A partir de este esqueleto es fácil ver cómo extender a más clases. Agregar más <code>if</code>s y listo.</p>
+Otra opción parecida son los <code>knitr_hooks</code>. Son similares a los <code>opts_hooks</code> pero se ejecutan dos veces por cada <em>chunk</em> (antes y después de ejecutar el <em>chunk</em>) y no modifican opciones sino que ejecutan código arbitrario que puede cambiar parámetros globales (como <code>par</code> en los plots de R base) o <em>escribir texto</em> en nuestro output. Las figura grandes de mi tesis quiero que estén en una página propia rotada y para esto, tengo que hacer que estén en el enviroment de LaTeX . Este <code>knitr_hook</code> se ejecuta siempre que un <em>chunk</em> tenga la opción <code>rotate</code> y agrega “
 
+<p>&quot; al principio y final del <em>chunk</em>.</p>
+<!-- ```` -->
+<!-- ```{r } -->
+<!-- knitr::knit_hooks$set( -->
+<!--     rotate = function(before, options, envir) { -->
+<!--         if (before) { -->
+<!--             return("\\begin{landscape}") -->
+<!--         } else{ -->
+<!--             return("\\end{landscape}") -->
+<!--         } -->
+<!--     } -->
+<!-- ) -->
+<!-- ``` -->
+<!-- ```` -->

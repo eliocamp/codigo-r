@@ -22,7 +22,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Hugo 0.40.3 with theme Tranquilpeak 0.4.3-BETA">
-    <title>Cómo usar `opts_hooks` en knitr.</title>
+    <title>Como hacer un stat genérico en ggplot2</title>
     <meta name="author" content="Elio Campitelli">
     <meta name="keywords" content=", R">
 
@@ -30,15 +30,15 @@
     
 
     
-    <meta name="description" content="Si hay algo que me encanta de knitr es la capacidad de crear “macros” para no repetir una y otra vez lo mismo en distintas partes de un documento. En particular, estoy hablando de poner el tamaño de las figuras en cada chunk. Hacerlo a mano es molesto, lento, proclive a la equivocación y si quiero cambiar el tamaño de todas las figuras del documento, tengo que hacerlo uno por uno o confiar en el Buscar y Reemplazar, que es lo suficientemente tonto para romper todo.">
-    <meta property="og:description" content="Si hay algo que me encanta de knitr es la capacidad de crear “macros” para no repetir una y otra vez lo mismo en distintas partes de un documento. En particular, estoy hablando de poner el tamaño de las figuras en cada chunk. Hacerlo a mano es molesto, lento, proclive a la equivocación y si quiero cambiar el tamaño de todas las figuras del documento, tengo que hacerlo uno por uno o confiar en el Buscar y Reemplazar, que es lo suficientemente tonto para romper todo.">
+    <meta name="description" content="Hace un tiempo que venía pensando que si bien ggplot2 es genial y tiene un montón de geoms y stats, le faltaba la opción de extenderlo a stats y geoms creados por el usuario. Luego, aprendí que ggplot2 tiene un excelente sistema para extenderlo y empecé a crear mis propios stats. Pero aún así, hacer un stat específico cada vez que uno quiere hacer un plot en particular es demasiado complicado.">
+    <meta property="og:description" content="Hace un tiempo que venía pensando que si bien ggplot2 es genial y tiene un montón de geoms y stats, le faltaba la opción de extenderlo a stats y geoms creados por el usuario. Luego, aprendí que ggplot2 tiene un excelente sistema para extenderlo y empecé a crear mis propios stats. Pero aún así, hacer un stat específico cada vez que uno quiere hacer un plot en particular es demasiado complicado.">
     <meta property="og:type" content="blog">
-    <meta property="og:title" content="Cómo usar `opts_hooks` en knitr.">
-    <meta property="og:url" content="/2018/01/opts-hooks-figuras-f%C3%A1ciles-en-knitr/">
+    <meta property="og:title" content="Como hacer un stat genérico en ggplot2">
+    <meta property="og:url" content="/2018/05/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2/">
     <meta property="og:site_name" content="Código R">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Código R">
-    <meta name="twitter:description" content="Si hay algo que me encanta de knitr es la capacidad de crear “macros” para no repetir una y otra vez lo mismo en distintas partes de un documento. En particular, estoy hablando de poner el tamaño de las figuras en cada chunk. Hacerlo a mano es molesto, lento, proclive a la equivocación y si quiero cambiar el tamaño de todas las figuras del documento, tengo que hacerlo uno por uno o confiar en el Buscar y Reemplazar, que es lo suficientemente tonto para romper todo.">
+    <meta name="twitter:description" content="Hace un tiempo que venía pensando que si bien ggplot2 es genial y tiene un montón de geoms y stats, le faltaba la opción de extenderlo a stats y geoms creados por el usuario. Luego, aprendí que ggplot2 tiene un excelente sistema para extenderlo y empecé a crear mis propios stats. Pero aún así, hacer un stat específico cada vez que uno quiere hacer un plot en particular es demasiado complicado.">
     
       <meta name="twitter:creator" content="@d_olivaw">
     
@@ -154,7 +154,7 @@
       
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="https://github.com/eliocamp">
+      <a class="sidebar-button-link " href="https://github.com/eliocamp" target="_blank" rel="noopener">
     
       <i class="sidebar-button-icon fa fa-lg fa-github"></i>
       
@@ -193,19 +193,19 @@
             <div class="post-header main-content-wrap text-left">
   
     <h1 class="post-title" itemprop="headline">
-      Cómo usar `opts_hooks` en knitr.
+      Como hacer un stat genérico en ggplot2
     </h1>
   
   
   <div class="postShorten-meta post-meta">
     
-      <time itemprop="datePublished" datetime="2018-01-06T00:00:00Z">
+      <time itemprop="datePublished" datetime="2018-05-16T00:00:00Z">
         
   
   
   
   
-    6 de Enero 2018
+    16 de Mayo 2018
   
 
       </time>
@@ -236,52 +236,143 @@
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              <p>Si hay algo que me encanta de <code>knitr</code> es la capacidad de crear “macros” para no repetir una y otra vez lo mismo en distintas partes de un documento. En particular, estoy hablando de poner el tamaño de las figuras en cada <em>chunk</em>. Hacerlo a mano es molesto, lento, proclive a la equivocación y si quiero cambiar el tamaño de todas las figuras del documento, tengo que hacerlo uno por uno o confiar en el Buscar y Reemplazar, que es lo suficientemente tonto para romper todo.</p>
-<p>Pero no hace falta. Este pequeño truco usa el concepto de <code>opts_hook</code>, que son funciones creadas por el usuario que se ejecutan cada vez que un <em>chunk</em> y pueden modificar las opciones del mismo programáticamente. El uso que le encontré yo, principalmente, fue el de poder definir “clases” de figuras de manera que haya cierta uniformidad en los gráficos. Así, si quiero que una figura me ocupe toda una página, en vez de poner a mano el valor de <code>fig.width</code>, <code>fig.height</code>, etc…, lo único que tegno que hacer es poner <code>fig.class = &quot;fullpage&quot;</code>, así:</p>
-<!-- ```` -->
-<!-- ```{r, fig.class = "fullpage"} -->
-<!-- ggplot(data, aes(x, y)) + -->
-<!--    geom_point() -->
-<!-- ``` -->
-<!-- ```` -->
-<p>Si quiero que la figura ocupe todo el ancho de la hoja, <code>fig.class = &quot;pagewidth&quot;</code>, si quiero que sea sólo el ancho del texto (que puede ser distinto), <code>fig.class = &quot;textwidth&quot;</code>, etc… ¡Es automágico!</p>
-<p>El secreto es, en el primer <em>chunk</em> del documento, definir un <em>hook</em> como este:</p>
-<!-- ```` -->
-<!-- ```{r } -->
-<!-- knitr::opts_hooks$set( -->
-<!--    fig.class = function(options) { -->
-<!--       if (options$fig.class == "fullpage") { -->
-<!--          options$fig.width <- (210 - 50)/25.4   # 210mm (ancho de página) - 50mm (márgenes) -->
-<!--          options$fig.height <- (297 - 50)/25.4  # 297mm (alto de página) - 50mm (márgentes) -->
-<!--       } -->
-<!--       return(options) -->
-<!--    } -->
-<!-- ) -->
-<!-- ``` -->
-<!-- ```` -->
-<p>Lo que significa esto es que si en alǵun <em>chunk</em> pongo la opción <code>fig.class</code> (y no es igual a <code>NULL</code>), knitr va a ejecutar una función que si la opción <code>fig.class</code> es <code>&quot;fullpage&quot;</code>, cambia el ancho y alto de la figura para que ocupe toda la página. A partir de este esqueleto es fácil ver cómo extender a más clases. Agregar más <code>if</code>s y listo.</p>
-Otra opción parecida son los <code>knitr_hooks</code>. Son similares a los <code>opts_hooks</code> pero se ejecutan dos veces por cada <em>chunk</em> (antes y después de ejecutar el <em>chunk</em>) y no modifican opciones sino que ejecutan código arbitrario que puede cambiar parámetros globales (como <code>par</code> en los plots de R base) o <em>escribir texto</em> en nuestro output. Las figura grandes de mi tesis quiero que estén en una página propia rotada y para esto, tengo que hacer que estén en el enviroment de LaTeX . Este <code>knitr_hook</code> se ejecuta siempre que un <em>chunk</em> tenga la opción <code>rotate</code> y agrega “
+              <p>Hace un tiempo que venía pensando que si bien <code>ggplot2</code> es genial y tiene un montón de geoms y stats, le faltaba la opción de extenderlo a stats y geoms creados por el usuario. Luego, aprendí que <code>ggplot2</code> tiene un excelente sistema para extenderlo y empecé a crear mis propios stats. Pero aún así, hacer un <code>stat</code> específico cada vez que uno quiere hacer un plot en particular es demasiado complicado.</p>
+<p>Entonces se me ocurrió una posible solución. Hacer un <code>stat</code> <em>genérico</em>; una tabula rasa que acepte una función creada por el usuario. Nativamente <code>ggplot2</code> viene con <code>stat_summary()</code> que hace algo similar, pero sólo acepta funciones que (como su nombre lo indica) sumaricen los datos de alguna manera. Lo que yo quería era algo totalmente genérico y este es mi primer intento.</p>
+<p>Debajo, es el código de <code>stat_rasa()</code>, que toma los datos y una función que devuelva un data.frame interpretable por el <code>geom</code> elegido.</p>
+<pre class="r"><code># ggproto object
+StatRasa &lt;- ggplot2::ggproto(&quot;StatRasa&quot;, ggplot2::Stat,
+  compute_group = function(data, scales, fun, fun.args) {
+     # Change default arguments of the function to the 
+     # values in fun.args
+     args &lt;- formals(fun)
+     for (i in seq_along(fun.args)) {
+        if (names(fun.args[i]) %in% names(fun.args)) {
+           args[[names(fun.args[i])]] &lt;- fun.args[[i]]
+        } 
+     }
+     formals(fun) &lt;- args
+     
+     # Apply function to data
+     fun(data)
+})
 
-<p>&quot; al principio y final del <em>chunk</em>.</p>
-<!-- ```` -->
-<!-- ```{r } -->
-<!-- knitr::knit_hooks$set( -->
-<!--     rotate = function(before, options, envir) { -->
-<!--         if (before) { -->
-<!--             return("\\begin{landscape}") -->
-<!--         } else{ -->
-<!--             return("\\end{landscape}") -->
-<!--         } -->
-<!--     } -->
-<!-- ) -->
-<!-- ``` -->
-<!-- ```` -->
+# stat function used in ggplot
+stat_rasa &lt;- function(mapping = NULL, data = NULL,
+                      geom = &quot;point&quot;, 
+                      position = &quot;identity&quot;,
+                      fun = NULL,
+                      ...,
+                      show.legend = NA,
+                      inherit.aes = TRUE) {
+   # Check arguments 
+   if (!is.function(fun)) stop(&quot;fun must be a function&quot;)
+   
+   # Pass dotted arguments to a list
+   fun.args &lt;- match.call(expand.dots = FALSE)$`...`
+   
+   ggplot2::layer(
+      data = data,
+      mapping = mapping,
+      stat = StatRasa,
+      geom = geom,
+      position = position,
+      show.legend = show.legend,
+      inherit.aes = inherit.aes,
+      check.aes = FALSE,
+      check.param = FALSE,
+      params = list(
+         fun = fun, 
+         fun.args = fun.args,
+         na.rm = FALSE,
+         ...
+      )
+   )
+}</code></pre>
+<p>Por ejemplo, si queremos rápidamente visualizar los datos menos sin la tendencia, podemos crear una función relativamente simple:</p>
+<pre class="r"><code>Detrend &lt;- function(data, method = &quot;lm&quot;, span = 0.2) {
+   if (method == &quot;lm&quot;) {
+      data$y &lt;- resid(lm(y ~ x, data = data))
+   } else {
+      data$y &lt;- resid(loess(y ~ x, span = span, data = data))
+   }
+   as.data.frame(data)
+}</code></pre>
+<p>Y luego obtener los residuos en una sola línea.</p>
+<pre class="r"><code>library(ggplot2)
+set.seed(42)
+x &lt;- seq(-1, 3, length.out = 30)
+y &lt;- x^2 + rnorm(30)*0.5
+df &lt;- data.frame(x = x, y = y)
+ggplot(df, aes(x, y)) +
+   geom_line() +
+   stat_rasa(geom = &quot;line&quot;, fun = Detrend, method = &quot;smooth&quot;,
+             color = &quot;steelblue&quot;)</code></pre>
+<p><img src="../../../post/2018-05-16-como-hacer-un-stat-gen%C3%A9rico-en-ggplot2_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Si queremos un poco más de legibilidad, podemos hacer una función con un nombre más informativo:</p>
+<pre class="r"><code>stat_detrend &lt;- function(...) {
+   stat_rasa(fun = Detrend, ...)
+}
+
+ggplot(df, aes(x, y)) +
+   geom_line() +
+   stat_detrend(method = &quot;lm&quot;, color = &quot;blue&quot;, geom = &quot;line&quot;)</code></pre>
+<p><img src="../../../post/2018-05-16-como-hacer-un-stat-gen%C3%A9rico-en-ggplot2_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Otro caso es el de calcular contornos a partir de una grilla irregular. <code>ggplot2::stat_contour()</code> usa <code>grDevices::contourLines()</code> para computar los contornos y requiere una grilla regular y el paquete <code>contoureR</code> tiene una función que acepta una grilla irregular. Para usarla sin problemas lo único que tenemos que hacer es armar una pequeña función y usar <code>geom = &quot;path&quot;</code> en <code>stat_rasa()</code></p>
+<pre class="r"><code>IrregularContour &lt;- function(data, breaks = scales::fullseq, 
+                             binwidth = NULL,
+                             bins = 10) {
+   if (is.function(breaks)) {
+      # If no parameters set, use pretty bins to calculate binwidth
+      if (is.null(binwidth)) {
+         binwidth &lt;- diff(range(data$z)) / bins
+      }
+      
+      breaks &lt;- breaks(range(data$z), binwidth)
+   }
+   
+   cl &lt;- contoureR::getContourLines(x = data$x, y = data$y, z = data$z, 
+                                    levels = breaks)
+   
+   if (length(cl) == 0) {
+      warning(&quot;Not possible to generate contour data&quot;, call. = FALSE)
+      return(data.frame())
+   }
+   cl &lt;- cl[, 3:7]
+   colnames(cl) &lt;- c(&quot;piece&quot;, &quot;group&quot;, &quot;x&quot;, &quot;y&quot;, &quot;level&quot;)
+   return(cl)
+}
+
+stat_contour_irregular &lt;- function(...) {
+   stat_rasa(fun = IrregularContour, geom = &quot;path&quot;, ...)
+}</code></pre>
+<pre class="r"><code>set.seed(42)
+df &lt;- data.frame(x = rnorm(500),
+                 y = rnorm(500))
+df$z &lt;- with(df, -x*y*exp(-x^2 - y^2))
+
+ggplot(df, aes(x, y)) +
+   geom_point(aes(color = z)) +
+   stat_contour_irregular(aes(z = z, color = ..level..), bins = 15) +
+   scale_color_viridis_c()</code></pre>
+<p><img src="../../../post/2018-05-16-como-hacer-un-stat-gen%C3%A9rico-en-ggplot2_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Y voilà.</p>
+<p>Quedan algunos detalles para mejorar, como por ejemplo la posibilidad de utilizar una función para decidir los parámetros a usar de acuerdo a los datos, pero creo que así como está sirve para el 80% de las aplicaciones simples. También debería ponerle un mejor nombre, pero nombrar cosas es muy difícil.</p>
 
               
             </div>
           </div>
           <div id="post-footer" class="post-footer main-content-wrap">
             
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">ETIQUETADO EN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="../../../tags/ggplot2/">ggplot2</a>
+
+                  </div>
+                
               
             
             
@@ -291,7 +382,7 @@ Otra opción parecida son los <code>knitr_hooks</code>. Son similares a los <cod
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/01/buen-ejemplo-reproducible-en-r/" data-tooltip="Cómo hacer un buen ejemplo reproducible en R">
+                <a class="post-action-btn btn btn--disabled">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
@@ -299,7 +390,7 @@ Otra opción parecida son los <code>knitr_hooks</code>. Son similares a los <cod
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2017/12/calcular-ipe-r/" data-tooltip="Cómo calcular el Índice de Precipitación Estandarizado en R">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/02/how-to-make-shaded-relief-in-r/" data-tooltip="How to make a shaded relief in R">
               
                   <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
                   <i class="fa fa-angle-right"></i>
@@ -317,19 +408,19 @@ Otra opción parecida son los <code>knitr_hooks</code>. Son similares a los <cod
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2018/01/opts-hooks-figuras-f%C3%A1ciles-en-knitr/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2018/01/opts-hooks-figuras-f%C3%A1ciles-en-knitr/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2018/01/opts-hooks-figuras-f%C3%A1ciles-en-knitr/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -377,7 +468,7 @@ Otra opción parecida son los <code>knitr_hooks</code>. Son similares a los <cod
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/01/buen-ejemplo-reproducible-en-r/" data-tooltip="Cómo hacer un buen ejemplo reproducible en R">
+                <a class="post-action-btn btn btn--disabled">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
@@ -385,7 +476,7 @@ Otra opción parecida son los <code>knitr_hooks</code>. Son similares a los <cod
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2017/12/calcular-ipe-r/" data-tooltip="Cómo calcular el Índice de Precipitación Estandarizado en R">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/02/how-to-make-shaded-relief-in-r/" data-tooltip="How to make a shaded relief in R">
               
                   <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
                   <i class="fa fa-angle-right"></i>
@@ -403,19 +494,19 @@ Otra opción parecida son los <code>knitr_hooks</code>. Son similares a los <cod
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2018/01/opts-hooks-figuras-f%C3%A1ciles-en-knitr/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2018/01/opts-hooks-figuras-f%C3%A1ciles-en-knitr/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2018/01/opts-hooks-figuras-f%C3%A1ciles-en-knitr/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -445,19 +536,19 @@ Otra opción parecida son los <code>knitr_hooks</code>. Son similares a los <cod
   <ul class="share-options">
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2F2018%2F01%2Fopts-hooks-figuras-f%25C3%25A1ciles-en-knitr%2F">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F05%2Fcomo-hacer-un-stat-gen%25C3%25A9rico-en-ggplot2%2F">
           <i class="fa fa-facebook-official"></i><span>Compartir en Facebook</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2F2018%2F01%2Fopts-hooks-figuras-f%25C3%25A1ciles-en-knitr%2F">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F05%2Fcomo-hacer-un-stat-gen%25C3%25A9rico-en-ggplot2%2F">
           <i class="fa fa-twitter"></i><span>Compartir en Twitter</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2F2018%2F01%2Fopts-hooks-figuras-f%25C3%25A1ciles-en-knitr%2F">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F05%2Fcomo-hacer-un-stat-gen%25C3%25A9rico-en-ggplot2%2F">
           <i class="fa fa-google-plus"></i><span>Compartir en Google&#43;</span>
         </a>
       </li>
@@ -510,7 +601,7 @@ Otra opción parecida son los <code>knitr_hooks</code>. Son similares a los <cod
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../2018/05/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2/">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2/">
                 <h3 class="media-heading">Como hacer un stat genérico en ggplot2</h3>
               </a>
               <span class="media-meta">
@@ -527,7 +618,7 @@ Otra opción parecida son los <code>knitr_hooks</code>. Son similares a los <cod
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../2018/02/how-to-make-shaded-relief-in-r/">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/02/how-to-make-shaded-relief-in-r/">
                 <h3 class="media-heading">How to make a shaded relief in R</h3>
               </a>
               <span class="media-meta">
@@ -546,7 +637,7 @@ What I accidentally discovered is that one way of approximating this look is by 
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../2018/01/como-hacer-efecto-de-relieve-en-r/">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
                 <h3 class="media-heading">Cómo hacer un efecto de relieve en R</h3>
               </a>
               <span class="media-meta">
@@ -565,7 +656,7 @@ library(data.table) library(ggplot2) data(volcano) volcano &lt;- as.</div>
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../2018/01/como-hacer-efecto-de-relieve-en-r/">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
                 <h3 class="media-heading">Cómo hacer un efecto de relieve en R</h3>
               </a>
               <span class="media-meta">
@@ -584,7 +675,7 @@ Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una gril
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../2018/01/buen-ejemplo-reproducible-en-r/">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/01/buen-ejemplo-reproducible-en-r/">
                 <h3 class="media-heading">Cómo hacer un buen ejemplo reproducible en R</h3>
               </a>
               <span class="media-meta">
@@ -602,24 +693,7 @@ Un buen ejemplo reproducible (o reprex) es básicamente el feliz matrimonio entr
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../2018/01/opts-hooks-figuras-f%C3%A1ciles-en-knitr/">
-                <h3 class="media-heading">Cómo usar `opts_hooks` en knitr.</h3>
-              </a>
-              <span class="media-meta">
-                <span class="media-date text-small">
-                  Jan 1, 2018
-                </span>
-              </span>
-              <div class="media-content hide-xs font-merryweather">Si hay algo que me encanta de knitr es la capacidad de crear “macros” para no repetir una y otra vez lo mismo en distintas partes de un documento. En particular, estoy hablando de poner el tamaño de las figuras en cada chunk. Hacerlo a mano es molesto, lento, proclive a la equivocación y si quiero cambiar el tamaño de todas las figuras del documento, tengo que hacerlo uno por uno o confiar en el Buscar y Reemplazar, que es lo suficientemente tonto para romper todo.</div>
-            </div>
-            <div style="clear:both;"></div>
-            <hr>
-          </div>
-        
-          <div class="media">
-            
-            <div class="media-body">
-              <a class="link-unstyled" href="../../../2017/12/calcular-ipe-r/">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2017/12/calcular-ipe-r/">
                 <h3 class="media-heading">Cómo calcular el Índice de Precipitación Estandarizado en R</h3>
               </a>
               <span class="media-meta">
@@ -641,7 +715,7 @@ En la práctica lo que se hace es la función de probabilidad acumulada a partir
          data-message-zero="no se encontraron artículos"
          data-message-one="1 artículo encontrado"
          data-message-other="{n} artículos encontrados">
-         7 posts found
+         6 posts found
       </p>
     </div>
   </div>
@@ -649,7 +723,7 @@ En la práctica lo que se hace es la función de probabilidad acumulada a partir
     
   
     
-    <div id="cover" style="background-image:url('/images/cover2.jpg');"></div>
+    <div id="cover" style="background-image:url('https://eliocamp.github.io/codigo-r/images/cover2.jpg');"></div>
   
 
 
@@ -685,9 +759,9 @@ $(document).ready(function() {
     
       <script>
         var disqus_config = function () {
-          this.page.url = '\/2018\/01\/opts-hooks-figuras-f%C3%A1ciles-en-knitr\/';
+          this.page.url = 'https:\/\/eliocamp.github.io\/codigo-r\/2018\/05\/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2\/';
           
-            this.page.identifier = '\/2018\/01\/opts-hooks-figuras-f%C3%A1ciles-en-knitr\/'
+            this.page.identifier = '\/2018\/05\/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2\/'
           
         };
         (function() {
