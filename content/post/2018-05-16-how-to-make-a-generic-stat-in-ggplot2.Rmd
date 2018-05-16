@@ -1,19 +1,19 @@
 ---
-title: Como hacer un stat genérico en ggplot2
+title: How to make a generic stat in ggplot2
 author: Elio Campitelli
 date: '2018-05-16'
-slug: como-hacer-un-stat-genérico-en-ggplot2
+slug: how-to-make-a-generic-stat-in-ggplot2
 categories:
   - R
 tags:
   - ggplot2
 ---
 
-Hace un tiempo que venía pensando que si bien `ggplot2` es genial y tiene un montón de geoms y stats, le faltaba la opción de extenderlo a stats y geoms creados por el usuario. Luego, aprendí que `ggplot2` tiene un excelente sistema para extenderlo y empecé a crear mis propios stats. Pero aún así, hacer un `stat` específico cada vez que uno quiere hacer un plot en particular es demasiado complicado. 
+For a while now I've been thinking that, yes, `ggplot2` is awesome and offers a lot of `geoms` and `stats`, but it would be great if it could be extended with new user-generated `geoms` and `stats`. Then I learnt that `ggplot2` actually has a pretty great extension system so I could create my own geoms I needed for my work or [just for fun](https://twitter.com/d_olivaw/status/993669229810503680). But still, creating a geom from scratch is an involved process that doesn't lend itself to simple transformations. 
 
-Entonces se me ocurrió una posible solución. Hacer un `stat` *genérico*; una tabula rasa que acepte una función creada por el usuario. Nativamente `ggplot2` viene con `stat_summary()` que hace algo similar, pero sólo acepta funciones que (como su nombre lo indica) sumaricen los datos de alguna manera. Lo que yo quería era algo totalmente genérico y este es mi primer intento.
+Finally, I thought of a possible solution: create a *generic* `stat` --a tabula rasa, if you will-- that can work on the data with any function. Natively `ggplot2` offers `stat_summary()`, but it's only meant to be used with, well, summary statistics. What I wanted was something completely generic and this is my first try. 
 
-Debajo, es el código de `stat_rasa()`, que toma los datos y una función que devuelva un data.frame interpretable por el `geom` elegido. 
+Below is the code for `stat_rasa()` (better name pending). It works just like any other `stat` except that it works with any function that takes a data.frame and returns a transformed data.frame that can be interpreted by the chosen `geom`.
 
 ```{r}
 # ggproto object
@@ -67,7 +67,7 @@ stat_rasa <- function(mapping = NULL, data = NULL,
 }
 ```
 
-Por ejemplo, si queremos rápidamente visualizar los datos menos sin la tendencia, podemos crear una función relativamente simple:
+For example, let's say we want to quickly glance at detrended data. We then create a very simple function
 
 ```{r}
 Detrend <- function(data, method = "lm", span = 0.2) {
@@ -80,7 +80,7 @@ Detrend <- function(data, method = "lm", span = 0.2) {
 }
 ```
 
-Y luego obtener los residuos en una sola línea. 
+and pass it to `stat_rasa()`
 
 ```{r}
 library(ggplot2)
@@ -94,7 +94,7 @@ ggplot(df, aes(x, y)) +
              color = "steelblue")
 ```
 
-Si queremos un poco más de legibilidad, podemos hacer una función con un nombre más informativo:
+We can get better legibility and less typing by creating a wrapper function with a more descriptive name.
 
 ```{r}
 stat_detrend <- function(...) {
@@ -106,7 +106,7 @@ ggplot(df, aes(x, y)) +
    stat_detrend(method = "lm", color = "blue", geom = "line")
 ```
 
-Otro caso es el de calcular contornos a partir de una grilla irregular. `ggplot2::stat_contour()` usa `grDevices::contourLines()` para computar los contornos y requiere una grilla regular y el paquete `contoureR` tiene una función que acepta una grilla irregular. Para usarla sin problemas lo único que tenemos que hacer es armar una pequeña función y usar `geom = "path"` en `stat_rasa()`
+Another case could be calculating contours from an irregular grid. Since `ggplot2::stat_contour()` uses `grDevices::contourLines()`, it needs values defined in a regular grid, but there's a package called `contoureR` that can compute contours from irregularly spaced observations. With `stat_rasa()` we can integrate it with `ggplot2` effortlessly by creating a small function and using `geom = "path"`.
 
 ```{r}
 IrregularContour <- function(data, breaks = scales::fullseq, 
@@ -150,6 +150,6 @@ ggplot(df, aes(x, y)) +
    scale_color_viridis_c()
 ```
 
-Y voilà.
+And voilà.
 
-Quedan algunos detalles para mejorar, como por ejemplo la posibilidad de utilizar una función para decidir los parámetros a usar de acuerdo a los datos, pero creo que así como está sirve para el 80% de las aplicaciones simples. También debería ponerle un mejor nombre, pero nombrar cosas es muy difícil. 
+There's always things to improve. For example, the possibility of using a custom function to compute parameters that depend on the data, but I believe that as it stands covers 80% of simple applications. I should also use a better name, but naming things is hard work. 

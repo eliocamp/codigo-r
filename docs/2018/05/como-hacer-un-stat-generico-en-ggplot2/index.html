@@ -34,7 +34,7 @@
     <meta property="og:description" content="Hace un tiempo que venía pensando que si bien ggplot2 es genial y tiene un montón de geoms y stats, le faltaba la opción de extenderlo a stats y geoms creados por el usuario. Luego, aprendí que ggplot2 tiene un excelente sistema para extenderlo y empecé a crear mis propios stats. Pero aún así, hacer un stat específico cada vez que uno quiere hacer un plot en particular es demasiado complicado.">
     <meta property="og:type" content="blog">
     <meta property="og:title" content="Como hacer un stat genérico en ggplot2">
-    <meta property="og:url" content="/2018/05/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2/">
+    <meta property="og:url" content="/2018/05/como-hacer-un-stat-generico-en-ggplot2/">
     <meta property="og:site_name" content="Código R">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Código R">
@@ -307,7 +307,7 @@ ggplot(df, aes(x, y)) +
    geom_line() +
    stat_rasa(geom = &quot;line&quot;, fun = Detrend, method = &quot;smooth&quot;,
              color = &quot;steelblue&quot;)</code></pre>
-<p><img src="../../../post/2018-05-16-como-hacer-un-stat-gen%C3%A9rico-en-ggplot2_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="../../../post/2018-05-16-como-hacer-un-stat-generico-en-ggplot2_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <p>Si queremos un poco más de legibilidad, podemos hacer una función con un nombre más informativo:</p>
 <pre class="r"><code>stat_detrend &lt;- function(...) {
    stat_rasa(fun = Detrend, ...)
@@ -316,7 +316,7 @@ ggplot(df, aes(x, y)) +
 ggplot(df, aes(x, y)) +
    geom_line() +
    stat_detrend(method = &quot;lm&quot;, color = &quot;blue&quot;, geom = &quot;line&quot;)</code></pre>
-<p><img src="../../../post/2018-05-16-como-hacer-un-stat-gen%C3%A9rico-en-ggplot2_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="../../../post/2018-05-16-como-hacer-un-stat-generico-en-ggplot2_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>Otro caso es el de calcular contornos a partir de una grilla irregular. <code>ggplot2::stat_contour()</code> usa <code>grDevices::contourLines()</code> para computar los contornos y requiere una grilla regular y el paquete <code>contoureR</code> tiene una función que acepta una grilla irregular. Para usarla sin problemas lo único que tenemos que hacer es armar una pequeña función y usar <code>geom = &quot;path&quot;</code> en <code>stat_rasa()</code></p>
 <pre class="r"><code>IrregularContour &lt;- function(data, breaks = scales::fullseq, 
                              binwidth = NULL,
@@ -354,7 +354,7 @@ ggplot(df, aes(x, y)) +
    geom_point(aes(color = z)) +
    stat_contour_irregular(aes(z = z, color = ..level..), bins = 15) +
    scale_color_viridis_c()</code></pre>
-<p><img src="../../../post/2018-05-16-como-hacer-un-stat-gen%C3%A9rico-en-ggplot2_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="../../../post/2018-05-16-como-hacer-un-stat-generico-en-ggplot2_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>Y voilà.</p>
 <p>Quedan algunos detalles para mejorar, como por ejemplo la posibilidad de utilizar una función para decidir los parámetros a usar de acuerdo a los datos, pero creo que así como está sirve para el 80% de las aplicaciones simples. También debería ponerle un mejor nombre, pero nombrar cosas es muy difícil.</p>
 
@@ -390,7 +390,7 @@ ggplot(df, aes(x, y)) +
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/02/how-to-make-shaded-relief-in-r/" data-tooltip="How to make a shaded relief in R">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/05/how-to-make-a-generic-stat-in-ggplot2/" data-tooltip="How to make a generic stat in ggplot2">
               
                   <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
                   <i class="fa fa-angle-right"></i>
@@ -408,19 +408,19 @@ ggplot(df, aes(x, y)) +
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-generico-en-ggplot2/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-generico-en-ggplot2/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-generico-en-ggplot2/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -476,7 +476,7 @@ ggplot(df, aes(x, y)) +
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/02/how-to-make-shaded-relief-in-r/" data-tooltip="How to make a shaded relief in R">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/05/how-to-make-a-generic-stat-in-ggplot2/" data-tooltip="How to make a generic stat in ggplot2">
               
                   <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
                   <i class="fa fa-angle-right"></i>
@@ -494,19 +494,19 @@ ggplot(df, aes(x, y)) +
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-generico-en-ggplot2/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-generico-en-ggplot2/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-generico-en-ggplot2/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -536,19 +536,19 @@ ggplot(df, aes(x, y)) +
   <ul class="share-options">
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F05%2Fcomo-hacer-un-stat-gen%25C3%25A9rico-en-ggplot2%2F">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F05%2Fcomo-hacer-un-stat-generico-en-ggplot2%2F">
           <i class="fa fa-facebook-official"></i><span>Compartir en Facebook</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F05%2Fcomo-hacer-un-stat-gen%25C3%25A9rico-en-ggplot2%2F">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F05%2Fcomo-hacer-un-stat-generico-en-ggplot2%2F">
           <i class="fa fa-twitter"></i><span>Compartir en Twitter</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F05%2Fcomo-hacer-un-stat-gen%25C3%25A9rico-en-ggplot2%2F">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F05%2Fcomo-hacer-un-stat-generico-en-ggplot2%2F">
           <i class="fa fa-google-plus"></i><span>Compartir en Google&#43;</span>
         </a>
       </li>
@@ -601,7 +601,7 @@ ggplot(df, aes(x, y)) +
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2/">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-generico-en-ggplot2/">
                 <h3 class="media-heading">Como hacer un stat genérico en ggplot2</h3>
               </a>
               <span class="media-meta">
@@ -610,6 +610,23 @@ ggplot(df, aes(x, y)) +
                 </span>
               </span>
               <div class="media-content hide-xs font-merryweather">Hace un tiempo que venía pensando que si bien ggplot2 es genial y tiene un montón de geoms y stats, le faltaba la opción de extenderlo a stats y geoms creados por el usuario. Luego, aprendí que ggplot2 tiene un excelente sistema para extenderlo y empecé a crear mis propios stats. Pero aún así, hacer un stat específico cada vez que uno quiere hacer un plot en particular es demasiado complicado.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/05/how-to-make-a-generic-stat-in-ggplot2/">
+                <h3 class="media-heading">How to make a generic stat in ggplot2</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  May 5, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">For a while now I’ve been thinking that, yes, ggplot2 is awesome and offers a lot of geoms and stats, but it would be great if it could be extended with new user-generated geoms and stats. Then I learnt that ggplot2 actually has a pretty great extension system so I could create my own geoms I needed for my work or just for fun. But still, creating a geom from scratch is an involved process that doesn’t lend itself to simple transformations.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>
@@ -629,25 +646,6 @@ ggplot(df, aes(x, y)) +
               <div class="media-content hide-xs font-merryweather">Spanish version of this post
 While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
 What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun.</div>
-            </div>
-            <div style="clear:both;"></div>
-            <hr>
-          </div>
-        
-          <div class="media">
-            
-            <div class="media-body">
-              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
-                <h3 class="media-heading">Cómo hacer un efecto de relieve en R</h3>
-              </a>
-              <span class="media-meta">
-                <span class="media-date text-small">
-                  Jan 1, 2018
-                </span>
-              </span>
-              <div class="media-content hide-xs font-merryweather">Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
-Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.
-library(data.table) library(ggplot2) data(volcano) volcano &lt;- as.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>
@@ -759,9 +757,9 @@ $(document).ready(function() {
     
       <script>
         var disqus_config = function () {
-          this.page.url = 'https:\/\/eliocamp.github.io\/codigo-r\/2018\/05\/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2\/';
+          this.page.url = 'https:\/\/eliocamp.github.io\/codigo-r\/2018\/05\/como-hacer-un-stat-generico-en-ggplot2\/';
           
-            this.page.identifier = '\/2018\/05\/como-hacer-un-stat-gen%C3%A9rico-en-ggplot2\/'
+            this.page.identifier = '\/2018\/05\/como-hacer-un-stat-generico-en-ggplot2\/'
           
         };
         (function() {
