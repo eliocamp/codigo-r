@@ -2,20 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on Código R</title>
-    <link>https://eliocamp.github.io/codigo-r/categories/</link>
+    <link>/categories/</link>
     <description>Recent content in Categories on Código R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
     
-	<atom:link href="https://eliocamp.github.io/codigo-r/categories/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>R</title>
-      <link>https://eliocamp.github.io/codigo-r/categories/r/</link>
-      <pubDate>Wed, 16 May 2018 00:00:00 +0000</pubDate>
+      <link>/categories/r/</link>
+      <pubDate>Sun, 20 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/categories/r/</guid>
+      <guid>/categories/r/</guid>
       <description></description>
     </item>
     

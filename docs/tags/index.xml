@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on Código R</title>
-    <link>https://eliocamp.github.io/codigo-r/tags/</link>
+    <link>/tags/</link>
     <description>Recent content in Tags on Código R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Wed, 16 May 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 20 May 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://eliocamp.github.io/codigo-r/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Ggplot2</title>
-      <link>https://eliocamp.github.io/codigo-r/tags/ggplot2/</link>
-      <pubDate>Wed, 16 May 2018 00:00:00 +0000</pubDate>
+      <link>/tags/ggplot2/</link>
+      <pubDate>Sun, 20 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/tags/ggplot2/</guid>
+      <guid>/tags/ggplot2/</guid>
       <description></description>
     </item>
     

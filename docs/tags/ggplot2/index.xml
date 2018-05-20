@@ -2,30 +2,41 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Ggplot2 on Código R</title>
-    <link>https://eliocamp.github.io/codigo-r/tags/ggplot2/</link>
+    <link>/tags/ggplot2/</link>
     <description>Recent content in Ggplot2 on Código R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Wed, 16 May 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 20 May 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://eliocamp.github.io/codigo-r/tags/ggplot2/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/tags/ggplot2/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>Arte reproducible del Subte de Buenos Aires</title>
+      <link>/2018/05/arte-reproducible-del-subte-de-buenos-aires/</link>
+      <pubDate>Sun, 20 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/2018/05/arte-reproducible-del-subte-de-buenos-aires/</guid>
+      <description>El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos las ilustraciones que tenía ilustraciones en las paredes hechas a partir de líneas de distinto grosor.
+ Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
+Lo primero que hago es leer la imagen. Este paso depende del formato (a menos que haya alguna forma de seleccionar el formato correcto automáticamente, pero no conozco).</description>
+    </item>
+    
+    <item>
       <title>Como hacer un stat genérico en ggplot2</title>
-      <link>https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-generico-en-ggplot2/</link>
+      <link>/2018/05/como-hacer-un-stat-generico-en-ggplot2/</link>
       <pubDate>Wed, 16 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-generico-en-ggplot2/</guid>
+      <guid>/2018/05/como-hacer-un-stat-generico-en-ggplot2/</guid>
       <description>Hace un tiempo que venía pensando que si bien ggplot2 es genial y tiene un montón de geoms y stats, le faltaba la opción de extenderlo a stats y geoms creados por el usuario. Luego, aprendí que ggplot2 tiene un excelente sistema para extenderlo y empecé a crear mis propios stats. Pero aún así, hacer un stat específico cada vez que uno quiere hacer un plot en particular es demasiado complicado.</description>
     </item>
     
     <item>
       <title>How to make a generic stat in ggplot2</title>
-      <link>https://eliocamp.github.io/codigo-r/2018/05/how-to-make-a-generic-stat-in-ggplot2/</link>
+      <link>/2018/05/how-to-make-a-generic-stat-in-ggplot2/</link>
       <pubDate>Wed, 16 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/2018/05/how-to-make-a-generic-stat-in-ggplot2/</guid>
+      <guid>/2018/05/how-to-make-a-generic-stat-in-ggplot2/</guid>
       <description>For a while now I’ve been thinking that, yes, ggplot2 is awesome and offers a lot of geoms and stats, but it would be great if it could be extended with new user-generated geoms and stats. Then I learnt that ggplot2 actually has a pretty great extension system so I could create my own geoms I needed for my work or just for fun. But still, creating a geom from scratch is an involved process that doesn’t lend itself to simple transformations.</description>
     </item>
     
