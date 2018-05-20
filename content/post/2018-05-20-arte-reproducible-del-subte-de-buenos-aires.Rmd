@@ -9,7 +9,7 @@ tags:
   - ggplot2
 ---
 
-El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos [las ilustraciones](http://www.buenosaires.gob.ar/noticias/arte-urbano-en-la-estacion-angel-gallardo) que tenía ilustraciones en las paredes hechas a partir de líneas de distinto grosor.
+El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía [unas ilustraciones](http://www.buenosaires.gob.ar/noticias/arte-urbano-en-la-estacion-angel-gallardo) en las paredes hechas a partir de líneas de distinto grosor.
 
 ![](/images/subte.jpg)
 
