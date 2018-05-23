@@ -67,4 +67,7 @@ Luego está la parte más jugosa. Cambiamos el `knit_hook` para el `plot` para q
 
 Y listo. Al *knitear* el documento se va a generar el pdf o html y, además, el ppt. 
 
+
+![](/images/ppt.jpg#center)
+
 Así como está es una versión mínima que cubre mis necesidades. Sólo tiene en cuenta los gráficos con epígrafe, no funciona sin un chunk genera varias figuras, el proceso de renderizar todo es lento (porque desactiva la cache) y peor aún si los chunks que generan figuras también tienen código que manipula datos. Además, no guarda tablas ni texto plano. 
