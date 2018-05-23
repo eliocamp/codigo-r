@@ -22,7 +22,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Hugo 0.40.3 with theme Tranquilpeak 0.4.3-BETA">
-    <title>Cómo calcular el Índice de Precipitación Estandarizado en R</title>
+    <title>Hacer un ppt a partir de rmarkdown</title>
     <meta name="author" content="Elio Campitelli">
     <meta name="keywords" content=", R">
 
@@ -30,18 +30,15 @@
     
 
     
-    <meta name="description" content="El Índice de Precipitación Estandarizado (SPI por Standarized Precipitation Index) es un índice para evaluar el estado de sequía o exceso de lluvia. La idea del SPI es tener una idea de qué tan probable es tener una cantidad de lluvia igual o menor. Valores altos del SPI están asociados con épocas muy húmedas mientras que valores bajos indican sequía.
-En la práctica lo que se hace es la función de probabilidad acumulada a partir de los registros históricos y luego estimar la probabilidad para la cantidad observada en cada mes.">
-    <meta property="og:description" content="El Índice de Precipitación Estandarizado (SPI por Standarized Precipitation Index) es un índice para evaluar el estado de sequía o exceso de lluvia. La idea del SPI es tener una idea de qué tan probable es tener una cantidad de lluvia igual o menor. Valores altos del SPI están asociados con épocas muy húmedas mientras que valores bajos indican sequía.
-En la práctica lo que se hace es la función de probabilidad acumulada a partir de los registros históricos y luego estimar la probabilidad para la cantidad observada en cada mes.">
+    <meta name="description" content="La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.">
+    <meta property="og:description" content="La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.">
     <meta property="og:type" content="blog">
-    <meta property="og:title" content="Cómo calcular el Índice de Precipitación Estandarizado en R">
-    <meta property="og:url" content="/2017/12/calcular-ipe-r/">
+    <meta property="og:title" content="Hacer un ppt a partir de rmarkdown">
+    <meta property="og:url" content="/2018/05/hacer-un-ppt-a-partir-de-rmarkdown/">
     <meta property="og:site_name" content="Código R">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Código R">
-    <meta name="twitter:description" content="El Índice de Precipitación Estandarizado (SPI por Standarized Precipitation Index) es un índice para evaluar el estado de sequía o exceso de lluvia. La idea del SPI es tener una idea de qué tan probable es tener una cantidad de lluvia igual o menor. Valores altos del SPI están asociados con épocas muy húmedas mientras que valores bajos indican sequía.
-En la práctica lo que se hace es la función de probabilidad acumulada a partir de los registros históricos y luego estimar la probabilidad para la cantidad observada en cada mes.">
+    <meta name="twitter:description" content="La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.">
     
       <meta name="twitter:creator" content="@d_olivaw">
     
@@ -196,19 +193,19 @@ En la práctica lo que se hace es la función de probabilidad acumulada a partir
             <div class="post-header main-content-wrap text-left">
   
     <h1 class="post-title" itemprop="headline">
-      Cómo calcular el Índice de Precipitación Estandarizado en R
+      Hacer un ppt a partir de rmarkdown
     </h1>
   
   
   <div class="postShorten-meta post-meta">
     
-      <time itemprop="datePublished" datetime="2017-12-21T00:00:00Z">
+      <time itemprop="datePublished" datetime="2018-05-23T00:00:00Z">
         
   
   
   
   
-    21 de Diciembre 2017
+    23 de Mayo 2018
   
 
       </time>
@@ -239,139 +236,57 @@ En la práctica lo que se hace es la función de probabilidad acumulada a partir
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              <p>El Índice de Precipitación Estandarizado (SPI por Standarized Precipitation Index) es un índice para evaluar el estado de sequía o exceso de lluvia. La idea del SPI es tener una idea de qué tan probable es tener una cantidad de lluvia igual o menor. Valores altos del SPI están asociados con épocas muy húmedas mientras que valores bajos indican sequía.</p>
-<p>En la práctica lo que se hace es la función de probabilidad acumulada a partir de los registros históricos y luego estimar la probabilidad para la cantidad observada en cada mes. Luego, esa probabildiad se convierte a su cuantil apropiado según una distribución normal estándar. De manera que, al final, el SPI indica cuántos desvíos estándar lejos de la media es la precipitación en cada mes.</p>
-<p>En otras palabras, a grandes razgos:</p>
-<pre class="r"><code>spi &lt;- qnorm(ecdf(precipitacion)(precipitacion))</code></pre>
-<p>Algunos detalles extra:</p>
-<ul>
-<li><p>antes se suele aplica un promedio móvil para capturar las variaciones de precipitación en determinadas escalas temporales.</p></li>
-<li><p>el SPI calculado de esta manera da casos con precipitación tan extrema que R tira <span class="math inline">\(\pm \infty\)</span>. Entonces hay que rellenar esos datos de manera que el desvío etándar de toda la serie siga siendo 1 y luego restar la media para que quede centrado en 0.</p></li>
-</ul>
-<p>En R existe un paquete llamado <code>spi</code>, pero analizando el código fuente de <code>spi::spi</code>, me parece que tiene algunos bugs importantes que hacen que su resultado no sea fiable. Aparentemente una traducción de un código de FORTRAN o algún otro lenguaje de bajo nivel, en un bloque <code>if</code> en el que debería transponer la matriz de datos, en realidad resulta una matriz con sólo 3 columnas.</p>
-<pre class="r"><code>for (i in 2:ncolumn) {
-   if (i == 2) {
-      data_aux1 = rbind(t(data[i - 1, ]), t(data[i, ]))
-   }
-   else {
-      data_aux = rbind(data_aux1, t(data[i, ]))    # acá está el problema
-   }
-}</code></pre>
-<p>Siguiendo lo que hace el <code>for</code>, se ve que al final el <code>data_aux</code> es una matriz transpuesta pero sólo de las columnas de <code>data</code> 1, 2 y <code>ncolum</code>. La matriz <code>data_aux</code> es la que luego se usa para estimar la función de probabilidad acumulada; en vez de hacerse sobre toda la serie, se hace sobre 3 años.</p>
-<p>Además, el SPI debe estimarse <strong>para cada mes por separado</strong> de manera de filtrar cualquier ciclo estacional. Pero <code>spi::spi</code> hace el cálculo sobre todo junto. Esto explica por qué en el gráfico de ejemplo se ve un claro ciclo estacional que no debería estar ahí.</p>
-<pre class="r"><code>library(spi)
-data(spi_data)
-write.table(spi_data,file=&quot;spi.txt&quot;,quote=FALSE,row.names=TRUE)
-spi::spi(7,&quot;spi.txt&quot;,1963,2010,&quot;Standardized Precipitation Index - Rio Grande do Norte State&quot;,1,&quot;years&quot;,&quot;months&quot;)</code></pre>
-<p><img src="../../../post/2017-12-21-como-calcular-spi-r_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<p>Existe otro paquete, <a href="https://cran.r-project.org/web/packages/precintcon/index.html"><code>precintcon</code></a>, que no parece tener esos problemas y además en vez de estimar la distribución de probabilidad acumulada, le ajusta una distribución Gamma, que es bastante usada para modelar precipitación. El problema, para mí, es que las funciones relacionadas con PSI sólo se pueden aplicar sobre data.frames enteros y con clases especiales. Yo prefiero trabajar con clases primitas que sé lo que hacen y qué son y que brinden más libertad al usuario. En particular, prefiero datos que estén en formato <em>tidy</em>.</p>
-<p>Pero entonces hay que armarse la función propia:</p>
-<pre class="r"><code># Media movil
-rollmean &lt;- function(x, k = 3, na.rm = TRUE) {
-   lapply(k, function(e) .rollmean(x, e, na.rm = na.rm))
+              <p>La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.</p>
+<p>La clave está en “secuestrar” la función que knitr ejecuta cuando se encuentra con un plot y agregar la imagen a un ppt con el paquete <code>officer</code>. Lo primero que es necesario es un archivo con un template. De este archivo va a salir el patrón para agregar distintas diapositivas según lo que queramos insertar. Esto se puede editar cambiando el <a href="https://support.office.com/es-es/article/%C2%BFqu%C3%A9-es-un-patr%C3%B3n-de-diapositivas-b9abb2a0-7aef-4257-a14e-4329c904da54">Patrón de Diapositivas</a>. Como yo soy muy básico, creé uno que tiene una imagen con un texto abajo y nada más y lo llamé “figure”.</p>
+<p>Una vez hecho esto, hay que poner esto en el primer chunk de setup:</p>
+<pre class="r"><code>library(officer)
+library(magrittr)
+
+## Opciones que hay que cambiar. 
+ppt &lt;- TRUE                        # ¿quiero que salga un ppt?
+pptfile &lt;- &quot;figuras.pptx&quot;          # nombre de archivo del ppt saliente
+ppttemplate &lt;- &quot;ppttemplate.pptx&quot;  # nombre del template
+
+# Crea el archivo inicial
+if (ppt == TRUE){
+   my_pres &lt;- read_pptx(ppttemplate)
+   print(my_pres, pptfile)   
 }
 
-.rollmean &lt;- function(x, k, na.rm ) {
-   i &lt;- seq_along(x)
-   j &lt;- i - k + 1
-   j &lt;- ifelse(j &lt;= 0, 1, j)
-   pp &lt;- sapply(i, function (e)  mean(x[j[e]:e], na.rm = na.rm))
-}
+# Hay que apagar la cache en los chunks con figuras
+knitr::opts_hooks$set(fig.cap = function(options) {
+   if (ppt == TRUE) options$cache &lt;- FALSE
+   options
+})
 
-# SPI
-spi &lt;- function(pp) {
-   norm &lt;- qnorm(ecdf(pp)(pp))
-   
-   # de http://www.cmc.org.ve/mediawiki/index.php?title=Herramienta_en_R_para_diagn%C3%B3stico
-   norm.fin &lt;- norm[norm != Inf &amp; norm != -Inf]
-   minimize &lt;- function(x) (1 - sd(c(x, norm.fin)))^2
-   norm[norm == Inf] &lt;- optimize(minimize, lower=0, upper=100)$minimum
-   return(norm - mean(norm))
-}</code></pre>
-<p>La razón por la cual hay 2 funciones de media móvil es que la primera está vectorizada en <code>k</code>, lo que significa que se puede hacer <code>roll &lt;- rollmean(x, 1:3)</code> para obtener una lista con 3 medias móviles con distinto <code>k</code>.</p>
-<p>Y listo. Para probar la función con los datos de <code>spi</code>, primero hay que tenerlos en un formato razonable.</p>
-<pre class="r"><code>library(data.table)
-pp &lt;- setDT(melt(spi_data, id.vars = &quot;Months&quot;, variable.name = &quot;year&quot;, value.name = &quot;pp&quot;))
-pp[, year := as.numeric(substr(year, 2, 5))]
-pp[, month.n := 1:7, by = year]
-pp[, date := lubridate::ymd(paste0(year, &quot;-&quot;, month.n, &quot;-15&quot;))]
+# Agrega un slide con el gráfico y el caption
+# para cada chunk con figuras
+knit_plot &lt;- knitr::knit_hooks$get(&quot;plot&quot;)
 
-pp &lt;- pp[, .(date, pp)]
-knitr::kable(head(pp))</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="left">date</th>
-<th align="right">pp</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">1963-01-15</td>
-<td align="right">74.1</td>
-</tr>
-<tr class="even">
-<td align="left">1963-02-15</td>
-<td align="right">155.2</td>
-</tr>
-<tr class="odd">
-<td align="left">1963-03-15</td>
-<td align="right">226.4</td>
-</tr>
-<tr class="even">
-<td align="left">1963-04-15</td>
-<td align="right">186.7</td>
-</tr>
-<tr class="odd">
-<td align="left">1963-05-15</td>
-<td align="right">37.2</td>
-</tr>
-<tr class="even">
-<td align="left">1963-06-15</td>
-<td align="right">23.6</td>
-</tr>
-</tbody>
-</table>
-<p>Así, con una observación de precipitación para cada fecha, podemos calcular el SPI en una sola línea:</p>
-<pre class="r"><code>pp[, pp.roll := rollmean(pp, k = 3)]
-pp[, SPI := spi(pp.roll), by = month(date)]
-
-meses &lt;- c(&quot;Ene&quot;, &quot;Feb&quot;, &quot;Mar&quot;, &quot;Abr&quot;, &quot;May&quot;, &quot;Jun&quot;, 
-           &quot;Jul&quot;, &quot;Ago&quot;, &quot;Sep&quot;, &quot;Oct&quot;, &quot;Nov&quot;, &quot;Dic&quot;)
-spi.breaks &lt;- c(-2.4, -2, -1.6, -1.3, -0.8, -0.5, 0.5, 0.8, 1.3, 1.6, 2, 2.4)
-library(ggplot2)
-ggplot(pp, aes(month(date), year(date))) +
-   geom_contour(aes(z = SPI, color = ..level..), breaks = spi.breaks) +
-   scale_color_distiller(name = &quot;SPI&quot;, 
-                         palette = &quot;BrBG&quot;, direction = 1) +
-   scale_x_continuous(name = &quot;Mes&quot;, expand = c(0, 0), 
-                      breaks = 1:7, 
-                      labels = meses[1:7]) +
-   scale_y_continuous(name = &quot;Año&quot;, expand = c(0, 0), trans = &quot;reverse&quot;) +
-   theme_minimal()</code></pre>
-<p><img src="../../../post/2017-12-21-como-calcular-spi-r_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<p>Cabe aclarar que como los datos no cubren todo el año, en realidad el promedio movil no tiene sentido. Para probarlo voy a primero crear una serie de datos sintética con un ciclo anual.</p>
-<pre class="r"><code>pp2 &lt;- data.table(date = seq.Date(as.Date(&quot;1985-01-01&quot;), as.Date(&quot;2015-12-01&quot;), 
-                                  by = &quot;1 month&quot;))
-set.seed(42)    # ¡reproducible!
-pp2[, pp := rgamma(.N, shape = 1, scale = 10*(cos((month(date) - 1)/11*pi*2) + 1))]</code></pre>
-<p>Y ahora sí, calcular el SPI como se debe y para todas las escalas de tiempo que queramos.</p>
-<pre class="r"><code>pp2[, as.character(1:12) := rollmean(pp, 1:12)]
-pp.long &lt;- melt(pp2[, -&quot;pp&quot;], id.vars = &quot;date&quot;, variable.name = &quot;k&quot;, value.name = &quot;pp&quot;)
-pp.long[, k := as.numeric(as.character(k))]
-pp.long[, SPI := spi(pp), by = .(month(date), k)]
-
-ggplot(pp.long, aes(date, k)) +
-   geom_tile(aes(fill = SPI, color = SPI)) +
-   scale_fill_distiller(name = &quot;SPI&quot;, 
-                         palette = &quot;BrBG&quot;, direction = 1) +
-      scale_color_distiller(name = &quot;SPI&quot;, 
-                         palette = &quot;BrBG&quot;, direction = 1) +
-   scale_x_date(name = &quot;Fecha&quot;, expand = c(0, 0)) +
-   scale_y_continuous(name = &quot;Escala temporal&quot;, expand = c(0, 0), 
-                      breaks = 1:12) +
-   theme_minimal()</code></pre>
-<p><img src="../../../post/2017-12-21-como-calcular-spi-r_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+knitr::knit_hooks$set(plot = function(x, options) {
+   if (ppt == TRUE) {
+      if (inherits(last_plot(), &quot;gg&quot;)) {
+         read_pptx(pptfile)  %&gt;%
+            add_slide(layout = &quot;figure&quot;, master = &quot;Office Theme&quot;) %&gt;%
+            ph_with_gg(last_plot(), type = &quot;pic&quot;) %&gt;%
+            ph_with_text(options$fig.cap, type = &quot;body&quot;) %&gt;%
+            print(pptfile)
+         set_last_plot(NULL)   # remove last_plot()
+      } else {
+         read_pptx(pptfile)  %&gt;%
+            add_slide(layout = &quot;figure&quot;, master = &quot;Office Theme&quot;) %&gt;%
+            rvg::ph_with_vg(code = eval(parse(text = options$code)), 
+                            type = &quot;pic&quot;) %&gt;%
+            ph_with_text(options$fig.cap, type = &quot;body&quot;) %&gt;% 
+            print(pptfile)
+      }
+   }
+   knit_plot(x, options)
+})</code></pre>
+<p>Hay dos cosas importantes. Primero es setear un <code>opts_hook</code> que se ejecute siempre que la opción <code>fig.cap</code> no sea <code>NULL</code> que desactive la cache. Esto es porque sino, knitr no ejecuta nada de lo que sigue y entonces no agrega la figura al ppt.</p>
+<p>Luego está la parte más jugosa. Cambiamos el <code>knit_hook</code> para el <code>plot</code> para que antes de hacer lo que hace siempre (que primero guardamos con <code>knitr::knit_hooks$get(&quot;plot&quot;)</code>) le decimos que guarde el plot en una nueva diapositiva. El código es ligeramente distinto si se trata de un gráfico de <code>ggplot2</code> o uno de <code>base</code>. En el caso de <code>ggplot2</code>, usamos la función <code>last_plot()</code> para guardar el último plot generado en la nueva diapositiva y luego seteamos que el <code>last_plot</code> sea <code>NULL</code> (por si el siguiente gráfico que hay que guardar es uno en base). Si es base, hay que pasarle el código del chunk evaluado a la función <code>ph_with_vg()</code>, que crea un gráfico de vectores a partir de un gráfico base.</p>
+<p>Y listo. Al <em>knitear</em> el documento se va a generar el pdf o html y, además, el ppt.</p>
+<p>Hay que tener en cuenta que así como está, únicamente se pasan al ppt los gráficos que tienen un epígrafe. Además, creo que no funciona si un chunk genera varias figuras. Como los chunk con epígrafes van a ejecutarse sin tener en cuenta la cache, el proceso de renderizar el markdown va a ser bastante más lento y es conveniente separar bien el código de procesamiento de datos del código de generación de gráficos. Finalmente, es obvio que el texto plano no se guarda en la presentación.</p>
 
               
             </div>
@@ -387,7 +302,7 @@ ggplot(pp.long, aes(date, k)) +
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/01/opts-hooks-figuras-f%C3%A1ciles-en-knitr/" data-tooltip="Cómo usar `opts_hooks` en knitr.">
+                <a class="post-action-btn btn btn--disabled">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
@@ -395,7 +310,7 @@ ggplot(pp.long, aes(date, k)) +
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--disabled">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/05/arte-reproducible-del-subte-de-buenos-aires/" data-tooltip="Arte reproducible del Subte de Buenos Aires">
               
                   <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
                   <i class="fa fa-angle-right"></i>
@@ -413,19 +328,19 @@ ggplot(pp.long, aes(date, k)) +
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2017/12/calcular-ipe-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2018/05/hacer-un-ppt-a-partir-de-rmarkdown/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2017/12/calcular-ipe-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2018/05/hacer-un-ppt-a-partir-de-rmarkdown/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2017/12/calcular-ipe-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2018/05/hacer-un-ppt-a-partir-de-rmarkdown/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -473,7 +388,7 @@ ggplot(pp.long, aes(date, k)) +
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/01/opts-hooks-figuras-f%C3%A1ciles-en-knitr/" data-tooltip="Cómo usar `opts_hooks` en knitr.">
+                <a class="post-action-btn btn btn--disabled">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
@@ -481,7 +396,7 @@ ggplot(pp.long, aes(date, k)) +
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--disabled">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/05/arte-reproducible-del-subte-de-buenos-aires/" data-tooltip="Arte reproducible del Subte de Buenos Aires">
               
                   <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
                   <i class="fa fa-angle-right"></i>
@@ -499,19 +414,19 @@ ggplot(pp.long, aes(date, k)) +
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2017/12/calcular-ipe-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2018/05/hacer-un-ppt-a-partir-de-rmarkdown/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2017/12/calcular-ipe-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2018/05/hacer-un-ppt-a-partir-de-rmarkdown/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2017/12/calcular-ipe-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2018/05/hacer-un-ppt-a-partir-de-rmarkdown/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -541,19 +456,19 @@ ggplot(pp.long, aes(date, k)) +
   <ul class="share-options">
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2F2017%2F12%2Fcalcular-ipe-r%2F">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2F2018%2F05%2Fhacer-un-ppt-a-partir-de-rmarkdown%2F">
           <i class="fa fa-facebook-official"></i><span>Compartir en Facebook</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2F2017%2F12%2Fcalcular-ipe-r%2F">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2F2018%2F05%2Fhacer-un-ppt-a-partir-de-rmarkdown%2F">
           <i class="fa fa-twitter"></i><span>Compartir en Twitter</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2F2017%2F12%2Fcalcular-ipe-r%2F">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2F2018%2F05%2Fhacer-un-ppt-a-partir-de-rmarkdown%2F">
           <i class="fa fa-google-plus"></i><span>Compartir en Google&#43;</span>
         </a>
       </li>
@@ -606,8 +521,8 @@ ggplot(pp.long, aes(date, k)) +
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../2018/05/presentaci%C3%B3n-powerpoint-rmarkdown/">
-                <h3 class="media-heading">Hacer una presentación de PowerPoint a partir de rmarkdown</h3>
+              <a class="link-unstyled" href="../../../2018/05/hacer-un-ppt-a-partir-de-rmarkdown/">
+                <h3 class="media-heading">Hacer un ppt a partir de rmarkdown</h3>
               </a>
               <span class="media-meta">
                 <span class="media-date text-small">
@@ -815,9 +730,9 @@ $(document).ready(function() {
     
       <script>
         var disqus_config = function () {
-          this.page.url = '\/2017\/12\/calcular-ipe-r\/';
+          this.page.url = '\/2018\/05\/hacer-un-ppt-a-partir-de-rmarkdown\/';
           
-            this.page.identifier = '\/2017\/12\/calcular-ipe-r\/'
+            this.page.identifier = '\/2018\/05\/hacer-un-ppt-a-partir-de-rmarkdown\/'
           
         };
         (function() {

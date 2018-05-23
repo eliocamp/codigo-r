@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>/2018/05/presentaci%C3%B3n-powerpoint-rmarkdown/</loc>
+    <lastmod>2018-05-23T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/2018/05/arte-reproducible-del-subte-de-buenos-aires/</loc>
     <lastmod>2018-05-20T00:00:00+00:00</lastmod>
   </url>
@@ -54,7 +59,7 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2018-05-20T00:00:00+00:00</lastmod>
+    <lastmod>2018-05-23T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -66,13 +71,13 @@
   
   <url>
     <loc>/post/</loc>
-    <lastmod>2018-05-20T00:00:00+00:00</lastmod>
+    <lastmod>2018-05-23T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/categories/r/</loc>
-    <lastmod>2018-05-20T00:00:00+00:00</lastmod>
+    <lastmod>2018-05-23T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
