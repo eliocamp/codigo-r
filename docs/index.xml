@@ -13,10 +13,10 @@
     
     <item>
       <title>Hacer una presentación de PowerPoint a partir de rmarkdown</title>
-      <link>https://eliocamp.github.io/codigo-r/2018/05/presentaci%C3%B3n-powerpoint-rmarkdown/</link>
+      <link>https://eliocamp.github.io/codigo-r/2018/05/presentacion-powerpoint-rmarkdown/</link>
       <pubDate>Wed, 23 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/2018/05/presentaci%C3%B3n-powerpoint-rmarkdown/</guid>
+      <guid>https://eliocamp.github.io/codigo-r/2018/05/presentacion-powerpoint-rmarkdown/</guid>
       <description>La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.</description>
     </item>
     

@@ -22,7 +22,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Hugo 0.40.3 with theme Tranquilpeak 0.4.3-BETA">
-    <title>Arte reproducible del Subte de Buenos Aires</title>
+    <title>Hacer una presentación de PowerPoint a partir de rmarkdown</title>
     <meta name="author" content="Elio Campitelli">
     <meta name="keywords" content=", R">
 
@@ -30,21 +30,15 @@
     
 
     
-    <meta name="description" content="El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía unas ilustraciones en las paredes hechas a partir de líneas de distinto grosor.
- Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
-Lo primero que hago es leer la imagen. Este paso depende del formato (a menos que haya alguna forma de seleccionar el formato correcto automáticamente, pero no conozco).">
-    <meta property="og:description" content="El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía unas ilustraciones en las paredes hechas a partir de líneas de distinto grosor.
- Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
-Lo primero que hago es leer la imagen. Este paso depende del formato (a menos que haya alguna forma de seleccionar el formato correcto automáticamente, pero no conozco).">
+    <meta name="description" content="La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.">
+    <meta property="og:description" content="La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.">
     <meta property="og:type" content="blog">
-    <meta property="og:title" content="Arte reproducible del Subte de Buenos Aires">
-    <meta property="og:url" content="/2018/05/arte-reproducible-del-subte-de-buenos-aires/">
+    <meta property="og:title" content="Hacer una presentación de PowerPoint a partir de rmarkdown">
+    <meta property="og:url" content="/2018/05/presentacion-powerpoint-rmarkdown/">
     <meta property="og:site_name" content="Código R">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Código R">
-    <meta name="twitter:description" content="El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía unas ilustraciones en las paredes hechas a partir de líneas de distinto grosor.
- Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
-Lo primero que hago es leer la imagen. Este paso depende del formato (a menos que haya alguna forma de seleccionar el formato correcto automáticamente, pero no conozco).">
+    <meta name="twitter:description" content="La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.">
     
       <meta name="twitter:creator" content="@d_olivaw">
     
@@ -203,19 +197,19 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
             <div class="post-header main-content-wrap text-left">
   
     <h1 class="post-title" itemprop="headline">
-      Arte reproducible del Subte de Buenos Aires
+      Hacer una presentación de PowerPoint a partir de rmarkdown
     </h1>
   
   
   <div class="postShorten-meta post-meta">
     
-      <time itemprop="datePublished" datetime="2018-05-20T00:00:00Z">
+      <time itemprop="datePublished" datetime="2018-05-23T00:00:00Z">
         
   
   
   
   
-    20 de Mayo 2018
+    23 de Mayo 2018
   
 
       </time>
@@ -246,117 +240,67 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              <p>El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía <a href="http://www.buenosaires.gob.ar/noticias/arte-urbano-en-la-estacion-angel-gallardo">unas ilustraciones</a> en las paredes hechas a partir de líneas de distinto grosor.</p>
+              <p>La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.</p>
+<p>La clave está en “secuestrar” la función que knitr ejecuta cuando se encuentra con un plot y agregar la imagen a un ppt con el paquete <a href="https://davidgohel.github.io/officer/index.html"><code>officer</code></a>. Lo primero necesario es un archivo con un template. De este archivo va a salir el patrón para agregar distintas diapositivas según lo que queramos insertar. Esto se puede editar cambiando el <a href="https://support.office.com/es-es/article/%C2%BFqu%C3%A9-es-un-patr%C3%B3n-de-diapositivas-b9abb2a0-7aef-4257-a14e-4329c904da54">Patrón de Diapositivas</a>. Como yo soy muy básico, creé uno que tiene una imagen con un texto abajo y nada más y lo llamé “figure”.</p>
+<p>Una vez hecho esto, hay que poner esto en el primer chunk de setup:</p>
+<pre class="r"><code>library(officer)
+library(magrittr)
+
+## Opciones que hay que cambiar. 
+ppt &lt;- TRUE                        # ¿quiero que salga un ppt?
+pptfile &lt;- &quot;figuras.pptx&quot;          # nombre de archivo del ppt saliente
+ppttemplate &lt;- &quot;ppttemplate.pptx&quot;  # nombre del template
+
+# Crea el archivo inicial
+if (ppt == TRUE){
+   my_pres &lt;- read_pptx(ppttemplate)
+   print(my_pres, pptfile)   
+}
+
+# Hay que apagar la cache en los chunks con figuras
+knitr::opts_hooks$set(fig.cap = function(options) {
+   if (ppt == TRUE) options$cache &lt;- FALSE
+   options
+})
+
+# Agrega un slide con el gráfico y el caption
+# para cada chunk con figuras
+knit_plot &lt;- knitr::knit_hooks$get(&quot;plot&quot;)
+
+knitr::knit_hooks$set(plot = function(x, options) {
+   if (ppt == TRUE) {
+      if (inherits(last_plot(), &quot;gg&quot;)) {
+         read_pptx(pptfile)  %&gt;%
+            add_slide(layout = &quot;figure&quot;, master = &quot;Office Theme&quot;) %&gt;%
+            ph_with_gg(last_plot(), type = &quot;pic&quot;) %&gt;%
+            ph_with_text(options$fig.cap, type = &quot;body&quot;) %&gt;%
+            print(pptfile)
+         set_last_plot(NULL)   # remove last_plot()
+      } else {
+         read_pptx(pptfile)  %&gt;%
+            add_slide(layout = &quot;figure&quot;, master = &quot;Office Theme&quot;) %&gt;%
+            rvg::ph_with_vg(code = eval(parse(text = options$code)), 
+                            type = &quot;pic&quot;) %&gt;%
+            ph_with_text(options$fig.cap, type = &quot;body&quot;) %&gt;% 
+            print(pptfile)
+      }
+   }
+   knit_plot(x, options)
+})</code></pre>
+<p>Hay dos cosas importantes. Primero es setear un <code>opts_hook</code> que se ejecute siempre que la opción <code>fig.cap</code> no sea <code>NULL</code> que desactive la cache. Esto es porque sino knitr no ejecuta nada de lo que sigue y entonces no agrega la figura al ppt.</p>
+<p>Luego está la parte más jugosa. Cambiamos el <code>knit_hook</code> para el <code>plot</code> para que antes de hacer lo que hace siempre (que primero guardamos con <code>knitr::knit_hooks$get(&quot;plot&quot;)</code>) le decimos que guarde el plot en una nueva diapositiva. El código es ligeramente distinto si se trata de un gráfico de <code>ggplot2</code> o uno de <code>base</code>. En el caso de <code>ggplot2</code>, usamos la función <code>last_plot()</code> para guardar el último plot generado en la nueva diapositiva y luego seteamos que el <code>last_plot</code> sea <code>NULL</code> (por si el siguiente gráfico que hay que guardar es uno en base). Si es base, hay que pasarle el código del chunk evaluado a la función <code>ph_with_vg()</code>, que crea un gráfico de vectores a partir de un gráfico base.</p>
+<p>Y listo. Al <em>knitear</em> el documento se va a generar el pdf o html y, además, el ppt.</p>
 <div class="figure">
-<img src="../../../images/subte.jpg" />
+<img src="../../../images/ppt.jpg#center" />
 
 </div>
-<p>Charlamos un poco sobre ese estilo y cómo se podía replicar con <code>ggplot2</code> usando el paquete <a href="https://github.com/clauswilke/ggridges"><code>ggridges</code></a>.</p>
-<p>Lo primero que hago es leer la imagen. Este paso depende del formato (a menos que haya alguna forma de seleccionar el formato correcto automáticamente, pero no conozco). La función <code>readJPEG</code> del paquete <code>jpeg</code> convierte una imagen en un array:</p>
-<pre class="r"><code>im &lt;- jpeg::readJPEG(&quot;../../static/images/example.jpg&quot;)
-str(im)</code></pre>
-<pre><code>##  num [1:400, 1:400, 1:3] 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
-<p>La imagen es de 400x400 y tiene 3 canales (rojo, verde y azul). Lo que voy a hacer es pasarla a escala de grises y luego transformar los datos en un data.frame para poder graficarlo con <code>ggplot2</code>. El “algoritmo” que uso acá para pasar de color a grises es simplemente sumar la intensidad de cada color y luego dividir por 3. No sé si es la manera más correcta, pero funciona. Notar que al nombrar las dimensiones del array, revierto el orden de las coordenadas y con <code>rev</code>.</p>
-<pre class="r"><code>im &lt;- apply(im, c(1, 2), sum)   # para cada valor de las primeras 2 dimensiones, suma
-im &lt;- im/3
-
-ys &lt;- nrow(im)
-xs &lt;- ncol(im)
-dimnames(im) &lt;- list(y = rev(seq_len(nrow(im))), x = seq_len(ncol(im)))
-im &lt;- reshape2::melt(im)
-str(im)</code></pre>
-<pre><code>## &#39;data.frame&#39;:    160000 obs. of  3 variables:
-##  $ y    : int  400 399 398 397 396 395 394 393 392 391 ...
-##  $ x    : int  1 1 1 1 1 1 1 1 1 1 ...
-##  $ value: num  1 1 1 1 1 1 1 1 1 1 ...</code></pre>
-<p>Ahora que tengo un lindo data.frame, puedo graficarlo. La idea es, para cada línea horizontal (es decir, cada valor de y), graficar un área blanca cuya altura sea proporcional al valor de gris. Además, sólo voy a graficar cada 10 líneas para bajar un poco la resolución y se note más el efecto.</p>
-<pre class="r"><code>library(ggplot2)
-library(ggridges)
-plotim &lt;- subset(im, y  %in% seq(1, ys, by = 10))
-ggplot(plotim, aes(x, y)) +
-   geom_ridgeline(aes(height = value*9, group = y), 
-                  fill = &quot;white&quot;, color = NA) +
-   theme(panel.background = element_rect(fill = &quot;black&quot;))</code></pre>
-<p><img src="../../../post/2018-05-20-arte-reproducible-del-subte-de-buenos-aires_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>Le falta pulir algunas cosas, pero va bien!</p>
-<p>La imagen del subte que quiero reproducir en realidad no usa líneas rectas sino sinusoidales. No estoy seguro si eso se puede reproducir con <code>geom_ridgeline()</code> pero a esta altura decidí meterme con un geom de más bajo nivel. Usando <code>geom_ribbon()</code> puedo poner directamente cuál es el máximo y el mínimo del área, entonces puedo meter un coseno con la amplitud, período y fase que quiera. Además, como esto es Arte<sup>(TM)</sup>, conviene sacar las leyendas y los ejes.</p>
-<pre class="r"><code>scale &lt;- 10
-per  &lt;- 6
-phase &lt;- 0.001
-ampl &lt;- scale/5
-forecolor &lt;- &quot;white&quot;
-backcolor &lt;- &quot;#110C0E&quot;
-
-ggplot(subset(im, y %in% seq(1, ys, by = scale - 1)), aes(x)) +
-   geom_ribbon(aes(ymin = y + ampl*cos(x/max(x)*2*pi*per - phase*y) - value*scale/2, 
-                   ymax = y + ampl*cos(x/max(x)*2*pi*per - phase*y) + value*scale/2,
-                   group = y), fill = forecolor) +
-   scale_x_continuous(expand = c(0, 0)) +
-   scale_y_continuous(expand = c(0, 0)) +
-   coord_equal() +
-   theme_void() +
-   theme(plot.background = element_rect(fill = backcolor))</code></pre>
-<p><img src="../../../post/2018-05-20-arte-reproducible-del-subte-de-buenos-aires_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>Sólo para que sea más divertido, acá abajo está el código completo, armado en una función y que además permite hacer un efecto medio warholiano si se usan los 3 colores en vez de una escala de grises.</p>
-<pre class="r"><code>Ridgefy &lt;- function(file, scale = 10, ampl = 1/5, per = 6, phase = 0,
-                    forecolor = &quot;white&quot;, backcolor = &quot;black&quot;, ncol = 3) {
-   im &lt;- jpeg::readJPEG(file)
-   ys &lt;- nrow(im)
-   xs &lt;- ncol(im)
-   if (length(forecolor) == 3) {
-      dimnames(im) &lt;- list(y = rev(seq_len(ys)),
-                           x = seq_len(xs),
-                           forecolor = forecolor)
-      im &lt;- reshape2::melt(im)
-   } else {
-      im &lt;- apply(im, c(1, 2), sum)
-      im &lt;- im/max(im)
-      
-      dimnames(im) &lt;- list(y = rev(seq_len(ys)), 
-                           x = seq_len(xs))
-      im &lt;- reshape2::melt(im)
-      im$forecolor = forecolor
-   }
-
-   ampl &lt;- scale*ampl
-   
-   ggplot(subset(im, y %in% seq(1, ys, by = scale - 1)), aes(x)) +
-      geom_ribbon(aes(ymin = y + ampl*cos(x/max(x)*2*pi*per - phase*y) - value*scale/2, 
-                      ymax = y + ampl*cos(x/max(x)*2*pi*per - phase*y) + value*scale/2,
-                      group = y,
-                      fill = forecolor)) +
-      scale_fill_manual(values = forecolor, guide = FALSE) +
-      scale_x_continuous(expand = c(0, 0)) +
-      scale_y_continuous(expand = c(0, 0)) +
-      coord_equal() +
-      theme_void() +
-      facet_wrap(~forecolor, ncol = ncol) +
-      theme(plot.background = element_rect(fill = backcolor), 
-            panel.spacing = unit(0, &quot;lines&quot;),
-            strip.text = element_blank(),
-            strip.background = element_blank())
-}</code></pre>
-<p>Para terminar, por qué no hacer una imagen bien meta y usar este estilo para transformar la imagen original que me dio la idea.</p>
-<pre class="r"><code>Ridgefy(&quot;../../static/images/subte.jpg&quot;, scale = 4, ampl = 0.1,
-        forecolor = &quot;#EE0000&quot;, 
-        backcolor = &quot;#6E1414&quot;)</code></pre>
-<p><img src="../../../post/2018-05-20-arte-reproducible-del-subte-de-buenos-aires_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Así como está es una versión mínima que cubre mis necesidades. Sólo tiene en cuenta los gráficos con epígrafe, no funciona sin un chunk genera varias figuras, el proceso de renderizar todo es lento (porque desactiva la cache) y peor aún si los chunks que generan figuras también tienen código que manipula datos. Además, no guarda tablas ni texto plano.</p>
 
               
             </div>
           </div>
           <div id="post-footer" class="post-footer main-content-wrap">
             
-              
-                
-                
-                  <div class="post-footer-tags">
-                    <span class="text-color-light text-small">ETIQUETADO EN</span><br/>
-                    
-  <a class="tag tag--primary tag--small" href="../../../tags/ggplot2/">ggplot2</a>
-
-                  </div>
-                
               
             
             
@@ -366,7 +310,7 @@ ggplot(subset(im, y %in% seq(1, ys, by = scale - 1)), aes(x)) +
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/05/presentacion-powerpoint-rmarkdown/" data-tooltip="Hacer una presentación de PowerPoint a partir de rmarkdown">
+                <a class="post-action-btn btn btn--disabled">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
@@ -374,7 +318,7 @@ ggplot(subset(im, y %in% seq(1, ys, by = scale - 1)), aes(x)) +
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/05/como-hacer-un-stat-generico-en-ggplot2/" data-tooltip="Como hacer un stat genérico en ggplot2">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/05/arte-reproducible-del-subte-de-buenos-aires/" data-tooltip="Arte reproducible del Subte de Buenos Aires">
               
                   <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
                   <i class="fa fa-angle-right"></i>
@@ -392,19 +336,19 @@ ggplot(subset(im, y %in% seq(1, ys, by = scale - 1)), aes(x)) +
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/05/arte-reproducible-del-subte-de-buenos-aires/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/05/presentacion-powerpoint-rmarkdown/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/05/arte-reproducible-del-subte-de-buenos-aires/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/05/presentacion-powerpoint-rmarkdown/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/05/arte-reproducible-del-subte-de-buenos-aires/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/05/presentacion-powerpoint-rmarkdown/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -452,7 +396,7 @@ ggplot(subset(im, y %in% seq(1, ys, by = scale - 1)), aes(x)) +
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/05/presentacion-powerpoint-rmarkdown/" data-tooltip="Hacer una presentación de PowerPoint a partir de rmarkdown">
+                <a class="post-action-btn btn btn--disabled">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
@@ -460,7 +404,7 @@ ggplot(subset(im, y %in% seq(1, ys, by = scale - 1)), aes(x)) +
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/05/como-hacer-un-stat-generico-en-ggplot2/" data-tooltip="Como hacer un stat genérico en ggplot2">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/05/arte-reproducible-del-subte-de-buenos-aires/" data-tooltip="Arte reproducible del Subte de Buenos Aires">
               
                   <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
                   <i class="fa fa-angle-right"></i>
@@ -478,19 +422,19 @@ ggplot(subset(im, y %in% seq(1, ys, by = scale - 1)), aes(x)) +
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/05/arte-reproducible-del-subte-de-buenos-aires/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/05/presentacion-powerpoint-rmarkdown/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/05/arte-reproducible-del-subte-de-buenos-aires/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/05/presentacion-powerpoint-rmarkdown/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/05/arte-reproducible-del-subte-de-buenos-aires/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/05/presentacion-powerpoint-rmarkdown/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -520,19 +464,19 @@ ggplot(subset(im, y %in% seq(1, ys, by = scale - 1)), aes(x)) +
   <ul class="share-options">
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F05%2Farte-reproducible-del-subte-de-buenos-aires%2F">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F05%2Fpresentacion-powerpoint-rmarkdown%2F">
           <i class="fa fa-facebook-official"></i><span>Compartir en Facebook</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F05%2Farte-reproducible-del-subte-de-buenos-aires%2F">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F05%2Fpresentacion-powerpoint-rmarkdown%2F">
           <i class="fa fa-twitter"></i><span>Compartir en Twitter</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F05%2Farte-reproducible-del-subte-de-buenos-aires%2F">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F05%2Fpresentacion-powerpoint-rmarkdown%2F">
           <i class="fa fa-google-plus"></i><span>Compartir en Google&#43;</span>
         </a>
       </li>
@@ -777,9 +721,9 @@ $(document).ready(function() {
     
       <script>
         var disqus_config = function () {
-          this.page.url = 'https:\/\/eliocamp.github.io\/codigo-r\/2018\/05\/arte-reproducible-del-subte-de-buenos-aires\/';
+          this.page.url = 'https:\/\/eliocamp.github.io\/codigo-r\/2018\/05\/presentacion-powerpoint-rmarkdown\/';
           
-            this.page.identifier = '\/2018\/05\/arte-reproducible-del-subte-de-buenos-aires\/'
+            this.page.identifier = '\/2018\/05\/presentacion-powerpoint-rmarkdown\/'
           
         };
         (function() {
