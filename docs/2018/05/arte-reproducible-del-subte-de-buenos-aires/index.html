@@ -31,10 +31,10 @@
 
     
     <meta name="description" content="El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía unas ilustraciones en las paredes hechas a partir de líneas de distinto grosor.
- Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
+Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
 Lo primero que hago es leer la imagen. Este paso depende del formato (a menos que haya alguna forma de seleccionar el formato correcto automáticamente, pero no conozco).">
     <meta property="og:description" content="El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía unas ilustraciones en las paredes hechas a partir de líneas de distinto grosor.
- Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
+Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
 Lo primero que hago es leer la imagen. Este paso depende del formato (a menos que haya alguna forma de seleccionar el formato correcto automáticamente, pero no conozco).">
     <meta property="og:type" content="blog">
     <meta property="og:title" content="Arte reproducible del Subte de Buenos Aires">
@@ -43,7 +43,7 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Código R">
     <meta name="twitter:description" content="El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía unas ilustraciones en las paredes hechas a partir de líneas de distinto grosor.
- Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
+Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
 Lo primero que hago es leer la imagen. Este paso depende del formato (a menos que haya alguna forma de seleccionar el formato correcto automáticamente, pero no conozco).">
     
       <meta name="twitter:creator" content="@d_olivaw">
@@ -247,40 +247,56 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
               <p>El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía <a href="http://www.buenosaires.gob.ar/noticias/arte-urbano-en-la-estacion-angel-gallardo">unas ilustraciones</a> en las paredes hechas a partir de líneas de distinto grosor.</p>
-<div class="figure">
-<img src="../../../images/subte.jpg" />
 
-</div>
+<p><img src="../../../images/subte.jpg" alt="" /></p>
+
 <p>Charlamos un poco sobre ese estilo y cómo se podía replicar con <code>ggplot2</code> usando el paquete <a href="https://github.com/clauswilke/ggridges"><code>ggridges</code></a>.</p>
+
 <p>Lo primero que hago es leer la imagen. Este paso depende del formato (a menos que haya alguna forma de seleccionar el formato correcto automáticamente, pero no conozco). La función <code>readJPEG</code> del paquete <code>jpeg</code> convierte una imagen en un array:</p>
-<pre class="r"><code>im &lt;- jpeg::readJPEG(&quot;../../static/images/example.jpg&quot;)
-str(im)</code></pre>
-<pre><code>##  num [1:400, 1:400, 1:3] 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
-<p>La imagen es de 400x400 y tiene 3 canales (rojo, verde y azul). Lo que voy a hacer es pasarla a escala de grises y luego transformar los datos en un data.frame para poder graficarlo con <code>ggplot2</code>. El “algoritmo” que uso acá para pasar de color a grises es simplemente sumar la intensidad de cada color y luego dividir por 3. No sé si es la manera más correcta, pero funciona. Notar que al nombrar las dimensiones del array, revierto el orden de las coordenadas y con <code>rev</code>.</p>
-<pre class="r"><code>im &lt;- apply(im, c(1, 2), sum)   # para cada valor de las primeras 2 dimensiones, suma
+
+<pre><code class="language-r">im &lt;- jpeg::readJPEG(&quot;../../static/images/example.jpg&quot;)
+str(im)
+</code></pre>
+
+<pre><code>##  num [1:400, 1:400, 1:3] 1 1 1 1 1 1 1 1 1 1 ...
+</code></pre>
+
+<p>La imagen es de 400x400 y tiene 3 canales (rojo, verde y azul). Lo que voy a hacer es pasarla a escala de grises y luego transformar los datos en un data.frame para poder graficarlo con <code>ggplot2</code>. El &ldquo;algoritmo&rdquo; que uso acá para pasar de color a grises es simplemente sumar la intensidad de cada color y luego dividir por 3. No sé si es la manera más correcta, pero funciona. Notar que al nombrar las dimensiones del array, revierto el orden de las coordenadas y con <code>rev</code>.</p>
+
+<pre><code class="language-r">im &lt;- apply(im, c(1, 2), sum)   # para cada valor de las primeras 2 dimensiones, suma
 im &lt;- im/3
 
 ys &lt;- nrow(im)
 xs &lt;- ncol(im)
 dimnames(im) &lt;- list(y = rev(seq_len(nrow(im))), x = seq_len(ncol(im)))
 im &lt;- reshape2::melt(im)
-str(im)</code></pre>
-<pre><code>## &#39;data.frame&#39;:    160000 obs. of  3 variables:
+str(im)
+</code></pre>
+
+<pre><code>## 'data.frame':	160000 obs. of  3 variables:
 ##  $ y    : int  400 399 398 397 396 395 394 393 392 391 ...
 ##  $ x    : int  1 1 1 1 1 1 1 1 1 1 ...
-##  $ value: num  1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+##  $ value: num  1 1 1 1 1 1 1 1 1 1 ...
+</code></pre>
+
 <p>Ahora que tengo un lindo data.frame, puedo graficarlo. La idea es, para cada línea horizontal (es decir, cada valor de y), graficar un área blanca cuya altura sea proporcional al valor de gris. Además, sólo voy a graficar cada 10 líneas para bajar un poco la resolución y se note más el efecto.</p>
-<pre class="r"><code>library(ggplot2)
+
+<pre><code class="language-r">library(ggplot2)
 library(ggridges)
 plotim &lt;- subset(im, y  %in% seq(1, ys, by = 10))
 ggplot(plotim, aes(x, y)) +
    geom_ridgeline(aes(height = value*9, group = y), 
                   fill = &quot;white&quot;, color = NA) +
-   theme(panel.background = element_rect(fill = &quot;black&quot;))</code></pre>
+   theme(panel.background = element_rect(fill = &quot;black&quot;))
+</code></pre>
+
 <p><img src="../../../post/2018-05-20-arte-reproducible-del-subte-de-buenos-aires_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+
 <p>Le falta pulir algunas cosas, pero va bien!</p>
-<p>La imagen del subte que quiero reproducir en realidad no usa líneas rectas sino sinusoidales. No estoy seguro si eso se puede reproducir con <code>geom_ridgeline()</code> pero a esta altura decidí meterme con un geom de más bajo nivel. Usando <code>geom_ribbon()</code> puedo poner directamente cuál es el máximo y el mínimo del área, entonces puedo meter un coseno con la amplitud, período y fase que quiera. Además, como esto es Arte<sup>(TM)</sup>, conviene sacar las leyendas y los ejes.</p>
-<pre class="r"><code>scale &lt;- 10
+
+<p>La imagen del subte que quiero reproducir en realidad no usa líneas rectas sino sinusoidales. No estoy seguro si eso se puede reproducir con <code>geom_ridgeline()</code> pero a esta altura decidí meterme con un geom de más bajo nivel. Usando <code>geom_ribbon()</code> puedo poner directamente cuál es el máximo y el mínimo del área, entonces puedo meter un coseno con la amplitud, período y fase que quiera. Además, como esto es Arte<sup>&trade;</sup>, conviene sacar las leyendas y los ejes.</p>
+
+<pre><code class="language-r">scale &lt;- 10
 per  &lt;- 6
 phase &lt;- 0.001
 ampl &lt;- scale/5
@@ -295,10 +311,14 @@ ggplot(subset(im, y %in% seq(1, ys, by = scale - 1)), aes(x)) +
    scale_y_continuous(expand = c(0, 0)) +
    coord_equal() +
    theme_void() +
-   theme(plot.background = element_rect(fill = backcolor))</code></pre>
+   theme(plot.background = element_rect(fill = backcolor))
+</code></pre>
+
 <p><img src="../../../post/2018-05-20-arte-reproducible-del-subte-de-buenos-aires_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+
 <p>Sólo para que sea más divertido, acá abajo está el código completo, armado en una función y que además permite hacer un efecto medio warholiano si se usan los 3 colores en vez de una escala de grises.</p>
-<pre class="r"><code>Ridgefy &lt;- function(file, scale = 10, ampl = 1/5, per = 6, phase = 0,
+
+<pre><code class="language-r">Ridgefy &lt;- function(file, scale = 10, ampl = 1/5, per = 6, phase = 0,
                     forecolor = &quot;white&quot;, backcolor = &quot;black&quot;, ncol = 3) {
    im &lt;- jpeg::readJPEG(file)
    ys &lt;- nrow(im)
@@ -335,11 +355,16 @@ ggplot(subset(im, y %in% seq(1, ys, by = scale - 1)), aes(x)) +
             panel.spacing = unit(0, &quot;lines&quot;),
             strip.text = element_blank(),
             strip.background = element_blank())
-}</code></pre>
+}
+</code></pre>
+
 <p>Para terminar, por qué no hacer una imagen bien meta y usar este estilo para transformar la imagen original que me dio la idea.</p>
-<pre class="r"><code>Ridgefy(&quot;../../static/images/subte.jpg&quot;, scale = 4, ampl = 0.1,
+
+<pre><code class="language-r">Ridgefy(&quot;../../static/images/subte.jpg&quot;, scale = 4, ampl = 0.1,
         forecolor = &quot;#EE0000&quot;, 
-        backcolor = &quot;#6E1414&quot;)</code></pre>
+        backcolor = &quot;#6E1414&quot;)
+</code></pre>
+
 <p><img src="../../../post/2018-05-20-arte-reproducible-del-subte-de-buenos-aires_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 
               
@@ -585,6 +610,24 @@ ggplot(subset(im, y %in% seq(1, ys, by = scale - 1)), aes(x)) +
           <div class="media">
             
             <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/">
+                <h3 class="media-heading">Tu propio smooth en geom_smooth()</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jun 6, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Algo increíblemente satisfactorio de ggplot2 es la posibilidad de ajustar curvas a los datos de manera súper fácil con geom_smooth(). Para mi investigación estaba mirando la relación entre dos ángulos y me di cuenta que la recta ajustada por cuadrados mínimos no estaba funcionando para ilustrar la obvia estructura que había en los datos.
+library(ggplot2) df &lt;- readRDS(&quot;data/smooth_example.Rds&quot;) ggplot(df, aes(pc.angle, phase)) + geom_point() + geom_smooth(method = &quot;lm&quot;)  Se me ocurrió que un mejor modelo podría ser usando el estimador de Theil-Sen, que es la mediana de todas las pendientes entre dos puntos distintos y está implementado en el paquete mblm.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
               <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/05/presentacion-powerpoint-rmarkdown/">
                 <h3 class="media-heading">Hacer una presentación de PowerPoint a partir de rmarkdown</h3>
               </a>
@@ -611,7 +654,7 @@ ggplot(subset(im, y %in% seq(1, ys, by = scale - 1)), aes(x)) +
                 </span>
               </span>
               <div class="media-content hide-xs font-merryweather">El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía unas ilustraciones en las paredes hechas a partir de líneas de distinto grosor.
- Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
+Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
 Lo primero que hago es leer la imagen. Este paso depende del formato (a menos que haya alguna forma de seleccionar el formato correcto automáticamente, pero no conozco).</div>
             </div>
             <div style="clear:both;"></div>
@@ -646,7 +689,7 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
                   May 5, 2018
                 </span>
               </span>
-              <div class="media-content hide-xs font-merryweather">For a while now I’ve been thinking that, yes, ggplot2 is awesome and offers a lot of geoms and stats, but it would be great if it could be extended with new user-generated geoms and stats. Then I learnt that ggplot2 actually has a pretty great extension system so I could create my own geoms I needed for my work or just for fun. But still, creating a geom from scratch is an involved process that doesn’t lend itself to simple transformations.</div>
+              <div class="media-content hide-xs font-merryweather">For a while now I&rsquo;ve been thinking that, yes, ggplot2 is awesome and offers a lot of geoms and stats, but it would be great if it could be extended with new user-generated geoms and stats. Then I learnt that ggplot2 actually has a pretty great extension system so I could create my own geoms I needed for my work or just for fun. But still, creating a geom from scratch is an involved process that doesn&rsquo;t lend itself to simple transformations.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>
@@ -666,6 +709,25 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
               <div class="media-content hide-xs font-merryweather">Spanish version of this post
 While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
 What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
+                <h3 class="media-heading">Cómo hacer un efecto de relieve en R</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jan 1, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">(Versión en inglés)
+Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
+Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>
@@ -733,7 +795,7 @@ En la práctica lo que se hace es la función de probabilidad acumulada a partir
          data-message-zero="no se encontraron artículos"
          data-message-one="1 artículo encontrado"
          data-message-other="{n} artículos encontrados">
-         8 posts found
+         10 posts found
       </p>
     </div>
   </div>

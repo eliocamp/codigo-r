@@ -6,10 +6,20 @@
     <description>Recent content in Posts on Código R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Wed, 23 May 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 01 Jun 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://eliocamp.github.io/codigo-r/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Tu propio smooth en geom_smooth()</title>
+      <link>https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/</link>
+      <pubDate>Fri, 01 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/</guid>
+      <description>Algo increíblemente satisfactorio de ggplot2 es la posibilidad de ajustar curvas a los datos de manera súper fácil con geom_smooth(). Para mi investigación estaba mirando la relación entre dos ángulos y me di cuenta que la recta ajustada por cuadrados mínimos no estaba funcionando para ilustrar la obvia estructura que había en los datos.
+library(ggplot2) df &amp;lt;- readRDS(&amp;quot;data/smooth_example.Rds&amp;quot;) ggplot(df, aes(pc.angle, phase)) + geom_point() + geom_smooth(method = &amp;quot;lm&amp;quot;)  Se me ocurrió que un mejor modelo podría ser usando el estimador de Theil-Sen, que es la mediana de todas las pendientes entre dos puntos distintos y está implementado en el paquete mblm.</description>
+    </item>
     
     <item>
       <title>Hacer una presentación de PowerPoint a partir de rmarkdown</title>
@@ -27,7 +37,7 @@
       
       <guid>https://eliocamp.github.io/codigo-r/2018/05/arte-reproducible-del-subte-de-buenos-aires/</guid>
       <description>El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía unas ilustraciones en las paredes hechas a partir de líneas de distinto grosor.
- Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
+Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
 Lo primero que hago es leer la imagen. Este paso depende del formato (a menos que haya alguna forma de seleccionar el formato correcto automáticamente, pero no conozco).</description>
     </item>
     
@@ -46,7 +56,7 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
       <pubDate>Wed, 16 May 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/2018/05/how-to-make-a-generic-stat-in-ggplot2/</guid>
-      <description>For a while now I’ve been thinking that, yes, ggplot2 is awesome and offers a lot of geoms and stats, but it would be great if it could be extended with new user-generated geoms and stats. Then I learnt that ggplot2 actually has a pretty great extension system so I could create my own geoms I needed for my work or just for fun. But still, creating a geom from scratch is an involved process that doesn’t lend itself to simple transformations.</description>
+      <description>For a while now I&amp;rsquo;ve been thinking that, yes, ggplot2 is awesome and offers a lot of geoms and stats, but it would be great if it could be extended with new user-generated geoms and stats. Then I learnt that ggplot2 actually has a pretty great extension system so I could create my own geoms I needed for my work or just for fun. But still, creating a geom from scratch is an involved process that doesn&amp;rsquo;t lend itself to simple transformations.</description>
     </item>
     
     <item>
@@ -58,6 +68,17 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
       <description>Spanish version of this post
 While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
 What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun.</description>
+    </item>
+    
+    <item>
+      <title>Cómo hacer un efecto de relieve en R</title>
+      <link>https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/</link>
+      <pubDate>Wed, 24 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/</guid>
+      <description>(Versión en inglés)
+Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
+Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.</description>
     </item>
     
     <item>

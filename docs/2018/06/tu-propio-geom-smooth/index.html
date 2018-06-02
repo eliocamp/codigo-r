@@ -22,7 +22,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Hugo 0.40.3 with theme Tranquilpeak 0.4.3-BETA">
-    <title>Hacer una presentación de PowerPoint a partir de rmarkdown</title>
+    <title>Tu propio smooth en geom_smooth()</title>
     <meta name="author" content="Elio Campitelli">
     <meta name="keywords" content=", R">
 
@@ -30,15 +30,18 @@
     
 
     
-    <meta name="description" content="La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.">
-    <meta property="og:description" content="La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.">
+    <meta name="description" content="Algo increíblemente satisfactorio de ggplot2 es la posibilidad de ajustar curvas a los datos de manera súper fácil con geom_smooth(). Para mi investigación estaba mirando la relación entre dos ángulos y me di cuenta que la recta ajustada por cuadrados mínimos no estaba funcionando para ilustrar la obvia estructura que había en los datos.
+library(ggplot2) df &lt;- readRDS(&quot;data/smooth_example.Rds&quot;) ggplot(df, aes(pc.angle, phase)) &#43; geom_point() &#43; geom_smooth(method = &quot;lm&quot;)  Se me ocurrió que un mejor modelo podría ser usando el estimador de Theil-Sen, que es la mediana de todas las pendientes entre dos puntos distintos y está implementado en el paquete mblm.">
+    <meta property="og:description" content="Algo increíblemente satisfactorio de ggplot2 es la posibilidad de ajustar curvas a los datos de manera súper fácil con geom_smooth(). Para mi investigación estaba mirando la relación entre dos ángulos y me di cuenta que la recta ajustada por cuadrados mínimos no estaba funcionando para ilustrar la obvia estructura que había en los datos.
+library(ggplot2) df &lt;- readRDS(&quot;data/smooth_example.Rds&quot;) ggplot(df, aes(pc.angle, phase)) &#43; geom_point() &#43; geom_smooth(method = &quot;lm&quot;)  Se me ocurrió que un mejor modelo podría ser usando el estimador de Theil-Sen, que es la mediana de todas las pendientes entre dos puntos distintos y está implementado en el paquete mblm.">
     <meta property="og:type" content="blog">
-    <meta property="og:title" content="Hacer una presentación de PowerPoint a partir de rmarkdown">
-    <meta property="og:url" content="/2018/05/presentaci%C3%B3n-powerpoint-rmarkdown/">
+    <meta property="og:title" content="Tu propio smooth en geom_smooth()">
+    <meta property="og:url" content="/2018/06/tu-propio-geom-smooth/">
     <meta property="og:site_name" content="Código R">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Código R">
-    <meta name="twitter:description" content="La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.">
+    <meta name="twitter:description" content="Algo increíblemente satisfactorio de ggplot2 es la posibilidad de ajustar curvas a los datos de manera súper fácil con geom_smooth(). Para mi investigación estaba mirando la relación entre dos ángulos y me di cuenta que la recta ajustada por cuadrados mínimos no estaba funcionando para ilustrar la obvia estructura que había en los datos.
+library(ggplot2) df &lt;- readRDS(&quot;data/smooth_example.Rds&quot;) ggplot(df, aes(pc.angle, phase)) &#43; geom_point() &#43; geom_smooth(method = &quot;lm&quot;)  Se me ocurrió que un mejor modelo podría ser usando el estimador de Theil-Sen, que es la mediana de todas las pendientes entre dos puntos distintos y está implementado en el paquete mblm.">
     
       <meta name="twitter:creator" content="@d_olivaw">
     
@@ -197,19 +200,19 @@
             <div class="post-header main-content-wrap text-left">
   
     <h1 class="post-title" itemprop="headline">
-      Hacer una presentación de PowerPoint a partir de rmarkdown
+      Tu propio smooth en geom_smooth()
     </h1>
   
   
   <div class="postShorten-meta post-meta">
     
-      <time itemprop="datePublished" datetime="2018-05-23T00:00:00Z">
+      <time itemprop="datePublished" datetime="2018-06-01T00:00:00Z">
         
   
   
   
   
-    23 de Mayo 2018
+    1 de Junio 2018
   
 
       </time>
@@ -240,67 +243,145 @@
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              <p>La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.</p>
-<p>La clave está en “secuestrar” la función que knitr ejecuta cuando se encuentra con un plot y agregar la imagen a un ppt con el paquete <a href="https://davidgohel.github.io/officer/index.html"><code>officer</code></a>. Lo primero necesario es un archivo con un template. De este archivo va a salir el patrón para agregar distintas diapositivas según lo que queramos insertar. Esto se puede editar cambiando el <a href="https://support.office.com/es-es/article/%C2%BFqu%C3%A9-es-un-patr%C3%B3n-de-diapositivas-b9abb2a0-7aef-4257-a14e-4329c904da54">Patrón de Diapositivas</a>. Como yo soy muy básico, creé uno que tiene una imagen con un texto abajo y nada más y lo llamé “figure”.</p>
-<p>Una vez hecho esto, hay que poner esto en el primer chunk de setup:</p>
-<pre class="r"><code>library(officer)
-library(magrittr)
+              <p>Algo increíblemente satisfactorio de ggplot2 es la posibilidad de ajustar curvas a los datos de manera súper fácil con <code>geom_smooth()</code>. Para mi investigación estaba mirando la relación entre dos ángulos y me di cuenta que la recta ajustada por cuadrados mínimos no estaba funcionando para ilustrar la obvia estructura que había en los datos.</p>
 
-## Opciones que hay que cambiar. 
-ppt &lt;- TRUE                        # ¿quiero que salga un ppt?
-pptfile &lt;- &quot;figuras.pptx&quot;          # nombre de archivo del ppt saliente
-ppttemplate &lt;- &quot;ppttemplate.pptx&quot;  # nombre del template
+<pre><code class="language-r">library(ggplot2)
 
-# Crea el archivo inicial
-if (ppt == TRUE){
-   my_pres &lt;- read_pptx(ppttemplate)
-   print(my_pres, pptfile)   
+df &lt;- readRDS(&quot;data/smooth_example.Rds&quot;)
+
+ggplot(df, aes(pc.angle, phase)) +
+   geom_point() +
+   geom_smooth(method = &quot;lm&quot;)
+</code></pre>
+
+<p><img src="../../../post/2018-06-01-tu-propio-smooth-en-geom-smooth_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+
+<p>Se me ocurrió que un mejor modelo podría ser usando el estimador de <a href="https://en.wikipedia.org/wiki/Theil%E2%80%93Sen_estimator">Theil-Sen</a>, que es la mediana de todas las pendientes entre dos puntos distintos y está  implementado en el paquete mblm. El problema es que al usar esa función como método, me dio este críptico mensaje de error:</p>
+
+<pre><code class="language-r">ggplot(df, aes(pc.angle, phase)) +
+   geom_point() +
+   geom_smooth(method = &quot;mblm::mblm&quot;)
+</code></pre>
+
+<pre><code>## Warning: Computation failed in `stat_smooth()`:
+## object 'mblm::mblm' of mode 'function' was not found
+</code></pre>
+
+<p><img src="../../../post/2018-06-01-tu-propio-smooth-en-geom-smooth_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+
+<p>🤔</p>
+
+<p>Tuve que ponerme a leer el código de ggplot2 para entender de dónde venía el problema, pero gracias a eso aprendí más sobre cómo funciona <code>geom_smooth()</code>.</p>
+
+<p><code>geom_smooth()</code> acepta cualquier método para hacer el modelo, pero con dos detalles importantes:</p>
+
+<ol>
+<li><p>la función que hace el modelo debe aceptar una fórmula como primer argumento y tener argumentos <code>data</code> y <code>weigths</code>.</p></li>
+
+<li><p>el objeto que devuelve la función debe tener un método para <code>predictdf()</code>.</p></li>
+</ol>
+
+<p>Lo primero es fácil de entender. Dentro de <code>geom_smooth()</code>, ggplot2 básicamente llama algo así como <code>lm(formula, data, weights, ...)</code>. Si la función no acepta alguno de esos argumentos, nos encontramos con un error. La función <code>mblm</code> no entiende el argumento <code>weights</code>. La solución en ese caso fue crear mi propia función que llame a <code>mblm::mblm()</code> descartando ese argumento (y de paso le puse un nombre más inteligible).</p>
+
+<pre><code class="language-r">TheilSen &lt;- function(..., weights = NULL) {
+   mblm::mblm(...)
 }
 
-# Hay que apagar la cache en los chunks con figuras
-knitr::opts_hooks$set(fig.cap = function(options) {
-   if (ppt == TRUE) options$cache &lt;- FALSE
-   options
-})
+ggplot(df, aes(pc.angle, phase)) +
+   geom_point() +
+   geom_smooth(method = &quot;TheilSen&quot;)
+</code></pre>
 
-# Agrega un slide con el gráfico y el caption
-# para cada chunk con figuras
-knit_plot &lt;- knitr::knit_hooks$get(&quot;plot&quot;)
+<p><img src="../../../post/2018-06-01-tu-propio-smooth-en-geom-smooth_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 
-knitr::knit_hooks$set(plot = function(x, options) {
-   if (ppt == TRUE) {
-      if (inherits(last_plot(), &quot;gg&quot;)) {
-         read_pptx(pptfile)  %&gt;%
-            add_slide(layout = &quot;figure&quot;, master = &quot;Office Theme&quot;) %&gt;%
-            ph_with_gg(last_plot(), type = &quot;pic&quot;) %&gt;%
-            ph_with_text(options$fig.cap, type = &quot;body&quot;) %&gt;%
-            print(pptfile)
-         set_last_plot(NULL)   # remove last_plot()
-      } else {
-         read_pptx(pptfile)  %&gt;%
-            add_slide(layout = &quot;figure&quot;, master = &quot;Office Theme&quot;) %&gt;%
-            rvg::ph_with_vg(code = eval(parse(text = options$code)), 
-                            type = &quot;pic&quot;) %&gt;%
-            ph_with_text(options$fig.cap, type = &quot;body&quot;) %&gt;% 
-            print(pptfile)
-      }
-   }
-   knit_plot(x, options)
-})</code></pre>
-<p>Hay dos cosas importantes. Primero es setear un <code>opts_hook</code> que se ejecute siempre que la opción <code>fig.cap</code> no sea <code>NULL</code> que desactive la cache. Esto es porque sino knitr no ejecuta nada de lo que sigue y entonces no agrega la figura al ppt.</p>
-<p>Luego está la parte más jugosa. Cambiamos el <code>knit_hook</code> para el <code>plot</code> para que antes de hacer lo que hace siempre (que primero guardamos con <code>knitr::knit_hooks$get(&quot;plot&quot;)</code>) le decimos que guarde el plot en una nueva diapositiva. El código es ligeramente distinto si se trata de un gráfico de <code>ggplot2</code> o uno de <code>base</code>. En el caso de <code>ggplot2</code>, usamos la función <code>last_plot()</code> para guardar el último plot generado en la nueva diapositiva y luego seteamos que el <code>last_plot</code> sea <code>NULL</code> (por si el siguiente gráfico que hay que guardar es uno en base). Si es base, hay que pasarle el código del chunk evaluado a la función <code>ph_with_vg()</code>, que crea un gráfico de vectores a partir de un gráfico base.</p>
-<p>Y listo. Al <em>knitear</em> el documento se va a generar el pdf o html y, además, el ppt.</p>
-<div class="figure">
-<img src="../../../images/ppt.jpg#center" />
+<p>¡Mucho mejor! 🕺</p>
 
-</div>
-<p>Así como está es una versión mínima que cubre mis necesidades. Sólo tiene en cuenta los gráficos con epígrafe, no funciona sin un chunk genera varias figuras, el proceso de renderizar todo es lento (porque desactiva la cache) y peor aún si los chunks que generan figuras también tienen código que manipula datos. Además, no guarda tablas ni texto plano.</p>
+<p>El segundo requisito en este ejemplo viene &ldquo;gratis&rdquo; porque <code>mblm()</code> es compatible con los métodos de <code>predict()</code> de <code>lm()</code>, pero no siempre es así. En este segundo ejemplo, quiero hacer un suavizado que se base en hacer la transformada de fourier y eliminar una determinada cantidad de frecuencias. Una función que hace eso sería esta:</p>
+
+<pre><code class="language-r"># n es la proporción de frecuencias que vamos a eliminar. 
+# n = 0.5 significa sacar la mitad.
+FFTSmooth &lt;- function(formula, data, weights, n = 0.5) {
+   f &lt;- fft(data$y)
+   keep &lt;- c(0, seq_len(floor(length(f)/2*n)))
+   keep &lt;- c(keep + 1, length(f) - keep[keep != 0] + 1)
+   f[-keep] &lt;- 0 + 0i
+   Re(fft(f, inverse = T))/length(f)
+}
+</code></pre>
+
+<p>Notar que la función ignora por completo la formula y los pesos, pero hay que ponerlos para que funcione en <code>geom_smooth()</code>. Esta función sirve en el sentido de que hace un suavizado correcto de los datos (¡siempre que estén definidos en intervalos de x regulares!), pero si usamos <code>geom_smooth(method = &quot;FFTSmooth&quot;)</code> ggplot2 nos va a tirar un error:</p>
+
+<blockquote>
+<p>Computation failed in <code>stat_smooth()</code>: no applicable method for &lsquo;predict&rsquo; applied to an object of class &ldquo;c(&lsquo;double&rsquo;, &lsquo;numeric&rsquo;)&rdquo;</p>
+</blockquote>
+
+<p>El problema es que <code>FTTSmooth()</code> devuelve los valores suavizados, pero lo que tiene que devolver es un &ldquo;modelo&rdquo; que devuelva los valores suavizados al hacer <code>predictdf(model, xseq, se, level)</code> (donde <code>xseq</code> son los puntos de x donde se evalúa el modelo, <code>se</code> es TRUE o FALSE según si queremos un intervalo de confianza y <code>level</code> es el nivel de confianza de dicho intervalo). Esta segunda implementación del suavizado sí funciona.</p>
+
+<pre><code class="language-r">FFTSmooth &lt;- function(formula, data, weights, n = 0.5) {
+   f &lt;- fft(data$y)
+   keep &lt;- c(0, seq_len(floor(length(f)/2*n)))
+   keep &lt;- c(keep + 1, length(f) - keep[keep != 0] + 1)
+   f[-keep] &lt;- 0 + 0i
+   
+   model &lt;- list(x = data$x, pred = Re(fft(f, inverse = T))/length(f))
+   class(model) &lt;- &quot;my_smooth&quot;
+   return(model)
+}
+
+predictdf.my_smooth &lt;- function(model, xseq, se, level) {
+   data.frame(x = model$x, y = model$pred)
+}
+</code></pre>
+
+<p>La diferencia importante en <code>FFTSmooth()</code> es que ahora devuelve una lista con los valores de <code>x</code> y los de <code>y</code> suavizados pero que tiene clase &ldquo;my_smooth&rdquo;. Cuando ggplot2 llame <code>predictdf(model, ...)</code>, R va a buscar la función <code>predictdf.my_smooth()</code> (así es básicamente cómo funcionan las <a href="http://adv-r.had.co.nz/S3.html">clases</a> en R). <code>predictdf.my_smooth()</code>, por su parte, ignora casi todos los inputs y simplemente devuelve un <code>data.frame</code> con los valores de <code>x</code> e <code>y</code> guardados en el modelo.</p>
+
+<pre><code class="language-r">set.seed(42)
+df &lt;- data.frame(x = seq(0, 360, length.out = 100))
+df$y &lt;- with(df, 5*cos(x*pi/180) + 3*sin(x*pi/180*3) + 1.6*rnorm(100))
+
+ggplot(df, aes(x, y)) +
+   geom_point() +
+   geom_smooth(method = &quot;FFTSmooth&quot;, method.args = list(n = 0.2))
+</code></pre>
+
+<p><img src="../../../post/2018-06-01-tu-propio-smooth-en-geom-smooth_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+
+<p>¡Y listo! 🍰</p>
+
+<p>Sólo hace falta definir <code>predictdf.my_smooth()</code> una vez. Por ejemplo, si queremos usar una Spline.</p>
+
+<pre><code class="language-r">SplineSmooth &lt;- function(formula, data, weights, span = 0.5, ...) {
+   pred &lt;- smooth.spline(data$x, data$y, df = length(data$y)*span,...)$y
+   # print(pred[1:10])
+   model &lt;- list(x = data$x, pred = pred)
+   class(model) &lt;- &quot;my_smooth&quot;
+   model
+}
+
+ggplot(df, aes(x, y)) +
+   geom_point() +
+   geom_smooth(method = &quot;SplineSmooth&quot;, method.args = list(span = 0.1))
+</code></pre>
+
+<p><img src="../../../post/2018-06-01-tu-propio-smooth-en-geom-smooth_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+
+<p>Un resultado similar puede conseguirse de manera más directa con <a href="../../../2018/05/como-hacer-un-stat-generico-en-ggplot2/"><code>stat_rasa()</code></a>, pero me pareció interesante urgar un poco dentro del funcionamiento de ggplot2.</p>
 
               
             </div>
           </div>
           <div id="post-footer" class="post-footer main-content-wrap">
             
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">ETIQUETADO EN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="../../../tags/ggplot2/">ggplot2</a>
+
+                  </div>
+                
               
             
             
@@ -318,7 +399,7 @@ knitr::knit_hooks$set(plot = function(x, options) {
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/05/arte-reproducible-del-subte-de-buenos-aires/" data-tooltip="Arte reproducible del Subte de Buenos Aires">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/05/presentacion-powerpoint-rmarkdown/" data-tooltip="Hacer una presentación de PowerPoint a partir de rmarkdown">
               
                   <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
                   <i class="fa fa-angle-right"></i>
@@ -336,19 +417,19 @@ knitr::knit_hooks$set(plot = function(x, options) {
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/05/presentaci%C3%B3n-powerpoint-rmarkdown/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/05/presentaci%C3%B3n-powerpoint-rmarkdown/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/05/presentaci%C3%B3n-powerpoint-rmarkdown/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -404,7 +485,7 @@ knitr::knit_hooks$set(plot = function(x, options) {
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/05/arte-reproducible-del-subte-de-buenos-aires/" data-tooltip="Arte reproducible del Subte de Buenos Aires">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/05/presentacion-powerpoint-rmarkdown/" data-tooltip="Hacer una presentación de PowerPoint a partir de rmarkdown">
               
                   <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
                   <i class="fa fa-angle-right"></i>
@@ -422,19 +503,19 @@ knitr::knit_hooks$set(plot = function(x, options) {
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/05/presentaci%C3%B3n-powerpoint-rmarkdown/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/05/presentaci%C3%B3n-powerpoint-rmarkdown/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/05/presentaci%C3%B3n-powerpoint-rmarkdown/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -464,19 +545,19 @@ knitr::knit_hooks$set(plot = function(x, options) {
   <ul class="share-options">
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F05%2Fpresentaci%25C3%25B3n-powerpoint-rmarkdown%2F">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F06%2Ftu-propio-geom-smooth%2F">
           <i class="fa fa-facebook-official"></i><span>Compartir en Facebook</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F05%2Fpresentaci%25C3%25B3n-powerpoint-rmarkdown%2F">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F06%2Ftu-propio-geom-smooth%2F">
           <i class="fa fa-twitter"></i><span>Compartir en Twitter</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F05%2Fpresentaci%25C3%25B3n-powerpoint-rmarkdown%2F">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F06%2Ftu-propio-geom-smooth%2F">
           <i class="fa fa-google-plus"></i><span>Compartir en Google&#43;</span>
         </a>
       </li>
@@ -529,7 +610,25 @@ knitr::knit_hooks$set(plot = function(x, options) {
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/05/presentaci%C3%B3n-powerpoint-rmarkdown/">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/">
+                <h3 class="media-heading">Tu propio smooth en geom_smooth()</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jun 6, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Algo increíblemente satisfactorio de ggplot2 es la posibilidad de ajustar curvas a los datos de manera súper fácil con geom_smooth(). Para mi investigación estaba mirando la relación entre dos ángulos y me di cuenta que la recta ajustada por cuadrados mínimos no estaba funcionando para ilustrar la obvia estructura que había en los datos.
+library(ggplot2) df &lt;- readRDS(&quot;data/smooth_example.Rds&quot;) ggplot(df, aes(pc.angle, phase)) + geom_point() + geom_smooth(method = &quot;lm&quot;)  Se me ocurrió que un mejor modelo podría ser usando el estimador de Theil-Sen, que es la mediana de todas las pendientes entre dos puntos distintos y está implementado en el paquete mblm.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/05/presentacion-powerpoint-rmarkdown/">
                 <h3 class="media-heading">Hacer una presentación de PowerPoint a partir de rmarkdown</h3>
               </a>
               <span class="media-meta">
@@ -555,7 +654,7 @@ knitr::knit_hooks$set(plot = function(x, options) {
                 </span>
               </span>
               <div class="media-content hide-xs font-merryweather">El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía unas ilustraciones en las paredes hechas a partir de líneas de distinto grosor.
- Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
+Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
 Lo primero que hago es leer la imagen. Este paso depende del formato (a menos que haya alguna forma de seleccionar el formato correcto automáticamente, pero no conozco).</div>
             </div>
             <div style="clear:both;"></div>
@@ -590,7 +689,7 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
                   May 5, 2018
                 </span>
               </span>
-              <div class="media-content hide-xs font-merryweather">For a while now I’ve been thinking that, yes, ggplot2 is awesome and offers a lot of geoms and stats, but it would be great if it could be extended with new user-generated geoms and stats. Then I learnt that ggplot2 actually has a pretty great extension system so I could create my own geoms I needed for my work or just for fun. But still, creating a geom from scratch is an involved process that doesn’t lend itself to simple transformations.</div>
+              <div class="media-content hide-xs font-merryweather">For a while now I&rsquo;ve been thinking that, yes, ggplot2 is awesome and offers a lot of geoms and stats, but it would be great if it could be extended with new user-generated geoms and stats. Then I learnt that ggplot2 actually has a pretty great extension system so I could create my own geoms I needed for my work or just for fun. But still, creating a geom from scratch is an involved process that doesn&rsquo;t lend itself to simple transformations.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>
@@ -610,6 +709,25 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
               <div class="media-content hide-xs font-merryweather">Spanish version of this post
 While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
 What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
+                <h3 class="media-heading">Cómo hacer un efecto de relieve en R</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jan 1, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">(Versión en inglés)
+Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
+Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>
@@ -677,7 +795,7 @@ En la práctica lo que se hace es la función de probabilidad acumulada a partir
          data-message-zero="no se encontraron artículos"
          data-message-one="1 artículo encontrado"
          data-message-other="{n} artículos encontrados">
-         8 posts found
+         10 posts found
       </p>
     </div>
   </div>
@@ -721,9 +839,9 @@ $(document).ready(function() {
     
       <script>
         var disqus_config = function () {
-          this.page.url = 'https:\/\/eliocamp.github.io\/codigo-r\/2018\/05\/presentaci%C3%B3n-powerpoint-rmarkdown\/';
+          this.page.url = 'https:\/\/eliocamp.github.io\/codigo-r\/2018\/06\/tu-propio-geom-smooth\/';
           
-            this.page.identifier = '\/2018\/05\/presentaci%C3%B3n-powerpoint-rmarkdown\/'
+            this.page.identifier = '\/2018\/06\/tu-propio-geom-smooth\/'
           
         };
         (function() {

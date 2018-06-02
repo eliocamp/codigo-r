@@ -1,0 +1,69 @@
+---
+title: Nuevas funciones de la semana (01)
+author: Elio Campitelli
+date: '2018-05-28'
+slug: nuevas-funciones-de-la-semana-01
+draft: true
+categories:
+  - R
+tags: []
+---
+
+
+
+
+`lengths()`
+
+Hasta ahora siempre que quería saber la longitud de los vectores dentro de una lista usaba `lapply(lista, length)`. No más! Esta semana aprendí que R tiene la función `lengths()` que es bastante más rápida y más legible. 
+
+La uso para chequear que la longitud de los vectores en una lista sean iguales en una función que calcula la magnitud de un vector en n dimensiones. `metR::Mag()` antes aceptaba sólo dos argumentos y simplemente hacía `sqrt(x^2 + y^2)` pero la generalización a n argumentos requiere un poco más de programación.
+
+Primero, hay que usar `...` como argumento y luego capturar lo que pone el usuario. Hay varias formas, pero la más directa es simplemente con `list(...)` y luego *lapplicar* la función `^2` a cada elemento y *Reducir* con la suma. 
+
+
+```r
+Mag <- function(...) {
+    coords <- list(...)
+    
+    coords <- lapply(coords, `^`, 2)
+    sqrt(Reduce(`+`, coords))
+}
+```
+
+El problema con esto es que si los vectores dentro de `coords` tienen distinta longitud, R automáticamente los recicla. 
+
+
+```r
+Mag(1:10, 3:4)
+```
+
+```
+##  [1]  3.162278  4.472136  4.242641  5.656854  5.830952  7.211103  7.615773
+##  [8]  8.944272  9.486833 10.770330
+```
+
+Esto a veces es cómodo, pero en este caso podría esconder errores, por lo que quería agregar un paso para chequear que todas las longitudes sean iguales. 
+
+
+```r
+Mag <- function(...) {
+    coords <- list(...)
+    
+    N <- lengths(coords, use.names = FALSE)
+    if (any(N != N[1])) stop("all variables must have the same length")
+    
+    coords <- lapply(coords, `^`, 2)
+    sqrt(Reduce(`+`, coords))
+}
+```
+
+
+```r
+Mag(1:10, 3:4)
+```
+
+```
+## Error in Mag(1:10, 3:4): all variables must have the same length
+```
+
+¡Éxito!

@@ -209,6 +209,127 @@
     
     <div class="postShorten-header">
       <h1 class="postShorten-title" itemprop="headline">
+        <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
+          Cómo hacer un efecto de relieve en R
+        </a>
+      </h1>
+      
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2018-01-24T00:00:00Z">
+        
+  
+  
+  
+  
+    24 de Enero 2018
+  
+
+      </time>
+    
+    
+  
+  
+    <span>en</span>
+    
+      <a class="category-link" href="../../../categories/r">R</a>
+    
+  
+
+  </div>
+
+    </div>
+    <div class="postShorten-excerpt" itemprop="articleBody">
+      (Versión en inglés)
+Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
+Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.
+      <p>
+        <a href="https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/" class="postShorten-excerpt_link link">Seguir leyendo</a>
+        
+      </p>
+    </div>
+  </div>
+  
+</article>
+
+          
+            
+  
+    
+      
+        
+      
+    
+  
+
+
+  
+
+<article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+  <div class="postShorten-wrap">
+    
+    <div class="postShorten-header">
+      <h1 class="postShorten-title" itemprop="headline">
+        <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/01/buen-ejemplo-reproducible-en-r/">
+          Cómo hacer un buen ejemplo reproducible en R
+        </a>
+      </h1>
+      
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2018-01-06T00:00:00Z">
+        
+  
+  
+  
+  
+    6 de Enero 2018
+  
+
+      </time>
+    
+    
+  
+  
+    <span>en</span>
+    
+      <a class="category-link" href="../../../categories/r">R</a>
+    
+  
+
+  </div>
+
+    </div>
+    <div class="postShorten-excerpt" itemprop="articleBody">
+      Es muy difícil dar ayuda si no se sabe cuál es el problema. Un buen ejemplo de lo que está mal que cualquiera pueda correr en sus computadoras es casi esencial para recibir ayuda.
+Un buen ejemplo reproducible (o reprex) es básicamente el feliz matrimonio entre un set de datos mínimo y un código mínimo que ilustre el problema y que cualquiera pueda copiar, pegar en un script y obtener exactamente los mismos resultados.
+      <p>
+        <a href="https://eliocamp.github.io/codigo-r/2018/01/buen-ejemplo-reproducible-en-r/" class="postShorten-excerpt_link link">Seguir leyendo</a>
+        
+      </p>
+    </div>
+  </div>
+  
+</article>
+
+          
+            
+  
+    
+      
+        
+      
+    
+  
+
+
+  
+
+<article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+  <div class="postShorten-wrap">
+    
+    <div class="postShorten-header">
+      <h1 class="postShorten-title" itemprop="headline">
         <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2017/12/calcular-ipe-r/">
           Cómo calcular el Índice de Precipitación Estandarizado en R
         </a>
@@ -324,6 +445,24 @@ En la práctica lo que se hace es la función de probabilidad acumulada a partir
           <div class="media">
             
             <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/">
+                <h3 class="media-heading">Tu propio smooth en geom_smooth()</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jun 6, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Algo increíblemente satisfactorio de ggplot2 es la posibilidad de ajustar curvas a los datos de manera súper fácil con geom_smooth(). Para mi investigación estaba mirando la relación entre dos ángulos y me di cuenta que la recta ajustada por cuadrados mínimos no estaba funcionando para ilustrar la obvia estructura que había en los datos.
+library(ggplot2) df &lt;- readRDS(&quot;data/smooth_example.Rds&quot;) ggplot(df, aes(pc.angle, phase)) + geom_point() + geom_smooth(method = &quot;lm&quot;)  Se me ocurrió que un mejor modelo podría ser usando el estimador de Theil-Sen, que es la mediana de todas las pendientes entre dos puntos distintos y está implementado en el paquete mblm.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
               <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/05/presentacion-powerpoint-rmarkdown/">
                 <h3 class="media-heading">Hacer una presentación de PowerPoint a partir de rmarkdown</h3>
               </a>
@@ -350,7 +489,7 @@ En la práctica lo que se hace es la función de probabilidad acumulada a partir
                 </span>
               </span>
               <div class="media-content hide-xs font-merryweather">El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía unas ilustraciones en las paredes hechas a partir de líneas de distinto grosor.
- Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
+Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
 Lo primero que hago es leer la imagen. Este paso depende del formato (a menos que haya alguna forma de seleccionar el formato correcto automáticamente, pero no conozco).</div>
             </div>
             <div style="clear:both;"></div>
@@ -385,7 +524,7 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
                   May 5, 2018
                 </span>
               </span>
-              <div class="media-content hide-xs font-merryweather">For a while now I’ve been thinking that, yes, ggplot2 is awesome and offers a lot of geoms and stats, but it would be great if it could be extended with new user-generated geoms and stats. Then I learnt that ggplot2 actually has a pretty great extension system so I could create my own geoms I needed for my work or just for fun. But still, creating a geom from scratch is an involved process that doesn’t lend itself to simple transformations.</div>
+              <div class="media-content hide-xs font-merryweather">For a while now I&rsquo;ve been thinking that, yes, ggplot2 is awesome and offers a lot of geoms and stats, but it would be great if it could be extended with new user-generated geoms and stats. Then I learnt that ggplot2 actually has a pretty great extension system so I could create my own geoms I needed for my work or just for fun. But still, creating a geom from scratch is an involved process that doesn&rsquo;t lend itself to simple transformations.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>
@@ -405,6 +544,25 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
               <div class="media-content hide-xs font-merryweather">Spanish version of this post
 While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
 What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
+                <h3 class="media-heading">Cómo hacer un efecto de relieve en R</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jan 1, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">(Versión en inglés)
+Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
+Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>
@@ -472,7 +630,7 @@ En la práctica lo que se hace es la función de probabilidad acumulada a partir
          data-message-zero="no se encontraron artículos"
          data-message-one="1 artículo encontrado"
          data-message-other="{n} artículos encontrados">
-         8 posts found
+         10 posts found
       </p>
     </div>
   </div>

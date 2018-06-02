@@ -241,9 +241,12 @@
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
               <p>La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.</p>
-<p>La clave está en “secuestrar” la función que knitr ejecuta cuando se encuentra con un plot y agregar la imagen a un ppt con el paquete <a href="https://davidgohel.github.io/officer/index.html"><code>officer</code></a>. Lo primero necesario es un archivo con un template. De este archivo va a salir el patrón para agregar distintas diapositivas según lo que queramos insertar. Esto se puede editar cambiando el <a href="https://support.office.com/es-es/article/%C2%BFqu%C3%A9-es-un-patr%C3%B3n-de-diapositivas-b9abb2a0-7aef-4257-a14e-4329c904da54">Patrón de Diapositivas</a>. Como yo soy muy básico, creé uno que tiene una imagen con un texto abajo y nada más y lo llamé “figure”.</p>
+
+<p>La clave está en &ldquo;secuestrar&rdquo; la función que knitr ejecuta cuando se encuentra con un plot y agregar la imagen a un ppt con el paquete <a href="https://davidgohel.github.io/officer/index.html"><code>officer</code></a>. Lo primero necesario es un archivo con un template. De este archivo va a salir el patrón para agregar distintas diapositivas según lo que queramos insertar. Esto se puede editar cambiando el <a href="https://support.office.com/es-es/article/%C2%BFqu%C3%A9-es-un-patr%C3%B3n-de-diapositivas-b9abb2a0-7aef-4257-a14e-4329c904da54">Patrón de Diapositivas</a>. Como yo soy muy básico, creé uno que tiene una imagen con un texto abajo y nada más y lo llamé &ldquo;figure&rdquo;.</p>
+
 <p>Una vez hecho esto, hay que poner esto en el primer chunk de setup:</p>
-<pre class="r"><code>library(officer)
+
+<pre><code class="language-r">library(officer)
 library(magrittr)
 
 ## Opciones que hay que cambiar. 
@@ -286,14 +289,17 @@ knitr::knit_hooks$set(plot = function(x, options) {
       }
    }
    knit_plot(x, options)
-})</code></pre>
-<p>Hay dos cosas importantes. Primero es setear un <code>opts_hook</code> que se ejecute siempre que la opción <code>fig.cap</code> no sea <code>NULL</code> que desactive la cache. Esto es porque sino knitr no ejecuta nada de lo que sigue y entonces no agrega la figura al ppt.</p>
-<p>Luego está la parte más jugosa. Cambiamos el <code>knit_hook</code> para el <code>plot</code> para que antes de hacer lo que hace siempre (que primero guardamos con <code>knitr::knit_hooks$get(&quot;plot&quot;)</code>) le decimos que guarde el plot en una nueva diapositiva. El código es ligeramente distinto si se trata de un gráfico de <code>ggplot2</code> o uno de <code>base</code>. En el caso de <code>ggplot2</code>, usamos la función <code>last_plot()</code> para guardar el último plot generado en la nueva diapositiva y luego seteamos que el <code>last_plot</code> sea <code>NULL</code> (por si el siguiente gráfico que hay que guardar es uno en base). Si es base, hay que pasarle el código del chunk evaluado a la función <code>ph_with_vg()</code>, que crea un gráfico de vectores a partir de un gráfico base.</p>
-<p>Y listo. Al <em>knitear</em> el documento se va a generar el pdf o html y, además, el ppt.</p>
-<div class="figure">
-<img src="../../../images/ppt.jpg#center" />
+})
+</code></pre>
 
-</div>
+<p>Hay dos cosas importantes. Primero es setear un <code>opts_hook</code> que se ejecute siempre que la opción <code>fig.cap</code> no sea <code>NULL</code> que desactive la cache. Esto es porque sino knitr no ejecuta nada de lo que sigue y entonces no agrega la figura al ppt.</p>
+
+<p>Luego está la parte más jugosa. Cambiamos el <code>knit_hook</code> para el <code>plot</code> para que antes de hacer lo que hace siempre (que primero guardamos con <code>knitr::knit_hooks$get(&quot;plot&quot;)</code>) le decimos que guarde el plot en una nueva diapositiva. El código es ligeramente distinto si se trata de un gráfico de <code>ggplot2</code> o uno de <code>base</code>. En el caso de <code>ggplot2</code>, usamos la función <code>last_plot()</code> para guardar el último plot generado en la nueva diapositiva y luego seteamos que el <code>last_plot</code> sea <code>NULL</code> (por si el siguiente gráfico que hay que guardar es uno en base). Si es base, hay que pasarle el código del chunk evaluado a la función <code>ph_with_vg()</code>, que crea un gráfico de vectores a partir de un gráfico base.</p>
+
+<p>Y listo. Al <em>knitear</em> el documento se va a generar el pdf o html y, además, el ppt.</p>
+
+<p><img src="../../../images/ppt.jpg#center" alt="" /></p>
+
 <p>Así como está es una versión mínima que cubre mis necesidades. Sólo tiene en cuenta los gráficos con epígrafe, no funciona sin un chunk genera varias figuras, el proceso de renderizar todo es lento (porque desactiva la cache) y peor aún si los chunks que generan figuras también tienen código que manipula datos. Además, no guarda tablas ni texto plano.</p>
 
               
@@ -310,7 +316,7 @@ knitr::knit_hooks$set(plot = function(x, options) {
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--disabled">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/06/tu-propio-geom-smooth/" data-tooltip="Tu propio smooth en geom_smooth()">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
@@ -396,7 +402,7 @@ knitr::knit_hooks$set(plot = function(x, options) {
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--disabled">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/06/tu-propio-geom-smooth/" data-tooltip="Tu propio smooth en geom_smooth()">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
@@ -529,6 +535,24 @@ knitr::knit_hooks$set(plot = function(x, options) {
           <div class="media">
             
             <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/">
+                <h3 class="media-heading">Tu propio smooth en geom_smooth()</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jun 6, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Algo increíblemente satisfactorio de ggplot2 es la posibilidad de ajustar curvas a los datos de manera súper fácil con geom_smooth(). Para mi investigación estaba mirando la relación entre dos ángulos y me di cuenta que la recta ajustada por cuadrados mínimos no estaba funcionando para ilustrar la obvia estructura que había en los datos.
+library(ggplot2) df &lt;- readRDS(&quot;data/smooth_example.Rds&quot;) ggplot(df, aes(pc.angle, phase)) + geom_point() + geom_smooth(method = &quot;lm&quot;)  Se me ocurrió que un mejor modelo podría ser usando el estimador de Theil-Sen, que es la mediana de todas las pendientes entre dos puntos distintos y está implementado en el paquete mblm.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
               <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/05/presentacion-powerpoint-rmarkdown/">
                 <h3 class="media-heading">Hacer una presentación de PowerPoint a partir de rmarkdown</h3>
               </a>
@@ -555,7 +579,7 @@ knitr::knit_hooks$set(plot = function(x, options) {
                 </span>
               </span>
               <div class="media-content hide-xs font-merryweather">El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía unas ilustraciones en las paredes hechas a partir de líneas de distinto grosor.
- Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
+Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
 Lo primero que hago es leer la imagen. Este paso depende del formato (a menos que haya alguna forma de seleccionar el formato correcto automáticamente, pero no conozco).</div>
             </div>
             <div style="clear:both;"></div>
@@ -590,7 +614,7 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
                   May 5, 2018
                 </span>
               </span>
-              <div class="media-content hide-xs font-merryweather">For a while now I’ve been thinking that, yes, ggplot2 is awesome and offers a lot of geoms and stats, but it would be great if it could be extended with new user-generated geoms and stats. Then I learnt that ggplot2 actually has a pretty great extension system so I could create my own geoms I needed for my work or just for fun. But still, creating a geom from scratch is an involved process that doesn’t lend itself to simple transformations.</div>
+              <div class="media-content hide-xs font-merryweather">For a while now I&rsquo;ve been thinking that, yes, ggplot2 is awesome and offers a lot of geoms and stats, but it would be great if it could be extended with new user-generated geoms and stats. Then I learnt that ggplot2 actually has a pretty great extension system so I could create my own geoms I needed for my work or just for fun. But still, creating a geom from scratch is an involved process that doesn&rsquo;t lend itself to simple transformations.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>
@@ -610,6 +634,25 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
               <div class="media-content hide-xs font-merryweather">Spanish version of this post
 While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
 What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
+                <h3 class="media-heading">Cómo hacer un efecto de relieve en R</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jan 1, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">(Versión en inglés)
+Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
+Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>
@@ -677,7 +720,7 @@ En la práctica lo que se hace es la función de probabilidad acumulada a partir
          data-message-zero="no se encontraron artículos"
          data-message-one="1 artículo encontrado"
          data-message-other="{n} artículos encontrados">
-         8 posts found
+         10 posts found
       </p>
     </div>
   </div>

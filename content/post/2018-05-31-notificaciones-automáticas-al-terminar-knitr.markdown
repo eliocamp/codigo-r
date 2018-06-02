@@ -1,0 +1,30 @@
+---
+title: Notificaciones automáticas al terminar knitr
+author: Elio Campitelli
+date: '2018-05-31'
+slug: notificaciones-automáticas-al-terminar-knitr
+draft: true
+categories:
+  - R
+tags:
+  - knitr
+---
+
+
+```r
+start.time <- Sys.time()
+# Notification
+start.time <- unclass(Sys.time())
+min.time <- 10
+knit_doc <- knitr::knit_hooks$get("document")
+knitr::knit_hooks$set(document = function(x) {
+   took <- unclass(Sys.time()) - start.time
+   if (unclass(Sys.time()) - start.time >= min.time) {
+      notify("Done knitting!", 
+             paste0("Took ", round(took), " seconds"),
+             time = 5)
+   }  
+   knit_doc(x)
+})
+```
+

@@ -241,9 +241,12 @@
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
               <p>Hace un tiempo que venía pensando que si bien <code>ggplot2</code> es genial y tiene un montón de geoms y stats, le faltaba la opción de extenderlo a stats y geoms creados por el usuario. Luego, aprendí que <code>ggplot2</code> tiene un excelente sistema para extenderlo y empecé a crear mis propios stats. Pero aún así, hacer un <code>stat</code> específico cada vez que uno quiere hacer un plot en particular es demasiado complicado.</p>
+
 <p>Entonces se me ocurrió una posible solución. Hacer un <code>stat</code> <em>genérico</em>; una tabula rasa que acepte una función creada por el usuario. Nativamente <code>ggplot2</code> viene con <code>stat_summary()</code> que hace algo similar, pero sólo acepta funciones que (como su nombre lo indica) sumaricen los datos de alguna manera. Lo que yo quería era algo totalmente genérico y este es mi primer intento.</p>
+
 <p>Debajo, es el código de <code>stat_rasa()</code>, que toma los datos y una función que devuelva un data.frame interpretable por el <code>geom</code> elegido.</p>
-<pre class="r"><code># ggproto object
+
+<pre><code class="language-r"># ggproto object
 StatRasa &lt;- ggplot2::ggproto(&quot;StatRasa&quot;, ggplot2::Stat,
   compute_group = function(data, scales, fun, fun.args) {
      # Change default arguments of the function to the 
@@ -291,18 +294,24 @@ stat_rasa &lt;- function(mapping = NULL, data = NULL,
          ...
       )
    )
-}</code></pre>
+}
+</code></pre>
+
 <p>Por ejemplo, si queremos rápidamente visualizar los datos menos sin la tendencia, podemos crear una función relativamente simple:</p>
-<pre class="r"><code>Detrend &lt;- function(data, method = &quot;lm&quot;, span = 0.2) {
+
+<pre><code class="language-r">Detrend &lt;- function(data, method = &quot;lm&quot;, span = 0.2) {
    if (method == &quot;lm&quot;) {
       data$y &lt;- resid(lm(y ~ x, data = data))
    } else {
       data$y &lt;- resid(loess(y ~ x, span = span, data = data))
    }
    as.data.frame(data)
-}</code></pre>
+}
+</code></pre>
+
 <p>Y luego obtener los residuos en una sola línea.</p>
-<pre class="r"><code>library(ggplot2)
+
+<pre><code class="language-r">library(ggplot2)
 set.seed(42)
 x &lt;- seq(-1, 3, length.out = 30)
 y &lt;- x^2 + rnorm(30)*0.5
@@ -310,19 +319,27 @@ df &lt;- data.frame(x = x, y = y)
 ggplot(df, aes(x, y)) +
    geom_line() +
    stat_rasa(geom = &quot;line&quot;, fun = Detrend, method = &quot;smooth&quot;,
-             color = &quot;steelblue&quot;)</code></pre>
+             color = &quot;steelblue&quot;)
+</code></pre>
+
 <p><img src="../../../post/2018-05-16-como-hacer-un-stat-generico-en-ggplot2_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+
 <p>Si queremos un poco más de legibilidad, podemos hacer una función con un nombre más informativo:</p>
-<pre class="r"><code>stat_detrend &lt;- function(...) {
+
+<pre><code class="language-r">stat_detrend &lt;- function(...) {
    stat_rasa(fun = Detrend, ...)
 }
 
 ggplot(df, aes(x, y)) +
    geom_line() +
-   stat_detrend(method = &quot;lm&quot;, color = &quot;blue&quot;, geom = &quot;line&quot;)</code></pre>
+   stat_detrend(method = &quot;lm&quot;, color = &quot;blue&quot;, geom = &quot;line&quot;)
+</code></pre>
+
 <p><img src="../../../post/2018-05-16-como-hacer-un-stat-generico-en-ggplot2_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+
 <p>Otro caso es el de calcular contornos a partir de una grilla irregular. <code>ggplot2::stat_contour()</code> usa <code>grDevices::contourLines()</code> para computar los contornos y requiere una grilla regular y el paquete <code>contoureR</code> tiene una función que acepta una grilla irregular. Para usarla sin problemas lo único que tenemos que hacer es armar una pequeña función y usar <code>geom = &quot;path&quot;</code> en <code>stat_rasa()</code></p>
-<pre class="r"><code>IrregularContour &lt;- function(data, breaks = scales::fullseq, 
+
+<pre><code class="language-r">IrregularContour &lt;- function(data, breaks = scales::fullseq, 
                              binwidth = NULL,
                              bins = 10) {
    if (is.function(breaks)) {
@@ -348,8 +365,10 @@ ggplot(df, aes(x, y)) +
 
 stat_contour_irregular &lt;- function(...) {
    stat_rasa(fun = IrregularContour, geom = &quot;path&quot;, ...)
-}</code></pre>
-<pre class="r"><code>set.seed(42)
+}
+</code></pre>
+
+<pre><code class="language-r">set.seed(42)
 df &lt;- data.frame(x = rnorm(500),
                  y = rnorm(500))
 df$z &lt;- with(df, -x*y*exp(-x^2 - y^2))
@@ -357,9 +376,13 @@ df$z &lt;- with(df, -x*y*exp(-x^2 - y^2))
 ggplot(df, aes(x, y)) +
    geom_point(aes(color = z)) +
    stat_contour_irregular(aes(z = z, color = ..level..), bins = 15) +
-   scale_color_viridis_c()</code></pre>
+   scale_color_viridis_c()
+</code></pre>
+
 <p><img src="../../../post/2018-05-16-como-hacer-un-stat-generico-en-ggplot2_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+
 <p>Y voilà.</p>
+
 <p>Quedan algunos detalles para mejorar, como por ejemplo la posibilidad de utilizar una función para decidir los parámetros a usar de acuerdo a los datos, pero creo que así como está sirve para el 80% de las aplicaciones simples. También debería ponerle un mejor nombre, pero nombrar cosas es muy difícil.</p>
 
               
@@ -605,6 +628,24 @@ ggplot(df, aes(x, y)) +
           <div class="media">
             
             <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/">
+                <h3 class="media-heading">Tu propio smooth en geom_smooth()</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jun 6, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Algo increíblemente satisfactorio de ggplot2 es la posibilidad de ajustar curvas a los datos de manera súper fácil con geom_smooth(). Para mi investigación estaba mirando la relación entre dos ángulos y me di cuenta que la recta ajustada por cuadrados mínimos no estaba funcionando para ilustrar la obvia estructura que había en los datos.
+library(ggplot2) df &lt;- readRDS(&quot;data/smooth_example.Rds&quot;) ggplot(df, aes(pc.angle, phase)) + geom_point() + geom_smooth(method = &quot;lm&quot;)  Se me ocurrió que un mejor modelo podría ser usando el estimador de Theil-Sen, que es la mediana de todas las pendientes entre dos puntos distintos y está implementado en el paquete mblm.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
               <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/05/presentacion-powerpoint-rmarkdown/">
                 <h3 class="media-heading">Hacer una presentación de PowerPoint a partir de rmarkdown</h3>
               </a>
@@ -631,7 +672,7 @@ ggplot(df, aes(x, y)) +
                 </span>
               </span>
               <div class="media-content hide-xs font-merryweather">El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía unas ilustraciones en las paredes hechas a partir de líneas de distinto grosor.
- Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
+Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
 Lo primero que hago es leer la imagen. Este paso depende del formato (a menos que haya alguna forma de seleccionar el formato correcto automáticamente, pero no conozco).</div>
             </div>
             <div style="clear:both;"></div>
@@ -666,7 +707,7 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
                   May 5, 2018
                 </span>
               </span>
-              <div class="media-content hide-xs font-merryweather">For a while now I’ve been thinking that, yes, ggplot2 is awesome and offers a lot of geoms and stats, but it would be great if it could be extended with new user-generated geoms and stats. Then I learnt that ggplot2 actually has a pretty great extension system so I could create my own geoms I needed for my work or just for fun. But still, creating a geom from scratch is an involved process that doesn’t lend itself to simple transformations.</div>
+              <div class="media-content hide-xs font-merryweather">For a while now I&rsquo;ve been thinking that, yes, ggplot2 is awesome and offers a lot of geoms and stats, but it would be great if it could be extended with new user-generated geoms and stats. Then I learnt that ggplot2 actually has a pretty great extension system so I could create my own geoms I needed for my work or just for fun. But still, creating a geom from scratch is an involved process that doesn&rsquo;t lend itself to simple transformations.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>
@@ -686,6 +727,25 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
               <div class="media-content hide-xs font-merryweather">Spanish version of this post
 While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
 What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/">
+                <h3 class="media-heading">Cómo hacer un efecto de relieve en R</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jan 1, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">(Versión en inglés)
+Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
+Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>
@@ -753,7 +813,7 @@ En la práctica lo que se hace es la función de probabilidad acumulada a partir
          data-message-zero="no se encontraron artículos"
          data-message-one="1 artículo encontrado"
          data-message-other="{n} artículos encontrados">
-         8 posts found
+         10 posts found
       </p>
     </div>
   </div>

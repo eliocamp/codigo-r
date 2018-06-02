@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/</loc>
+    <lastmod>2018-06-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://eliocamp.github.io/codigo-r/2018/05/presentacion-powerpoint-rmarkdown/</loc>
     <lastmod>2018-05-23T00:00:00+00:00</lastmod>
   </url>
@@ -33,6 +38,11 @@
   </url>
   
   <url>
+    <loc>https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/</loc>
+    <lastmod>2018-01-24T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://eliocamp.github.io/codigo-r/2018/01/buen-ejemplo-reproducible-en-r/</loc>
     <lastmod>2018-01-06T00:00:00+00:00</lastmod>
   </url>
@@ -54,31 +64,31 @@
   
   <url>
     <loc>https://eliocamp.github.io/codigo-r/</loc>
-    <lastmod>2018-05-23T00:00:00+00:00</lastmod>
+    <lastmod>2018-06-01T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://eliocamp.github.io/codigo-r/tags/ggplot2/</loc>
-    <lastmod>2018-05-20T00:00:00+00:00</lastmod>
+    <lastmod>2018-06-01T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://eliocamp.github.io/codigo-r/post/</loc>
-    <lastmod>2018-05-23T00:00:00+00:00</lastmod>
+    <lastmod>2018-06-01T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://eliocamp.github.io/codigo-r/categories/r/</loc>
-    <lastmod>2018-05-23T00:00:00+00:00</lastmod>
+    <lastmod>2018-06-01T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://eliocamp.github.io/codigo-r/tags/</loc>
-    <lastmod>2018-05-20T00:00:00+00:00</lastmod>
+    <lastmod>2018-06-01T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
