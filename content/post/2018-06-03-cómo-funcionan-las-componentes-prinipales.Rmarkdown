@@ -1,0 +1,46 @@
+---
+title: Cómo funcionan las componentes prinipales
+author: Elio Campitelli
+date: '2018-06-03'
+draft: true
+slug: cómo-funcionan-las-componentes-prinipales
+categories:
+  - R
+tags:
+  - ejemplos
+---
+
+```{r eval=FALSE, include=FALSE}
+library(data.table)
+library(metR)
+library(ggplot2)
+library(magrittr)
+
+n <- seq(1, 50, by = 1)
+# n = 50
+cols <- paste0(n, " PCs")
+
+file <- "~/Pictures/jupiter.jpg"
+foto <- jpeg::readJPEG(file)
+y <- nrow(foto)
+x <- ncol(foto)
+dimnames(foto) <- list(y = rev(seq_len(nrow(foto))), x = seq_len(ncol(foto)), 
+                       color = c("r", "g", "b"))
+foto <- setDT(melt(foto))
+
+foto[, c(cols) := BuildEOF(value ~ y  | x + color, data = foto, n = n)]
+
+melt(foto, id.vars = c("x", "y", "color"), measure.vars = cols) %>% 
+   .[, value := scales::rescale(value, c(0, 1)), by = .(color, variable)] %>% 
+   dcast(x + y + variable ~ color, value.var = "value") %>% 
+   ggplot(aes(x, y)) + 
+   geom_rgb(aes(r = r, g = g, b = b, frame = variable)) +
+   coord_equal() +
+   # facet_wrap(~variable) +
+   theme_void() -> g
+
+gganimate::gganimate(g, "~/Pictures/jupiter.gif", interval = 0.4, 
+                     ani.height = y, ani.width = x)
+
+```
+
