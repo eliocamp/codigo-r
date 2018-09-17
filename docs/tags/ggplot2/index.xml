@@ -6,10 +6,22 @@
     <description>Recent content in Ggplot2 on Código R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Tue, 21 Aug 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 17 Sep 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://eliocamp.github.io/codigo-r/tags/ggplot2/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Múltiples escalas de colores en ggplot2</title>
+      <link>https://eliocamp.github.io/codigo-r/2018/09/multiples-escalas-colores-ggplot2/</link>
+      <pubDate>Mon, 17 Sep 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://eliocamp.github.io/codigo-r/2018/09/multiples-escalas-colores-ggplot2/</guid>
+      <description>Un dolor importante para algunos usuarios de ggplot2 es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
+
+Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &amp;ldquo;no se puede, pero esta es otra forma de graficar tus datos&amp;rdquo;.
+Tener varias escalas distintas para el mismo parámetro estético tiene riesgos, pero también beneficios.</description>
+    </item>
     
     <item>
       <title>Wrapping around ggplot2 with ggperiodic</title>

@@ -1,4 +1,4 @@
-build_site <- function (local = FALSE, method = c("html", "custom"), run_hugo = TRUE) {
+build_site <- function(local = FALSE, method = c("html", "custom"), run_hugo = TRUE) {
    if (missing(method)) method = getOption("blogdown.method", method)
    method = match.arg(method)
    # on.exit(blogdown:::run_script("R/build.R", as.character(local)), add = TRUE)

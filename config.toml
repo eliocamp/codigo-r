@@ -37,7 +37,7 @@ canonifyurls = true
 [author]
   name = "Elio Campitelli"
   bio = ""
-  job = ""
+  job = "Atmospheric sciences graduate researcher at CONICET"
   location = "Argentina"
   # Your Gravatar email. Overwrite `author.picture` everywhere in the blog
   gravatarEmail = "kerberos888@gmail.com"
