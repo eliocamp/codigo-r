@@ -259,6 +259,7 @@ ggplot(atmos, aes(lon, lat)) +
    
    geom_contour(aes(z = air, color = ..level..), binwidth = 4) +
    scale_color_distiller("Temperatura del aire", palette = "Spectral")  +
+   
    scale_x_longitude(limits = c(-150, 0)) +
    scale_y_latitude(ticks = 15) +
    ggalt::coord_proj("+proj=moll +lon_0=-75", 
