@@ -17,7 +17,8 @@
       <pubDate>Mon, 17 Sep 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/2018/09/multiples-escalas-colores-ggplot2/</guid>
-      <description>Un dolor importante para algunos usuarios de ggplot2 es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
+      <description>tl;dr: En este gist está el código importante
+Un dolor importante para algunos usuarios de ggplot2 es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
 
 Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &amp;ldquo;no se puede, pero esta es otra forma de graficar tus datos&amp;rdquo;.
 Tener varias escalas distintas para el mismo parámetro estético tiene riesgos, pero también beneficios.</description>
