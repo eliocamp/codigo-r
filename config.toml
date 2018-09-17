@@ -82,6 +82,12 @@ canonifyurls = true
   name = "GitHub"
   pre = "<i class=\"sidebar-button-icon fa fa-lg fa-github\"></i>"
   url = "https://github.com/eliocamp"
+[[menu.links]]
+  weight = 1
+  identifier = "twitter"
+  name = "Twitter"
+  pre = "<i class=\"sidebar-button-icon fa fa-lg fa-twitter\"></i>"
+  url = "http://twitter.com/d_olivaw"
 
 
 [[menu.misc]]
