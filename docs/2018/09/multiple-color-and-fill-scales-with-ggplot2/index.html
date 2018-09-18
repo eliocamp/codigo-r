@@ -1,0 +1,874 @@
+
+
+  
+    
+  
+
+
+  
+
+
+
+
+  
+
+
+  
+
+<!DOCTYPE html>
+<html lang="es-es">
+  <head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hugo 0.47.1 with theme Tranquilpeak 0.4.3-BETA">
+    <title>Multiple color (and fill) scales with ggplot2</title>
+    <meta name="author" content="Elio Campitelli">
+    <meta name="keywords" content=", R">
+
+    <link rel="icon" href="../../../favicon.png">
+    
+
+    
+    <meta name="description" content="(Versión en español)
+tl;dr: You can find the relevant code in this gist.
+A very common annoyance from many ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can fine many a question relating to this issue:
+
+Unfortunately, the deluge of questions is met with a shortage of conclusive answers and most are some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.">
+    <meta property="og:description" content="(Versión en español)
+tl;dr: You can find the relevant code in this gist.
+A very common annoyance from many ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can fine many a question relating to this issue:
+
+Unfortunately, the deluge of questions is met with a shortage of conclusive answers and most are some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.">
+    <meta property="og:type" content="blog">
+    <meta property="og:title" content="Multiple color (and fill) scales with ggplot2">
+    <meta property="og:url" content="/2018/09/multiple-color-and-fill-scales-with-ggplot2/">
+    <meta property="og:site_name" content="Código R">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Código R">
+    <meta name="twitter:description" content="(Versión en español)
+tl;dr: You can find the relevant code in this gist.
+A very common annoyance from many ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can fine many a question relating to this issue:
+
+Unfortunately, the deluge of questions is met with a shortage of conclusive answers and most are some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.">
+    
+      <meta name="twitter:creator" content="@d_olivaw">
+    
+    
+
+    
+    
+
+    
+      <meta property="og:image" content="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=640">
+    
+
+    
+    
+    
+
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="../../../css/style-jsjn0006wyhpyzivf6yceb31gvpjatbcs3qzjvlumobfnugccvobqwxnnaj8.min.css" />
+    
+    
+      
+        <link rel="stylesheet"  href="../../../css/custom.css">
+      
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="2">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="../../../">Código R</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="../../../#about">
+    
+    
+    
+      
+        <img class="header-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=90" alt="Foto de autor" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="2">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="../../../#about">
+          <img class="sidebar-profile-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=110" alt="Foto de autor" />
+        </a>
+        <h4 class="sidebar-profile-name">Elio Campitelli</h4>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Inicio</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">Categorías</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archivos</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">Acerca de</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/eliocamp">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://twitter.com/d_olivaw">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="2"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Multiple color (and fill) scales with ggplot2
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2018-09-18T00:00:00Z">
+        
+  
+  
+  
+  
+    18 de Septiembre 2018
+  
+
+      </time>
+    
+    
+  
+  
+    <span>en</span>
+    
+      <a class="category-link" href="../../../categories/r">R</a>
+    
+  
+
+  </div>
+
+</div>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    });
+    </script>
+    <script type="text/javascript"
+      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+
+<p>(<a href="https://eliocamp.github.io/codigo-r/2018/09/multiples-escalas-colores-ggplot2/">Versión en español</a>)</p>
+
+<p>tl;dr: You can find the relevant code <a href="https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32">in this gist</a>.</p>
+
+<p>A very common annoyance from many <code>ggplot2</code> users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can fine many a question relating to this issue:</p>
+
+<p><a href="https://stackoverflow.com/search?q=ggplot2+two+color+scales"><img src="../../../images/ggplo2_twoscales_so_small.jpg" alt="preguntas stack overflow" /></a></p>
+
+<p>Unfortunately, the deluge of questions is met with a shortage of conclusive answers and most are some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.</p>
+
+<p>Now, let&rsquo;s be clear that using multiple color scales is not for the faint of heart. There&rsquo;s a very real risk of ending up with a plot with is confusing, in the beset case scenario, and misleading in the worst. But that doesn&rsquo;t mean there are not situations that call for this kind of plot. By using very different scales scales, it allows you to condense more information on a single plot, letting you visualise more relationships between variables. In the Atmospheric Sciences, for example, plotting temperature and pressure in contour lines with different color scales is a common practice.</p>
+
+<p>Recently I thought of a way of tricking <code>ggplot2</code> into displaying multiple scales. It relies on <a href="https://github.com/tidyverse/ggplot2/pull/2555">a recent addition</a> by Claus Wilke that allows the usage of &ldquo;non standard aesthetics&rdquo; &ndash;<code>scale_color_continuous(aesthetics = &quot;fill&quot;)</code> sets a <code>fill</code> scale&ndash; and the use of <code>ggplot_add()</code> that I learnt thanks to <a href="https://yutani.rbind.io/post/2017-11-07-ggplot-add">this post</a> by Hiroaki Yutani.</p>
+
+<p>But <em>res non verba</em>; this is how it looks like in action (taken from <a href="https://stackoverflow.com/questions/16129876/ggplot2-multiple-scales-legends-per-aesthetic-revisited">this</a> StackOverlow question)</p>
+
+<pre><code class="language-r">ggplot(pd[pd$score1 != 0,], aes(x=x, y=species)) +
+   geom_tile(aes(fill  =score1)) +
+   scale_fill_gradient2(&quot;Score 1&quot;, limits = c(0, 4), 
+                        low = &quot;#762A83&quot;, mid = &quot;white&quot;, high = &quot;#1B7837&quot;) +
+   
+   new_scale(&quot;fill&quot;) +
+   
+   geom_tile(aes(fill = score2), data = subset(pd, score2 != 0)) +
+   scale_fill_gradient2(&quot;Score 2&quot;, limits = c(0, 3), 
+                        low = &quot;#1B7837&quot;, mid = &quot;white&quot;, high = &quot;#762A83&quot;) +
+   
+   geom_text(data=pd, aes(label = letters, color = factor(change))) +
+   scale_color_manual(&quot;Change&quot;, values = c(&quot;black&quot;, &quot;#F2A11F&quot;), 
+                      labels = c(&quot;None&quot;, &quot;Some&quot;)) +
+     coord_fixed(ratio = 1.5, xlim=c(0.5,16.5), ylim=c(0.5, 3.5)) 
+</code></pre>
+
+<p><img src="../../../post/2018-09-18-multiple-color-and-fill-scales-with-ggplot2_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+
+<h2 id="how-it-works">How it works</h2>
+
+<p>The code is a bit too long and tedious to how in this article, but you can find it on <a href="https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32">this gist</a>. Here are the important bits.</p>
+
+<p>First, the <code>new_scale()</code> function does nothing.</p>
+
+<pre><code class="language-r">new_scale &lt;- function(new_aes) {
+  structure(ggplot2::standardise_aes_names(new_aes), class = &quot;new_aes&quot;)
+}
+</code></pre>
+
+<p>It merely returns an object of class <code>new_aes</code> with a character vector with the &ldquo;new&rdquo; scales. All the magic is in the <code>+</code> operation. When &ldquo;summing&rdquo; <code>ggplot2</code> objects, the important function is <code>ggplot_add()</code> which allows to define &ldquo;adding&rdquo; operation for any arbitrary object to a ggplot. For the case of <code>new_aes</code> object, this is what happens:</p>
+
+<pre><code class="language-r">ggplot_add.new_aes &lt;- function(object, plot, object_name) {
+  plot$layers &lt;- lapply(plot$layers, bump_aes, new_aes = object)
+  plot$scales$scales &lt;- lapply(plot$scales$scales, bump_aes, new_aes = object)
+  plot$labels &lt;- bump_aes(plot$labels, new_aes = object)
+  plot
+}
+</code></pre>
+
+<p>It modifies each layer, scale and label and renames the relevant aesthetic to something other than &ldquo;fill&rdquo; or &ldquo;color&rdquo;. There&rsquo;s also a bit of minimally invasive surgery to geoms so that they don&rsquo;t reject the newly grafted aesthetic.</p>
+
+<p>There&rsquo;s also many other ways to implement this and I went through <a href="https://twitter.com/d_olivaw/status/1040722632675610626">some iterations</a>. The current implementation is friendly and consistent with the main <code>ggplot2</code> &ldquo;adding&rdquo; idea, but it has some limitations and annoyances that prevent me from being 100% on board with it. I would love to get some feedback from the community 🤞!</p>
+
+<h2 id="a-more-real-ish-example">A more real-ish example</h2>
+
+<p>Why is any of this useful to me, you say? As I wrote before, being able to plot temperature and pressure in the same map with two different scales is very neat.</p>
+
+<pre><code class="language-r">library(metR)
+library(magrittr)
+time &lt;- as.POSIXct(&quot;1998-01-01&quot;)
+# Temperature and sea level pressure for January 1st 1998
+atmos &lt;- ReadNetCDF(&quot;~/DATOS/NCEP Reanalysis/air.mon.mean.nc&quot;, 
+                          subset = list(level = 850, 
+                                        time = time)) %&gt;% 
+   .[, slp:= ReadNetCDF(&quot;~/DATOS/NCEP Reanalysis/slp.mon.mean.nc&quot;, 
+                  subset = list(time = time), out = &quot;vector&quot;)] %&gt;% 
+   .[, lon := ConvertLongitude(lon)]
+
+ggplot(atmos, aes(lon, lat)) +
+   geom_world() +
+   geom_contour(aes(z = slp, color = ..level..), binwidth = 4) +
+   scale_color_viridis_c(&quot;Sea level pressure&quot;) +
+   
+   new_scale_color() +   # same as `new_scale(&quot;color&quot;)`
+   
+   geom_contour(aes(z = air, color = ..level..), binwidth = 4) +
+   scale_color_distiller(&quot;Air Temperature&quot;, palette = &quot;Spectral&quot;)  +
+   
+   scale_x_longitude(limits = c(-150, 0)) +
+   scale_y_latitude(ticks = 15) +
+   ggalt::coord_proj(&quot;+proj=moll +lon_0=-75&quot;, 
+                     ylim = c(-60, 0), xlim = c(-150, 0))
+</code></pre>
+
+<p><img src="../../../post/2018-09-18-multiple-color-and-fill-scales-with-ggplot2_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+
+<p>Visualising the relationship between pressure and temperature is very important for the analysis of the growth of atmospheric perturbations.</p>
+
+<p>Of course, with great power comes great responsibility 🕸. Mixing multiple scales for the same aesthetic should be done sparingly and only if absolutely necessary. First always ask yourself if the same information cannot be shown in a better way.</p>
+
+<p><code>ggplot2</code> doesn&rsquo;t cease to amaze me. Is not only a very powerful package to construct any kind of complex plots in a stupidly simple way, but it&rsquo;s also exceptionally extensible by allowing this kind of deep user customisation. ¡Long love <code>ggplo2</code> ✊!</p>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">ETIQUETADO EN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="../../../tags/ggplot2/">ggplot2</a>
+
+                  </div>
+                
+              
+            
+            
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/09/multiples-escalas-colores-ggplot2/" data-tooltip="Múltiples escalas de colores en ggplot2">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2018/09/multiple-color-and-fill-scales-with-ggplot2/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2018/09/multiple-color-and-fill-scales-with-ggplot2/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2018/09/multiple-color-and-fill-scales-with-ggplot2/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+            
+              
+                <div id="disqus_thread">
+  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2018 Elio Campitelli. Todos los derechos reservados
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
+        
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/09/multiples-escalas-colores-ggplot2/" data-tooltip="Múltiples escalas de colores en ggplot2">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2018/09/multiple-color-and-fill-scales-with-ggplot2/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2018/09/multiple-color-and-fill-scales-with-ggplot2/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2018/09/multiple-color-and-fill-scales-with-ggplot2/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2F2018%2F09%2Fmultiple-color-and-fill-scales-with-ggplot2%2F">
+          <i class="fa fa-facebook-official"></i><span>Compartir en Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2F2018%2F09%2Fmultiple-color-and-fill-scales-with-ggplot2%2F">
+          <i class="fa fa-twitter"></i><span>Compartir en Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2F2018%2F09%2Fmultiple-color-and-fill-scales-with-ggplot2%2F">
+          <i class="fa fa-google-plus"></i><span>Compartir en Google&#43;</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=110" alt="Foto de autor" />
+    
+    <h4 id="about-card-name">Elio Campitelli</h4>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Atmospheric sciences graduate researcher at CONICET
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Argentina
+      </div>
+    
+  </div>
+</div>
+
+    <div id="algolia-search-modal" class="modal-container">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="close-button"><i class="fa fa-close"></i></span>
+      <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+        <span class="searchby-algolia-text text-color-light text-small">by</span>
+        <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+      </a>
+      <i class="search-icon fa fa-search"></i>
+      <form id="algolia-search-form">
+        <input type="text" id="algolia-search-input" name="search"
+          class="form-control input--large search-input" placeholder="Buscar" />
+      </form>
+    </div>
+    <div class="modal-body">
+      <div class="no-result text-color-light text-center">no se encontraron artículos</div>
+      <div class="results">
+        
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/09/multiple-color-and-fill-scales-with-ggplot2/">
+                <h3 class="media-heading">Multiple color (and fill) scales with ggplot2</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Sep 9, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">(Versión en español)
+tl;dr: You can find the relevant code in this gist.
+A very common annoyance from many ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can fine many a question relating to this issue:
+
+Unfortunately, the deluge of questions is met with a shortage of conclusive answers and most are some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/09/multiples-escalas-colores-ggplot2/">
+                <h3 class="media-heading">Múltiples escalas de colores en ggplot2</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Sep 9, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">(English version)
+http://127.0.0.1:4321/2018/09/multiple-color-and-fill-scales-with-ggplot2/
+tl;dr: En este gist está el código importante
+Un dolor importante para algunos usuarios de ggplot2 es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
+
+Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &ldquo;no se puede, pero esta es otra forma de graficar tus datos&rdquo;.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/08/periodic-data-ggplot2-ggperiodic/">
+                <h3 class="media-heading">Wrapping around ggplot2 with ggperiodic</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Aug 8, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">As an atmospheric scientists, a lot of my research consists on plotting and looking at global fields of atmospheric variables like pressure, temperature and the like. Since our planet is a sphere (well, almost), it is unbound and so longitude is a periodic dimension. That is, to the right of 180°E you go back to 180°W. But ggplot2 and other plotting systems, for the most part, assume linear dimensions.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/06/c%C3%B3mo-funcionan-las-componentes-prinipales/">
+                <h3 class="media-heading">Cómo funcionan las componentes prinipales</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jun 6, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather"></div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/06/tu-propio-geom-smooth/">
+                <h3 class="media-heading">Tu propio smooth en geom_smooth()</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jun 6, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Algo increíblemente satisfactorio de ggplot2 es la posibilidad de ajustar curvas a los datos de manera súper fácil con geom_smooth(). Para mi investigación estaba mirando la relación entre dos ángulos y me di cuenta que la recta ajustada por cuadrados mínimos no estaba funcionando para ilustrar la obvia estructura que había en los datos.
+library(ggplot2) df &lt;- readRDS(&quot;data/smooth_example.Rds&quot;) ggplot(df, aes(pc.angle, phase)) + geom_point() + geom_smooth(method = &quot;lm&quot;)  Se me ocurrió que un mejor modelo podría ser usando el estimador de Theil-Sen, que es la mediana de todas las pendientes entre dos puntos distintos y está implementado en el paquete mblm.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/05/notificaciones-autom%C3%A1ticas-al-terminar-knitr/">
+                <h3 class="media-heading">Notificaciones automáticas al terminar knitr</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  May 5, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">start.time &lt;- Sys.time() # Notification start.time &lt;- unclass(Sys.time()) min.time &lt;- 10 knit_doc &lt;- knitr::knit_hooks$get(&quot;document&quot;) knitr::knit_hooks$set(document = function(x) { took &lt;- unclass(Sys.time()) - start.time if (unclass(Sys.time()) - start.time &gt;= min.time) { notify(&quot;Done knitting!&quot;, paste0(&quot;Took &quot;, round(took), &quot; seconds&quot;), time = 5) } knit_doc(x) }) notify &lt;- function(title = &quot;title&quot;, text = NULL, time = 2) { time &lt;- time*1000 system(paste0('notify-send &quot;', title, '&quot; &quot;', text, '&quot; -t ', time, ' -a rstudio')) }  </div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/05/nuevas-funciones-de-la-semana-01/">
+                <h3 class="media-heading">Nuevas funciones de la semana (01)</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  May 5, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">lengths()
+Hasta ahora siempre que quería saber la longitud de los vectores dentro de una lista usaba lapply(lista, length). No más! Esta semana aprendí que R tiene la función lengths() que es bastante más rápida y más legible.
+La uso para chequear que la longitud de los vectores en una lista sean iguales en una función que calcula la magnitud de un vector en n dimensiones. metR::Mag() antes aceptaba sólo dos argumentos y simplemente hacía sqrt(x^2 + y^2) pero la generalización a n argumentos requiere un poco más de programación.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/05/presentacion-powerpoint-rmarkdown/">
+                <h3 class="media-heading">Hacer una presentación de PowerPoint a partir de rmarkdown</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  May 5, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/05/arte-reproducible-del-subte-de-buenos-aires/">
+                <h3 class="media-heading">Arte reproducible del Subte de Buenos Aires</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  May 5, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía unas ilustraciones en las paredes hechas a partir de líneas de distinto grosor.
+Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
+Lo primero que hago es leer la imagen. Este paso depende del formato (a menos que haya alguna forma de seleccionar el formato correcto automáticamente, pero no conozco).</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/05/como-hacer-un-stat-generico-en-ggplot2/">
+                <h3 class="media-heading">Como hacer un stat genérico en ggplot2</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  May 5, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Hace un tiempo que venía pensando que si bien ggplot2 es genial y tiene un montón de geoms y stats, le faltaba la opción de extenderlo a stats y geoms creados por el usuario. Luego, aprendí que ggplot2 tiene un excelente sistema para extenderlo y empecé a crear mis propios stats. Pero aún así, hacer un stat específico cada vez que uno quiere hacer un plot en particular es demasiado complicado.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+      </div>
+    </div>
+    <div class="modal-footer">
+      <p class="results-count text-medium"
+         data-message-zero="no se encontraron artículos"
+         data-message-one="1 artículo encontrado"
+         data-message-other="{n} artículos encontrados">
+         17 posts found
+      </p>
+    </div>
+  </div>
+</div>
+    
+  
+    
+    <div id="cover" style="background-image:url('/images/cover2.jpg');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js" integrity="sha256-XrZQp+ZMfovqr6Hb2M6okHvSEYaB/+Xbx7toWmOOZUM=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-light.min.css" integrity="sha256-KacbO6Nou2geGJEUzQeKzKEdp/DENVGJKAd2v37moh0=" crossorigin="anonymous" />
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="../../../js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
+
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+      <script>
+        var disqus_config = function () {
+          this.page.url = '\/2018\/09\/multiple-color-and-fill-scales-with-ggplot2\/';
+          
+            this.page.identifier = '\/2018\/09\/multiple-color-and-fill-scales-with-ggplot2\/'
+          
+        };
+        (function() {
+          
+          
+          if (window.location.hostname == "localhost") {
+            return;
+          }
+          var d = document, s = d.createElement('script');
+          var disqus_shortname = 'codigo-r';
+          s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+      </script>
+    
+  
+
+
+
+    
+  </body>
+</html>
+

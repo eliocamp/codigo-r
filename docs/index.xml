@@ -6,10 +6,23 @@
     <description>Recent content on Código R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Mon, 17 Sep 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 18 Sep 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://eliocamp.github.io/codigo-r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Multiple color (and fill) scales with ggplot2</title>
+      <link>https://eliocamp.github.io/codigo-r/2018/09/multiple-color-fill-scales-ggplot2/</link>
+      <pubDate>Tue, 18 Sep 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://eliocamp.github.io/codigo-r/2018/09/multiple-color-fill-scales-ggplot2/</guid>
+      <description>(Versión en español)
+tl;dr: You can find the relevant code in this gist.
+A very common annoyance from many ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can fine many a question relating to this issue:
+
+Unfortunately, the deluge of questions is met with a shortage of conclusive answers and most are some variation of &amp;ldquo;you can&amp;rsquo;t, but here&amp;rsquo;s how to hack it or visualise the data differently&amp;rdquo;.</description>
+    </item>
     
     <item>
       <title>Múltiples escalas de colores en ggplot2</title>
@@ -17,7 +30,8 @@
       <pubDate>Mon, 17 Sep 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/2018/09/multiples-escalas-colores-ggplot2/</guid>
-      <description>tl;dr: En este gist está el código importante
+      <description>(English version)
+tl;dr: En este gist está el código importante
 Un dolor importante para algunos usuarios de ggplot2 es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
 
 Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &amp;ldquo;no se puede, pero esta es otra forma de graficar tus datos&amp;rdquo;.

@@ -173,6 +173,8 @@ pd = data.frame(
 )
 ```
 
+([English version](https://eliocamp.github.io/codigo-r/2018/09/multiple-color-and-fill-scales-with-ggplot2/))
+
 tl;dr: En [este gist](https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32) está el código importante
 
 Un dolor importante para algunos usuarios de `ggplot2` es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
