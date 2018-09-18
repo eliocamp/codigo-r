@@ -32,14 +32,14 @@
     
     <meta name="description" content="(Versión en español)
 tl;dr: You can find the relevant code in this gist.
-A very common annoyance from many ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can fine many a question relating to this issue:
+A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
 
-Unfortunately, the deluge of questions is met with a shortage of conclusive answers and most are some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.">
+Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.">
     <meta property="og:description" content="(Versión en español)
 tl;dr: You can find the relevant code in this gist.
-A very common annoyance from many ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can fine many a question relating to this issue:
+A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
 
-Unfortunately, the deluge of questions is met with a shortage of conclusive answers and most are some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.">
+Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.">
     <meta property="og:type" content="blog">
     <meta property="og:title" content="Multiple color (and fill) scales with ggplot2">
     <meta property="og:url" content="/2018/09/multiple-color-fill-scales-ggplot2/">
@@ -48,9 +48,9 @@ Unfortunately, the deluge of questions is met with a shortage of conclusive answ
     <meta name="twitter:title" content="Código R">
     <meta name="twitter:description" content="(Versión en español)
 tl;dr: You can find the relevant code in this gist.
-A very common annoyance from many ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can fine many a question relating to this issue:
+A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
 
-Unfortunately, the deluge of questions is met with a shortage of conclusive answers and most are some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.">
+Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.">
     
       <meta name="twitter:creator" content="@d_olivaw">
     
@@ -268,17 +268,17 @@ Unfortunately, the deluge of questions is met with a shortage of conclusive answ
 
 <p>tl;dr: You can find the relevant code <a href="https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32">in this gist</a>.</p>
 
-<p>A very common annoyance from many <code>ggplot2</code> users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can fine many a question relating to this issue:</p>
+<p>A somewhat common annoyance for some <code>ggplot2</code> users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:</p>
 
 <p><a href="https://stackoverflow.com/search?q=ggplot2+two+color+scales"><img src="../../../images/ggplo2_twoscales_so_small.jpg" alt="preguntas stack overflow" /></a></p>
 
-<p>Unfortunately, the deluge of questions is met with a shortage of conclusive answers and most are some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.</p>
+<p>Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.</p>
 
-<p>Now, let&rsquo;s be clear that using multiple color scales is not for the faint of heart. There&rsquo;s a very real risk of ending up with a plot with is confusing, in the beset case scenario, and misleading in the worst. But that doesn&rsquo;t mean there are not situations that call for this kind of plot. By using very different scales scales, it allows you to condense more information on a single plot, letting you visualise more relationships between variables. In the Atmospheric Sciences, for example, plotting temperature and pressure in contour lines with different color scales is a common practice.</p>
+<p>Recently I came up with a way of tricking <code>ggplot2</code> into displaying multiple scales. It relies on <a href="https://github.com/tidyverse/ggplot2/pull/2555">a recent addition</a> by Claus Wilke that allows the usage of &ldquo;non standard aesthetics&rdquo; &ndash;<code>scale_color_continuous(aesthetics = &quot;fill&quot;)</code> sets a <code>fill</code> scale&ndash; and the use of <code>ggplot_add()</code> that I learnt thanks to <a href="https://yutani.rbind.io/post/2017-11-07-ggplot-add">this post</a> by Hiroaki Yutani.</p>
 
-<p>Recently I thought of a way of tricking <code>ggplot2</code> into displaying multiple scales. It relies on <a href="https://github.com/tidyverse/ggplot2/pull/2555">a recent addition</a> by Claus Wilke that allows the usage of &ldquo;non standard aesthetics&rdquo; &ndash;<code>scale_color_continuous(aesthetics = &quot;fill&quot;)</code> sets a <code>fill</code> scale&ndash; and the use of <code>ggplot_add()</code> that I learnt thanks to <a href="https://yutani.rbind.io/post/2017-11-07-ggplot-add">this post</a> by Hiroaki Yutani.</p>
+<p>Now let&rsquo;s be serious for a moment and acknowledge that using multiple color scales is not for the faint of heart. There&rsquo;s a very real risk of ending up with a plot with is at best confusing and at worst, misleading. But that doesn&rsquo;t mean there are not situations that call for this kind of plot. Using very different scales allows you to condense more information in a single plot, letting you visualise more relationships between variables. In the Atmospheric Sciences, for example, plotting temperature and pressure in contour lines with different color scales is a common practice.</p>
 
-<p>But <em>res non verba</em>; this is how it looks like in action (taken from <a href="https://stackoverflow.com/questions/16129876/ggplot2-multiple-scales-legends-per-aesthetic-revisited">this</a> StackOverlow question)</p>
+<p>But <em>res non verba</em>; this is how it looks like in action (with an example taken from <a href="https://stackoverflow.com/questions/16129876/ggplot2-multiple-scales-legends-per-aesthetic-revisited">this</a> StackOverlow question)</p>
 
 <pre><code class="language-r">ggplot(pd[pd$score1 != 0,], aes(x=x, y=species)) +
    geom_tile(aes(fill  =score1)) +
@@ -294,35 +294,35 @@ Unfortunately, the deluge of questions is met with a shortage of conclusive answ
    geom_text(data=pd, aes(label = letters, color = factor(change))) +
    scale_color_manual(&quot;Change&quot;, values = c(&quot;black&quot;, &quot;#F2A11F&quot;), 
                       labels = c(&quot;None&quot;, &quot;Some&quot;)) +
-     coord_fixed(ratio = 1.5, xlim=c(0.5,16.5), ylim=c(0.5, 3.5)) 
+   coord_fixed(ratio = 1.5, xlim=c(0.5,16.5), ylim=c(0.5, 3.5)) 
 </code></pre>
 
 <p><img src="../../../post/2018-09-18-multiple-color-and-fill-scales-with-ggplot2_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 
 <h2 id="how-it-works">How it works</h2>
 
-<p>The code is a bit too long and tedious to how in this article, but you can find it on <a href="https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32">this gist</a>. Here are the important bits.</p>
+<p>The code is a bit too long and tedious to show in this article, but you can find it on <a href="https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32">this gist</a>. Here are the important bits.</p>
 
 <p>First, the <code>new_scale()</code> function does nothing.</p>
 
 <pre><code class="language-r">new_scale &lt;- function(new_aes) {
-  structure(ggplot2::standardise_aes_names(new_aes), class = &quot;new_aes&quot;)
+   structure(ggplot2::standardise_aes_names(new_aes), class = &quot;new_aes&quot;)
 }
 </code></pre>
 
-<p>It merely returns an object of class <code>new_aes</code> with a character vector with the &ldquo;new&rdquo; scales. All the magic is in the <code>+</code> operation. When &ldquo;summing&rdquo; <code>ggplot2</code> objects, the important function is <code>ggplot_add()</code> which allows to define &ldquo;adding&rdquo; operation for any arbitrary object to a ggplot. For the case of <code>new_aes</code> object, this is what happens:</p>
+<p>It merely returns an object of class <code>new_aes</code> with a character vector with the &ldquo;new&rdquo; scales. All the magic is in the <code>+</code> operator. <code>ggplot2</code> objects are &ldquo;summed&rdquo; with <code>ggplot_add()</code> function which allows to define the &ldquo;add&rdquo; operation for any arbitrary object to a ggplot. For the case of <code>new_aes</code> object, this is what happens:</p>
 
 <pre><code class="language-r">ggplot_add.new_aes &lt;- function(object, plot, object_name) {
-  plot$layers &lt;- lapply(plot$layers, bump_aes, new_aes = object)
-  plot$scales$scales &lt;- lapply(plot$scales$scales, bump_aes, new_aes = object)
-  plot$labels &lt;- bump_aes(plot$labels, new_aes = object)
-  plot
+   plot$layers &lt;- lapply(plot$layers, bump_aes, new_aes = object)
+   plot$scales$scales &lt;- lapply(plot$scales$scales, bump_aes, new_aes = object)
+   plot$labels &lt;- bump_aes(plot$labels, new_aes = object)
+   plot
 }
 </code></pre>
 
-<p>It modifies each layer, scale and label and renames the relevant aesthetic to something other than &ldquo;fill&rdquo; or &ldquo;color&rdquo;. There&rsquo;s also a bit of minimally invasive surgery to geoms so that they don&rsquo;t reject the newly grafted aesthetic.</p>
+<p>It modifies each layer, scale and label and renames the relevant aesthetic to something other than &ldquo;fill&rdquo; or &ldquo;colour&rdquo;. There&rsquo;s also a bit of minimally invasive surgery to geoms so that they don&rsquo;t reject the newly grafted aesthetic. Is somewhat ad-hoc, to be honest, and probably not very robuts, but it works!</p>
 
-<p>There&rsquo;s also many other ways to implement this and I went through <a href="https://twitter.com/d_olivaw/status/1040722632675610626">some iterations</a>. The current implementation is friendly and consistent with the main <code>ggplot2</code> &ldquo;adding&rdquo; idea, but it has some limitations and annoyances that prevent me from being 100% on board with it. I would love to get some feedback from the community 🤞!</p>
+<p>There are many other ways to implement this and I went through <a href="https://twitter.com/d_olivaw/status/1040722632675610626">some iterations</a>. The current implementation is friendly and consistent with the main <code>ggplot2</code> &ldquo;adding&rdquo; idea, but it has some limitations and annoyances that prevent me from being 100% on board with it. I would love to get some feedback from the community 🤞!</p>
 
 <h2 id="a-more-real-ish-example">A more real-ish example</h2>
 
@@ -333,10 +333,10 @@ library(magrittr)
 time &lt;- as.POSIXct(&quot;1998-01-01&quot;)
 # Temperature and sea level pressure for January 1st 1998
 atmos &lt;- ReadNetCDF(&quot;~/DATOS/NCEP Reanalysis/air.mon.mean.nc&quot;, 
-                          subset = list(level = 850, 
-                                        time = time)) %&gt;% 
+                    subset = list(level = 850, 
+                                  time = time)) %&gt;% 
    .[, slp:= ReadNetCDF(&quot;~/DATOS/NCEP Reanalysis/slp.mon.mean.nc&quot;, 
-                  subset = list(time = time), out = &quot;vector&quot;)] %&gt;% 
+                        subset = list(time = time), out = &quot;vector&quot;)] %&gt;% 
    .[, lon := ConvertLongitude(lon)]
 
 ggplot(atmos, aes(lon, lat)) +
@@ -622,9 +622,9 @@ ggplot(atmos, aes(lon, lat)) +
               </span>
               <div class="media-content hide-xs font-merryweather">(Versión en español)
 tl;dr: You can find the relevant code in this gist.
-A very common annoyance from many ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can fine many a question relating to this issue:
+A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
 
-Unfortunately, the deluge of questions is met with a shortage of conclusive answers and most are some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.</div>
+Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>

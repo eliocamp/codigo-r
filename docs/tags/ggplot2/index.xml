@@ -19,9 +19,9 @@
       <guid>https://eliocamp.github.io/codigo-r/2018/09/multiple-color-fill-scales-ggplot2/</guid>
       <description>(Versión en español)
 tl;dr: You can find the relevant code in this gist.
-A very common annoyance from many ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can fine many a question relating to this issue:
+A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
 
-Unfortunately, the deluge of questions is met with a shortage of conclusive answers and most are some variation of &amp;ldquo;you can&amp;rsquo;t, but here&amp;rsquo;s how to hack it or visualise the data differently&amp;rdquo;.</description>
+Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &amp;ldquo;you can&amp;rsquo;t, but here&amp;rsquo;s how to hack it or visualise the data differently&amp;rdquo;.</description>
     </item>
     
     <item>
