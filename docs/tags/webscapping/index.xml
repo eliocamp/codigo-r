@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Webscapping on Código R</title>
+    <link>https://eliocamp.github.io/codigo-r/tags/webscapping/</link>
+    <description>Recent content in Webscapping on Código R</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es-es</language>
+    <lastBuildDate>Tue, 02 Oct 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://eliocamp.github.io/codigo-r/tags/webscapping/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Leyendo información del INCUCAI</title>
+      <link>https://eliocamp.github.io/codigo-r/2018/10/leyendo-informacion-incucai/</link>
+      <pubDate>Tue, 02 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://eliocamp.github.io/codigo-r/2018/10/leyendo-informacion-incucai/</guid>
+      <description>El otro día el diario Clarín sacó una nota afirmando que el pasado agosto se había dado el récord histórico de transplantes de órganos y se lo adjudicaba a la &amp;ldquo;Ley Justina&amp;rdquo;, que establece que todos somos donantes presuntos a menos que se declare lo contrario en vida. Dado que esta ley se aprobó hace poco más de un mes y todavía no está reglamentada, es poco probable que este récord se deba al cambio legal.</description>
+    </item>
+    
+  </channel>
+</rss>

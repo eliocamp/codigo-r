@@ -1,0 +1,1095 @@
+
+
+  
+    
+  
+
+
+  
+
+
+
+
+  
+
+
+  
+
+<!DOCTYPE html>
+<html lang="es-es">
+  <head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hugo 0.47.1 with theme Tranquilpeak 0.4.3-BETA">
+    <title>Leyendo información del INCUCAI</title>
+    <meta name="author" content="Elio Campitelli">
+    <meta name="keywords" content=", R">
+
+    <link rel="icon" href="../../../favicon.png">
+    
+
+    
+    <meta name="description" content="El otro día el diario Clarín sacó una nota afirmando que el pasado agosto se había dado el récord histórico de transplantes de órganos y se lo adjudicaba a la &ldquo;Ley Justina&rdquo;, que establece que todos somos donantes presuntos a menos que se declare lo contrario en vida. Dado que esta ley se aprobó hace poco más de un mes y todavía no está reglamentada, es poco probable que este récord se deba al cambio legal.">
+    <meta property="og:description" content="El otro día el diario Clarín sacó una nota afirmando que el pasado agosto se había dado el récord histórico de transplantes de órganos y se lo adjudicaba a la &ldquo;Ley Justina&rdquo;, que establece que todos somos donantes presuntos a menos que se declare lo contrario en vida. Dado que esta ley se aprobó hace poco más de un mes y todavía no está reglamentada, es poco probable que este récord se deba al cambio legal.">
+    <meta property="og:type" content="blog">
+    <meta property="og:title" content="Leyendo información del INCUCAI">
+    <meta property="og:url" content="/2018/10/leyendo-informacion-incucai/">
+    <meta property="og:site_name" content="Código R">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Código R">
+    <meta name="twitter:description" content="El otro día el diario Clarín sacó una nota afirmando que el pasado agosto se había dado el récord histórico de transplantes de órganos y se lo adjudicaba a la &ldquo;Ley Justina&rdquo;, que establece que todos somos donantes presuntos a menos que se declare lo contrario en vida. Dado que esta ley se aprobó hace poco más de un mes y todavía no está reglamentada, es poco probable que este récord se deba al cambio legal.">
+    
+      <meta name="twitter:creator" content="@d_olivaw">
+    
+    
+
+    
+    
+
+    
+      <meta property="og:image" content="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=640">
+    
+
+    
+    
+    
+
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="../../../css/style-jsjn0006wyhpyzivf6yceb31gvpjatbcs3qzjvlumobfnugccvobqwxnnaj8.min.css" />
+    
+    
+      
+        <link rel="stylesheet"  href="https://eliocamp.github.io/codigo-r/css/custom.css">
+      
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="2">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="../../../">Código R</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="../../../#about">
+    
+    
+    
+      
+        <img class="header-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=90" alt="Foto de autor" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="2">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="../../../#about">
+          <img class="sidebar-profile-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=110" alt="Foto de autor" />
+        </a>
+        <h4 class="sidebar-profile-name">Elio Campitelli</h4>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Inicio</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">Categorías</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archivos</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">Acerca de</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/eliocamp" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://twitter.com/d_olivaw" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="2"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Leyendo información del INCUCAI
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2018-10-02T00:00:00Z">
+        
+  
+  
+  
+  
+    2 de Octubre 2018
+  
+
+      </time>
+    
+    
+  
+  
+    <span>en</span>
+    
+      <a class="category-link" href="../../../categories/r">R</a>
+    
+  
+
+  </div>
+
+</div>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    });
+    </script>
+    <script type="text/javascript"
+      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+
+<p>El otro día el diario Clarín sacó <a href="https://www.clarin.com/sociedad/ley-justina-agosto-registro-record-historico-donantes-trasplante-organos_0_SyvU8EwwQ.html">una nota</a> afirmando que el pasado agosto se había dado el récord histórico de transplantes de órganos y se lo adjudicaba a la &ldquo;Ley Justina&rdquo;, que establece que todos somos donantes presuntos a menos que se declare lo contrario en vida. Dado que esta ley se aprobó hace poco más de un mes y todavía no está reglamentada, es poco probable que este récord se deba al cambio legal. En cualquier caso, la nota me despertó curiosidad. ¿Cómo evolucionó la donación de órganos en Argentina?</p>
+
+<p>Como toda buena nota periodística, el artículo de Clarín sólo tira datos puntuales sin mostrar una linea de tiempo o poner los datos en perspectiva, así que tuve que ir a la fuente. El INCUCAI (Instituto Nacional Central Único Coordinador de Ablación e Implante) tiene un sistema de acceso a datos <a href="https://cresi.incucai.gov.ar/IniciarCresiFromSintra.do">llamado CRESI</a> (Central de Reportes y Estadísticas del SINTRA (Sistema Nacional de Información de Procuración y Transplante de la República Argentina)) que es relativamente bueno por lo transparente, pero complicado para leer programáticamente. Esto me pareció un buen ejercicio para aprender a obtener datos de sitios web.</p>
+
+<p>Mi objetivo final era conseguir una serie mensual de donaciones de órganos pero el sitio sólo permite obtener los datos totales por período. Obteniendo algo como esto:</p>
+
+<p><img src="../../../images/cresi_tabla.png" alt="" /></p>
+
+<p>(Recién luego de todo lo que sigue me di cuenta que en otra parte se pueden ver los datos mensuales por año, lo que facilita un poco las cosas. Moraleja: ¡analizar bien la página <em>antes</em> de empezar a escribir código!)</p>
+
+<p>Como las consultas se hacen de forma dinámica (lo cual implicaba que no es tan fácil como ir a un url en particular y listo) usé las herramientas de desarrollo de Firefox (apretando F12) y me fijé qué pasaba en la solapa <em>Network</em></p>
+
+<p><img src="../../../images/cresi_post.png" alt="" /></p>
+
+<p>Así se puede ver que lo que hace es un <code>POST</code> (uno de los &ldquo;<a href="https://robm.me.uk/web-development/2013/09/20/http-verbs.html">verbos</a>&rdquo; del html) con una serie de parámetros entre los que está la fecha de inicio y final del período que busco y un número de &ldquo;token&rdquo;, que es el identificador único de mi sesión y que tengo que usar para acceder a los datos.</p>
+
+<p>Ok, ¿cómo obtener ese número de forma programática? Luego de dar MUCHAS vueltas me fijé en el código fuente de la <a href="https://cresi.incucai.gov.ar/IniciarCresiFromSintra.do">página de inicio</a> del CRESI (click derecho -&gt; View page source) y me encontré con que el token estaba ahí!</p>
+
+<p><img src="../../../images/cresi_token.png" alt="" /></p>
+
+<p>Excelente, entonces lo único que hay que hacer es navegar a esa página, leer el código fuente y extraer el ese valor. La función <code>get_token()</code> hace eso.</p>
+
+<pre><code class="language-r">library(dplyr)
+</code></pre>
+
+<pre><code>## 
+## Attaching package: 'dplyr'
+</code></pre>
+
+<pre><code>## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+</code></pre>
+
+<pre><code>## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+</code></pre>
+
+<pre><code class="language-r">library(httr)
+library(xml2)
+get_token &lt;- function() {
+   
+   fuente &lt;- POST(&quot;https://cresi.incucai.gov.ar/IniciarCresiFromSintra.do&quot;,
+                      add_headers(Conection = &quot;keep-alive&quot;)) %&gt;% 
+      read_html() 
+   token &lt;- xml_attrs(xml_child(xml_child(xml_child(xml_child(fuente, 3), 1), 1), 3))
+   return(token[3])
+}
+
+(token &lt;- get_token())
+</code></pre>
+
+<pre><code>##         value 
+## &quot;-1609985208&quot;
+</code></pre>
+
+<p>Ahora con ese token, tengo que hacer dos <code>POST</code>; el primero define el tipo de búsqueda y el segundo la forma de agrupación de los datos. Como primer paso busco los datos para el mes de enero de 2000.</p>
+
+<pre><code class="language-r">primer_paso &lt;- POST(&quot;https://cresi.incucai.gov.ar/reporte/resumenestadistico/DonantePaso2.do&quot;,
+                          query = list(`5406` = &quot;&quot;,
+                                       `5407` = &quot;&quot;,
+                                       `5415` = &quot;&quot;,
+                                       `5416` = &quot;&quot;,
+                                       `5418` = &quot;&quot;,
+                                       `5419` = &quot;&quot;,
+                                       `5420_anio` = 2000,
+                                       `5420_dia` = 01,
+                                       `5420_mes` = 01,
+                                       `5421_anio` = 2000,
+                                       `5421_dia` = 31,
+                                       `5421_mes` = 01,
+                                       ABLACION = &quot;&quot;,
+                                       CMUERTE = &quot;&quot;,
+                                       CORAZONPD = &quot;&quot;,
+                                       DEPENDENCIA = &quot;&quot;,
+                                       ENTREVISTADOR = &quot;&quot;,
+                                       ENTREVISTADOR_DESCRIPCION = &quot;&quot;,
+                                       ESTABLECIMIENTO = &quot;&quot;,
+                                       ESTABLECIMIENTO_DESCRIPCION = &quot;&quot;,
+                                       ESTABLECIMIENTO_ORIGEN = 1,
+                                       ESTABLECIMIENTO_ORIGEN_DESCRIPCION = &quot;ARGENTINO&quot;,
+                                       FPROFESIONAL = &quot;&quot;,
+                                       MMUERTE = &quot;&quot;,
+                                       OPCIONES_AVANZADAS = &quot;false&quot;,
+                                       ORIGENPD = &quot;&quot;,
+                                       OTRO_ANIO = &quot;&quot;,
+                                       PERIODO = 5,
+                                       PERIODO_DESCRIPCION	= &quot;ESPECIFICAR&quot;,
+                                       SERVICIO = &quot;&quot;,
+                                       SPD = 4,
+                                       SPD_DESCRIPCION = &quot;DONANTES+REALES&quot;,
+                                       TIPO_DONANTE = &quot;&quot;,
+                                       TIPOEST = &quot;&quot;,
+                                       TOKEN = token))
+
+segundo_paso &lt;- POST(&quot;https://cresi.incucai.gov.ar/reporte/resumenestadistico/EjecutarConsultaDonante.do&quot;, 
+                           query = list(`2` = &quot;checked&quot;,
+                                        TOKEN = token))
+</code></pre>
+
+<p>La información está en lo que devuelve <code>segundo_paso</code>. El texto de la página se lee usando <code>read_html()</code>.</p>
+
+<pre><code class="language-r">(datos &lt;- xml2::read_html(segundo_paso))
+</code></pre>
+
+<pre><code>## {xml_document}
+## &lt;html&gt;
+## [1] &lt;head&gt;\n&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset= ...
+## [2] &lt;script language=&quot;JavaScript&quot; type=&quot;text/JavaScript&quot;&gt; \r\n\r\nfuncti ...
+## [3] &lt;body onload=&quot;&quot;&gt;\r\n&lt;span class=&quot;notranslate&quot;&gt; \r\n&lt;form action=&quot;Can ...
+</code></pre>
+
+<p>La cuestión es ahora extraer la tabla que quiero. Para eso está la magia del <a href="https://selectorgadget.com/">Selector Gadget</a>. Es una herramienta que permite crear reglas para filtrar elementos de una página web a partir de ejemplos positivos y negativos. En este caso, quiero leer toda la tabla.</p>
+
+<p><img src="../../../images/cresi_selector.png" alt="" /></p>
+
+<p>(Intenté filtros para eliminar el encabezado, pero no funcionaban bien y decidí que era más fácil eliminarlo en R)</p>
+
+<p>La parte que importa es ese &ldquo;.textoTabla2&rdquo;. Ahora uso el excelente paquete <code>rvest</code> para filtrar ese &ldquo;nodo&rdquo; y luego convertirlo en un <code>data.frame</code></p>
+
+<pre><code class="language-r">tabla &lt;- datos %&gt;% 
+    rvest::html_nodes(&quot;.textoTabla2&quot;) %&gt;% 
+    rvest::html_table(fill = TRUE)
+head(tabla[[1]][-1, ])
+</code></pre>
+
+<pre><code>##                  X1     X2     X3        X4     X5   X6     X7    X8
+## 2         Provincia Reales    %Re Efectivos    %Ef Mono    %Mo Multi
+## 3    2*BUENOS AIRES      8 100.0%         7  87.5%    -      -     8
+## 4 1*CAPITAL FEDERAL      5 100.0%         3  60.0%    3  60.0%     2
+## 5         6*CORDOBA      2 100.0%         2 100.0%    1  50.0%     1
+## 6       21*SANTA FE      1 100.0%         1 100.0%    1 100.0%     -
+## 7          5*CHUBUT      1 100.0%         1 100.0%    -      -     1
+##       X9     X10 X11    X12     X13   X14 X15
+## 2    %Mu Tejidos %Te %Total    DPMH TOTAL  NA
+## 3 100.0%       -   -  42.1% 0.6 PMH     8  NA
+## 4  40.0%       -   -  26.3% 1.7 PMH     5  NA
+## 5  50.0%       -   -  10.5% 0.6 PMH     2  NA
+## 6      -       -   -   5.3% 0.3 PMH     1  NA
+## 7 100.0%       -   -   5.3% 2.4 PMH     1  NA
+</code></pre>
+
+<p>¡Y ya tengo lo que necesito! 🎉 Sólo le falta un poco de limpieza relativamente trivial.</p>
+
+<p>Lo que sí falta ahora es hacer conseguir los datos para todos los meses del período. El plan es hacer una función que devuelva el valor para un mes y luego iterarla sobre una lista de meses. Además voy a tener en cuenta un pequeño detalle y usar el paquete <code>memoise</code> para guardar en caché el resultado de la función y no hacer dos veces el mismo request al servidor. Esto está bueno por so uno corre varias veces el código mientras debuggea cosas.</p>
+
+<pre><code class="language-r">donaciones_por_provincia_ &lt;- function(fecha, verbose = FALSE) {
+  library(rvest)
+  library(httr)
+  library(lubridate)
+  
+  desde &lt;- fecha
+  hasta &lt;- fecha
+  day(hasta) &lt;- days_in_month(desde)
+  
+  anio_0 &lt;- year(desde)
+  mes_0 &lt;- month(desde)
+  dia_0 &lt;- day(desde)
+  
+  anio_f &lt;- year(hasta)
+  mes_f &lt;- month(hasta)
+  dia_f &lt;- day(hasta)
+  
+  if (isTRUE(verbose)) {
+    cat(paste0(&quot;Leyendo mes: &quot;, anio_0, &quot;-&quot;, mes_0), &quot;\r&quot;)
+  }
+  
+  token &lt;- get_token()
+  
+  # Scrapp web
+  primer_paso &lt;- POST(&quot;https://cresi.incucai.gov.ar/reporte/resumenestadistico/DonantePaso2.do&quot;,
+                      query = list(`5406` = &quot;&quot;,
+                                   `5407` = &quot;&quot;,
+                                   `5415` = &quot;&quot;,
+                                   `5416` = &quot;&quot;,
+                                   `5418` = &quot;&quot;,
+                                   `5419` = &quot;&quot;,
+                                   `5420_anio` = anio_0,
+                                   `5420_dia` = dia_0,
+                                   `5420_mes` = mes_0,
+                                   `5421_anio` = anio_f,
+                                   `5421_dia` = dia_f,
+                                   `5421_mes` = mes_0,
+                                   ABLACION = &quot;&quot;,
+                                   CMUERTE = &quot;&quot;,
+                                   CORAZONPD = &quot;&quot;,
+                                   DEPENDENCIA = &quot;&quot;,
+                                   ENTREVISTADOR = &quot;&quot;,
+                                   ENTREVISTADOR_DESCRIPCION = &quot;&quot;,
+                                   ESTABLECIMIENTO = &quot;&quot;,
+                                   ESTABLECIMIENTO_DESCRIPCION = &quot;&quot;,
+                                   ESTABLECIMIENTO_ORIGEN = 1,
+                                   FPROFESIONAL = &quot;&quot;,
+                                   MMUERTE = &quot;&quot;,
+                                   OPCIONES_AVANZADAS = &quot;false&quot;,
+                                   ORIGENPD = &quot;&quot;,
+                                   OTRO_ANIO = &quot;&quot;,
+                                   PERIODO = 5,
+                                   PERIODO_DESCRIPCION	= &quot;ESPECIFICAR&quot;,
+                                   SERVICIO = &quot;&quot;,
+                                   SPD = 4,
+                                   TIPO_DONANTE = &quot;&quot;,
+                                   TIPOEST = &quot;&quot;,
+                                   TOKEN = token))
+  
+  segundo_paso &lt;- POST(&quot;https://cresi.incucai.gov.ar/reporte/resumenestadistico/EjecutarConsultaDonante.do&quot;,
+                       query = list(`2` = &quot;checked&quot;,
+                                    TOKEN = token))
+  
+  
+  table &lt;- read_html(segundo_paso) %&gt;% 
+    html_nodes(&quot;.textoTabla2&quot;) %&gt;% 
+    html_table(fill = TRUE) %&gt;% 
+    .[[1]] %&gt;% 
+    .[-1, ]
+  colnames(table) &lt;- table[1, ]
+  
+  # Limpieza de columnas y filas inválidas
+  table &lt;- table[-1, ]
+  table &lt;- table[-nrow(table), ]
+  table &lt;- table[-nrow(table), ]
+  table &lt;- table[, -ncol(table)]
+  
+  # Elimino porcentajes
+  porcentajes &lt;- stringi::stri_detect(colnames(table), fixed = &quot;%&quot;)
+  table &lt;- table[, !porcentajes]
+  
+  # Limpio algunos datos
+  table$Provincia &lt;- stringi::stri_replace(table$Provincia, &quot;&quot;,
+                                           regex = &quot;\\d*\\*&quot;)
+  table$DPMH &lt;- stringi::stri_replace(table$DPMH, &quot;&quot;,
+                                      fixed = &quot; PMH&quot;)
+  
+  # Paso todo a numérico y los NA son ceros
+  table[, -1] &lt;- suppressWarnings(lapply(table[, -1], as.numeric))
+  table[, -1] &lt;- lapply(table[, -1], function(x) {
+    x[is.na(x)] &lt;- 0
+    x })
+  table
+}
+</code></pre>
+
+<p>Antes de hacer nada, voy a probar si funciona</p>
+
+<pre><code class="language-r">donaciones_por_provincia_(as.Date(&quot;2018-01-05&quot;))
+</code></pre>
+
+<pre><code>## 
+## Attaching package: 'lubridate'
+</code></pre>
+
+<pre><code>## The following object is masked from 'package:base':
+## 
+##     date
+</code></pre>
+
+<pre><code>##          Provincia Reales Efectivos Mono Multi Tejidos DPMH TOTAL
+## 3     BUENOS AIRES      9         8    6     3       0  0.5     9
+## 4         SANTA FE      7         7    2     5       0  2.0     7
+## 5          TUCUMAN      6         6    3     3       0  3.6     6
+## 6          CORDOBA      5         5    1     4       0  1.4     5
+## 7  CAPITAL FEDERAL      4         4    2     2       0  1.3     4
+## 8          MENDOZA      2         1    2     0       0  1.0     2
+## 9            CHACO      1         1    0     1       0  0.8     1
+## 10      CORRIENTES      1         1    1     0       0  0.9     1
+## 11      ENTRE RIOS      1         1    1     0       0  0.7     1
+## 12           SALTA      1         1    1     0       0  0.7     1
+</code></pre>
+
+<p>¡Bien! Todo lo anterior involucró una cantidad inimaginable de prueba y error y el resultado no es el código más robusto ni correcto. No sólo no tiene ninguna forma de informar sobre errores, sino que en el camino no me fijé si el &ldquo;robots.txt&rdquo; permite hacer este tipo de scrapping y no le puse un &ldquo;sleep&rdquo; para limitar la tasa de conecciones al servidor. Tengo pendiente aprender a hacer eso usando el paquete <a href="https://github.com/dmi3kno/polite"><code>polite</code></a>. Pero bueno; si funciona, funciona. 😤</p>
+
+<p>Para terminar, guardo la versión con caché</p>
+
+<pre><code class="language-r">donaciones_por_provincia &lt;- memoise::memoise(donaciones_por_provincia_)
+</code></pre>
+
+<p>Con esto ya estoy listo para bajar todos los datos. Que <a href="https://twitter.com/jennybryan">Jenny Bryan</a> me perdone por no usar <a href="https://purrr.tidyverse.org"><code>purrr</code></a>, pero todavía estoy acostumbrado al viejo y querido <code>lapply</code>.</p>
+
+<pre><code class="language-r"># Vector con fechas desde enero de 1998 hasta agosto de 2018 de a un mes
+fechas &lt;- seq.Date(ymd(&quot;1998-01-01&quot;), ymd(&quot;2018-08-01&quot;), by = &quot;1 month&quot;)
+
+# Para cada fecha, bajo las donaciones por provincia, les pongo nombre
+# a los elementos de la lista y luego los combino por filas. 
+donaciones &lt;- lapply(fechas, donaciones_por_provincia, verbose = TRUE) %&gt;% 
+  setNames(fechas) %&gt;% 
+  data.table::rbindlist(idcol = &quot;fecha&quot;) 
+
+donaciones$fecha &lt;- as.Date(donaciones$fecha)
+</code></pre>
+
+<p>Esta parte del código tarda mucho y acá está la gracia del memoise. Podemos cancelar el proceso en cualquier momento y al reiniciarlo sólo se descargan los meses que no corrieron.</p>
+
+<p>No puedo terminar el post sin al menos la visualización de los datos que catalizaron todo esto. ¿Cómo varió la cantidad de transplantes con el tiempo?</p>
+
+<pre><code class="language-r">library(data.table)
+</code></pre>
+
+<pre><code>## 
+## Attaching package: 'data.table'
+</code></pre>
+
+<pre><code>## The following objects are masked from 'package:lubridate':
+## 
+##     hour, isoweek, mday, minute, month, quarter, second, wday,
+##     week, yday, year
+</code></pre>
+
+<pre><code>## The following objects are masked from 'package:dplyr':
+## 
+##     between, first, last
+</code></pre>
+
+<pre><code class="language-r">library(ggplot2)
+
+donaciones[, .(total = sum(TOTAL)), by = fecha] %&gt;% 
+ggplot(aes(fecha, total)) +
+   geom_line() +
+   labs(x = &quot;Fecha&quot;, y = &quot;&quot;, 
+        title = &quot;Cantidad de transplantes por mes&quot;, 
+        caption = &quot;Fuente: INCUCAI&quot;) +
+   hrbrthemes::theme_ipsum_rc()
+</code></pre>
+
+<p><img src="../../../post/2018-10-02-leyendo-información-de-incucai_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+
+<p>Ahí lo tienen. Agosto de este año fue un mes anómalo, con muchos más transplantes que meses anteriores. Esperemos que marque el quiebre de la tendencia a la baja que viene desde 2010.</p>
+
+<h1 id="resumen">Resumen</h1>
+
+<p>Usé <code>httr</code> para obtener información de un servidor y <code>xml2</code> para interpretarla. Luego, con <code>rvest</code> y Selector Gadget seleccioné la tabla con la información relevante. Finalmente, usando <code>memoise</code> me aseguré de no descargar los mismos datos dos veces.</p>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">ETIQUETADO EN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="../../../tags/webscapping/">webscapping</a>
+
+                  </div>
+                
+              
+            
+            
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/09/multiple-color-fill-scales-ggplot2/" data-tooltip="Multiple color (and fill) scales with ggplot2">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/10/leyendo-informacion-incucai/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/10/leyendo-informacion-incucai/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/10/leyendo-informacion-incucai/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+            
+              
+                <div id="disqus_thread">
+  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2018 Elio Campitelli. Todos los derechos reservados
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
+        
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/09/multiple-color-fill-scales-ggplot2/" data-tooltip="Multiple color (and fill) scales with ggplot2">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/10/leyendo-informacion-incucai/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/10/leyendo-informacion-incucai/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/10/leyendo-informacion-incucai/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F10%2Fleyendo-informacion-incucai%2F">
+          <i class="fa fa-facebook-official"></i><span>Compartir en Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F10%2Fleyendo-informacion-incucai%2F">
+          <i class="fa fa-twitter"></i><span>Compartir en Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F10%2Fleyendo-informacion-incucai%2F">
+          <i class="fa fa-google-plus"></i><span>Compartir en Google&#43;</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=110" alt="Foto de autor" />
+    
+    <h4 id="about-card-name">Elio Campitelli</h4>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Atmospheric sciences graduate researcher at CONICET
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Argentina
+      </div>
+    
+  </div>
+</div>
+
+    <div id="algolia-search-modal" class="modal-container">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="close-button"><i class="fa fa-close"></i></span>
+      <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+        <span class="searchby-algolia-text text-color-light text-small">by</span>
+        <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+      </a>
+      <i class="search-icon fa fa-search"></i>
+      <form id="algolia-search-form">
+        <input type="text" id="algolia-search-input" name="search"
+          class="form-control input--large search-input" placeholder="Buscar" />
+      </form>
+    </div>
+    <div class="modal-body">
+      <div class="no-result text-color-light text-center">no se encontraron artículos</div>
+      <div class="results">
+        
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/10/leyendo-informacion-incucai/">
+                <h3 class="media-heading">Leyendo información del INCUCAI</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Oct 10, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">El otro día el diario Clarín sacó una nota afirmando que el pasado agosto se había dado el récord histórico de transplantes de órganos y se lo adjudicaba a la &ldquo;Ley Justina&rdquo;, que establece que todos somos donantes presuntos a menos que se declare lo contrario en vida. Dado que esta ley se aprobó hace poco más de un mes y todavía no está reglamentada, es poco probable que este récord se deba al cambio legal.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/09/multiple-color-fill-scales-ggplot2/">
+                <h3 class="media-heading">Multiple color (and fill) scales with ggplot2</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Sep 9, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">(Versión en español)
+tl;dr: You can find the relevant code in this gist.
+A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
+
+Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/09/multiples-escalas-colores-ggplot2/">
+                <h3 class="media-heading">Múltiples escalas de colores en ggplot2</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Sep 9, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">(English version)
+tl;dr: En este gist está el código importante
+Un dolor importante para algunos usuarios de ggplot2 es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
+
+Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &ldquo;no se puede, pero esta es otra forma de graficar tus datos&rdquo;.
+Tener varias escalas distintas para el mismo parámetro estético tiene riesgos, pero también beneficios.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/08/periodic-data-ggplot2-ggperiodic/">
+                <h3 class="media-heading">Wrapping around ggplot2 with ggperiodic</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Aug 8, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">As an atmospheric scientists, a lot of my research consists on plotting and looking at global fields of atmospheric variables like pressure, temperature and the like. Since our planet is a sphere (well, almost), it is unbound and so longitude is a periodic dimension. That is, to the right of 180°E you go back to 180°W. But ggplot2 and other plotting systems, for the most part, assume linear dimensions.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/">
+                <h3 class="media-heading">Tu propio smooth en geom_smooth()</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jun 6, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Algo increíblemente satisfactorio de ggplot2 es la posibilidad de ajustar curvas a los datos de manera súper fácil con geom_smooth(). Para mi investigación estaba mirando la relación entre dos ángulos y me di cuenta que la recta ajustada por cuadrados mínimos no estaba funcionando para ilustrar la obvia estructura que había en los datos.
+library(ggplot2) df &lt;- readRDS(&quot;data/smooth_example.Rds&quot;) ggplot(df, aes(pc.angle, phase)) + geom_point() + geom_smooth(method = &quot;lm&quot;)  Se me ocurrió que un mejor modelo podría ser usando el estimador de Theil-Sen, que es la mediana de todas las pendientes entre dos puntos distintos y está implementado en el paquete mblm.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/05/presentacion-powerpoint-rmarkdown/">
+                <h3 class="media-heading">Hacer una presentación de PowerPoint a partir de rmarkdown</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  May 5, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/05/arte-reproducible-del-subte-de-buenos-aires/">
+                <h3 class="media-heading">Arte reproducible del Subte de Buenos Aires</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  May 5, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía unas ilustraciones en las paredes hechas a partir de líneas de distinto grosor.
+Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
+Lo primero que hago es leer la imagen. Este paso depende del formato (a menos que haya alguna forma de seleccionar el formato correcto automáticamente, pero no conozco).</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-generico-en-ggplot2/">
+                <h3 class="media-heading">Como hacer un stat genérico en ggplot2</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  May 5, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Hace un tiempo que venía pensando que si bien ggplot2 es genial y tiene un montón de geoms y stats, le faltaba la opción de extenderlo a stats y geoms creados por el usuario. Luego, aprendí que ggplot2 tiene un excelente sistema para extenderlo y empecé a crear mis propios stats. Pero aún así, hacer un stat específico cada vez que uno quiere hacer un plot en particular es demasiado complicado.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/05/how-to-make-a-generic-stat-in-ggplot2/">
+                <h3 class="media-heading">How to make a generic stat in ggplot2</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  May 5, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">For a while now I&rsquo;ve been thinking that, yes, ggplot2 is awesome and offers a lot of geoms and stats, but it would be great if it could be extended with new user-generated geoms and stats. Then I learnt that ggplot2 actually has a pretty great extension system so I could create my own geoms I needed for my work or just for fun. But still, creating a geom from scratch is an involved process that doesn&rsquo;t lend itself to simple transformations.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/02/how-to-make-shaded-relief-in-r/">
+                <h3 class="media-heading">How to make a shaded relief in R</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Feb 2, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Spanish version of this post
+While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
+What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+      </div>
+    </div>
+    <div class="modal-footer">
+      <p class="results-count text-medium"
+         data-message-zero="no se encontraron artículos"
+         data-message-one="1 artículo encontrado"
+         data-message-other="{n} artículos encontrados">
+         14 posts found
+      </p>
+    </div>
+  </div>
+</div>
+    
+  
+    
+    <div id="cover" style="background-image:url('https://eliocamp.github.io/codigo-r/images/cover2.jpg');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js" integrity="sha256-XrZQp+ZMfovqr6Hb2M6okHvSEYaB/+Xbx7toWmOOZUM=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-light.min.css" integrity="sha256-KacbO6Nou2geGJEUzQeKzKEdp/DENVGJKAd2v37moh0=" crossorigin="anonymous" />
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="../../../js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
+
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+      <script>
+        var disqus_config = function () {
+          this.page.url = 'https:\/\/eliocamp.github.io\/codigo-r\/2018\/10\/leyendo-informacion-incucai\/';
+          
+            this.page.identifier = '\/2018\/10\/leyendo-informacion-incucai\/'
+          
+        };
+        (function() {
+          
+          
+          if (window.location.hostname == "localhost") {
+            return;
+          }
+          var d = document, s = d.createElement('script');
+          var disqus_shortname = 'codigo-r';
+          s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+      </script>
+    
+  
+
+
+
+    
+  </body>
+</html>
+
