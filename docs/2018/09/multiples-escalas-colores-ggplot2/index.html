@@ -21,7 +21,7 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="Hugo 0.47.1 with theme Tranquilpeak 0.4.3-BETA">
+    <meta name="generator" content="Hugo 0.52 with theme Tranquilpeak 0.4.3-BETA">
     <title>Múltiples escalas de colores en ggplot2</title>
     <meta name="author" content="Elio Campitelli">
     <meta name="keywords" content=", R">
@@ -30,14 +30,12 @@
     
 
     
-    <meta name="description" content="(English version)
-tl;dr: En este gist está el código importante
+    <meta name="description" content="tl;dr: En este gist está el código importante
 Un dolor importante para algunos usuarios de ggplot2 es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
 
 Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &ldquo;no se puede, pero esta es otra forma de graficar tus datos&rdquo;.
 Tener varias escalas distintas para el mismo parámetro estético tiene riesgos, pero también beneficios.">
-    <meta property="og:description" content="(English version)
-tl;dr: En este gist está el código importante
+    <meta property="og:description" content="tl;dr: En este gist está el código importante
 Un dolor importante para algunos usuarios de ggplot2 es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
 
 Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &ldquo;no se puede, pero esta es otra forma de graficar tus datos&rdquo;.
@@ -48,8 +46,7 @@ Tener varias escalas distintas para el mismo parámetro estético tiene riesgos,
     <meta property="og:site_name" content="Código R">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Código R">
-    <meta name="twitter:description" content="(English version)
-tl;dr: En este gist está el código importante
+    <meta name="twitter:description" content="tl;dr: En este gist está el código importante
 Un dolor importante para algunos usuarios de ggplot2 es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
 
 Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &ldquo;no se puede, pero esta es otra forma de graficar tus datos&rdquo;.
@@ -226,16 +223,18 @@ Tener varias escalas distintas para el mismo parámetro estético tiene riesgos,
     </h1>
   
   
+
+    
+        In English: <a href="https://eliocamp.github.io/codigo-r/en/2018/09/multiple-color-fill-scales-ggplot2/">Multiple color (and fill) scales with ggplot2</a>
+    
+
+
+  
   <div class="postShorten-meta post-meta">
     
       <time itemprop="datePublished" datetime="2018-09-17T00:00:00Z">
         
-  
-  
-  
-  
-    17 de Septiembre 2018
-  
+  Septiembre 17, 2018
 
       </time>
     
@@ -252,6 +251,8 @@ Tener varias escalas distintas para el mismo parámetro estético tiene riesgos,
 
 </div>
 
+
+
 <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
       tex2jax: {
@@ -266,8 +267,6 @@ Tener varias escalas distintas para el mismo parámetro estético tiene riesgos,
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
               
-
-<p>(<a href="https://eliocamp.github.io/codigo-r/2018/09/multiple-color-and-fill-scales-with-ggplot2/">English version</a>)</p>
 
 <p>tl;dr: En <a href="https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32">este gist</a> está el código importante</p>
 
@@ -333,7 +332,7 @@ Tener varias escalas distintas para el mismo parámetro estético tiene riesgos,
 
 <pre><code class="language-r">library(metR)
 library(magrittr)
-time &lt;- as.POSIXct(&quot;1998-01-01&quot;)
+time &lt;- &quot;1998-01-01&quot;
 # Temperatura y presión a nivel del mar para el 1° de enero de 1998
 atmos &lt;- ReadNetCDF(&quot;~/DATOS/NCEP Reanalysis/air.mon.mean.nc&quot;, 
                           subset = list(level = 850, 
@@ -661,8 +660,7 @@ Unfortunately, this deluge of questions is met with a shortage of conclusive ans
                   Sep 9, 2018
                 </span>
               </span>
-              <div class="media-content hide-xs font-merryweather">(English version)
-tl;dr: En este gist está el código importante
+              <div class="media-content hide-xs font-merryweather">tl;dr: En este gist está el código importante
 Un dolor importante para algunos usuarios de ggplot2 es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
 
 Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &ldquo;no se puede, pero esta es otra forma de graficar tus datos&rdquo;.
@@ -803,7 +801,7 @@ What I accidentally discovered is that one way of approximating this look is by 
          data-message-zero="no se encontraron artículos"
          data-message-one="1 artículo encontrado"
          data-message-other="{n} artículos encontrados">
-         14 posts found
+         13 posts found
       </p>
     </div>
   </div>

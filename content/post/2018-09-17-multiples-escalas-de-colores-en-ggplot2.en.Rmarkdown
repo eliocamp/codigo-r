@@ -1,0 +1,272 @@
+---
+title: Multiple color (and fill) scales with ggplot2
+author: Elio Campitelli
+date: '2018-09-18'
+slug: multiple-color-fill-scales-ggplot2
+categories:
+  - R
+tags:
+  - ggplot2
+---
+
+```{r new_scale, include = FALSE}
+#' Allows to add another scale 
+#' 
+#' @param new_aes character with the aesthetic for which new scales will be 
+#' created
+#'
+new_scale <- function(new_aes) {
+   structure(ggplot2::standardise_aes_names(new_aes), class = "new_aes")
+}
+
+#' Convenient functions
+new_scale_fill <- function() {
+   new_scale("fill")
+}
+
+new_scale_color <- function() {
+   new_scale("colour")
+}
+
+
+#' Special behaviour of the "+" for adding a `new_aes` object
+#' It changes the name of the aesthethic for the previous layers, appending
+#' "_new" to them. 
+ggplot_add.new_aes <- function(object, plot, object_name) {
+   plot$layers <- lapply(plot$layers, bump_aes, new_aes = object)
+   plot$scales$scales <- lapply(plot$scales$scales, bump_aes, new_aes = object)
+   plot$labels <- bump_aes(plot$labels, new_aes = object)
+   plot
+}
+
+
+bump_aes <- function(layer, new_aes) {
+   UseMethod("bump_aes")
+}
+
+bump_aes.Scale <- function(layer, new_aes) {
+   old_aes <- layer$aesthetics[remove_new(layer$aesthetics) %in% new_aes]
+   new_aes <- paste0(old_aes, "_new")
+   
+   layer$aesthetics[layer$aesthetics %in% old_aes] <- new_aes
+   
+   if (is.character(layer$guide)) {
+      layer$guide <- match.fun(paste("guide_", layer$guide, sep = ""))()
+   }
+   layer$guide$available_aes[layer$guide$available_aes %in% old_aes] <- new_aes
+   layer
+}
+
+bump_aes.Layer <- function(layer, new_aes) {
+   original_aes <- new_aes
+   
+   old_aes <- names(layer$mapping)[remove_new(names(layer$mapping)) %in% new_aes]
+   new_aes <- paste0(old_aes, "_new")
+   
+   old_geom <- layer$geom
+   
+   old_setup <- old_geom$handle_na
+   new_setup <- function(self, data, params) {
+      colnames(data)[colnames(data) %in% new_aes] <- original_aes
+      old_setup(data, params)
+   }
+   
+   new_geom <- ggplot2::ggproto(paste0("New", class(old_geom)[1]), old_geom,
+                                handle_na = new_setup)
+   
+   new_geom$default_aes <- change_name(new_geom$default_aes, old_aes, new_aes)
+   new_geom$non_missing_aes <- change_name(new_geom$non_missing_aes, old_aes, new_aes)
+   new_geom$required_aes <- change_name(new_geom$required_aes, old_aes, new_aes)
+   new_geom$optional_aes <- change_name(new_geom$optional_aes, old_aes, new_aes)
+   
+   layer$geom <- new_geom
+   
+   old_stat <- layer$stat
+   
+   old_setup2 <- old_stat$handle_na
+   new_setup <- function(self, data, params) {
+      colnames(data)[colnames(data) %in% new_aes] <- original_aes
+      old_setup2(data, params)
+   }
+   
+   new_stat <- ggplot2::ggproto(paste0("New", class(old_stat)[1]), old_stat,
+                                handle_na = new_setup)
+   
+   new_stat$default_aes <- change_name(new_stat$default_aes, old_aes, new_aes)
+   new_stat$non_missing_aes <- change_name(new_stat$non_missing_aes, old_aes, new_aes)
+   new_stat$required_aes <- change_name(new_stat$required_aes, old_aes, new_aes)
+   new_stat$optional_aes <- change_name(new_stat$optional_aes, old_aes, new_aes)
+   
+   layer$stat <- new_stat
+   
+   layer$mapping <- change_name(layer$mapping, old_aes, new_aes)
+   layer
+}
+
+bump_aes.list <- function(layer, new_aes) {
+   old_aes <-  names(layer)[remove_new(names(layer)) %in% new_aes]
+   new_aes <- paste0(old_aes, "_new")
+   
+   names(layer)[names(layer) %in% old_aes] <- new_aes
+   layer
+}
+
+change_name <- function(list, old, new) {
+   UseMethod("change_name")
+}
+
+change_name.character <- function(list, old, new) {
+   list[list %in% old] <- new
+   list
+}
+
+change_name.default <- function(list, old, new) {
+   nam <- names(list)
+   nam[nam %in% old] <- new
+   names(list) <- nam
+   list
+}
+
+change_name.NULL <- function(list, old, new) {
+   NULL
+}
+
+remove_new <- function(aes) {
+   stringi::stri_replace_all(aes, "", regex = "(_new)*")
+}
+
+
+
+```
+
+```{r map_stuff, include = FALSE}
+library(ggplot2)
+world <- fortify(rnaturalearth::ne_countries(scale = "medium"))
+
+geom_world <- function(geom = "polygon") {
+   if (geom == "polygon") {
+      geom_polygon(data = world, aes(long, lat, group = group),
+                   fill = "gray50", color = "gray90", size = 0.2)
+   } else {
+      geom_path(data = world, aes(long, lat, group = group),
+                color = "gray50", size = 0.2)
+   }
+}
+
+theme_set(theme_minimal() +
+             theme(panel.ontop = TRUE,
+                   panel.grid = element_line("gray50", 0.5, 3)))
+
+pd = data.frame(
+   letters = strsplit("AGTGACCGACTATCATAGTGACCCAGAATCATAGTGACCGAGTATGAT", "")[[1]],
+   species = rep(c("Human", "Armadillo", "Porcupine"), each=16),
+   x       = rep(1:16, 3),
+   change  = c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+               0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,
+               0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0),
+   score1  = c(0,0,0,0,0,0,1,1,2,2,2,3,3,3,4,3,
+               0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,
+               0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
+   score2  = c(0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,
+               0,0,0,0,2,2,2,2,0,0,0,0,0,0,0,0,
+               0,0,0,0,3,3,3,3,0,0,0,0,0,0,0,0)
+)
+```
+
+tl;dr: You can find the relevant code [in this gist](https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32).
+
+
+A somewhat common annoyance for some `ggplot2` users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
+
+[![preguntas stack overflow](/images/ggplo2_twoscales_so_small.jpg)](https://stackoverflow.com/search?q=ggplot2+two+color+scales)
+
+Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of "you can't, but here's how to hack it or visualise the data differently".
+
+Recently I came up with a way of tricking `ggplot2` into displaying multiple scales. It relies on [a recent addition](https://github.com/tidyverse/ggplot2/pull/2555) by Claus Wilke that allows the usage of "non standard aesthetics" --`scale_color_continuous(aesthetics = "fill")` sets a `fill` scale-- and the use of `ggplot_add()` that I learnt thanks to [this post](https://yutani.rbind.io/post/2017-11-07-ggplot-add) by Hiroaki Yutani.
+
+Now let's be serious for a moment and acknowledge that using multiple color scales is not for the faint of heart. There's a very real risk of ending up with a plot with is at best confusing and at worst, misleading. But that doesn't mean there are not situations that call for this kind of plot. Using very different scales allows you to condense more information in a single plot, letting you visualise more relationships between variables. In the Atmospheric Sciences, for example, plotting temperature and pressure in contour lines with different color scales is a common practice. 
+
+But *res non verba*; this is how it looks like in action (with an example taken from [this](https://stackoverflow.com/questions/16129876/ggplot2-multiple-scales-legends-per-aesthetic-revisited) StackOverlow question)
+
+```{r, fig.height=3}
+ggplot(pd[pd$score1 != 0,], aes(x=x, y=species)) +
+   geom_tile(aes(fill  =score1)) +
+   scale_fill_gradient2("Score 1", limits = c(0, 4), 
+                        low = "#762A83", mid = "white", high = "#1B7837") +
+   
+   new_scale("fill") +
+   
+   geom_tile(aes(fill = score2), data = subset(pd, score2 != 0)) +
+   scale_fill_gradient2("Score 2", limits = c(0, 3), 
+                        low = "#1B7837", mid = "white", high = "#762A83") +
+   
+   geom_text(data=pd, aes(label = letters, color = factor(change))) +
+   scale_color_manual("Change", values = c("black", "#F2A11F"), 
+                      labels = c("None", "Some")) +
+   coord_fixed(ratio = 1.5, xlim=c(0.5,16.5), ylim=c(0.5, 3.5)) 
+```
+
+## How it works
+
+The code is a bit too long and tedious to show in this article, but you can find it on [this gist](https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32). Here are the important bits. 
+
+First, the `new_scale()` function does nothing. 
+
+```{r, eval = FALSE}
+new_scale <- function(new_aes) {
+   structure(ggplot2::standardise_aes_names(new_aes), class = "new_aes")
+}
+```
+
+It merely returns an object of class `new_aes` with a character vector with the "new" scales. All the magic is in the `+` operator. `ggplot2` objects are "summed" with `ggplot_add()` function which allows to define the "add" operation for any arbitrary object to a ggplot. For the case of `new_aes` object, this is what happens:
+
+```{r, eval = FALSE}
+ggplot_add.new_aes <- function(object, plot, object_name) {
+   plot$layers <- lapply(plot$layers, bump_aes, new_aes = object)
+   plot$scales$scales <- lapply(plot$scales$scales, bump_aes, new_aes = object)
+   plot$labels <- bump_aes(plot$labels, new_aes = object)
+   plot
+}
+```
+
+It modifies each layer, scale and label and renames the relevant aesthetic to something other than "fill" or "colour". There's also a bit of minimally invasive surgery to geoms so that they don't reject the newly grafted aesthetic. Is somewhat ad-hoc, to be honest, and probably not very robuts, but it works!
+
+There are many other ways to implement this and I went through [some iterations](https://twitter.com/d_olivaw/status/1040722632675610626). The current implementation is friendly and consistent with the main `ggplot2` "adding" idea, but it has some limitations and annoyances that prevent me from being 100% on board with it. I would love to get some feedback from the community `r emo::ji("crossed_fingers")`!
+
+## A more real-ish example
+
+Why is any of this useful to me, you say? As I wrote before, being able to plot temperature and pressure in the same map with two different scales is very neat. 
+
+```{r, fig.height=3.5, message=FALSE, warning=FALSE}
+library(metR)
+library(magrittr)
+time <- "1998-01-01"
+# Temperature and sea level pressure for January 1st 1998
+atmos <- ReadNetCDF("~/DATOS/NCEP Reanalysis/air.mon.mean.nc", 
+                    subset = list(level = 850, 
+                                  time = time)) %>% 
+   .[, slp:= ReadNetCDF("~/DATOS/NCEP Reanalysis/slp.mon.mean.nc", 
+                        subset = list(time = time), out = "vector")] %>% 
+   .[, lon := ConvertLongitude(lon)]
+
+ggplot(atmos, aes(lon, lat)) +
+   geom_world() +
+   geom_contour(aes(z = slp, color = ..level..), binwidth = 4) +
+   scale_color_viridis_c("Sea level pressure") +
+   
+   new_scale_color() +   # same as `new_scale("color")`
+   
+   geom_contour(aes(z = air, color = ..level..), binwidth = 4) +
+   scale_color_distiller("Air Temperature", palette = "Spectral")  +
+   
+   scale_x_longitude(limits = c(-150, 0)) +
+   scale_y_latitude(ticks = 15) +
+   ggalt::coord_proj("+proj=moll +lon_0=-75", 
+                     ylim = c(-60, 0), xlim = c(-150, 0))
+```
+
+Visualising the relationship between pressure and temperature is very important for the analysis of the growth of atmospheric perturbations. 
+
+Of course, with great power comes great responsibility `r emo::ji("spider_web")`. Mixing multiple scales for the same aesthetic should be done sparingly and only if absolutely necessary. First always ask yourself if the same information cannot be shown in a better way. 
+
+`ggplot2` doesn't cease to amaze me. Is not only a very powerful package to construct any kind of complex plots in a stupidly simple way, but it's also exceptionally extensible by allowing this kind of deep user customisation. ¡Long live the `ggplo2` `r emo::ji("fist_raised")`!

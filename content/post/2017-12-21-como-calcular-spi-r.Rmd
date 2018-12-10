@@ -53,7 +53,7 @@ spi::spi(7,"spi.txt",1963,2010,"Standardized Precipitation Index - Rio Grande do
 f <- file.remove("spi.txt")
 ```
 
-Existe otro paquete, [`precintcon`](https://cran.r-project.org/web/packages/precintcon/index.html), que no parece tener esos problemas y además en vez de estimar la distribución de probabilidad acumulada, le ajusta una distribución Gamma, que es bastante usada para modelar precipitación. El problema, para mí, es que las funciones relacionadas con PSI sólo se pueden aplicar sobre data.frames enteros y con clases especiales. Yo prefiero trabajar con clases primitas que sé lo que hacen y qué son y que brinden más libertad al usuario. En particular, prefiero datos que estén en formato *tidy*. 
+Existe otro paquete, [`precintcon`](https://cran.r-project.org/web/packages/precintcon/index.html), que no parece tener esos problemas y además en vez de estimar la distribución de probabilidad acumulada, le ajusta una distribución Gamma, que es bastante usada para modelar precipitación. El problema, para mí, es que las funciones relacionadas con PSI sólo se pueden aplicar sobre data.frames enteros y con clases especiales. Yo prefiero trabajar con clases primitivas que sé lo que hacen y qué son y que brinden más libertad al usuario. En particular, prefiero datos que estén en formato *tidy*. 
 
 Pero entonces hay que armarse la función propia:
 
