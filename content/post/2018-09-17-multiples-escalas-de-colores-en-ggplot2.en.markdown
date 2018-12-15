@@ -13,7 +13,7 @@ tags:
 
 
 
-tl;dr: You can find the relevant code [in this gist](https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32).
+tl;dr: The functionality shown in this post is now on the [`ggnewscale`](https://github.com/eliocamp/ggnewscale) package! 📦. You can find the original code [in this gist](https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32).
 
 
 A somewhat common annoyance for some `ggplot2` users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:

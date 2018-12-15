@@ -13,7 +13,9 @@ tags:
 
 
 
-tl;dr: En [este gist](https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32) está el código importante
+tl;dr: Esta funcionalidad está ahora en el paquete [`ggnewscale`](https://github.com/eliocamp/ggnewscale)! 📦
+En [este gist](https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32) está la versión origial del código.
+
 
 Un dolor importante para algunos usuarios de `ggplot2` es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
 
