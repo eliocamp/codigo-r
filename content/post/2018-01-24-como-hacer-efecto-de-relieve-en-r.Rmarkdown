@@ -8,8 +8,6 @@ categories:
 tags: []
 ---
 
-([Versión en inglés](/2018/02/how-to-make-shaded-relief-in-r/))
-
 Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía. 
 
 Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida `volcano`.

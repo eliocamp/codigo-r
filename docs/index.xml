@@ -27,7 +27,7 @@
       
       <guid>https://eliocamp.github.io/codigo-r/2018/09/multiple-color-fill-scales-ggplot2/</guid>
       <description>(Versión en español)
-tl;dr: You can find the relevant code in this gist.
+tl;dr: The functionality shown in this post is now on the ggnewscale package! 📦. You can find the original code in this gist.
 A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
 
 Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &amp;ldquo;you can&amp;rsquo;t, but here&amp;rsquo;s how to hack it or visualise the data differently&amp;rdquo;.</description>
@@ -39,12 +39,10 @@ Unfortunately, this deluge of questions is met with a shortage of conclusive ans
       <pubDate>Mon, 17 Sep 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/2018/09/multiples-escalas-colores-ggplot2/</guid>
-      <description>(English version)
-tl;dr: En este gist está el código importante
+      <description>tl;dr: Esta funcionalidad está ahora en el paquete ggnewscale! 📦 En este gist está la versión origial del código.
 Un dolor importante para algunos usuarios de ggplot2 es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
 
-Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &amp;ldquo;no se puede, pero esta es otra forma de graficar tus datos&amp;rdquo;.
-Tener varias escalas distintas para el mismo parámetro estético tiene riesgos, pero también beneficios.</description>
+Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &amp;ldquo;no se puede, pero esta es otra forma de graficar tus datos&amp;rdquo;.</description>
     </item>
     
     <item>
@@ -121,20 +119,9 @@ What I accidentally discovered is that one way of approximating this look is by 
       <pubDate>Wed, 24 Jan 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/</guid>
-      <description>(Versión en inglés)
-Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
-Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.</description>
-    </item>
-    
-    <item>
-      <title>Cómo hacer un efecto de relieve en R</title>
-      <link>https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/</link>
-      <pubDate>Wed, 24 Jan 2018 00:00:00 +0000</pubDate>
-      
-      <guid>https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/</guid>
-      <description>(Versión en inglés)
-Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
-Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.</description>
+      <description>Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
+Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.
+library(data.table) library(ggplot2) data(volcano) volcano &amp;lt;- as.</description>
     </item>
     
     <item>

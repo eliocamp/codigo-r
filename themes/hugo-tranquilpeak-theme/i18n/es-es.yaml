@@ -155,3 +155,6 @@
 
 - id: "date.month.december"
   translation: "Diciembre"
+
+- id: "other_lang"
+  translation: "In English"

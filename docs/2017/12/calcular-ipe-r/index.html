@@ -21,7 +21,7 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="Hugo 0.47.1 with theme Tranquilpeak 0.4.3-BETA">
+    <meta name="generator" content="Hugo 0.52 with theme Tranquilpeak 0.4.3-BETA">
     <title>Cómo calcular el Índice de Precipitación Estandarizado en R</title>
     <meta name="author" content="Elio Campitelli">
     <meta name="keywords" content=", R">
@@ -214,16 +214,14 @@ En la práctica lo que se hace es la función de probabilidad acumulada a partir
     </h1>
   
   
+
+
+  
   <div class="postShorten-meta post-meta">
     
       <time itemprop="datePublished" datetime="2017-12-21T00:00:00Z">
         
-  
-  
-  
-  
-    21 de Diciembre 2017
-  
+  Diciembre 21, 2017
 
       </time>
     
@@ -240,6 +238,8 @@ En la práctica lo que se hace es la función de probabilidad acumulada a partir
 
 </div>
 
+
+
 <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
       tex2jax: {
@@ -253,7 +253,10 @@ En la práctica lo que se hace es la función de probabilidad acumulada a partir
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              <p>El Índice de Precipitación Estandarizado (SPI por Standarized Precipitation Index) es un índice para evaluar el estado de sequía o exceso de lluvia. La idea del SPI es tener una idea de qué tan probable es tener una cantidad de lluvia igual o menor. Valores altos del SPI están asociados con épocas muy húmedas mientras que valores bajos indican sequía.</p>
+              
+
+
+<p>El Índice de Precipitación Estandarizado (SPI por Standarized Precipitation Index) es un índice para evaluar el estado de sequía o exceso de lluvia. La idea del SPI es tener una idea de qué tan probable es tener una cantidad de lluvia igual o menor. Valores altos del SPI están asociados con épocas muy húmedas mientras que valores bajos indican sequía.</p>
 <p>En la práctica lo que se hace es la función de probabilidad acumulada a partir de los registros históricos y luego estimar la probabilidad para la cantidad observada en cada mes. Luego, esa probabildiad se convierte a su cuantil apropiado según una distribución normal estándar. De manera que, al final, el SPI indica cuántos desvíos estándar lejos de la media es la precipitación en cada mes.</p>
 <p>En otras palabras, a grandes razgos:</p>
 <pre class="r"><code>spi &lt;- qnorm(ecdf(precipitacion)(precipitacion))</code></pre>
@@ -278,7 +281,7 @@ data(spi_data)
 write.table(spi_data,file=&quot;spi.txt&quot;,quote=FALSE,row.names=TRUE)
 spi::spi(7,&quot;spi.txt&quot;,1963,2010,&quot;Standardized Precipitation Index - Rio Grande do Norte State&quot;,1,&quot;years&quot;,&quot;months&quot;)</code></pre>
 <p><img src="../../../post/2017-12-21-como-calcular-spi-r_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<p>Existe otro paquete, <a href="https://cran.r-project.org/web/packages/precintcon/index.html"><code>precintcon</code></a>, que no parece tener esos problemas y además en vez de estimar la distribución de probabilidad acumulada, le ajusta una distribución Gamma, que es bastante usada para modelar precipitación. El problema, para mí, es que las funciones relacionadas con PSI sólo se pueden aplicar sobre data.frames enteros y con clases especiales. Yo prefiero trabajar con clases primitas que sé lo que hacen y qué son y que brinden más libertad al usuario. En particular, prefiero datos que estén en formato <em>tidy</em>.</p>
+<p>Existe otro paquete, <a href="https://cran.r-project.org/web/packages/precintcon/index.html"><code>precintcon</code></a>, que no parece tener esos problemas y además en vez de estimar la distribución de probabilidad acumulada, le ajusta una distribución Gamma, que es bastante usada para modelar precipitación. El problema, para mí, es que las funciones relacionadas con PSI sólo se pueden aplicar sobre data.frames enteros y con clases especiales. Yo prefiero trabajar con clases primitivas que sé lo que hacen y qué son y que brinden más libertad al usuario. En particular, prefiero datos que estén en formato <em>tidy</em>.</p>
 <p>Pero entonces hay que armarse la función propia:</p>
 <pre class="r"><code># Media movil
 rollmean &lt;- function(x, k = 3, na.rm = TRUE) {
@@ -652,7 +655,7 @@ ggplot(pp.long, aes(date, k)) +
                 </span>
               </span>
               <div class="media-content hide-xs font-merryweather">(Versión en español)
-tl;dr: You can find the relevant code in this gist.
+tl;dr: The functionality shown in this post is now on the ggnewscale package! 📦. You can find the original code in this gist.
 A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
 
 Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.</div>
@@ -672,12 +675,10 @@ Unfortunately, this deluge of questions is met with a shortage of conclusive ans
                   Sep 9, 2018
                 </span>
               </span>
-              <div class="media-content hide-xs font-merryweather">(English version)
-tl;dr: En este gist está el código importante
+              <div class="media-content hide-xs font-merryweather">tl;dr: Esta funcionalidad está ahora en el paquete ggnewscale! 📦 En este gist está la versión origial del código.
 Un dolor importante para algunos usuarios de ggplot2 es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
 
-Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &ldquo;no se puede, pero esta es otra forma de graficar tus datos&rdquo;.
-Tener varias escalas distintas para el mismo parámetro estético tiene riesgos, pero también beneficios.</div>
+Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &ldquo;no se puede, pero esta es otra forma de graficar tus datos&rdquo;.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>
@@ -814,7 +815,7 @@ What I accidentally discovered is that one way of approximating this look is by 
          data-message-zero="no se encontraron artículos"
          data-message-one="1 artículo encontrado"
          data-message-other="{n} artículos encontrados">
-         14 posts found
+         13 posts found
       </p>
     </div>
   </div>

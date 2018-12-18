@@ -10,8 +10,11 @@
       {{ $.Title }}
     </h1>
   {{ end }}
+  {{ partial "i18nlist.html" . }}
   {{ partial "post/meta.html" . }}
 </div>
+
+
 
 <script type="text/x-mathjax-config">
     MathJax.Hub.Config({

@@ -21,7 +21,7 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="Hugo 0.47.1 with theme Tranquilpeak 0.4.3-BETA">
+    <meta name="generator" content="Hugo 0.52 with theme Tranquilpeak 0.4.3-BETA">
     <title>Cómo hacer un buen ejemplo reproducible en R</title>
     <meta name="author" content="Elio Campitelli">
     <meta name="keywords" content=", R">
@@ -214,16 +214,14 @@ Un buen ejemplo reproducible (o reprex) es básicamente el feliz matrimonio entr
     </h1>
   
   
+
+
+  
   <div class="postShorten-meta post-meta">
     
       <time itemprop="datePublished" datetime="2018-01-06T00:00:00Z">
         
-  
-  
-  
-  
-    6 de Enero 2018
-  
+  Enero 6, 2018
 
       </time>
     
@@ -240,6 +238,8 @@ Un buen ejemplo reproducible (o reprex) es básicamente el feliz matrimonio entr
 
 </div>
 
+
+
 <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
       tex2jax: {
@@ -253,7 +253,10 @@ Un buen ejemplo reproducible (o reprex) es básicamente el feliz matrimonio entr
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              <p>Es muy difícil dar ayuda si no se sabe cuál es el problema. Un buen ejemplo de lo que está mal que cualquiera pueda correr en sus computadoras es casi esencial para recibir ayuda.</p>
+              
+
+
+<p>Es muy difícil dar ayuda si no se sabe cuál es el problema. Un buen ejemplo de lo que está mal que cualquiera pueda correr en sus computadoras es casi esencial para recibir ayuda.</p>
 <p>Un buen ejemplo reproducible (o reprex) es básicamente el feliz matrimonio entre un set de datos <strong>mínimo</strong> y un código <strong>mínimo</strong> que ilustre el problema y que cualquiera pueda copiar, pegar en un script y obtener <strong>exactamente los mismos resultados</strong>.</p>
 <p>Obtener un reprex mínimo no es una tarea trivial. A veces puede tomar más de media hora y dar maś de un dolor de cabeza. Pero en el proceso uno aprende mucho sobre las características específicas de su problema y a veces incluso termina por resolverlo solo. Aún si no se resuelve, el tiempo que uno invierte en hacer el ejemplo reproducible implican más chances de que algún usuario responda, más rápido y con más claridad.</p>
 <div id="datos-minimos" class="section level2">
@@ -295,8 +298,8 @@ ggplot(df, aes(tiempo, valor, color = sujeto)) +
 ## 22, 23, 24, 24, 24, 24, 25), dist = c(2, 10, 4, 22, 16, 10, 18, 
 ## 26, 34, 17, 28, 14, 20, 24, 28, 26, 34, 34, 46, 26, 36, 60, 80, 
 ## 20, 26, 54, 32, 40, 32, 40, 50, 42, 56, 76, 84, 36, 46, 68, 32, 
-## 48, 52, 56, 64, 66, 54, 70, 92, 93, 120, 85)), .Names = c(&quot;speed&quot;, 
-## &quot;dist&quot;), row.names = c(NA, -50L), class = &quot;data.frame&quot;)</code></pre>
+## 48, 52, 56, 64, 66, 54, 70, 92, 93, 120, 85)), class = &quot;data.frame&quot;, row.names = c(NA, 
+## -50L))</code></pre>
 <p>Si aún reduciéndolo al mínimo los datos son demasiado grandes o complicados para compartirlos como texto, la mejor opción es guardarlo como un archivo .Rds</p>
 <pre class="r"><code>saveRDS(diamonds, file = &quot;diamonds.Rds&quot;)</code></pre>
 <p>y luego subir el archivo a algún sitio de intercambio.</p>
@@ -602,7 +605,7 @@ ggplot(df, aes(tiempo, valor, color = sujeto)) +
                 </span>
               </span>
               <div class="media-content hide-xs font-merryweather">(Versión en español)
-tl;dr: You can find the relevant code in this gist.
+tl;dr: The functionality shown in this post is now on the ggnewscale package! 📦. You can find the original code in this gist.
 A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
 
 Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.</div>
@@ -622,12 +625,10 @@ Unfortunately, this deluge of questions is met with a shortage of conclusive ans
                   Sep 9, 2018
                 </span>
               </span>
-              <div class="media-content hide-xs font-merryweather">(English version)
-tl;dr: En este gist está el código importante
+              <div class="media-content hide-xs font-merryweather">tl;dr: Esta funcionalidad está ahora en el paquete ggnewscale! 📦 En este gist está la versión origial del código.
 Un dolor importante para algunos usuarios de ggplot2 es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
 
-Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &ldquo;no se puede, pero esta es otra forma de graficar tus datos&rdquo;.
-Tener varias escalas distintas para el mismo parámetro estético tiene riesgos, pero también beneficios.</div>
+Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &ldquo;no se puede, pero esta es otra forma de graficar tus datos&rdquo;.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>
@@ -764,7 +765,7 @@ What I accidentally discovered is that one way of approximating this look is by 
          data-message-zero="no se encontraron artículos"
          data-message-one="1 artículo encontrado"
          data-message-other="{n} artículos encontrados">
-         14 posts found
+         13 posts found
       </p>
     </div>
   </div>

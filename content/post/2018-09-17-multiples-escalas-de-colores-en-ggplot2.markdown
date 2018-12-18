@@ -13,9 +13,9 @@ tags:
 
 
 
-([English version](https://eliocamp.github.io/codigo-r/2018/09/multiple-color-and-fill-scales-with-ggplot2/))
+tl;dr: Esta funcionalidad está ahora en el paquete [`ggnewscale`](https://github.com/eliocamp/ggnewscale)! 📦
+En [este gist](https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32) está la versión origial del código.
 
-tl;dr: En [este gist](https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32) está el código importante
 
 Un dolor importante para algunos usuarios de `ggplot2` es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
 
@@ -89,7 +89,7 @@ Hay varias formas de hacer lo mismo y podrán ver que el proyecto pasó por [var
 ```r
 library(metR)
 library(magrittr)
-time <- as.POSIXct("1998-01-01")
+time <- "1998-01-01"
 # Temperatura y presión a nivel del mar para el 1° de enero de 1998
 atmos <- ReadNetCDF("~/DATOS/NCEP Reanalysis/air.mon.mean.nc", 
                           subset = list(level = 850, 

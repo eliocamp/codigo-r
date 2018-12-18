@@ -19,12 +19,25 @@ publishDir = "docs"
 baseURL = "https://eliocamp.github.io/codigo-r/"
 languageCode = "es-es"
 defaultContentLanguage = "es-es"
-title = "Código R"
+# title = "Código R"
 theme = "hugo-tranquilpeak-theme"
 disqusShortname = "codigo-r"
 # googleAnalytics = "UA-123-45"
 paginate = 7
 canonifyurls = true
+
+[languages]
+   [languages.en]
+      title = "Code R"
+      [languages.en.params]
+         description = "Blog about the R language"
+         dateFormat = "January 2, 2006"
+         
+   [languages.es-es]
+      title = "Código R"
+      [languages.es.params]
+         description = "Blog de R en español (e inglés)"
+         dateFormat = "2 de January 2006"
 
 [permalinks]
   post = "/:year/:month/:slug/"
@@ -102,7 +115,7 @@ canonifyurls = true
   # You must use date format used by Go Time package https://golang.org/pkg/time/
   # Months (not work with short month like "jan", "feb", etc) are translated if translation exists on i18n folders
   # Default format is: January 2, 2006 
-  dateFormat = "2 de January 2006"
+
   
 
   # Global keywords configuration. Following keywords will be add to every pages
@@ -119,7 +132,7 @@ canonifyurls = true
   # If false it will flat categories.
   hierarchicalCategories = true
 
-  description = "Blog de R en español"
+ 
 
   # Customization
   # Define the behavior of the sidebar
