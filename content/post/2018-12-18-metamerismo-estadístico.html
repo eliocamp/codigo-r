@@ -1,0 +1,59 @@
+---
+title: Metamerismo estadístico
+author: Elio
+date: '2018-12-18'
+draft: yes
+slug: metamerismo-estadístico
+categories:
+  - R
+  - estadística
+tags:
+  - paquetes
+bibliography: metameros.bib
+link-citations: true
+---
+
+
+
+<p>En 1973 Francis Anscombe <span class="citation">(Anscombe <a href="#ref-Anscombe1973">1973</a>)</span></p>
+<p>Hace unos meses —-</p>
+<p><a href="https://twitter.com/BrodieGaslam/status/1014135736285745152" class="uri">https://twitter.com/BrodieGaslam/status/1014135736285745152</a></p>
+<p>blablabla metámeros.. balbalbla</p>
+<p>Tomemos ahora estos cuatro conocidos sets de datos:</p>
+<p>Este es el Cuarteto de Anscombe</p>
+<p>Existe toda una clase de métodos estadísticos que busca transformar los datos de alguna manera de resumir características importantes en unos pocos números. Un registro de la altura de cada persona en cada país tiene toda la información, pero es incognoscible. Pero esos 7 mil millones de números pueden transformarse en media docena si se calcula la altura promedio de cada continente. La información que se pierde en el detalle se gana en interpretabilidad. Pero, igual que con los colores, existe una distribución infinita de alturas que dan el mismo promedio. Nos encontramos con nuestro primer metámero estadístico.</p>
+<p>Un famoso ejemplo de metámerismo estadístico es el cuarteto de Anscombe</p>
+<pre class="r"><code>data(anscombe)
+anscombe &lt;- melt(as.data.table(anscombe), measure.vars = patterns(&quot;^x&quot;, &quot;^y&quot;), 
+                 variable.name = &quot;quartet&quot;, value.name = c(&quot;x&quot;, &quot;y&quot;))
+ggplot(anscombe, aes(x, y)) +
+   geom_point() +
+   facet_wrap(~quartet)</code></pre>
+<p><img src="/post/2018-12-18-metamerismo-estad%C3%ADstico_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>A pesar de ser cuatro sets de datos muy distintos, los cuatro miembros del cuarteto comparten el promedio y desvío estándar de cada variable así como la correlación entre ambas con una precisión mínima de 2 decimales <span class="citation">(Anscombe <a href="#ref-Anscombe1973">1973</a>)</span>. El concepto de “datos con estadísticos idénticos pero gráficos distintos” todavía tiene relevancia, con varias publicaciones describiendo distintos métodos para crearlos <span class="citation">(p.e. Chatterjee and Firat <a href="#ref-Chatterjee2007">2007</a>; Govindaraju and Haslett <a href="#ref-Govindaraju2008">2008</a>; Haslett and Govindaraju <a href="#ref-Haslett2009">2009</a>; Matejka and Fitzmaurice <a href="#ref-Matejka2017">2017</a>)</span> pero, que yo sepa, nunca fue nombrado. Propongo llamar “metámeros” a cualquier conjunto de sets de datos que se comporta de forma idéntica bajo una determinada transformación estadística.</p>
+<p>En colorimetría, los <em>metámeros</em> son distintas distribuciones de espectro lumínico que son percibidas como el mismo color por nuestro sistema visual. Esto es posible porque nuestros ojos contienen únicamente tres receptores de color (cuatro, en casos excepcionales de <a href="https://es.wikipedia.org/wiki/Tetracromatismo">tetracromatismo</a>) que son sensibles a un amplio espectro de longitudes de onda. Nuestros ojos, entonces, reducen el complejísimo espectro que llega a nuestra retina a tan sólo tres números: la excitación de cada tipo de receptor <span class="citation">(Hunt <a href="#ref-Hunt2004-7">2004</a>)</span>.</p>
+<p>El metamerismo es la base de toda tecnología de reproducción del color, desde el uso de pigmentos en cuadros al óleo, hasta las pantallas de computadora. Cuando vemos un fondue de chocolate en un programa de cocina, la distribución del espectro que emite nuestro televisor es muy distinta que la reflejada por el chocolate real. Gracias al metamerismo, se ve igual de delicioso.</p>
+<p>que reducen el complejísimo espectro que llega la retina en sólo tres números: la cantidad</p>
+<div id="referencias" class="section level1 unnumbered">
+<h1>Referencias</h1>
+<div id="refs" class="references">
+<div id="ref-Anscombe1973">
+<p>Anscombe, F J. 1973. “Graphs in Statistical Analysis.” <em>The American Statistician</em> 27 (1): 17–21. <a href="https://doi.org/10.1007/978-3-540-71915-1_35" class="uri">https://doi.org/10.1007/978-3-540-71915-1_35</a>.</p>
+</div>
+<div id="ref-Chatterjee2007">
+<p>Chatterjee, Sangit, and Aykut Firat. 2007. “Generating data with identical statistics but dissimilar graphics: A follow up to the anscombe dataset.” <em>American Statistician</em> 61 (3): 248–54. <a href="https://doi.org/10.1198/000313007X220057" class="uri">https://doi.org/10.1198/000313007X220057</a>.</p>
+</div>
+<div id="ref-Govindaraju2008">
+<p>Govindaraju, K., and S. J. Haslett. 2008. “Illustration of regression towards the means.” <em>International Journal of Mathematical Education in Science and Technology</em> 39 (4): 544–50. <a href="https://doi.org/10.1080/00207390701753788" class="uri">https://doi.org/10.1080/00207390701753788</a>.</p>
+</div>
+<div id="ref-Haslett2009">
+<p>Haslett, S. J., and K. Govindaraju. 2009. “Cloning data: Generating datasets with exactly the same multiple linear regression fit.” <em>Australian and New Zealand Journal of Statistics</em> 51 (4): 499–503. <a href="https://doi.org/10.1111/j.1467-842X.2009.00560.x" class="uri">https://doi.org/10.1111/j.1467-842X.2009.00560.x</a>.</p>
+</div>
+<div id="ref-Hunt2004-7">
+<p>Hunt, R. W. G. 2004. “The Colour Triangle.” In <em>The Reproduction of Colour</em>, 6th ed., 68–91. <a href="https://doi.org/10.1002/0470024275" class="uri">https://doi.org/10.1002/0470024275</a>.</p>
+</div>
+<div id="ref-Matejka2017">
+<p>Matejka, Justin, and George Fitzmaurice. 2017. “Same Stats, Different Graphs.” <em>Proceedings of the 2017 CHI Conference on Human Factors in Computing Systems - CHI ’17</em>, 1290–4. <a href="https://doi.org/10.1145/3025453.3025912" class="uri">https://doi.org/10.1145/3025453.3025912</a>.</p>
+</div>
+</div>
+</div>
