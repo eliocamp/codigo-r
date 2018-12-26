@@ -1,4 +1,4 @@
-ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$", "_bookdown.yml"]
 enableEmoji = true
 # Tranquilpeak
 # Version : 0.4.3-BETA
