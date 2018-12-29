@@ -31,13 +31,13 @@ El paquete [metamer](https://github.com/eliocamp/metamer) implementa en R el alg
 
 ## Metámeros en la visión
 
-Mirá esta foto de un prisma separando luz blanca en las infinitas longitudes de onda que la componen. 
+Esto **no es** un prisma separando la luz balnca en las longitudes de onda que la componen. Es una *imagen* de un prisma separando la luz balnca en las longitudes de onda que la componen.
 
-```{r prism, fig.cap = "Prisma descomponiendo la luz blanca en su espectro.", fig.align="center", echo = FALSE}
+```{r prism, fig.cap = "C'est ne pas un prisme.", fig.align="center", echo = FALSE}
 knitr::include_graphics("/images/Prism_flat_rainbow.jpg")
 ```
 
-Si el monitor que estás usando para ver la imgen sólo emite luz en 3 longitudes de onda (roja, verde y azul), ¿cómo hace para reproducir todo el espectro? La respuesta es que no lo hace. Para cada color de ese arcoíris, tu monitor está emitiendo una mezcla de longitudes de onda que nuestro sistema visual interpreta como el mismo color que esa longitud de onda específica. 
+Esta observación magrittiana no es trivial. Su importancia resulta obvia cuando uno se da cuenta que el monitor que estás mirando sólo tiene tres LEDs que emiten luz en sólo tres longitudes de onda (más o menos). ¿Cómo hace para reproducir todo el espectro de la luz blanca? La respuesta es que no lo hace. Para cada color de ese arcoíris, tu monitor está emitiendo una mezcla de longitudes de onda roja, verde y azul que nuestro sistema visual interpreta como el mismo color que esa longitud de onda específica. 
 
 Cómo sucede todo eso es complicadísimo y va más allá de lo que pueda explicar en este artículo (pero sí recomiendo leer [esta excelente nota](http://jamie-wong.com/post/color/) sobre el tema) pero el núcleo de la cuestión es que nuestros ojos tienen sólo tres tipos de receptores (conos) que responden a longitudes de onda cortas (S), medias (M) y largas (L). Por lo tanto, cualquier distribución de longitudes de onda que vemos, sin importar cuán complicadas sean, se reducen a únicamente tres números: la excitación de los receptores S, M y L. Esto significa que cualquier distribución de longitudes de onda que excite nuestros receptores en la misma proporción va a ser percibido como el mismo color. En colorimetría, esto se conoce como *metamerismo* y es la base de la reproducción del color de monitores, impresiones y cuadros [@Hunt2004-7]. El amarillo monocromático que se ve en un prisma se ve igual que el amarillo producido por el monitor aunque no tenga ni remotamente el mismo espectro. Son metámeros. 
 
@@ -205,17 +205,16 @@ metamerize(data.frame(x = rnorm(100)),
            N = 1000)
 ```
 
-Esto motiva definir la categoría de transformaciones estadítsicas "eficaces" como aquellas que pueden describir una muestra de tamaño N con unicidad a partir de N o menos números. Bajo esta definición, "los primeros N momentos" es una transforamción eficaz mientras que "repetir el primer momento N veces" no lo es. Esto, igual es pura especulación mía.
+Esto motiva definir la categoría de transformaciones estadítsicas "eficaces" como aquellas que pueden describir una muestra univariada de tamaño N con unicidad a partir de N o menos números. Bajo esta definición, "los primeros N momentos" es una transforamción eficaz mientras que "repetir el primer momento N veces" no lo es. Esto, igual es pura especulación mía.
 
 Vale la pena notar que en la búsqueda empírica de metámeros hay que establecer un nivel de exactitud tolerable (con el argumento `signif`). Si se quiere ser exactos, éstos no son metámeros verdaderos sino más bien "semi-metámeros". Esta diferencia implica que si se tolera una exactitud baja es posible encontrar (semi)-metámeros aún cuando teóricamente no debería ser posible. 
 
 ```{r semi-metamer}
 metamerize(data.frame(x = rnorm(3)),
                        moments_n(1:4), 
-                       signif = 2, 
+                       signif = 1, 
                        perturbation = 0.001, 
-                       N = 1000, 
-                       trim = 10)
+                       N = 1000)
 ```
 
 

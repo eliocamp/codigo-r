@@ -22,14 +22,14 @@ summary: 'El paquete [metamer](https://github.com/eliocamp/metamer) implementa e
 <p>El paquete <a href="https://github.com/eliocamp/metamer">metamer</a> implementa en R el algoritmo descripto por <span class="citation">Matejka and Fitzmaurice (<a href="#ref-Matejka2017">2017</a>)</span> para generar sets de datos distintos entre sí pero con estadísticos idénticos. Además, propongo el nombre “metámeros” para estos grupos de datos en analogía con el concepto proveniente de colorimetría.</p>
 <div id="metameros-en-la-vision" class="section level2">
 <h2>Metámeros en la visión</h2>
-<p>Mirá esta foto de un prisma separando luz blanca en las infinitas longitudes de onda que la componen.</p>
+<p>Esto <strong>no es</strong> un prisma separando la luz balnca en las longitudes de onda que la componen. Es una <em>imagen</em> de un prisma separando la luz balnca en las longitudes de onda que la componen.</p>
 <div class="figure" style="text-align: center"><span id="fig:prism"></span>
-<img src="/images/Prism_flat_rainbow.jpg" alt="Prisma descomponiendo la luz blanca en su espectro."  />
+<img src="/images/Prism_flat_rainbow.jpg" alt="C'est ne pas un prisme."  />
 <p class="caption">
-Fig. 1: Prisma descomponiendo la luz blanca en su espectro.
+Fig. 1: C’est ne pas un prisme.
 </p>
 </div>
-<p>Si el monitor que estás usando para ver la imgen sólo emite luz en 3 longitudes de onda (roja, verde y azul), ¿cómo hace para reproducir todo el espectro? La respuesta es que no lo hace. Para cada color de ese arcoíris, tu monitor está emitiendo una mezcla de longitudes de onda que nuestro sistema visual interpreta como el mismo color que esa longitud de onda específica.</p>
+<p>Esta observación magrittiana no es trivial. Su importancia resulta obvia cuando uno se da cuenta que el monitor que estás mirando sólo tiene tres LEDs que emiten luz en sólo tres longitudes de onda (más o menos). ¿Cómo hace para reproducir todo el espectro de la luz blanca? La respuesta es que no lo hace. Para cada color de ese arcoíris, tu monitor está emitiendo una mezcla de longitudes de onda roja, verde y azul que nuestro sistema visual interpreta como el mismo color que esa longitud de onda específica.</p>
 <p>Cómo sucede todo eso es complicadísimo y va más allá de lo que pueda explicar en este artículo (pero sí recomiendo leer <a href="http://jamie-wong.com/post/color/">esta excelente nota</a> sobre el tema) pero el núcleo de la cuestión es que nuestros ojos tienen sólo tres tipos de receptores (conos) que responden a longitudes de onda cortas (S), medias (M) y largas (L). Por lo tanto, cualquier distribución de longitudes de onda que vemos, sin importar cuán complicadas sean, se reducen a únicamente tres números: la excitación de los receptores S, M y L. Esto significa que cualquier distribución de longitudes de onda que excite nuestros receptores en la misma proporción va a ser percibido como el mismo color. En colorimetría, esto se conoce como <em>metamerismo</em> y es la base de la reproducción del color de monitores, impresiones y cuadros <span class="citation">(Hunt <a href="#ref-Hunt2004-7">2004</a>)</span>. El amarillo monocromático que se ve en un prisma se ve igual que el amarillo producido por el monitor aunque no tenga ni remotamente el mismo espectro. Son metámeros.</p>
 </div>
 <div id="metameros-en-la-estadistica" class="section level2">
@@ -267,7 +267,7 @@ metamerize(start_data,
            signif = 3,
            perturbation = 0.01,
            N = 30000)</code></pre>
-<pre><code>## List of 18 metamers</code></pre>
+<pre><code>## List of 216 metamers</code></pre>
 <p>Un boxplot representa una muestra mediante unos 5 números, por lo que es esperable que demuestre metamerismo para muestras de <span class="math inline">\(N&gt;5\)</span>. Una estimación de densidad usando métodos paramétricos, en cambio, devuelve potencialmente infinitos puntos a partir de una muestra de cualquier tamaño. La posibilidad de metamerismo en ese caso depende de la “resolución” con la que se describa la curva. Si la curva es descripta con menos puntos que el tamaño de la muestra, va a tener metámeros.</p>
 <pre class="r"><code>coarse_density &lt;- function(data) {
    density(data$x, n = 16)$y
@@ -278,7 +278,7 @@ metamerize(data.frame(x = rnorm(100)),
            N = 5000,
            signif = 3,
            perturbation = 0.001)</code></pre>
-<pre><code>## List of 26 metamers</code></pre>
+<pre><code>## List of 124 metamers</code></pre>
 <p>Mientras que si se la describe con más puntos, no permite metamerismo.</p>
 <pre class="r"><code>highdef_density &lt;- function(data) {
    density(data$x, n = 200)$y
@@ -298,16 +298,15 @@ metamerize(data.frame(x = rnorm(100)),
 metamerize(data.frame(x = rnorm(100)),
            preserve = mean_n_times,
            N = 1000)</code></pre>
-<pre><code>## List of 445 metamers</code></pre>
-<p>Esto motiva definir la categoría de transformaciones estadítsicas “eficaces” como aquellas que pueden describir una muestra de tamaño N con unicidad a partir de N o menos números. Bajo esta definición, “los primeros N momentos” es una transforamción eficaz mientras que “repetir el primer momento N veces” no lo es. Esto, igual es pura especulación mía.</p>
+<pre><code>## List of 1 metamers</code></pre>
+<p>Esto motiva definir la categoría de transformaciones estadítsicas “eficaces” como aquellas que pueden describir una muestra univariada de tamaño N con unicidad a partir de N o menos números. Bajo esta definición, “los primeros N momentos” es una transforamción eficaz mientras que “repetir el primer momento N veces” no lo es. Esto, igual es pura especulación mía.</p>
 <p>Vale la pena notar que en la búsqueda empírica de metámeros hay que establecer un nivel de exactitud tolerable (con el argumento <code>signif</code>). Si se quiere ser exactos, éstos no son metámeros verdaderos sino más bien “semi-metámeros”. Esta diferencia implica que si se tolera una exactitud baja es posible encontrar (semi)-metámeros aún cuando teóricamente no debería ser posible.</p>
 <pre class="r"><code>metamerize(data.frame(x = rnorm(3)),
                        moments_n(1:4), 
-                       signif = 2, 
+                       signif = 1, 
                        perturbation = 0.001, 
-                       N = 1000, 
-                       trim = 10)</code></pre>
-<pre><code>## List of 10 metamers</code></pre>
+                       N = 1000)</code></pre>
+<pre><code>## List of 948 metamers</code></pre>
 </div>
 <div id="metameros-avanzados" class="section level2">
 <h2>Metámeros avanzados</h2>
@@ -347,7 +346,7 @@ star$dataset &lt;- NULL</code></pre>
               N = 3000, trim = 10) %&gt;% 
    metamerize(minimize = mean_dist_to(start_data),
               N = 30000, trim = 150)</code></pre>
-<p>Y ver al datasaurio metamorfoseando en distintas figuras, siempre manteniendo las mismas propiedades estadísticas y logrando algo similar a <a href="https://www.autodeskresearch.com/publications/samestats">la animación de Justin Matejka y George Fitzmaurice</a>.</p>
+<p>Esta serie de metámeros muestra al datasaurio metamorfoseando en distintas figuras, siempre manteniendo las mismas propiedades estadísticas y logrando algo similar a <a href="https://www.autodeskresearch.com/publications/samestats">la animación de Justin Matejka y George Fitzmaurice</a>.</p>
 <pre class="r"><code>metamers %&gt;% 
    as.data.frame() %&gt;% 
    ggplot(aes(x, y)) +
