@@ -6,10 +6,21 @@
     <description>Recent content on Code R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Tue, 18 Sep 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 03 Jan 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://eliocamp.github.io/codigo-r/en/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Statistical metamerism</title>
+      <link>https://eliocamp.github.io/codigo-r/en/2019/01/statistical-metamerism/</link>
+      <pubDate>Thu, 03 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://eliocamp.github.io/codigo-r/en/2019/01/statistical-metamerism/</guid>
+      <description>Summary The metamer package implements Matejka and Fitzmaurice (2017) algorithm for generating datasets with distinct appearance but identical statistical properties. I propose to call them “metamers” as an analogy with the colorimetry concept.
+Metamers in vision This is not a prism separating white light into its component wavelengths. It is an image of a prism separating white light into its component wavelengths.
+ Fig. 1: C’est ne pas un prisme.</description>
+    </item>
     
     <item>
       <title>Multiple color (and fill) scales with ggplot2</title>

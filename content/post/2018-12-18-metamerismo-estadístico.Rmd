@@ -1,8 +1,7 @@
 ---
 title: "Metamerismo estadístico"
 author: "Elio"
-date: '2018-12-18'
-draft: yes
+date: '2019-01-03'
 link-citations: yes
 categories:
    - R
@@ -19,7 +18,8 @@ library(data.table)
 library(ggplot2)
 library(magrittr)
 library(gganimate)
-knitr::opts_chunk$set(cache = TRUE)
+knitr::opts_chunk$set(cache = TRUE,
+                      cache.extra = 2)
 
 theme_set(hrbrthemes::theme_ipsum_rc())
 ```
@@ -31,15 +31,17 @@ El paquete [metamer](https://github.com/eliocamp/metamer) implementa en R el alg
 
 ## Metámeros en la visión
 
-Esto **no es** un prisma separando la luz balnca en las longitudes de onda que la componen. Es una *imagen* de un prisma separando la luz balnca en las longitudes de onda que la componen.
+Esto **no es** un prisma separando la luz blanca en las longitudes de onda que la componen. Es una *imagen* de un prisma separando la luz blanca en las longitudes de onda que la componen.
 
 ```{r prism, fig.cap = "C'est ne pas un prisme.", fig.align="center", echo = FALSE}
 knitr::include_graphics("/images/Prism_flat_rainbow.jpg")
 ```
 
-Esta observación magrittiana no es trivial. Su importancia resulta obvia cuando uno se da cuenta que el monitor que estás mirando sólo tiene tres LEDs que emiten luz en sólo tres longitudes de onda (más o menos). ¿Cómo hace para reproducir todo el espectro de la luz blanca? La respuesta es que no lo hace. Para cada color de ese arcoíris, tu monitor está emitiendo una mezcla de longitudes de onda roja, verde y azul que nuestro sistema visual interpreta como el mismo color que esa longitud de onda específica. 
+Esta observación magrittiana no es trivial. El monitor que está mostrando la imagen sólo tiene tres LEDs que emiten luz en sólo tres longitudes de onda (más o menos). ¿Cómo hace para reproducir todo el espectro de la luz blanca? La respuesta es que no lo hace. Para cada color de ese arcoíris, el monitor está emitiendo una mezcla de longitudes de onda roja, verde y azul que nuestro sistema visual interpreta como el mismo color que esa longitud de onda específica. 
 
-Cómo sucede todo eso es complicadísimo y va más allá de lo que pueda explicar en este artículo (pero sí recomiendo leer [esta excelente nota](http://jamie-wong.com/post/color/) sobre el tema) pero el núcleo de la cuestión es que nuestros ojos tienen sólo tres tipos de receptores (conos) que responden a longitudes de onda cortas (S), medias (M) y largas (L). Por lo tanto, cualquier distribución de longitudes de onda que vemos, sin importar cuán complicadas sean, se reducen a únicamente tres números: la excitación de los receptores S, M y L. Esto significa que cualquier distribución de longitudes de onda que excite nuestros receptores en la misma proporción va a ser percibido como el mismo color. En colorimetría, esto se conoce como *metamerismo* y es la base de la reproducción del color de monitores, impresiones y cuadros [@Hunt2004-7]. El amarillo monocromático que se ve en un prisma se ve igual que el amarillo producido por el monitor aunque no tenga ni remotamente el mismo espectro. Son metámeros. 
+Cómo sucede todo eso es complicadísimo y va más allá de lo que pueda explicar en este artículo (pero sí recomiendo leer [esta excelente nota](http://jamie-wong.com/post/color/) sobre el tema) pero el núcleo de la cuestión es que nuestros ojos tienen sólo tres tipos de receptores (conos) que responden a longitudes de onda cortas (S), medias (M) y largas (L). Por lo tanto, cualquier distribución de longitudes de onda que llegue a nuestros ojos, sin importar cuán complicada sea es reducida a únicamente tres números: la excitación de los receptores S, M y L. Y cualquier distribución de longitudes de onda que excite nuestros receptores en la misma proporción va a ser percibido como el mismo color. En colorimetría, esto se conoce como *metamerismo* [@Hunt2004-7]. El amarillo monocromático que se ve en un prisma se percibe igual que el amarillo producido por el monitor aunque no tenga ni remotamente el mismo espectro. Son metámeros. 
+
+La creación de pares metaméricos es la base de la reproducción del color en monitores, impresiones y cuadros, pero también tiene su lado oscuro. Dos pigmentos pueden ser pares metaméricos bajo ciertas condiciones de iluminación pero tener colores muy distintos en otras. Esto puede ser un problema, por ejemplo, al comprar ropa en un negocio con iluminación artificial y luego usarla bajo la luz del Sol. 
 
 ## Metámeros en la estadística
 
@@ -55,11 +57,15 @@ ggplot(anscombe, aes(x, y)) +
    facet_wrap(~quartet)
 ```
 
-A pesar de ser cuatro sets de datos muy distintos, los miembros del cuarteto comparten el promedio y desvío estándar de cada variable, así como la correlación entre ambas [@Anscombe1973]. Al igual que nuestros ojos, reducir la complejidad de un set de datos en sólo algunos pocos números quita información. Los mismos números pueden obtenerse a partir de distintos datos. El concepto de "datos con estadísticos idénticos pero gráficos distintos" todavía tiene relevancia, con varias publicaciones describiendo distintos métodos para crearlos [p.e. @Chatterjee2007; @Govindaraju2008; @Haslett2009; @Matejka2017] pero, que yo sepa, nunca fue nombrado. En analogía al metamerismo del color, propongo llamar "metámeros" a cualquier conjunto de sets de datos que se comporta de forma idéntica bajo una determinada transformación estadística. 
+A pesar de ser cuatro sets de datos muy distintos, los miembros del cuarteto comparten el promedio y desvío estándar de cada variable, así como la correlación entre ambas [@Anscombe1973]. Vistos a través de esta transformación estadística, los cuatro sets de datos se ven iguales aún cuando no son ni remotamente similares. Son metámeros. 
 
-En este post voy a usar el paquete [metamer](https://github.com/eliocamp/metamer), que implementa el algoritmo de @Matejka2017 para generar metámeros. La función principal, `metamerize()`, permite generar metámeros a partir de un data set inicial y una función a preservar. Opcionalmente, se puede establecer una función que deben minimizar los metámeros sucesivos. 
+Al igual que los pares metaméricos de colores, los metámeros estadísticos muestran sus diferencias cuando se los ve con otra "iluminación." En este caso, un gráfico. 
 
-Primero, con la función `delayed_with()` defino la serie de transformaciones estadísticas que deben ser preservadas. Los cuatro elementos del cuarteto de anscombe preservan estas propiedades con hasta tres cifras significativas (salvo por la correlación entre x e y en el cuarto cuarteto).
+El concepto de "datos con estadísticos idénticos pero gráficos distintos" todavía tiene relevancia, con varias publicaciones describiendo distintos métodos para crearlos [p.e. @Chatterjee2007; @Govindaraju2008; @Haslett2009; @Matejka2017] pero, que yo sepa, nunca fue nombrado. En analogía al metamerismo del color, en este artículo voy a llamar "metámeros" a cualquier conjunto de sets de datos que se comporta de forma idéntica bajo una determinada transformación estadística. 
+
+El paquete [metamer](https://github.com/eliocamp/metamer) implementa el algoritmo de @Matejka2017 para generar metámeros. La función principal, `metamerize()`, permite generar metámeros a partir de un data set inicial y una función a preservar. Opcionalmente, se puede establecer una función que deben minimizar los metámeros sucesivos. 
+
+Primero, la función `delayed_with()` sirve para definir la serie de transformaciones estadísticas que deben ser preservadas. Los cuatro elementos del cuarteto de anscombe preservan estas propiedades con hasta tres cifras significativas (salvo por la correlación entre x e y en el cuarto cuarteto).
 
 ```{r anscombe-summ}
 library(metamer)
@@ -78,15 +84,15 @@ anscombe[, as.list(signif(summ_fun(.SD), 3)), by = quartet] %>%
                 caption = "Propiedades estadísticas del cuarteto de Anscombe")
 ```
 
-Ahora, defino el data set inicial y uso `mean_dist_to()` para que en el proceso se minimice la distancia media al data set al que quiero llegar.
+Para encontrar metámeros "entre" el primero y el segundo cuarteto, se puede empezar por el primero y generar metámeros que minimicen la distancia media al segundo. La función `mean_dist_to()` sirve para este caso. 
 
 ```{r metamer-build}
 # Extraigo el segundo cuarteto y eliminto la columna `quartet`
-start_data <- subset(anscombe, quartet == 2)
+start_data <- subset(anscombe, quartet == 1)
 start_data$quartet <- NULL
 
 # Exraigo el tercer cuarteto y eliminto la columna `quartet`
-target <- subset(anscombe, quartet == 3)
+target <- subset(anscombe, quartet == 2)
 target$quartet <- NULL
 
 set.seed(42)  # para resultados reproducibles
@@ -96,28 +102,30 @@ metamers <- metamerize(start_data,
                        signif = 3,
                        change = "y",
                        perturbation = 0.008, 
-                       N = 40000)
+                       N = 30000)
 print(metamers)
 ```
 
-El proceso genera `r length(metamers) - 1` metámeros además de los datos originales. Con `trim()` selecciono 10 metámeros equiespaciados en todo el proceso para ver que, efectivamente, todos preservaron las propiedades de los datos originales.
+El proceso genera `r length(metamers) - 1` metámeros además de los datos originales. Seleccionando sólo 10 usando `trim()` y aplicando `summ_fun()` a cada uno se confirma que tienen las mismas propiedades con 3 cifras significativas. 
 
 ```{r anscombe-metamers}
 metamers %>% 
    trim(10) %>% 
-   as.data.frame() %>% 
-   as.data.table() %>% 
-   .[, as.list(signif(summ_fun(.SD), 3)), by = .metamer] %>% 
-   knitr::kable(col.names = c("Metámero", summ_names),
-                caption = "Propiedades estadísticas de los metámeros generados.")
+   lapply(summ_fun) %>% 
+   lapply(signif, digits = 3) %>% 
+   do.call(rbind, .) %>% 
+   knitr::kable(col.names = c(summ_names),
+                caption = "Propiedades estadísticas de los metámeros generados (redondeados a tres cifras significativas).")
 ```
 
-Y usando [gganimate](https://github.com/thomasp85/gganimate) puedo visualizar cómo pasar del segundo al tercer cuarteto. Todos los pasos intermedios son metámeros del original. 
+Y usando [gganimate](https://github.com/thomasp85/gganimate) se puede visualizar cómo pasar del segundo al tercer cuarteto. Todos los pasos intermedios son metámeros del original. 
 
 ```{r anscombe-animate, fig.cap = "Transformación del segundo al tercer cuarteto de Anscombe."}
+library(gganimate)
+
 metamers %>% 
    trim(100) %>% 
-   as.data.frame() %>% 
+   as.data.frame() %>%
    ggplot(aes(x, y)) +
    geom_point() +
    transition_manual(.metamer)
@@ -125,38 +133,39 @@ metamers %>%
 
 En general la discusión alrededor del metamerismo estadístico suele ser sobre la importancia de graficar los datos en vez de únicamente calcular estadísticas resumidas. Anscombe creó su cuarteto para contradecir la idea de que "los cálculos numéricos son exactos, mientras que los gráficos son aproximados". Actualmente esa es la interpretación que se sigue dando a este fenómeno:
 
-
-```{r tweet, fig.cap = "Descargá el Datasaurio: Nunca confíes sólo en las estadísticas resumidas; siempre visualizá tus datos.", fig.align="center", echo = FALSE}
+```{r tweet, fig.cap = "Descargá el Datasaurio: Nunca confíes sólo en las estadísticas resumidas; siempre visualizá tus datos. ([Tweet](https://twitter.com/albertocairo/status/770267777169035264))", fig.align="center", echo = FALSE}
 knitr::include_graphics("/images/datasaurus_tweet.png")
 ```
 
 Sin embargo, creo que hay un principio más fundamental. El problema de las *summary statistics* es la parte de *summary*. El rol de la estadística es, en muchos casos, *resumir* datos. Tomar una gran cantidad de observaciones que no pueden ser entendidas en su completitud porque nuestro entendimiento es limitado, y reducirlas a unos pocos números o propiedades que podemos entender fácilmente. El problema es que lo que se gana en entendimiento, se pierde información.
 
-Por ejemplo, un censo de los ingresos de todos los ciudadanos de un país tiene una enorme cantidad de información, pero tomados como datos separados dicen poco. Se puede resumir con el promedio (el primer momento) para tener alguna idea del valor "típico" de esta variable. Obviamente, este número esconde una gran desigualdad, por lo que es conviente usar el desvío estándar (segundo momento) para tener una idea de cuán variable es la distribución del ingreso. Pero es muy probable que la distribución no sea simétrica. Se puede usar la asimetría (tercer momento) para empezar a cuantificar ese efecto. 
+Por ejemplo, un censo de los ingresos de todos los ciudadanos de un país tiene una enorme cantidad de información, pero tomados como datos separados dicen poco. Se puede resumir con el promedio (el primer momento) para tener alguna idea del valor "típico" de esta variable. Obviamente, este número esconde una gran desigualdad, por lo que es conveniente usar el desvío estándar (segundo momento) para tener una idea de cuán variable es la distribución del ingreso. Pero es muy probable que la distribución no sea simétrica. Se puede usar la asimetría (tercer momento) para empezar a cuantificar ese efecto. 
 
-Cada momento que se agrega permite tener más información sobre los datos crudos. El límite es cuando se tienen tantos momentos como datos en la muestra. Una muestra univariada de tamaño N puede ser descripta unívocamente por sus N primeros momentos. Esto tiene sentito intuitivamente --no se debería necesitar más de N números para describir N números-- pero también [tiene demostración](https://math.stackexchange.com/questions/3033407/is-a-sample-of-size-n-uniquely-described-by-n-sample-moments) matemática[^unicidad]. 
+Cada momento que se agrega permite tener más información sobre los datos crudos. El límite es cuando se tienen tantos momentos como datos en la muestra. Una muestra univariada de tamaño N puede ser descripta unívocamente por sus N primeros momentos. Esto tiene sentido intuitivamente --no se debería necesitar más de N números para describir N números-- pero también [tiene demostración](https://math.stackexchange.com/questions/3033407/is-a-sample-of-size-n-uniquely-described-by-n-sample-moments) matemática[^unicidad]. 
 
 [^unicidad]: Técnicamente la descripción es única a menos a menos de permutaciones de los valores. Esto no es casualidad. El caso donde el orden de los valores importa es, en realidad, un caso de muestras bivariadas (cada "dato" es un par de valores (x; y)). La intuición es que además de los momentos de cada variable, son necesarios los momentos cruzados (covarianza, etc...). La demostración para el caso multivariado [es complicada pero parece que existe](https://mathoverflow.net/questions/201719/moment-problem-for-discrete-distributions), aunque no creo poder entenderla. Por intuición me parece plausible que en ese caso sea necesaria la matriz $A^{N\times N}$ donde el elemento de la fila $i$ y columna $j$ es $x^iy^j$; lo cual implica necesitar $N^2 - 1$ momentos.
 
 En otras palabras, la transformación "primeros N momentos de una muestra de tamaño N" no tiene metámeros estadísticos salvo cualquier permutación de la muestra original (pero ver [1](#fn1)).
 
-Esta propiedad no es única de los momentos estadísticos. La transformada de fourier tiene la misma propiedad, lo mismo que las componentes principales, análisis factorial, clustering, etc...^[El caso de la transformada de fourier es interesante porque describe una serie *ordenada* de tamaño $N$ con dos series ordenadas de $N/2$ números (una real y otra imaginaria). Es decir, $2N$ números en total (las dos series y sus respectivos órdenes). Esto es mucho menor que $N^2-1$ supuesto antes pero sospecho que esto es porque esta propiedad de fourier es para series *equiespaciadas*. Si los datos tienen alguna restricción, se puede "comprimir" la inforamción.]. El problema no es gráficos vs. números sino "todos los números" vs. "sólo algunos números". La ventaja de los gráficos es que permiten representar gran cantidad de números de una forma eficiente e intuitiva, permitiendo una *gestalt* que es imposible lograr simplemente mirando una serie de números. 
+Esta propiedad no es única de los momentos estadísticos. La transformada de fourier tiene la misma propiedad, lo mismo que las componentes principales, análisis factorial, clustering, etc...^[El caso de la transformada de fourier es interesante porque describe una serie *ordenada* de tamaño $N$ con dos series ordenadas de $N/2$ números (una real y otra imaginaria). Es decir, $2N$ números en total (las dos series y sus respectivos órdenes). Esto es mucho menor que $N^2-1$ supuesto antes pero sospecho que esto es porque esta propiedad de fourier es para series *equiespaciadas*. Si los datos tienen alguna restricción, se puede "comprimir" la información.]. El problema no es gráficos vs. números sino "todos los números" vs. "sólo algunos números". La ventaja de los gráficos es que permiten representar gran cantidad de números de una forma eficiente e intuitiva, permitiendo una *gestalt* que es imposible lograr simplemente mirando una serie de números. 
 
 Esta observación permite predecir en qué casos será más fácil encontrar metámeros y cuándo es matemáticamente imposible. Por ejemplo, no se puede encontrar metámeros de una muestra de tamaño 10 que preserve 10 momentos. 
 
 ```{r test1}
+set.seed(42) 
 start_data <- data.frame(x = rnorm(10))
 
 metamerize(start_data, 
            moments_n(1:10),
            signif = 3,
-           perturbation = 0.01,
+           perturbation = 0.05,
            N = 30000)
 ```
 
 Pero sí se puede encontrar metámeros que preserven dos momentos.
 
 ```{r test2}
+set.seed(42) 
 metamerize(start_data, 
            moments_n(1:2), 
            signif = 3,
@@ -170,7 +179,7 @@ Un boxplot representa una muestra mediante unos 5 números, por lo que es espera
 coarse_density <- function(data) {
    density(data$x, n = 16)$y
 }
-
+set.seed(42) 
 metamerize(data.frame(x = rnorm(100)),
            preserve = coarse_density,
            N = 5000,
@@ -184,7 +193,7 @@ Mientras que si se la describe con más puntos, no permite metamerismo.
 highdef_density <- function(data) {
    density(data$x, n = 200)$y
 }
-
+set.seed(42) 
 metamerize(data.frame(x = rnorm(100)),
            preserve = highdef_density,
            N = 5000,
@@ -192,23 +201,25 @@ metamerize(data.frame(x = rnorm(100)),
            perturbation = 0.001)
 ```
 
-Este principio general está bien, pero no está completo. Imaginemos una transformación estadística que devuelva un vector de tamaño N con el promedio de una muestra. A pesar de obtener N números a partir de una muestra de tamaño N, tiene la misma información que si fuera sólo el promedio. Generar metámeros para esta transforamción es trivial.
+Este principio general está bien, pero no está completo. Imaginemos una transformación estadística que devuelva un vector de tamaño N con el promedio de una muestra repetido N veces. A pesar de obtener N números a partir de una muestra de tamaño N, tiene la misma información que si fuera sólo el promedio. Generar metámeros para esta transformación es trivial.
 
 ```{r mean-n-times}
 mean_n_times <- function(data) {
    rep(mean(data$x), length.out = length(data$x))
 }
-
+set.seed(42) 
 metamerize(data.frame(x = rnorm(100)),
            preserve = mean_n_times,
+           perturbation = 0.1, 
            N = 1000)
 ```
 
-Esto motiva definir la categoría de transformaciones estadítsicas "eficaces" como aquellas que pueden describir una muestra univariada de tamaño N con unicidad a partir de N o menos números. Bajo esta definición, "los primeros N momentos" es una transforamción eficaz mientras que "repetir el primer momento N veces" no lo es. Esto, igual es pura especulación mía.
+Esto motiva definir la categoría de transformaciones estadísticas "eficaces" como aquellas que pueden describir una muestra univariada de tamaño N con unicidad a partir de N números o menos. Bajo esta definición, "los primeros N momentos" es una transformación eficaz mientras que "repetir el primer momento N veces" no lo es. Esto, igual es pura especulación mía.
 
 Vale la pena notar que en la búsqueda empírica de metámeros hay que establecer un nivel de exactitud tolerable (con el argumento `signif`). Si se quiere ser exactos, éstos no son metámeros verdaderos sino más bien "semi-metámeros". Esta diferencia implica que si se tolera una exactitud baja es posible encontrar (semi)-metámeros aún cuando teóricamente no debería ser posible. 
 
 ```{r semi-metamer}
+set.seed(42) 
 metamerize(data.frame(x = rnorm(3)),
                        moments_n(1:4), 
                        signif = 1, 
@@ -282,17 +293,12 @@ metamers <- metamerize(start_data,
 
 Esta serie de metámeros muestra al datasaurio metamorfoseando en distintas figuras, siempre manteniendo las mismas propiedades estadísticas y logrando algo similar a [la animación de Justin Matejka y George Fitzmaurice](https://www.autodeskresearch.com/publications/samestats).
 
-```{r metamer-chain-anim}
+```{r metamer-chain-anim, fig.cap = "Metamorfosis del datasaurio."}
 metamers %>% 
    as.data.frame() %>% 
    ggplot(aes(x, y)) +
    geom_point() +
    transition_manual(.metamer)
 ```
-
-
-## Conclusión
-
-Los metámeros de color cambian cuando se ven con otra luz... en estadística (y ciencia en general) es importante mirar los datos desde distintas ópticas, con distintos métodos ....
 
 ## Referencias

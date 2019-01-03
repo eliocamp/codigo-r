@@ -3,6 +3,21 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://eliocamp.github.io/codigo-r/2019/01/metamerismo-estad%C3%ADstico/</loc>
+    <lastmod>2019-01-03T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://eliocamp.github.io/codigo-r/en/2019/01/statistical-metamerism/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-es"
+                href="https://eliocamp.github.io/codigo-r/2019/01/metamerismo-estad%C3%ADstico/"
+                />
+  </url>
+  
+  <url>
     <loc>https://eliocamp.github.io/codigo-r/2018/10/leyendo-informacion-incucai/</loc>
     <lastmod>2018-10-02T00:00:00+00:00</lastmod>
   </url>
@@ -149,7 +164,7 @@
   
   <url>
     <loc>https://eliocamp.github.io/codigo-r/</loc>
-    <lastmod>2018-10-02T00:00:00+00:00</lastmod>
+    <lastmod>2019-01-03T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -169,6 +184,12 @@
   </url>
   
   <url>
+    <loc>https://eliocamp.github.io/codigo-r/categories/estad%C3%ADstica/</loc>
+    <lastmod>2019-01-03T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://eliocamp.github.io/codigo-r/tags/ggplot2/</loc>
     <lastmod>2018-09-18T00:00:00+00:00</lastmod>
     <priority>0</priority>
@@ -185,8 +206,14 @@
   </url>
   
   <url>
+    <loc>https://eliocamp.github.io/codigo-r/tags/paquetes/</loc>
+    <lastmod>2019-01-03T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://eliocamp.github.io/codigo-r/post/</loc>
-    <lastmod>2018-10-02T00:00:00+00:00</lastmod>
+    <lastmod>2019-01-03T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -202,7 +229,7 @@
   
   <url>
     <loc>https://eliocamp.github.io/codigo-r/categories/r/</loc>
-    <lastmod>2018-10-02T00:00:00+00:00</lastmod>
+    <lastmod>2019-01-03T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Packages on Code R</title>
+    <link>https://eliocamp.github.io/codigo-r/en/tags/packages/</link>
+    <description>Recent content in Packages on Code R</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es-es</language>
+    <lastBuildDate>Thu, 03 Jan 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://eliocamp.github.io/codigo-r/en/tags/packages/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Statistical metamerism</title>
+      <link>https://eliocamp.github.io/codigo-r/en/2019/01/statistical-metamerism/</link>
+      <pubDate>Thu, 03 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://eliocamp.github.io/codigo-r/en/2019/01/statistical-metamerism/</guid>
+      <description>Summary The metamer package implements Matejka and Fitzmaurice (2017) algorithm for generating datasets with distinct appearance but identical statistical properties. I propose to call them “metamers” as an analogy with the colorimetry concept.
+Metamers in vision This is not a prism separating white light into its component wavelengths. It is an image of a prism separating white light into its component wavelengths.
+ Fig. 1: C’est ne pas un prisme.</description>
+    </item>
+    
+  </channel>
+</rss>
