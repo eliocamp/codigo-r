@@ -8,7 +8,7 @@
     <language>es-es</language>
     <lastBuildDate>Tue, 02 Oct 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://eliocamp.github.io/codigo-r/tags/webscapping/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://eliocamp.github.io/codigo-r/tags/webscapping/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,7 +17,340 @@
       <pubDate>Tue, 02 Oct 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/2018/10/leyendo-informacion-incucai/</guid>
-      <description>El otro día el diario Clarín sacó una nota afirmando que el pasado agosto se había dado el récord histórico de transplantes de órganos y se lo adjudicaba a la &amp;ldquo;Ley Justina&amp;rdquo;, que establece que todos somos donantes presuntos a menos que se declare lo contrario en vida. Dado que esta ley se aprobó hace poco más de un mes y todavía no está reglamentada, es poco probable que este récord se deba al cambio legal.</description>
+      <description>
+
+&lt;p&gt;El otro día el diario Clarín sacó &lt;a href=&#34;https://www.clarin.com/sociedad/ley-justina-agosto-registro-record-historico-donantes-trasplante-organos_0_SyvU8EwwQ.html&#34;&gt;una nota&lt;/a&gt; afirmando que el pasado agosto se había dado el récord histórico de transplantes de órganos y se lo adjudicaba a la &amp;ldquo;Ley Justina&amp;rdquo;, que establece que todos somos donantes presuntos a menos que se declare lo contrario en vida. Dado que esta ley se aprobó hace poco más de un mes y todavía no está reglamentada, es poco probable que este récord se deba al cambio legal. En cualquier caso, la nota me despertó curiosidad. ¿Cómo evolucionó la donación de órganos en Argentina?&lt;/p&gt;
+
+&lt;p&gt;Como toda buena nota periodística, el artículo de Clarín sólo tira datos puntuales sin mostrar una linea de tiempo o poner los datos en perspectiva, así que tuve que ir a la fuente. El INCUCAI (Instituto Nacional Central Único Coordinador de Ablación e Implante) tiene un sistema de acceso a datos &lt;a href=&#34;https://cresi.incucai.gov.ar/IniciarCresiFromSintra.do&#34;&gt;llamado CRESI&lt;/a&gt; (Central de Reportes y Estadísticas del SINTRA (Sistema Nacional de Información de Procuración y Transplante de la República Argentina)) que es relativamente bueno por lo transparente, pero complicado para leer programáticamente. Esto me pareció un buen ejercicio para aprender a obtener datos de sitios web.&lt;/p&gt;
+
+&lt;p&gt;Mi objetivo final era conseguir una serie mensual de donaciones de órganos pero el sitio sólo permite obtener los datos totales por período. Obteniendo algo como esto:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;../../images/cresi_tabla.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(Recién luego de todo lo que sigue me di cuenta que en otra parte se pueden ver los datos mensuales por año, lo que facilita un poco las cosas. Moraleja: ¡analizar bien la página &lt;em&gt;antes&lt;/em&gt; de empezar a escribir código!)&lt;/p&gt;
+
+&lt;p&gt;Como las consultas se hacen de forma dinámica (lo cual implicaba que no es tan fácil como ir a un url en particular y listo) usé las herramientas de desarrollo de Firefox (apretando F12) y me fijé qué pasaba en la solapa &lt;em&gt;Network&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;../../images/cresi_post.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Así se puede ver que lo que hace es un &lt;code&gt;POST&lt;/code&gt; (uno de los &amp;ldquo;&lt;a href=&#34;https://robm.me.uk/web-development/2013/09/20/http-verbs.html&#34;&gt;verbos&lt;/a&gt;&amp;rdquo; del html) con una serie de parámetros entre los que está la fecha de inicio y final del período que busco y un número de &amp;ldquo;token&amp;rdquo;, que es el identificador único de mi sesión y que tengo que usar para acceder a los datos.&lt;/p&gt;
+
+&lt;p&gt;Ok, ¿cómo obtener ese número de forma programática? Luego de dar MUCHAS vueltas me fijé en el código fuente de la &lt;a href=&#34;https://cresi.incucai.gov.ar/IniciarCresiFromSintra.do&#34;&gt;página de inicio&lt;/a&gt; del CRESI (click derecho -&amp;gt; View page source) y me encontré con que el token estaba ahí!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;../../images/cresi_token.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Excelente, entonces lo único que hay que hacer es navegar a esa página, leer el código fuente y extraer el ese valor. La función &lt;code&gt;get_token()&lt;/code&gt; hace eso.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(dplyr)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## 
+## Attaching package: &#39;dplyr&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(httr)
+library(xml2)
+get_token &amp;lt;- function() {
+   
+   fuente &amp;lt;- POST(&amp;quot;https://cresi.incucai.gov.ar/IniciarCresiFromSintra.do&amp;quot;,
+                      add_headers(Conection = &amp;quot;keep-alive&amp;quot;)) %&amp;gt;% 
+      read_html() 
+   token &amp;lt;- xml_attrs(xml_child(xml_child(xml_child(xml_child(fuente, 3), 1), 1), 3))
+   return(token[3])
+}
+
+(token &amp;lt;- get_token())
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;##         value 
+## &amp;quot;-1609985208&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Ahora con ese token, tengo que hacer dos &lt;code&gt;POST&lt;/code&gt;; el primero define el tipo de búsqueda y el segundo la forma de agrupación de los datos. Como primer paso busco los datos para el mes de enero de 2000.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;primer_paso &amp;lt;- POST(&amp;quot;https://cresi.incucai.gov.ar/reporte/resumenestadistico/DonantePaso2.do&amp;quot;,
+                          query = list(`5406` = &amp;quot;&amp;quot;,
+                                       `5407` = &amp;quot;&amp;quot;,
+                                       `5415` = &amp;quot;&amp;quot;,
+                                       `5416` = &amp;quot;&amp;quot;,
+                                       `5418` = &amp;quot;&amp;quot;,
+                                       `5419` = &amp;quot;&amp;quot;,
+                                       `5420_anio` = 2000,
+                                       `5420_dia` = 01,
+                                       `5420_mes` = 01,
+                                       `5421_anio` = 2000,
+                                       `5421_dia` = 31,
+                                       `5421_mes` = 01,
+                                       ABLACION = &amp;quot;&amp;quot;,
+                                       CMUERTE = &amp;quot;&amp;quot;,
+                                       CORAZONPD = &amp;quot;&amp;quot;,
+                                       DEPENDENCIA = &amp;quot;&amp;quot;,
+                                       ENTREVISTADOR = &amp;quot;&amp;quot;,
+                                       ENTREVISTADOR_DESCRIPCION = &amp;quot;&amp;quot;,
+                                       ESTABLECIMIENTO = &amp;quot;&amp;quot;,
+                                       ESTABLECIMIENTO_DESCRIPCION = &amp;quot;&amp;quot;,
+                                       ESTABLECIMIENTO_ORIGEN = 1,
+                                       ESTABLECIMIENTO_ORIGEN_DESCRIPCION = &amp;quot;ARGENTINO&amp;quot;,
+                                       FPROFESIONAL = &amp;quot;&amp;quot;,
+                                       MMUERTE = &amp;quot;&amp;quot;,
+                                       OPCIONES_AVANZADAS = &amp;quot;false&amp;quot;,
+                                       ORIGENPD = &amp;quot;&amp;quot;,
+                                       OTRO_ANIO = &amp;quot;&amp;quot;,
+                                       PERIODO = 5,
+                                       PERIODO_DESCRIPCION	= &amp;quot;ESPECIFICAR&amp;quot;,
+                                       SERVICIO = &amp;quot;&amp;quot;,
+                                       SPD = 4,
+                                       SPD_DESCRIPCION = &amp;quot;DONANTES+REALES&amp;quot;,
+                                       TIPO_DONANTE = &amp;quot;&amp;quot;,
+                                       TIPOEST = &amp;quot;&amp;quot;,
+                                       TOKEN = token))
+
+segundo_paso &amp;lt;- POST(&amp;quot;https://cresi.incucai.gov.ar/reporte/resumenestadistico/EjecutarConsultaDonante.do&amp;quot;, 
+                           query = list(`2` = &amp;quot;checked&amp;quot;,
+                                        TOKEN = token))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;La información está en lo que devuelve &lt;code&gt;segundo_paso&lt;/code&gt;. El texto de la página se lee usando &lt;code&gt;read_html()&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;(datos &amp;lt;- xml2::read_html(segundo_paso))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## {xml_document}
+## &amp;lt;html&amp;gt;
+## [1] &amp;lt;head&amp;gt;\n&amp;lt;meta http-equiv=&amp;quot;Content-Type&amp;quot; content=&amp;quot;text/html; charset= ...
+## [2] &amp;lt;script language=&amp;quot;JavaScript&amp;quot; type=&amp;quot;text/JavaScript&amp;quot;&amp;gt; \r\n\r\nfuncti ...
+## [3] &amp;lt;body onload=&amp;quot;&amp;quot;&amp;gt;\r\n&amp;lt;span class=&amp;quot;notranslate&amp;quot;&amp;gt; \r\n&amp;lt;form action=&amp;quot;Can ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;La cuestión es ahora extraer la tabla que quiero. Para eso está la magia del &lt;a href=&#34;https://selectorgadget.com/&#34;&gt;Selector Gadget&lt;/a&gt;. Es una herramienta que permite crear reglas para filtrar elementos de una página web a partir de ejemplos positivos y negativos. En este caso, quiero leer toda la tabla.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;../../images/cresi_selector.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(Intenté filtros para eliminar el encabezado, pero no funcionaban bien y decidí que era más fácil eliminarlo en R)&lt;/p&gt;
+
+&lt;p&gt;La parte que importa es ese &amp;ldquo;.textoTabla2&amp;rdquo;. Ahora uso el excelente paquete &lt;code&gt;rvest&lt;/code&gt; para filtrar ese &amp;ldquo;nodo&amp;rdquo; y luego convertirlo en un &lt;code&gt;data.frame&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;tabla &amp;lt;- datos %&amp;gt;% 
+    rvest::html_nodes(&amp;quot;.textoTabla2&amp;quot;) %&amp;gt;% 
+    rvest::html_table(fill = TRUE)
+head(tabla[[1]][-1, ])
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;##                  X1     X2     X3        X4     X5   X6     X7    X8
+## 2         Provincia Reales    %Re Efectivos    %Ef Mono    %Mo Multi
+## 3    2*BUENOS AIRES      8 100.0%         7  87.5%    -      -     8
+## 4 1*CAPITAL FEDERAL      5 100.0%         3  60.0%    3  60.0%     2
+## 5         6*CORDOBA      2 100.0%         2 100.0%    1  50.0%     1
+## 6       21*SANTA FE      1 100.0%         1 100.0%    1 100.0%     -
+## 7          5*CHUBUT      1 100.0%         1 100.0%    -      -     1
+##       X9     X10 X11    X12     X13   X14 X15
+## 2    %Mu Tejidos %Te %Total    DPMH TOTAL  NA
+## 3 100.0%       -   -  42.1% 0.6 PMH     8  NA
+## 4  40.0%       -   -  26.3% 1.7 PMH     5  NA
+## 5  50.0%       -   -  10.5% 0.6 PMH     2  NA
+## 6      -       -   -   5.3% 0.3 PMH     1  NA
+## 7 100.0%       -   -   5.3% 2.4 PMH     1  NA
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;¡Y ya tengo lo que necesito! 🎉 Sólo le falta un poco de limpieza relativamente trivial.&lt;/p&gt;
+
+&lt;p&gt;Lo que sí falta ahora es hacer conseguir los datos para todos los meses del período. El plan es hacer una función que devuelva el valor para un mes y luego iterarla sobre una lista de meses. Además voy a tener en cuenta un pequeño detalle y usar el paquete &lt;code&gt;memoise&lt;/code&gt; para guardar en caché el resultado de la función y no hacer dos veces el mismo request al servidor. Esto está bueno por so uno corre varias veces el código mientras debuggea cosas.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;donaciones_por_provincia_ &amp;lt;- function(fecha, verbose = FALSE) {
+  library(rvest)
+  library(httr)
+  library(lubridate)
+  
+  desde &amp;lt;- fecha
+  hasta &amp;lt;- fecha
+  day(hasta) &amp;lt;- days_in_month(desde)
+  
+  anio_0 &amp;lt;- year(desde)
+  mes_0 &amp;lt;- month(desde)
+  dia_0 &amp;lt;- day(desde)
+  
+  anio_f &amp;lt;- year(hasta)
+  mes_f &amp;lt;- month(hasta)
+  dia_f &amp;lt;- day(hasta)
+  
+  if (isTRUE(verbose)) {
+    cat(paste0(&amp;quot;Leyendo mes: &amp;quot;, anio_0, &amp;quot;-&amp;quot;, mes_0), &amp;quot;\r&amp;quot;)
+  }
+  
+  token &amp;lt;- get_token()
+  
+  # Scrapp web
+  primer_paso &amp;lt;- POST(&amp;quot;https://cresi.incucai.gov.ar/reporte/resumenestadistico/DonantePaso2.do&amp;quot;,
+                      query = list(`5406` = &amp;quot;&amp;quot;,
+                                   `5407` = &amp;quot;&amp;quot;,
+                                   `5415` = &amp;quot;&amp;quot;,
+                                   `5416` = &amp;quot;&amp;quot;,
+                                   `5418` = &amp;quot;&amp;quot;,
+                                   `5419` = &amp;quot;&amp;quot;,
+                                   `5420_anio` = anio_0,
+                                   `5420_dia` = dia_0,
+                                   `5420_mes` = mes_0,
+                                   `5421_anio` = anio_f,
+                                   `5421_dia` = dia_f,
+                                   `5421_mes` = mes_0,
+                                   ABLACION = &amp;quot;&amp;quot;,
+                                   CMUERTE = &amp;quot;&amp;quot;,
+                                   CORAZONPD = &amp;quot;&amp;quot;,
+                                   DEPENDENCIA = &amp;quot;&amp;quot;,
+                                   ENTREVISTADOR = &amp;quot;&amp;quot;,
+                                   ENTREVISTADOR_DESCRIPCION = &amp;quot;&amp;quot;,
+                                   ESTABLECIMIENTO = &amp;quot;&amp;quot;,
+                                   ESTABLECIMIENTO_DESCRIPCION = &amp;quot;&amp;quot;,
+                                   ESTABLECIMIENTO_ORIGEN = 1,
+                                   FPROFESIONAL = &amp;quot;&amp;quot;,
+                                   MMUERTE = &amp;quot;&amp;quot;,
+                                   OPCIONES_AVANZADAS = &amp;quot;false&amp;quot;,
+                                   ORIGENPD = &amp;quot;&amp;quot;,
+                                   OTRO_ANIO = &amp;quot;&amp;quot;,
+                                   PERIODO = 5,
+                                   PERIODO_DESCRIPCION	= &amp;quot;ESPECIFICAR&amp;quot;,
+                                   SERVICIO = &amp;quot;&amp;quot;,
+                                   SPD = 4,
+                                   TIPO_DONANTE = &amp;quot;&amp;quot;,
+                                   TIPOEST = &amp;quot;&amp;quot;,
+                                   TOKEN = token))
+  
+  segundo_paso &amp;lt;- POST(&amp;quot;https://cresi.incucai.gov.ar/reporte/resumenestadistico/EjecutarConsultaDonante.do&amp;quot;,
+                       query = list(`2` = &amp;quot;checked&amp;quot;,
+                                    TOKEN = token))
+  
+  
+  table &amp;lt;- read_html(segundo_paso) %&amp;gt;% 
+    html_nodes(&amp;quot;.textoTabla2&amp;quot;) %&amp;gt;% 
+    html_table(fill = TRUE) %&amp;gt;% 
+    .[[1]] %&amp;gt;% 
+    .[-1, ]
+  colnames(table) &amp;lt;- table[1, ]
+  
+  # Limpieza de columnas y filas inválidas
+  table &amp;lt;- table[-1, ]
+  table &amp;lt;- table[-nrow(table), ]
+  table &amp;lt;- table[-nrow(table), ]
+  table &amp;lt;- table[, -ncol(table)]
+  
+  # Elimino porcentajes
+  porcentajes &amp;lt;- stringi::stri_detect(colnames(table), fixed = &amp;quot;%&amp;quot;)
+  table &amp;lt;- table[, !porcentajes]
+  
+  # Limpio algunos datos
+  table$Provincia &amp;lt;- stringi::stri_replace(table$Provincia, &amp;quot;&amp;quot;,
+                                           regex = &amp;quot;\\d*\\*&amp;quot;)
+  table$DPMH &amp;lt;- stringi::stri_replace(table$DPMH, &amp;quot;&amp;quot;,
+                                      fixed = &amp;quot; PMH&amp;quot;)
+  
+  # Paso todo a numérico y los NA son ceros
+  table[, -1] &amp;lt;- suppressWarnings(lapply(table[, -1], as.numeric))
+  table[, -1] &amp;lt;- lapply(table[, -1], function(x) {
+    x[is.na(x)] &amp;lt;- 0
+    x })
+  table
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Antes de hacer nada, voy a probar si funciona&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;donaciones_por_provincia_(as.Date(&amp;quot;2018-01-05&amp;quot;))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## 
+## Attaching package: &#39;lubridate&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## The following object is masked from &#39;package:base&#39;:
+## 
+##     date
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;##          Provincia Reales Efectivos Mono Multi Tejidos DPMH TOTAL
+## 3     BUENOS AIRES      9         8    6     3       0  0.5     9
+## 4         SANTA FE      7         7    2     5       0  2.0     7
+## 5          TUCUMAN      6         6    3     3       0  3.6     6
+## 6          CORDOBA      5         5    1     4       0  1.4     5
+## 7  CAPITAL FEDERAL      4         4    2     2       0  1.3     4
+## 8          MENDOZA      2         1    2     0       0  1.0     2
+## 9            CHACO      1         1    0     1       0  0.8     1
+## 10      CORRIENTES      1         1    1     0       0  0.9     1
+## 11      ENTRE RIOS      1         1    1     0       0  0.7     1
+## 12           SALTA      1         1    1     0       0  0.7     1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;¡Bien! Todo lo anterior involucró una cantidad inimaginable de prueba y error y el resultado no es el código más robusto ni correcto. No sólo no tiene ninguna forma de informar sobre errores, sino que en el camino no me fijé si el &amp;ldquo;robots.txt&amp;rdquo; permite hacer este tipo de scrapping y no le puse un &amp;ldquo;sleep&amp;rdquo; para limitar la tasa de conecciones al servidor. Tengo pendiente aprender a hacer eso usando el paquete &lt;a href=&#34;https://github.com/dmi3kno/polite&#34;&gt;&lt;code&gt;polite&lt;/code&gt;&lt;/a&gt;. Pero bueno; si funciona, funciona. 😤&lt;/p&gt;
+
+&lt;p&gt;Para terminar, guardo la versión con caché&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;donaciones_por_provincia &amp;lt;- memoise::memoise(donaciones_por_provincia_)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Con esto ya estoy listo para bajar todos los datos. Que &lt;a href=&#34;https://twitter.com/jennybryan&#34;&gt;Jenny Bryan&lt;/a&gt; me perdone por no usar &lt;a href=&#34;https://purrr.tidyverse.org&#34;&gt;&lt;code&gt;purrr&lt;/code&gt;&lt;/a&gt;, pero todavía estoy acostumbrado al viejo y querido &lt;code&gt;lapply&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Vector con fechas desde enero de 1998 hasta agosto de 2018 de a un mes
+fechas &amp;lt;- seq.Date(ymd(&amp;quot;1998-01-01&amp;quot;), ymd(&amp;quot;2018-08-01&amp;quot;), by = &amp;quot;1 month&amp;quot;)
+
+# Para cada fecha, bajo las donaciones por provincia, les pongo nombre
+# a los elementos de la lista y luego los combino por filas. 
+donaciones &amp;lt;- lapply(fechas, donaciones_por_provincia, verbose = TRUE) %&amp;gt;% 
+  setNames(fechas) %&amp;gt;% 
+  data.table::rbindlist(idcol = &amp;quot;fecha&amp;quot;) 
+
+donaciones$fecha &amp;lt;- as.Date(donaciones$fecha)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Esta parte del código tarda mucho y acá está la gracia del memoise. Podemos cancelar el proceso en cualquier momento y al reiniciarlo sólo se descargan los meses que no corrieron.&lt;/p&gt;
+
+&lt;p&gt;No puedo terminar el post sin al menos la visualización de los datos que catalizaron todo esto. ¿Cómo varió la cantidad de transplantes con el tiempo?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(data.table)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## 
+## Attaching package: &#39;data.table&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &#39;package:lubridate&#39;:
+## 
+##     hour, isoweek, mday, minute, month, quarter, second, wday,
+##     week, yday, year
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &#39;package:dplyr&#39;:
+## 
+##     between, first, last
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(ggplot2)
+
+donaciones[, .(total = sum(TOTAL)), by = fecha] %&amp;gt;% 
+ggplot(aes(fecha, total)) +
+   geom_line() +
+   labs(x = &amp;quot;Fecha&amp;quot;, y = &amp;quot;&amp;quot;, 
+        title = &amp;quot;Cantidad de transplantes por mes&amp;quot;, 
+        caption = &amp;quot;Fuente: INCUCAI&amp;quot;) +
+   hrbrthemes::theme_ipsum_rc()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../../post/2018-10-02-leyendo-información-de-incucai_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Ahí lo tienen. Agosto de este año fue un mes anómalo, con muchos más transplantes que meses anteriores. Esperemos que marque el quiebre de la tendencia a la baja que viene desde 2010.&lt;/p&gt;
+
+&lt;h1 id=&#34;resumen&#34;&gt;Resumen&lt;/h1&gt;
+
+&lt;p&gt;Usé &lt;code&gt;httr&lt;/code&gt; para obtener información de un servidor y &lt;code&gt;xml2&lt;/code&gt; para interpretarla. Luego, con &lt;code&gt;rvest&lt;/code&gt; y Selector Gadget seleccioné la tabla con la información relevante. Finalmente, usando &lt;code&gt;memoise&lt;/code&gt; me aseguré de no descargar los mismos datos dos veces.&lt;/p&gt;
+</description>
     </item>
     
   </channel>

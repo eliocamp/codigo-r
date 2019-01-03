@@ -109,7 +109,6 @@ canonifyurls = true
   pre = "<i class=\"sidebar-button-icon fa fa-lg fa-rss\"></i>"
   url = "https://www.r-bloggers.com/"
   
-
 [[menu.misc]]
   weight = 1
   identifier = "rss"

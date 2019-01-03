@@ -127,13 +127,13 @@
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
-                hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/archives/"
+                hreflang="es"
+                href="https://eliocamp.github.io/codigo-r/es/archives/"
                 />
     <xhtml:link
                 rel="alternate"
-                hreflang="es"
-                href="https://eliocamp.github.io/codigo-r/es/archives/"
+                hreflang="en"
+                href="https://eliocamp.github.io/codigo-r/en/archives/"
                 />
     <xhtml:link
                 rel="alternate"
@@ -147,13 +147,13 @@
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
-                hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/categories/"
+                hreflang="es"
+                href="https://eliocamp.github.io/codigo-r/es/categories/"
                 />
     <xhtml:link
                 rel="alternate"
-                hreflang="es"
-                href="https://eliocamp.github.io/codigo-r/es/categories/"
+                hreflang="en"
+                href="https://eliocamp.github.io/codigo-r/en/categories/"
                 />
     <xhtml:link
                 rel="alternate"
@@ -249,13 +249,13 @@
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
-                hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/tags/"
+                hreflang="es"
+                href="https://eliocamp.github.io/codigo-r/es/tags/"
                 />
     <xhtml:link
                 rel="alternate"
-                hreflang="es"
-                href="https://eliocamp.github.io/codigo-r/es/tags/"
+                hreflang="en"
+                href="https://eliocamp.github.io/codigo-r/en/tags/"
                 />
     <xhtml:link
                 rel="alternate"
