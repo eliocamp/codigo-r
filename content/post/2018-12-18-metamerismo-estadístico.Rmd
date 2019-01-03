@@ -130,7 +130,6 @@ En general la discusión alrededor del metamerismo estadístico suele ser sobre 
 knitr::include_graphics("/images/datasaurus_tweet.png")
 ```
 
-
 Sin embargo, creo que hay un principio más fundamental. El problema de las *summary statistics* es la parte de *summary*. El rol de la estadística es, en muchos casos, *resumir* datos. Tomar una gran cantidad de observaciones que no pueden ser entendidas en su completitud porque nuestro entendimiento es limitado, y reducirlas a unos pocos números o propiedades que podemos entender fácilmente. El problema es que lo que se gana en entendimiento, se pierde información.
 
 Por ejemplo, un censo de los ingresos de todos los ciudadanos de un país tiene una enorme cantidad de información, pero tomados como datos separados dicen poco. Se puede resumir con el promedio (el primer momento) para tener alguna idea del valor "típico" de esta variable. Obviamente, este número esconde una gran desigualdad, por lo que es conviente usar el desvío estándar (segundo momento) para tener una idea de cuán variable es la distribución del ingreso. Pero es muy probable que la distribución no sea simétrica. Se puede usar la asimetría (tercer momento) para empezar a cuantificar ese efecto. 
@@ -217,7 +216,6 @@ metamerize(data.frame(x = rnorm(3)),
                        N = 1000)
 ```
 
-
 ## Metámeros avanzados
 
 Finalmente, me gustaría mostrar algunas utilidades de metamer que facilitan mucho la creación de nuevos metámeros. Con `draw_data()` uno puede dibujar datos a mano alzada en una interfaz de shiny, opcionalmente usando otra base de datos como fondo. 
@@ -292,5 +290,9 @@ metamers %>%
    transition_manual(.metamer)
 ```
 
+
+## Conclusión
+
+Los metámeros de color cambian cuando se ven con otra luz... en estadística (y ciencia en general) es importante mirar los datos desde distintas ópticas, con distintos métodos ....
 
 ## Referencias
