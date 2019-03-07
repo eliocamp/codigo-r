@@ -8,7 +8,7 @@
     <language>es-es</language>
     <lastBuildDate>Tue, 18 Sep 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://eliocamp.github.io/codigo-r/en/tags/ggplot2/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://eliocamp.github.io/codigo-r/en/tags/ggplot2/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,10 +17,105 @@
       <pubDate>Tue, 18 Sep 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/en/2018/09/multiple-color-fill-scales-ggplot2/</guid>
-      <description>tl;dr: The functionality shown in this post is now on the ggnewscale package! 📦. You can find the original code in this gist.
-A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
+      <description>
 
-Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &amp;ldquo;you can&amp;rsquo;t, but here&amp;rsquo;s how to hack it or visualise the data differently&amp;rdquo;.</description>
+&lt;p&gt;tl;dr: The functionality shown in this post is now on the &lt;a href=&#34;https://github.com/eliocamp/ggnewscale&#34;&gt;&lt;code&gt;ggnewscale&lt;/code&gt;&lt;/a&gt; package! 📦. You can find the original code &lt;a href=&#34;https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32&#34;&gt;in this gist&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;A somewhat common annoyance for some &lt;code&gt;ggplot2&lt;/code&gt; users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://stackoverflow.com/search?q=ggplot2+two+color+scales&#34;&gt;&lt;img src=&#34;../../../images/ggplo2_twoscales_so_small.jpg&#34; alt=&#34;preguntas stack overflow&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &amp;ldquo;you can&amp;rsquo;t, but here&amp;rsquo;s how to hack it or visualise the data differently&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;Recently I came up with a way of tricking &lt;code&gt;ggplot2&lt;/code&gt; into displaying multiple scales. It relies on &lt;a href=&#34;https://github.com/tidyverse/ggplot2/pull/2555&#34;&gt;a recent addition&lt;/a&gt; by Claus Wilke that allows the usage of &amp;ldquo;non standard aesthetics&amp;rdquo; &amp;ndash;&lt;code&gt;scale_color_continuous(aesthetics = &amp;quot;fill&amp;quot;)&lt;/code&gt; sets a &lt;code&gt;fill&lt;/code&gt; scale&amp;ndash; and the use of &lt;code&gt;ggplot_add()&lt;/code&gt; that I learnt thanks to &lt;a href=&#34;https://yutani.rbind.io/post/2017-11-07-ggplot-add&#34;&gt;this post&lt;/a&gt; by Hiroaki Yutani.&lt;/p&gt;
+
+&lt;p&gt;Now let&amp;rsquo;s be serious for a moment and acknowledge that using multiple color scales is not for the faint of heart. There&amp;rsquo;s a very real risk of ending up with a plot with is at best confusing and at worst, misleading. But that doesn&amp;rsquo;t mean there are not situations that call for this kind of plot. Using very different scales allows you to condense more information in a single plot, letting you visualise more relationships between variables. In the Atmospheric Sciences, for example, plotting temperature and pressure in contour lines with different color scales is a common practice.&lt;/p&gt;
+
+&lt;p&gt;But &lt;em&gt;res non verba&lt;/em&gt;; this is how it looks like in action (with an example taken from &lt;a href=&#34;https://stackoverflow.com/questions/16129876/ggplot2-multiple-scales-legends-per-aesthetic-revisited&#34;&gt;this&lt;/a&gt; StackOverlow question)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot(pd[pd$score1 != 0,], aes(x=x, y=species)) +
+   geom_tile(aes(fill  =score1)) +
+   scale_fill_gradient2(&amp;quot;Score 1&amp;quot;, limits = c(0, 4), 
+                        low = &amp;quot;#762A83&amp;quot;, mid = &amp;quot;white&amp;quot;, high = &amp;quot;#1B7837&amp;quot;) +
+   
+   new_scale(&amp;quot;fill&amp;quot;) +
+   
+   geom_tile(aes(fill = score2), data = subset(pd, score2 != 0)) +
+   scale_fill_gradient2(&amp;quot;Score 2&amp;quot;, limits = c(0, 3), 
+                        low = &amp;quot;#1B7837&amp;quot;, mid = &amp;quot;white&amp;quot;, high = &amp;quot;#762A83&amp;quot;) +
+   
+   geom_text(data=pd, aes(label = letters, color = factor(change))) +
+   scale_color_manual(&amp;quot;Change&amp;quot;, values = c(&amp;quot;black&amp;quot;, &amp;quot;#F2A11F&amp;quot;), 
+                      labels = c(&amp;quot;None&amp;quot;, &amp;quot;Some&amp;quot;)) +
+   coord_fixed(ratio = 1.5, xlim=c(0.5,16.5), ylim=c(0.5, 3.5)) 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../../../post/2018-09-17-multiples-escalas-de-colores-en-ggplot2.en_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;how-it-works&#34;&gt;How it works&lt;/h2&gt;
+
+&lt;p&gt;The code is a bit too long and tedious to show in this article, but you can find it on &lt;a href=&#34;https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32&#34;&gt;this gist&lt;/a&gt;. Here are the important bits.&lt;/p&gt;
+
+&lt;p&gt;First, the &lt;code&gt;new_scale()&lt;/code&gt; function does nothing.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;new_scale &amp;lt;- function(new_aes) {
+   structure(ggplot2::standardise_aes_names(new_aes), class = &amp;quot;new_aes&amp;quot;)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It merely returns an object of class &lt;code&gt;new_aes&lt;/code&gt; with a character vector with the &amp;ldquo;new&amp;rdquo; scales. All the magic is in the &lt;code&gt;+&lt;/code&gt; operator. &lt;code&gt;ggplot2&lt;/code&gt; objects are &amp;ldquo;summed&amp;rdquo; with &lt;code&gt;ggplot_add()&lt;/code&gt; function which allows to define the &amp;ldquo;add&amp;rdquo; operation for any arbitrary object to a ggplot. For the case of &lt;code&gt;new_aes&lt;/code&gt; object, this is what happens:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot_add.new_aes &amp;lt;- function(object, plot, object_name) {
+   plot$layers &amp;lt;- lapply(plot$layers, bump_aes, new_aes = object)
+   plot$scales$scales &amp;lt;- lapply(plot$scales$scales, bump_aes, new_aes = object)
+   plot$labels &amp;lt;- bump_aes(plot$labels, new_aes = object)
+   plot
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It modifies each layer, scale and label and renames the relevant aesthetic to something other than &amp;ldquo;fill&amp;rdquo; or &amp;ldquo;colour&amp;rdquo;. There&amp;rsquo;s also a bit of minimally invasive surgery to geoms so that they don&amp;rsquo;t reject the newly grafted aesthetic. Is somewhat ad-hoc, to be honest, and probably not very robuts, but it works!&lt;/p&gt;
+
+&lt;p&gt;There are many other ways to implement this and I went through &lt;a href=&#34;https://twitter.com/d_olivaw/status/1040722632675610626&#34;&gt;some iterations&lt;/a&gt;. The current implementation is friendly and consistent with the main &lt;code&gt;ggplot2&lt;/code&gt; &amp;ldquo;adding&amp;rdquo; idea, but it has some limitations and annoyances that prevent me from being 100% on board with it. I would love to get some feedback from the community 🤞!&lt;/p&gt;
+
+&lt;h2 id=&#34;a-more-real-ish-example&#34;&gt;A more real-ish example&lt;/h2&gt;
+
+&lt;p&gt;Why is any of this useful to me, you say? As I wrote before, being able to plot temperature and pressure in the same map with two different scales is very neat.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(metR)
+library(magrittr)
+time &amp;lt;- &amp;quot;1998-01-01&amp;quot;
+# Temperature and sea level pressure for January 1st 1998
+atmos &amp;lt;- ReadNetCDF(&amp;quot;~/DATOS/NCEP Reanalysis/air.mon.mean.nc&amp;quot;, 
+                    subset = list(level = 850, 
+                                  time = time)) %&amp;gt;% 
+   .[, slp:= ReadNetCDF(&amp;quot;~/DATOS/NCEP Reanalysis/slp.mon.mean.nc&amp;quot;, 
+                        subset = list(time = time), out = &amp;quot;vector&amp;quot;)] %&amp;gt;% 
+   .[, lon := ConvertLongitude(lon)]
+
+ggplot(atmos, aes(lon, lat)) +
+   geom_world() +
+   geom_contour(aes(z = slp, color = ..level..), binwidth = 4) +
+   scale_color_viridis_c(&amp;quot;Sea level pressure&amp;quot;) +
+   
+   new_scale_color() +   # same as `new_scale(&amp;quot;color&amp;quot;)`
+   
+   geom_contour(aes(z = air, color = ..level..), binwidth = 4) +
+   scale_color_distiller(&amp;quot;Air Temperature&amp;quot;, palette = &amp;quot;Spectral&amp;quot;)  +
+   
+   scale_x_longitude(limits = c(-150, 0)) +
+   scale_y_latitude(ticks = 15) +
+   ggalt::coord_proj(&amp;quot;+proj=moll +lon_0=-75&amp;quot;, 
+                     ylim = c(-60, 0), xlim = c(-150, 0))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../../../post/2018-09-17-multiples-escalas-de-colores-en-ggplot2.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Visualising the relationship between pressure and temperature is very important for the analysis of the growth of atmospheric perturbations.&lt;/p&gt;
+
+&lt;p&gt;Of course, with great power comes great responsibility 🕸. Mixing multiple scales for the same aesthetic should be done sparingly and only if absolutely necessary. First always ask yourself if the same information cannot be shown in a better way.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;ggplot2&lt;/code&gt; doesn&amp;rsquo;t cease to amaze me. Is not only a very powerful package to construct any kind of complex plots in a stupidly simple way, but it&amp;rsquo;s also exceptionally extensible by allowing this kind of deep user customisation. ¡Long live the &lt;code&gt;ggplo2&lt;/code&gt; ✊!&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -29,7 +124,120 @@ Unfortunately, this deluge of questions is met with a shortage of conclusive ans
       <pubDate>Tue, 21 Aug 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/en/2018/08/periodic-data-ggplot2-ggperiodic/</guid>
-      <description>As an atmospheric scientists, a lot of my research consists on plotting and looking at global fields of atmospheric variables like pressure, temperature and the like. Since our planet is a sphere (well, almost), it is unbound and so longitude is a periodic dimension. That is, to the right of 180°E you go back to 180°W. But ggplot2 and other plotting systems, for the most part, assume linear dimensions.</description>
+      <description>
+
+&lt;p&gt;As an atmospheric scientists, a lot of my research consists on plotting and looking at global fields of atmospheric variables like pressure, temperature and the like. Since our planet is a sphere (well, &lt;a href=&#34;https://chem.tufts.edu/answersinscience/relativityofwrong.htm&#34;&gt;almost&lt;/a&gt;), it is unbound and so longitude is a &lt;em&gt;periodic&lt;/em&gt; dimension. That is, to the right of 180°E you go back to 180°W. But ggplot2 and other plotting systems, for the most part, assume linear dimensions.&lt;/p&gt;
+
+&lt;p&gt;To show why this is a problem, let us plot a fairly basic scalar field defined in a regular grid with 2.5° of resolution for the southern hemisphere.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot(data, aes(lon, lat)) +
+   geom_contour_fill(aes(z = gh)) +
+   map.SH +
+   scale_fill_viridis_c(&amp;quot;Geopotential\nHeight&amp;quot;) +
+   coord_polar()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../../../post/2018-08-21-wrapping-around-ggplot2_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Did you spot it? The field is defined between 0° and 357.5°. Because 360° is the same as 0°, you would be double counting if you had a value at both extremes. But since ggplot2 only &amp;lsquo;sees&amp;rsquo; the data you feed to it, it fails to plot the implied data between 357.5° and 360°.&lt;/p&gt;
+
+&lt;h2 id=&#34;defining-the-problem&#34;&gt;Defining the problem&lt;/h2&gt;
+
+&lt;p&gt;The scope of the problem as I see it is much broader than global maps of atmospheric data.&lt;/p&gt;
+
+&lt;p&gt;We have a periodic function defined at regular &lt;em&gt;or irregular&lt;/em&gt; locations inside one period. Since this finite number of locations actually define the infinite domain of the function, when we plot we want to &lt;em&gt;wrap&lt;/em&gt; these locations around any arbitrary domain we need. This should be fast and automatic.&lt;/p&gt;
+
+&lt;p&gt;This translates, I think, to having two distinct domains. On the one hand there&amp;rsquo;s the &lt;em&gt;period&lt;/em&gt; defined by the sampled data, and on the other there&amp;rsquo;s the &lt;em&gt;range&lt;/em&gt; we want to &lt;em&gt;wrap&lt;/em&gt; this data around. The first is a property of the &lt;em&gt;data&lt;/em&gt;, the second one is a property of the &lt;em&gt;visualisation&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;Somewhere on the plotting process, then, &lt;code&gt;ggplot2&lt;/code&gt; must repeat the data so that it wraps it around the desired range.&lt;/p&gt;
+
+&lt;h2 id=&#34;solving-the-problem&#34;&gt;Solving the problem&lt;/h2&gt;
+
+&lt;p&gt;The &lt;a href=&#34;https://github.com/eliocamp/ggperiodic&#34;&gt;ggperiodic&lt;/a&gt; package embodies these ideas. First, we define the period of each of the periodic variables on our data. In this case, &lt;code&gt;lon&lt;/code&gt; is periodic between 0° and 306°&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(ggperiodic)
+data &amp;lt;- periodic(data, lon = c(0, 360))
+head(data)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;##     lon lat level       gh       time
+## 1:  0.0 -30   200 12333.66 2017-01-01
+## 2:  2.5 -30   200 12333.17 2017-01-01
+## 3:  5.0 -30   200 12335.23 2017-01-01
+## 4:  7.5 -30   200 12339.44 2017-01-01
+## 5: 10.0 -30   200 12344.92 2017-01-01
+## 6: 12.5 -30   200 12351.60 2017-01-01
+## lon = [0; 360]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now &lt;code&gt;data&lt;/code&gt; is of a new class of &amp;ldquo;periodic_df&amp;rdquo;, but so far the actual content of &lt;code&gt;data&lt;/code&gt; has remain unchanged. The magic comes on the second step 🌟. Now we can &lt;code&gt;wrap&lt;/code&gt; the data in any arbitrary range. For example, lets change longitude to be between -180° and 180°&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;data180 &amp;lt;- wrap(data, lon = c(-180, 180))
+head(data180)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;##       lon lat level       gh       time
+## 1: -180.0 -30   200 12311.90 2017-01-01
+## 2: -177.5 -30   200 12310.48 2017-01-01
+## 3: -175.0 -30   200 12311.84 2017-01-01
+## 4: -172.5 -30   200 12316.52 2017-01-01
+## 5: -170.0 -30   200 12324.02 2017-01-01
+## 6: -167.5 -30   200 12333.00 2017-01-01
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You &lt;em&gt;could&lt;/em&gt; do this manually every time you what to plot your data, but there&amp;rsquo;s a better way. When ggplot2 gets a &lt;code&gt;data&lt;/code&gt; argument, it doesn&amp;rsquo;t just pass it along. First, it feeds it to a function called &lt;code&gt;fortify()&lt;/code&gt;. ggperiodic implements &lt;code&gt;fortify.periodic_df()&lt;/code&gt; so that the wrapping can be performed automatically at plotting time.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot(data, aes(lon, lat)) +
+   geom_contour_fill(aes(z = gh)) +
+   map.SH +
+   scale_fill_viridis_c(&amp;quot;Geopotential\nHeight&amp;quot;) +
+   coord_polar()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../../../post/2018-08-21-wrapping-around-ggplot2_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This is completely automatic 🤖, robust to transformations and very friendly to the user. By default the data is wrapped around the same range as the period, but that can be changed using the same syntax as with &lt;code&gt;wrap()&lt;/code&gt;. For example, it could be useful to show three whole periods so that any 360° range could be seen with no interruptions.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot(data, aes(lon, lat), lon = c(0, 360)*3) +
+   geom_contour_fill(aes(z = gh)) +
+   scale_fill_viridis_c(&amp;quot;Geopotential\nHeight&amp;quot;) 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../../../post/2018-08-21-wrapping-around-ggplot2_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Since ggplot2 also uses &lt;code&gt;fortify()&lt;/code&gt; for data passed to geoms, it also works there.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot() +
+   geom_contour_fill(data = data, aes(lon, lat, z = gh), lon = c(-180, 180)) +
+   map.SH2 +
+   scale_fill_viridis_c(&amp;quot;Geopotential\nHeight&amp;quot;) +
+   coord_polar()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## Warning: Ignoring unknown parameters: lon
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../../../post/2018-08-21-wrapping-around-ggplot2_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In this case works well but there are some limitations related to the somewhat ugly hack I had to use to pass the extra parameters to &lt;code&gt;fortify.periodic_df()&lt;/code&gt;. If used on a layer, the name of the periodic dimension must not be the same as any possible aesthetic or any other arguments passed to the geom, i.e. having &lt;code&gt;x&lt;/code&gt; or &lt;code&gt;binwidth&lt;/code&gt; as the periodic dimension is verboten. Also there&amp;rsquo;s an annoying warning 😤.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve tried to make the periodic information &lt;em&gt;sticky&lt;/em&gt; (thanks to the &lt;a href=&#34;https://github.com/decisionpatterns/sticky&#34;&gt;sticky&lt;/a&gt; 📦) across data manipulations, but I&amp;rsquo;ve still haven&amp;rsquo;t tested thoroughly. And since I mostly use data.table, I&amp;rsquo;m not familiar enough with dplyr to do know the whole range of possible transformations. &lt;a href=&#34;https://github.com/eliocamp/ggperiodic/issues&#34;&gt;Issues&lt;/a&gt; are welcome!&lt;/p&gt;
+
+&lt;p&gt;In any case, if or when you get tired of all this nonsense, you can just remove all periodicity information and go on with your life.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;data &amp;lt;- unperiodic(data)
+head(data)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;##     lon lat level       gh       time
+## 1:  0.0 -30   200 12333.66 2017-01-01
+## 2:  2.5 -30   200 12333.17 2017-01-01
+## 3:  5.0 -30   200 12335.23 2017-01-01
+## 4:  7.5 -30   200 12339.44 2017-01-01
+## 5: 10.0 -30   200 12344.92 2017-01-01
+## 6: 12.5 -30   200 12351.60 2017-01-01
+&lt;/code&gt;&lt;/pre&gt;
+</description>
     </item>
     
     <item>
@@ -38,7 +246,151 @@ Unfortunately, this deluge of questions is met with a shortage of conclusive ans
       <pubDate>Wed, 16 May 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/en/2018/05/how-to-make-a-generic-stat-in-ggplot2/</guid>
-      <description>For a while now I&amp;rsquo;ve been thinking that, yes, ggplot2 is awesome and offers a lot of geoms and stats, but it would be great if it could be extended with new user-generated geoms and stats. Then I learnt that ggplot2 actually has a pretty great extension system so I could create my own geoms I needed for my work or just for fun. But still, creating a geom from scratch is an involved process that doesn&amp;rsquo;t lend itself to simple transformations.</description>
+      <description>&lt;p&gt;For a while now I&amp;rsquo;ve been thinking that, yes, &lt;code&gt;ggplot2&lt;/code&gt; is awesome and offers a lot of &lt;code&gt;geoms&lt;/code&gt; and &lt;code&gt;stats&lt;/code&gt;, but it would be great if it could be extended with new user-generated &lt;code&gt;geoms&lt;/code&gt; and &lt;code&gt;stats&lt;/code&gt;. Then I learnt that &lt;code&gt;ggplot2&lt;/code&gt; actually has a pretty great extension system so I could create my own geoms I needed for my work or &lt;a href=&#34;https://twitter.com/d_olivaw/status/993669229810503680&#34;&gt;just for fun&lt;/a&gt;. But still, creating a geom from scratch is an involved process that doesn&amp;rsquo;t lend itself to simple transformations.&lt;/p&gt;
+
+&lt;p&gt;Finally, I thought of a possible solution: create a &lt;em&gt;generic&lt;/em&gt; &lt;code&gt;stat&lt;/code&gt; &amp;ndash;a tabula rasa, if you will&amp;ndash; that can work on the data with any function. Natively &lt;code&gt;ggplot2&lt;/code&gt; offers &lt;code&gt;stat_summary()&lt;/code&gt;, but it&amp;rsquo;s only meant to be used with, well, summary statistics. What I wanted was something completely generic and this is my first try.&lt;/p&gt;
+
+&lt;p&gt;Below is the code for &lt;code&gt;stat_rasa()&lt;/code&gt; (better name pending). It works just like any other &lt;code&gt;stat&lt;/code&gt; except that it works with any function that takes a data.frame and returns a transformed data.frame that can be interpreted by the chosen &lt;code&gt;geom&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# ggproto object
+StatRasa &amp;lt;- ggplot2::ggproto(&amp;quot;StatRasa&amp;quot;, ggplot2::Stat,
+  compute_group = function(data, scales, fun, fun.args) {
+     # Change default arguments of the function to the 
+     # values in fun.args
+     args &amp;lt;- formals(fun)
+     for (i in seq_along(fun.args)) {
+        if (names(fun.args[i]) %in% names(fun.args)) {
+           args[[names(fun.args[i])]] &amp;lt;- fun.args[[i]]
+        } 
+     }
+     formals(fun) &amp;lt;- args
+     
+     # Apply function to data
+     fun(data)
+})
+
+# stat function used in ggplot
+stat_rasa &amp;lt;- function(mapping = NULL, data = NULL,
+                      geom = &amp;quot;point&amp;quot;, 
+                      position = &amp;quot;identity&amp;quot;,
+                      fun = NULL,
+                      ...,
+                      show.legend = NA,
+                      inherit.aes = TRUE) {
+   # Check arguments 
+   if (!is.function(fun)) stop(&amp;quot;fun must be a function&amp;quot;)
+   
+   # Pass dotted arguments to a list
+   fun.args &amp;lt;- match.call(expand.dots = FALSE)$`...`
+   
+   ggplot2::layer(
+      data = data,
+      mapping = mapping,
+      stat = StatRasa,
+      geom = geom,
+      position = position,
+      show.legend = show.legend,
+      inherit.aes = inherit.aes,
+      check.aes = FALSE,
+      check.param = FALSE,
+      params = list(
+         fun = fun, 
+         fun.args = fun.args,
+         na.rm = FALSE,
+         ...
+      )
+   )
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For example, let&amp;rsquo;s say we want to quickly glance at detrended data. We then create a very simple function&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;Detrend &amp;lt;- function(data, method = &amp;quot;lm&amp;quot;, span = 0.2) {
+   if (method == &amp;quot;lm&amp;quot;) {
+      data$y &amp;lt;- resid(lm(y ~ x, data = data))
+   } else {
+      data$y &amp;lt;- resid(loess(y ~ x, span = span, data = data))
+   }
+   as.data.frame(data)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and pass it to &lt;code&gt;stat_rasa()&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(ggplot2)
+set.seed(42)
+x &amp;lt;- seq(-1, 3, length.out = 30)
+y &amp;lt;- x^2 + rnorm(30)*0.5
+df &amp;lt;- data.frame(x = x, y = y)
+ggplot(df, aes(x, y)) +
+   geom_line() +
+   stat_rasa(geom = &amp;quot;line&amp;quot;, fun = Detrend, method = &amp;quot;smooth&amp;quot;,
+             color = &amp;quot;steelblue&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../../../post/2018-05-16-how-to-make-a-generic-stat-in-ggplot2.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We can get better legibility and less typing by creating a wrapper function with a more descriptive name.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;stat_detrend &amp;lt;- function(...) {
+   stat_rasa(fun = Detrend, ...)
+}
+
+ggplot(df, aes(x, y)) +
+   geom_line() +
+   stat_detrend(method = &amp;quot;lm&amp;quot;, color = &amp;quot;blue&amp;quot;, geom = &amp;quot;line&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../../../post/2018-05-16-how-to-make-a-generic-stat-in-ggplot2.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Another case could be calculating contours from an irregular grid. Since &lt;code&gt;ggplot2::stat_contour()&lt;/code&gt; uses &lt;code&gt;grDevices::contourLines()&lt;/code&gt;, it needs values defined in a regular grid, but there&amp;rsquo;s a package called &lt;code&gt;contoureR&lt;/code&gt; that can compute contours from irregularly spaced observations. With &lt;code&gt;stat_rasa()&lt;/code&gt; we can integrate it with &lt;code&gt;ggplot2&lt;/code&gt; effortlessly by creating a small function and using &lt;code&gt;geom = &amp;quot;path&amp;quot;&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;IrregularContour &amp;lt;- function(data, breaks = scales::fullseq, 
+                             binwidth = NULL,
+                             bins = 10) {
+   if (is.function(breaks)) {
+      # If no parameters set, use pretty bins to calculate binwidth
+      if (is.null(binwidth)) {
+         binwidth &amp;lt;- diff(range(data$z)) / bins
+      }
+      
+      breaks &amp;lt;- breaks(range(data$z), binwidth)
+   }
+   
+   cl &amp;lt;- contoureR::getContourLines(x = data$x, y = data$y, z = data$z, 
+                                    levels = breaks)
+   
+   if (length(cl) == 0) {
+      warning(&amp;quot;Not possible to generate contour data&amp;quot;, call. = FALSE)
+      return(data.frame())
+   }
+   cl &amp;lt;- cl[, 3:7]
+   colnames(cl) &amp;lt;- c(&amp;quot;piece&amp;quot;, &amp;quot;group&amp;quot;, &amp;quot;x&amp;quot;, &amp;quot;y&amp;quot;, &amp;quot;level&amp;quot;)
+   return(cl)
+}
+
+stat_contour_irregular &amp;lt;- function(...) {
+   stat_rasa(fun = IrregularContour, geom = &amp;quot;path&amp;quot;, ...)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;set.seed(42)
+df &amp;lt;- data.frame(x = rnorm(500),
+                 y = rnorm(500))
+df$z &amp;lt;- with(df, -x*y*exp(-x^2 - y^2))
+
+ggplot(df, aes(x, y)) +
+   geom_point(aes(color = z)) +
+   stat_contour_irregular(aes(z = z, color = ..level..), bins = 15) +
+   scale_color_viridis_c()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../../../post/2018-05-16-how-to-make-a-generic-stat-in-ggplot2.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And voilà.&lt;/p&gt;
+
+&lt;p&gt;There&amp;rsquo;s always things to improve. For example, the possibility of using a custom function to compute parameters that depend on the data, but I believe that as it stands covers 80% of simple applications. I should also use a better name, but naming things is hard work.&lt;/p&gt;
+</description>
     </item>
     
   </channel>

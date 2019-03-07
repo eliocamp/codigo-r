@@ -6,10 +6,393 @@
     <description>Recent content on Code R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Tue, 18 Sep 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 03 Jan 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://eliocamp.github.io/codigo-r/en/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://eliocamp.github.io/codigo-r/en/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Statistical metamerism</title>
+      <link>https://eliocamp.github.io/codigo-r/en/2019/01/statistical-metamerism/</link>
+      <pubDate>Thu, 03 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://eliocamp.github.io/codigo-r/en/2019/01/statistical-metamerism/</guid>
+      <description>
+
+
+&lt;div id=&#34;summary&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Summary&lt;/h1&gt;
+&lt;p&gt;The &lt;a href=&#34;https://github.com/eliocamp/metamer&#34;&gt;metamer&lt;/a&gt; package implements &lt;span class=&#34;citation&#34;&gt;Matejka and Fitzmaurice (&lt;a href=&#34;#ref-Matejka2017&#34;&gt;2017&lt;/a&gt;)&lt;/span&gt; algorithm for generating datasets with distinct appearance but identical statistical properties. I propose to call them “metamers” as an analogy with the colorimetry concept.&lt;/p&gt;
+&lt;div id=&#34;metamers-in-vision&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Metamers in vision&lt;/h2&gt;
+&lt;p&gt;This is &lt;strong&gt;not&lt;/strong&gt; a prism separating white light into its component wavelengths. It is an &lt;em&gt;image&lt;/em&gt; of a prism separating white light into its component wavelengths.&lt;/p&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:prism&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../images/Prism_flat_rainbow.jpg&#34; alt=&#34;C&#39;est ne pas un prisme.&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 1: C’est ne pas un prisme.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;This is not just a Magritte-style observation. The important distinction comes into play when you realise that the monitor you are looking at has just three LEDs that emit light in just three wavelengths (sort of). How can it still reproduce a full spectrum of light? It doesn’t. For each (approximately) monochromatic colour in that rainbow, your monitor is actually emitting an unique mixture of red, green and blue light that tricks your visual system (and mine) into seeing the colour associated with that wavelength.&lt;/p&gt;
+&lt;p&gt;How that works is unreasonably complex and beyond what I can explain in this article (I do recommend this &lt;a href=&#34;http://jamie-wong.com/post/color/&#34;&gt;amazing article&lt;/a&gt;, though) but the core insight is that our eyes have only three colour receptors that are sensible to wide range of short (S), medium (M) and long (L) wavelengths. Any spectrum distribution that reaches our eyes is reduced to just three numbers: the excitation of the S, M and L receptors. Hence, any spectrum distribution that excites them in the same way will be perceived as the same colour, even if they are wildly different. In colorimetry this is known as &lt;em&gt;metamerism&lt;/em&gt; &lt;span class=&#34;citation&#34;&gt;(Hunt &lt;a href=&#34;#ref-Hunt2004-7&#34;&gt;2004&lt;/a&gt;)&lt;/span&gt;. The monochromatic yellow emitted by the prism looks to you identical as the red, green and blue mixture emitted by of your monitor even though their spectrum distribution is not even remotely similar. They are metamers.&lt;/p&gt;
+&lt;p&gt;Coming up with metameric matches is the basis for colour reproduction in computer screens, printing and painting, but it also has a dark side. Two pigments can be metameric matches under certain light conditions but have very different colours when illuminated with another type light. This can be a problem, for example, when buying clothes in a store with artificial lighting and then wearing them outside.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;metamers-in-statistics&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Metamers in statistics&lt;/h2&gt;
+&lt;p&gt;Now let’s focus our attention on the famous Anscombe quartet&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:anscombe-plot&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../post/2018-12-18-metamerismo-estad%C3%ADstico.en_files/figure-html/anscombe-plot-1.png&#34; alt=&#34;Anscombe quartet&#34; width=&#34;672&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 2: Anscombe quartet
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Even though they are very different datasets, the members of the quartet have the same mean and standard deviation of each variable as well as the correlation between the two &lt;span class=&#34;citation&#34;&gt;(Anscombe &lt;a href=&#34;#ref-Anscombe1973&#34;&gt;1973&lt;/a&gt;)&lt;/span&gt;. From the point of view of that statistical transformation, the four datasets look the same even though they are not even remotely similar. They are metamers.&lt;/p&gt;
+&lt;p&gt;And exactly the same as metameric colour matches, statistical metamers reveal their differences when viewed under a new light. In this case, when plotted.&lt;/p&gt;
+&lt;p&gt;The concept of “data with different graphs but same statistics” is still relevant, with multiple published papers describing methods for their creation &lt;span class=&#34;citation&#34;&gt;(e.g. Chatterjee and Firat &lt;a href=&#34;#ref-Chatterjee2007&#34;&gt;2007&lt;/a&gt;; Govindaraju and Haslett &lt;a href=&#34;#ref-Govindaraju2008&#34;&gt;2008&lt;/a&gt;; Haslett and Govindaraju &lt;a href=&#34;#ref-Haslett2009&#34;&gt;2009&lt;/a&gt;; Matejka and Fitzmaurice &lt;a href=&#34;#ref-Matejka2017&#34;&gt;2017&lt;/a&gt;)&lt;/span&gt;. In this post I will use the term “metamers” to refer to sets of datasets that have the same behaviour under some statistical transformation as an analogy with the colorimetry concept.&lt;/p&gt;
+&lt;p&gt;The &lt;a href=&#34;https://github.com/eliocamp/metamer&#34;&gt;metamer&lt;/a&gt; package implements &lt;span class=&#34;citation&#34;&gt;Matejka and Fitzmaurice (&lt;a href=&#34;#ref-Matejka2017&#34;&gt;2017&lt;/a&gt;)&lt;/span&gt; algorithm to construct metamers. The main function, &lt;code&gt;metamerize()&lt;/code&gt;, generates metamers from an initial dataset and the statistical transformation that needs to be preserved. Optionally, it can take a function that will be minimised in each successive metamer.&lt;/p&gt;
+&lt;p&gt;First, the function &lt;code&gt;delayed_with()&lt;/code&gt; is useful for defining the statistical transformation that need to be preserved. The four datasets in the Anscombe quartet share these properties up to three significant figures.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(metamer)
+
+summ_fun &amp;lt;- delayed_with(mean_x = mean(x), 
+                         mean_y = mean(y), 
+                         sd_x = sd(x), 
+                         sd_y = sd(y), 
+                         cor_xy = cor(x, y))
+summ_names &amp;lt;-  c(&amp;quot;$\\overline{x}$&amp;quot;, &amp;quot;$\\overline{y}$&amp;quot;, 
+                 &amp;quot;$S_x$&amp;quot;,  &amp;quot;$S_y$&amp;quot;, &amp;quot;$r(x, y)$&amp;quot;)
+
+anscombe[, as.list(signif(summ_fun(.SD), 3)), by = quartet] %&amp;gt;% 
+   knitr::kable(col.names = c(&amp;quot;Quartet&amp;quot;, summ_names),
+                escape = FALSE, 
+                caption = &amp;quot;Statistical properties of the Anscombe quartet.&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;caption&gt;&lt;span id=&#34;tab:anscombe-summ&#34;&gt;Tab. 1: &lt;/span&gt;Statistical properties of the Anscombe quartet.&lt;/caption&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Quartet&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(\overline{x}\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(\overline{y}\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(S_x\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(S_y\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(r(x, y)\)&lt;/span&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.817&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;To find metamers “between” the first and second quartet, one can start from one and generate metamers that minimise the mean distance to the other. The &lt;code&gt;mean_dist_to()&lt;/code&gt; function is a handy utility for that case.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Extracts the first quartet and removes the `quartet` column.
+start_data &amp;lt;- subset(anscombe, quartet == 1)
+start_data$quartet &amp;lt;- NULL
+
+# Extracts the second quartet and removes the `quartet` column.
+target &amp;lt;- subset(anscombe, quartet == 2)
+target$quartet &amp;lt;- NULL
+
+set.seed(42)  # for reproducibility
+metamers &amp;lt;- metamerize(start_data, 
+                       preserve = summ_fun,
+                       minimize = mean_dist_to(target), 
+                       signif = 3,
+                       change = &amp;quot;y&amp;quot;,
+                       perturbation = 0.008, 
+                       N = 30000)
+print(metamers)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 4690 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The process generates 4689 metamers plus the original dataset. Selecting only 10 of them with &lt;code&gt;trim()&lt;/code&gt; and applying &lt;code&gt;summ_fun()&lt;/code&gt; to each one, it is confirmed that they have the same properties up to three significant figures.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;metamers %&amp;gt;% 
+   trim(10) %&amp;gt;% 
+   lapply(summ_fun) %&amp;gt;% 
+   lapply(signif, digits = 3) %&amp;gt;% 
+   do.call(rbind, .) %&amp;gt;% 
+   knitr::kable(col.names = c(summ_names),
+                caption = &amp;quot;Statistical properties of the generated metamers (rounded to three significant figures).&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;caption&gt;&lt;span id=&#34;tab:anscombe-metamers&#34;&gt;Tab. 2: &lt;/span&gt;Statistical properties of the generated metamers (rounded to three significant figures).&lt;/caption&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(\overline{x}\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(\overline{y}\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(S_x\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(S_y\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(r(x, y)\)&lt;/span&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;With &lt;a href=&#34;https://github.com/thomasp85/gganimate&#34;&gt;gganimate&lt;/a&gt; it is possible to visualise the transformation. Every intermediate step is a metamer of the original.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(gganimate)
+
+metamers %&amp;gt;% 
+   trim(100) %&amp;gt;% 
+   as.data.frame() %&amp;gt;% 
+   ggplot(aes(x, y)) +
+   geom_point() +
+   transition_manual(.metamer)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:anscombe-animate&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../post/2018-12-18-metamerismo-estad%C3%ADstico.en_files/figure-html/anscombe-animate-1.gif&#34; alt=&#34;Metamorphosys of the first two quartets.&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 3: Metamorphosys of the first two quartets.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;The discussion around statistical metamerism is usually framed as the importance of visualising data instead of relying on summary statistics. Anscombe created his quartet to rebut the idea that “numerical calculations are exact, but graphs are rough”. Now this is still the interpretation of the phenomenon:&lt;/p&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:tweet&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../images/datasaurus_tweet.png&#34; alt=&#34;Download the datasaurus. ([Tweet](https://twitter.com/albertocairo/status/770267777169035264))&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 4: Download the datasaurus. (&lt;a href=&#34;https://twitter.com/albertocairo/status/770267777169035264&#34;&gt;Tweet&lt;/a&gt;)
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;However, I believe there is a more fundamental principle at play. The problem with &lt;em&gt;summary statistics&lt;/em&gt; is the &lt;em&gt;summary&lt;/em&gt; part. In many cases, the role of statistics is to sum up data. To take a big set of observations that cannot be grasped in their entirety because the limitations of our comprehension, and condense them into a few numbers or properties that we can easily get. The problem is that what is gained in understanding is lost in information.&lt;/p&gt;
+&lt;p&gt;For example, a complete earnings census is a huge amount of data, but as raw numbers they are impossible to understand. One can start by taking the average (first moment) to get some idea of the “typical” earning of a citizen. Of course, this single number hides a great deal of income inequality, so one can compute the standard deviation (second moment) to get an idea of the variability. It is very likely, though, that the distribution is not symmetrical, and one can use the skewness (third moment) to quantify that.&lt;/p&gt;
+&lt;p&gt;With each subsequent moment one can get a richer picture of the underlying data. The limit is when one has the same amount of moments as the sample size. A single univariate sample of size N can be unequivocally described by its N first moments. This makes sense intuitively –why should you need more than N numbers to describe N numbers?– but it can be &lt;a href=&#34;https://math.stackexchange.com/questions/3033407/is-a-sample-of-size-n-uniquely-described-by-n-sample-moments&#34;&gt;demonstrated&lt;/a&gt;&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In other words, the transformation “first N moments” has no metamers for samples smaller than N, except for any permutation of the same sample (but see &lt;a href=&#34;#fn1&#34;&gt;1&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;But this property is not exclusive to statistical moments. The same goes for the fourier transform, principal component analysis, factor analysis, clustering, etc….&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; The issue is not plots vs. numbers but “all the numbers” vs. “just some numbers”. The big advantage of plots is that they can show an enormous amount of numbers efficiently and intuitively, in addition allowing to see a &lt;em&gt;gestalt&lt;/em&gt; that is impossible to get by just looking at series of numbers.&lt;/p&gt;
+&lt;p&gt;With this in mind, it is possible to predict when it will be easy to find metamers and in which cases it is a mathematical impossibility. For example, it is impossible to find metamers of a sample of size 10 that preserves 10 moments.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(42) 
+start_data &amp;lt;- data.frame(x = rnorm(10))
+
+metamerize(start_data, 
+           moments_n(1:10),
+           signif = 3,
+           perturbation = 0.05,
+           N = 30000)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 1 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But it is possible to find metamers that preserve just two.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(42) 
+metamerize(start_data, 
+           moments_n(1:2), 
+           signif = 3,
+           perturbation = 0.01,
+           N = 30000)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 310 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Boxplots try to represent a sample with about 5 numbers. Hence, it is expected to have metamerism for samples with &lt;span class=&#34;math inline&#34;&gt;\(N&amp;gt;5\)&lt;/span&gt;. A density estimation using parametric methods, on the other hand, can be evaluated at potentially infinite points even for small samples. The possibility of metamerism in this case depends on the “resolution” with which the curve is described. If it is rendered with fewer points than the sample size, then it will metamerise.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;coarse_density &amp;lt;- function(data) {
+   density(data$x, n = 16)$y
+}
+set.seed(42) 
+metamerize(data.frame(x = rnorm(100)),
+           preserve = coarse_density,
+           N = 5000,
+           signif = 3,
+           perturbation = 0.001)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 11 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;However, if it is rendered with more points, it will not metamerise.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;highdef_density &amp;lt;- function(data) {
+   density(data$x, n = 200)$y
+}
+set.seed(42) 
+metamerize(data.frame(x = rnorm(100)),
+           preserve = highdef_density,
+           N = 5000,
+           signif = 3,
+           perturbation = 0.001)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 1 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The general principle works, but it is not complete. Imagine a statistical transformation defined as the sample mean repeated N times. Even though it returns N numbers from a N-sized sample, it does not have more information than just the mean. Generating metamers is then trivial.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean_n_times &amp;lt;- function(data) {
+   rep(mean(data$x), length.out = length(data$x))
+}
+set.seed(42) 
+metamerize(data.frame(x = rnorm(100)),
+           preserve = mean_n_times,
+           perturbation = 0.1, 
+           N = 1000)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 43 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This motivates to define the category of “effective” statistical transformations as transformation that can uniquely describe a univariate sample of size N with, at most, N numbers. Under this definition, “the first N moments” is effective, while “the first moment repeated N times” is no. At this point, this is pure speculation, so take it with a grain of salt.&lt;/p&gt;
+&lt;p&gt;It is worth noticing that when searching for metamers empirically there is a need to set the numerical tolerance (with the argument &lt;code&gt;signif&lt;/code&gt;). Being pedantic, these are more like “semi-metamers” than true metamers. With a high enough tolerance it is possible to find (semi) metamers even when it should not be possible.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(42) 
+metamerize(data.frame(x = rnorm(3)),
+                       moments_n(1:4), 
+                       signif = 1, 
+                       perturbation = 0.001, 
+                       N = 1000)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 1000 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;advanced-metamers&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Advanced metamers&lt;/h2&gt;
+&lt;p&gt;I would like to close with a showcase of some utilities in the metamer package. &lt;code&gt;draw_data()&lt;/code&gt; opens up a shiny interface to freehand draw datasets with an optional dataset as backdrop.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;start_data &amp;lt;- subset(datasauRus::datasaurus_dozen, dataset == &amp;quot;dino&amp;quot;)
+start_data$dataset &amp;lt;- NULL
+
+smiley &amp;lt;- draw_data(start_data)
+simley$.group &amp;lt;- NULL&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:draw-data&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../images/draw_data.png&#34; alt=&#34;`draw_data()` interface.&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 5: &lt;code&gt;draw_data()&lt;/code&gt; interface.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Moreover, &lt;code&gt;metamerize()&lt;/code&gt; can be piped, saving the parameters of each call (except &lt;code&gt;N&lt;/code&gt; and &lt;code&gt;trim&lt;/code&gt;). This way one can perform sequences.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;X &amp;lt;- subset(datasauRus::datasaurus_dozen, dataset == &amp;quot;x_shape&amp;quot;)
+X$dataset &amp;lt;- NULL
+
+star &amp;lt;- subset(datasauRus::datasaurus_dozen, dataset == &amp;quot;star&amp;quot;)
+star$dataset &amp;lt;- NULL&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;metamers &amp;lt;- metamerize(start_data, 
+                       preserve = delayed_with(mean(x), mean(y), cor(x, y)),
+                       minimize = mean_dist_to(smiley), 
+                       perturbation = 0.08,
+                       N = 30000,
+                       trim = 150) %&amp;gt;% 
+   metamerize(minimize = NULL, 
+              N = 3000, trim = 10) %&amp;gt;% 
+   metamerize(minimize = mean_dist_to(X), 
+              N = 30000, trim = 150) %&amp;gt;% 
+   metamerize(minimize = NULL, 
+              N = 3000, trim = 10) %&amp;gt;% 
+   metamerize(minimize = mean_dist_to(star), 
+              N = 30000, trim = 150) %&amp;gt;%
+   metamerize(minimize = NULL, 
+              N = 3000, trim = 10) %&amp;gt;% 
+   metamerize(minimize = mean_dist_to(start_data),
+              N = 30000, trim = 150)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This metamers show the datasaurus metamorphosing into different figures, always preserving the same statistical properties. This replicates &lt;a href=&#34;https://www.autodeskresearch.com/publications/samestats&#34;&gt;Justin Matejka’s y George Fitzmaurice’s animation&lt;/a&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;metamers %&amp;gt;% 
+   as.data.frame() %&amp;gt;% 
+   ggplot(aes(x, y)) +
+   geom_point() +
+   transition_manual(.metamer)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:metamer-chain-anim&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../post/2018-12-18-metamerismo-estad%C3%ADstico.en_files/figure-html/metamer-chain-anim-1.gif&#34; alt=&#34;Datasaurus metamorphisis.&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 6: Datasaurus metamorphisis.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;references&#34; class=&#34;section level2 unnumbered&#34;&gt;
+&lt;h2&gt;References&lt;/h2&gt;
+&lt;div id=&#34;refs&#34; class=&#34;references&#34;&gt;
+&lt;div id=&#34;ref-Anscombe1973&#34;&gt;
+&lt;p&gt;Anscombe, F J. 1973. “Graphs in Statistical Analysis.” &lt;em&gt;The American Statistician&lt;/em&gt; 27 (1): 17–21. &lt;a href=&#34;https://doi.org/10.1007/978-3-540-71915-1_35&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1007/978-3-540-71915-1_35&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Chatterjee2007&#34;&gt;
+&lt;p&gt;Chatterjee, Sangit, and Aykut Firat. 2007. “Generating data with identical statistics but dissimilar graphics: A follow up to the anscombe dataset.” &lt;em&gt;American Statistician&lt;/em&gt; 61 (3): 248–54. &lt;a href=&#34;https://doi.org/10.1198/000313007X220057&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1198/000313007X220057&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Govindaraju2008&#34;&gt;
+&lt;p&gt;Govindaraju, K., and S. J. Haslett. 2008. “Illustration of regression towards the means.” &lt;em&gt;International Journal of Mathematical Education in Science and Technology&lt;/em&gt; 39 (4): 544–50. &lt;a href=&#34;https://doi.org/10.1080/00207390701753788&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1080/00207390701753788&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Haslett2009&#34;&gt;
+&lt;p&gt;Haslett, S. J., and K. Govindaraju. 2009. “Cloning data: Generating datasets with exactly the same multiple linear regression fit.” &lt;em&gt;Australian and New Zealand Journal of Statistics&lt;/em&gt; 51 (4): 499–503. &lt;a href=&#34;https://doi.org/10.1111/j.1467-842X.2009.00560.x&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1111/j.1467-842X.2009.00560.x&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Hunt2004-7&#34;&gt;
+&lt;p&gt;Hunt, R. W. G. 2004. “The Colour Triangle.” In &lt;em&gt;The Reproduction of Colour&lt;/em&gt;, 6th ed., 68–91. &lt;a href=&#34;https://doi.org/10.1002/0470024275&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1002/0470024275&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Matejka2017&#34;&gt;
+&lt;p&gt;Matejka, Justin, and George Fitzmaurice. 2017. “Same Stats, Different Graphs.” &lt;em&gt;Proceedings of the 2017 CHI Conference on Human Factors in Computing Systems - CHI ’17&lt;/em&gt;, 1290–4. &lt;a href=&#34;https://doi.org/10.1145/3025453.3025912&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1145/3025453.3025912&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Technically, the solution is unique up to any permutation. This is not an accident. If the order matters, then it is a case of bivariate samples (each “datum” is actually a pair of values (x; y)). Intuition tells that besides the moment of each variable, the joint moments (covariance and such) are needed. So it seems plausible that in this case the matrix &lt;span class=&#34;math inline&#34;&gt;\(A^{N\times N}\)&lt;/span&gt;, where the element in the ith row and jth column is &lt;span class=&#34;math inline&#34;&gt;\(x^iy^j\)&lt;/span&gt; would be needed; which implies the need of &lt;span class=&#34;math inline&#34;&gt;\(N^2 -1\)&lt;/span&gt; moments.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;The fourier transform case is interesting because it describes an &lt;em&gt;ordered&lt;/em&gt; sample of size &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; with two ordered series of &lt;span class=&#34;math inline&#34;&gt;\(N/2\)&lt;/span&gt; numbers (one real and one imaginary) which sum up to &lt;span class=&#34;math inline&#34;&gt;\(2N\)&lt;/span&gt; numbers (the two series plus their respective order). This is much less than the assumed &lt;span class=&#34;math inline&#34;&gt;\(N^1-1\)&lt;/span&gt; needed in general. I suspect that this is because for this to happen, a regularly sampled series is needed. With this restriction, the fourier transform can “compress” the information.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Multiple color (and fill) scales with ggplot2</title>
@@ -17,10 +400,105 @@
       <pubDate>Tue, 18 Sep 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/en/2018/09/multiple-color-fill-scales-ggplot2/</guid>
-      <description>tl;dr: The functionality shown in this post is now on the ggnewscale package! 📦. You can find the original code in this gist.
-A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
+      <description>
 
-Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &amp;ldquo;you can&amp;rsquo;t, but here&amp;rsquo;s how to hack it or visualise the data differently&amp;rdquo;.</description>
+&lt;p&gt;tl;dr: The functionality shown in this post is now on the &lt;a href=&#34;https://github.com/eliocamp/ggnewscale&#34;&gt;&lt;code&gt;ggnewscale&lt;/code&gt;&lt;/a&gt; package! 📦. You can find the original code &lt;a href=&#34;https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32&#34;&gt;in this gist&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;A somewhat common annoyance for some &lt;code&gt;ggplot2&lt;/code&gt; users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://stackoverflow.com/search?q=ggplot2+two+color+scales&#34;&gt;&lt;img src=&#34;../images/ggplo2_twoscales_so_small.jpg&#34; alt=&#34;preguntas stack overflow&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &amp;ldquo;you can&amp;rsquo;t, but here&amp;rsquo;s how to hack it or visualise the data differently&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;Recently I came up with a way of tricking &lt;code&gt;ggplot2&lt;/code&gt; into displaying multiple scales. It relies on &lt;a href=&#34;https://github.com/tidyverse/ggplot2/pull/2555&#34;&gt;a recent addition&lt;/a&gt; by Claus Wilke that allows the usage of &amp;ldquo;non standard aesthetics&amp;rdquo; &amp;ndash;&lt;code&gt;scale_color_continuous(aesthetics = &amp;quot;fill&amp;quot;)&lt;/code&gt; sets a &lt;code&gt;fill&lt;/code&gt; scale&amp;ndash; and the use of &lt;code&gt;ggplot_add()&lt;/code&gt; that I learnt thanks to &lt;a href=&#34;https://yutani.rbind.io/post/2017-11-07-ggplot-add&#34;&gt;this post&lt;/a&gt; by Hiroaki Yutani.&lt;/p&gt;
+
+&lt;p&gt;Now let&amp;rsquo;s be serious for a moment and acknowledge that using multiple color scales is not for the faint of heart. There&amp;rsquo;s a very real risk of ending up with a plot with is at best confusing and at worst, misleading. But that doesn&amp;rsquo;t mean there are not situations that call for this kind of plot. Using very different scales allows you to condense more information in a single plot, letting you visualise more relationships between variables. In the Atmospheric Sciences, for example, plotting temperature and pressure in contour lines with different color scales is a common practice.&lt;/p&gt;
+
+&lt;p&gt;But &lt;em&gt;res non verba&lt;/em&gt;; this is how it looks like in action (with an example taken from &lt;a href=&#34;https://stackoverflow.com/questions/16129876/ggplot2-multiple-scales-legends-per-aesthetic-revisited&#34;&gt;this&lt;/a&gt; StackOverlow question)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot(pd[pd$score1 != 0,], aes(x=x, y=species)) +
+   geom_tile(aes(fill  =score1)) +
+   scale_fill_gradient2(&amp;quot;Score 1&amp;quot;, limits = c(0, 4), 
+                        low = &amp;quot;#762A83&amp;quot;, mid = &amp;quot;white&amp;quot;, high = &amp;quot;#1B7837&amp;quot;) +
+   
+   new_scale(&amp;quot;fill&amp;quot;) +
+   
+   geom_tile(aes(fill = score2), data = subset(pd, score2 != 0)) +
+   scale_fill_gradient2(&amp;quot;Score 2&amp;quot;, limits = c(0, 3), 
+                        low = &amp;quot;#1B7837&amp;quot;, mid = &amp;quot;white&amp;quot;, high = &amp;quot;#762A83&amp;quot;) +
+   
+   geom_text(data=pd, aes(label = letters, color = factor(change))) +
+   scale_color_manual(&amp;quot;Change&amp;quot;, values = c(&amp;quot;black&amp;quot;, &amp;quot;#F2A11F&amp;quot;), 
+                      labels = c(&amp;quot;None&amp;quot;, &amp;quot;Some&amp;quot;)) +
+   coord_fixed(ratio = 1.5, xlim=c(0.5,16.5), ylim=c(0.5, 3.5)) 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-09-17-multiples-escalas-de-colores-en-ggplot2.en_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;how-it-works&#34;&gt;How it works&lt;/h2&gt;
+
+&lt;p&gt;The code is a bit too long and tedious to show in this article, but you can find it on &lt;a href=&#34;https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32&#34;&gt;this gist&lt;/a&gt;. Here are the important bits.&lt;/p&gt;
+
+&lt;p&gt;First, the &lt;code&gt;new_scale()&lt;/code&gt; function does nothing.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;new_scale &amp;lt;- function(new_aes) {
+   structure(ggplot2::standardise_aes_names(new_aes), class = &amp;quot;new_aes&amp;quot;)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It merely returns an object of class &lt;code&gt;new_aes&lt;/code&gt; with a character vector with the &amp;ldquo;new&amp;rdquo; scales. All the magic is in the &lt;code&gt;+&lt;/code&gt; operator. &lt;code&gt;ggplot2&lt;/code&gt; objects are &amp;ldquo;summed&amp;rdquo; with &lt;code&gt;ggplot_add()&lt;/code&gt; function which allows to define the &amp;ldquo;add&amp;rdquo; operation for any arbitrary object to a ggplot. For the case of &lt;code&gt;new_aes&lt;/code&gt; object, this is what happens:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot_add.new_aes &amp;lt;- function(object, plot, object_name) {
+   plot$layers &amp;lt;- lapply(plot$layers, bump_aes, new_aes = object)
+   plot$scales$scales &amp;lt;- lapply(plot$scales$scales, bump_aes, new_aes = object)
+   plot$labels &amp;lt;- bump_aes(plot$labels, new_aes = object)
+   plot
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It modifies each layer, scale and label and renames the relevant aesthetic to something other than &amp;ldquo;fill&amp;rdquo; or &amp;ldquo;colour&amp;rdquo;. There&amp;rsquo;s also a bit of minimally invasive surgery to geoms so that they don&amp;rsquo;t reject the newly grafted aesthetic. Is somewhat ad-hoc, to be honest, and probably not very robuts, but it works!&lt;/p&gt;
+
+&lt;p&gt;There are many other ways to implement this and I went through &lt;a href=&#34;https://twitter.com/d_olivaw/status/1040722632675610626&#34;&gt;some iterations&lt;/a&gt;. The current implementation is friendly and consistent with the main &lt;code&gt;ggplot2&lt;/code&gt; &amp;ldquo;adding&amp;rdquo; idea, but it has some limitations and annoyances that prevent me from being 100% on board with it. I would love to get some feedback from the community 🤞!&lt;/p&gt;
+
+&lt;h2 id=&#34;a-more-real-ish-example&#34;&gt;A more real-ish example&lt;/h2&gt;
+
+&lt;p&gt;Why is any of this useful to me, you say? As I wrote before, being able to plot temperature and pressure in the same map with two different scales is very neat.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(metR)
+library(magrittr)
+time &amp;lt;- &amp;quot;1998-01-01&amp;quot;
+# Temperature and sea level pressure for January 1st 1998
+atmos &amp;lt;- ReadNetCDF(&amp;quot;~/DATOS/NCEP Reanalysis/air.mon.mean.nc&amp;quot;, 
+                    subset = list(level = 850, 
+                                  time = time)) %&amp;gt;% 
+   .[, slp:= ReadNetCDF(&amp;quot;~/DATOS/NCEP Reanalysis/slp.mon.mean.nc&amp;quot;, 
+                        subset = list(time = time), out = &amp;quot;vector&amp;quot;)] %&amp;gt;% 
+   .[, lon := ConvertLongitude(lon)]
+
+ggplot(atmos, aes(lon, lat)) +
+   geom_world() +
+   geom_contour(aes(z = slp, color = ..level..), binwidth = 4) +
+   scale_color_viridis_c(&amp;quot;Sea level pressure&amp;quot;) +
+   
+   new_scale_color() +   # same as `new_scale(&amp;quot;color&amp;quot;)`
+   
+   geom_contour(aes(z = air, color = ..level..), binwidth = 4) +
+   scale_color_distiller(&amp;quot;Air Temperature&amp;quot;, palette = &amp;quot;Spectral&amp;quot;)  +
+   
+   scale_x_longitude(limits = c(-150, 0)) +
+   scale_y_latitude(ticks = 15) +
+   ggalt::coord_proj(&amp;quot;+proj=moll +lon_0=-75&amp;quot;, 
+                     ylim = c(-60, 0), xlim = c(-150, 0))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-09-17-multiples-escalas-de-colores-en-ggplot2.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Visualising the relationship between pressure and temperature is very important for the analysis of the growth of atmospheric perturbations.&lt;/p&gt;
+
+&lt;p&gt;Of course, with great power comes great responsibility 🕸. Mixing multiple scales for the same aesthetic should be done sparingly and only if absolutely necessary. First always ask yourself if the same information cannot be shown in a better way.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;ggplot2&lt;/code&gt; doesn&amp;rsquo;t cease to amaze me. Is not only a very powerful package to construct any kind of complex plots in a stupidly simple way, but it&amp;rsquo;s also exceptionally extensible by allowing this kind of deep user customisation. ¡Long live the &lt;code&gt;ggplo2&lt;/code&gt; ✊!&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -29,7 +507,120 @@ Unfortunately, this deluge of questions is met with a shortage of conclusive ans
       <pubDate>Tue, 21 Aug 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/en/2018/08/periodic-data-ggplot2-ggperiodic/</guid>
-      <description>As an atmospheric scientists, a lot of my research consists on plotting and looking at global fields of atmospheric variables like pressure, temperature and the like. Since our planet is a sphere (well, almost), it is unbound and so longitude is a periodic dimension. That is, to the right of 180°E you go back to 180°W. But ggplot2 and other plotting systems, for the most part, assume linear dimensions.</description>
+      <description>
+
+&lt;p&gt;As an atmospheric scientists, a lot of my research consists on plotting and looking at global fields of atmospheric variables like pressure, temperature and the like. Since our planet is a sphere (well, &lt;a href=&#34;https://chem.tufts.edu/answersinscience/relativityofwrong.htm&#34;&gt;almost&lt;/a&gt;), it is unbound and so longitude is a &lt;em&gt;periodic&lt;/em&gt; dimension. That is, to the right of 180°E you go back to 180°W. But ggplot2 and other plotting systems, for the most part, assume linear dimensions.&lt;/p&gt;
+
+&lt;p&gt;To show why this is a problem, let us plot a fairly basic scalar field defined in a regular grid with 2.5° of resolution for the southern hemisphere.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot(data, aes(lon, lat)) +
+   geom_contour_fill(aes(z = gh)) +
+   map.SH +
+   scale_fill_viridis_c(&amp;quot;Geopotential\nHeight&amp;quot;) +
+   coord_polar()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-08-21-wrapping-around-ggplot2_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Did you spot it? The field is defined between 0° and 357.5°. Because 360° is the same as 0°, you would be double counting if you had a value at both extremes. But since ggplot2 only &amp;lsquo;sees&amp;rsquo; the data you feed to it, it fails to plot the implied data between 357.5° and 360°.&lt;/p&gt;
+
+&lt;h2 id=&#34;defining-the-problem&#34;&gt;Defining the problem&lt;/h2&gt;
+
+&lt;p&gt;The scope of the problem as I see it is much broader than global maps of atmospheric data.&lt;/p&gt;
+
+&lt;p&gt;We have a periodic function defined at regular &lt;em&gt;or irregular&lt;/em&gt; locations inside one period. Since this finite number of locations actually define the infinite domain of the function, when we plot we want to &lt;em&gt;wrap&lt;/em&gt; these locations around any arbitrary domain we need. This should be fast and automatic.&lt;/p&gt;
+
+&lt;p&gt;This translates, I think, to having two distinct domains. On the one hand there&amp;rsquo;s the &lt;em&gt;period&lt;/em&gt; defined by the sampled data, and on the other there&amp;rsquo;s the &lt;em&gt;range&lt;/em&gt; we want to &lt;em&gt;wrap&lt;/em&gt; this data around. The first is a property of the &lt;em&gt;data&lt;/em&gt;, the second one is a property of the &lt;em&gt;visualisation&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;Somewhere on the plotting process, then, &lt;code&gt;ggplot2&lt;/code&gt; must repeat the data so that it wraps it around the desired range.&lt;/p&gt;
+
+&lt;h2 id=&#34;solving-the-problem&#34;&gt;Solving the problem&lt;/h2&gt;
+
+&lt;p&gt;The &lt;a href=&#34;https://github.com/eliocamp/ggperiodic&#34;&gt;ggperiodic&lt;/a&gt; package embodies these ideas. First, we define the period of each of the periodic variables on our data. In this case, &lt;code&gt;lon&lt;/code&gt; is periodic between 0° and 306°&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(ggperiodic)
+data &amp;lt;- periodic(data, lon = c(0, 360))
+head(data)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;##     lon lat level       gh       time
+## 1:  0.0 -30   200 12333.66 2017-01-01
+## 2:  2.5 -30   200 12333.17 2017-01-01
+## 3:  5.0 -30   200 12335.23 2017-01-01
+## 4:  7.5 -30   200 12339.44 2017-01-01
+## 5: 10.0 -30   200 12344.92 2017-01-01
+## 6: 12.5 -30   200 12351.60 2017-01-01
+## lon = [0; 360]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now &lt;code&gt;data&lt;/code&gt; is of a new class of &amp;ldquo;periodic_df&amp;rdquo;, but so far the actual content of &lt;code&gt;data&lt;/code&gt; has remain unchanged. The magic comes on the second step 🌟. Now we can &lt;code&gt;wrap&lt;/code&gt; the data in any arbitrary range. For example, lets change longitude to be between -180° and 180°&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;data180 &amp;lt;- wrap(data, lon = c(-180, 180))
+head(data180)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;##       lon lat level       gh       time
+## 1: -180.0 -30   200 12311.90 2017-01-01
+## 2: -177.5 -30   200 12310.48 2017-01-01
+## 3: -175.0 -30   200 12311.84 2017-01-01
+## 4: -172.5 -30   200 12316.52 2017-01-01
+## 5: -170.0 -30   200 12324.02 2017-01-01
+## 6: -167.5 -30   200 12333.00 2017-01-01
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You &lt;em&gt;could&lt;/em&gt; do this manually every time you what to plot your data, but there&amp;rsquo;s a better way. When ggplot2 gets a &lt;code&gt;data&lt;/code&gt; argument, it doesn&amp;rsquo;t just pass it along. First, it feeds it to a function called &lt;code&gt;fortify()&lt;/code&gt;. ggperiodic implements &lt;code&gt;fortify.periodic_df()&lt;/code&gt; so that the wrapping can be performed automatically at plotting time.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot(data, aes(lon, lat)) +
+   geom_contour_fill(aes(z = gh)) +
+   map.SH +
+   scale_fill_viridis_c(&amp;quot;Geopotential\nHeight&amp;quot;) +
+   coord_polar()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-08-21-wrapping-around-ggplot2_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This is completely automatic 🤖, robust to transformations and very friendly to the user. By default the data is wrapped around the same range as the period, but that can be changed using the same syntax as with &lt;code&gt;wrap()&lt;/code&gt;. For example, it could be useful to show three whole periods so that any 360° range could be seen with no interruptions.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot(data, aes(lon, lat), lon = c(0, 360)*3) +
+   geom_contour_fill(aes(z = gh)) +
+   scale_fill_viridis_c(&amp;quot;Geopotential\nHeight&amp;quot;) 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-08-21-wrapping-around-ggplot2_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Since ggplot2 also uses &lt;code&gt;fortify()&lt;/code&gt; for data passed to geoms, it also works there.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot() +
+   geom_contour_fill(data = data, aes(lon, lat, z = gh), lon = c(-180, 180)) +
+   map.SH2 +
+   scale_fill_viridis_c(&amp;quot;Geopotential\nHeight&amp;quot;) +
+   coord_polar()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## Warning: Ignoring unknown parameters: lon
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-08-21-wrapping-around-ggplot2_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In this case works well but there are some limitations related to the somewhat ugly hack I had to use to pass the extra parameters to &lt;code&gt;fortify.periodic_df()&lt;/code&gt;. If used on a layer, the name of the periodic dimension must not be the same as any possible aesthetic or any other arguments passed to the geom, i.e. having &lt;code&gt;x&lt;/code&gt; or &lt;code&gt;binwidth&lt;/code&gt; as the periodic dimension is verboten. Also there&amp;rsquo;s an annoying warning 😤.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve tried to make the periodic information &lt;em&gt;sticky&lt;/em&gt; (thanks to the &lt;a href=&#34;https://github.com/decisionpatterns/sticky&#34;&gt;sticky&lt;/a&gt; 📦) across data manipulations, but I&amp;rsquo;ve still haven&amp;rsquo;t tested thoroughly. And since I mostly use data.table, I&amp;rsquo;m not familiar enough with dplyr to do know the whole range of possible transformations. &lt;a href=&#34;https://github.com/eliocamp/ggperiodic/issues&#34;&gt;Issues&lt;/a&gt; are welcome!&lt;/p&gt;
+
+&lt;p&gt;In any case, if or when you get tired of all this nonsense, you can just remove all periodicity information and go on with your life.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;data &amp;lt;- unperiodic(data)
+head(data)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;##     lon lat level       gh       time
+## 1:  0.0 -30   200 12333.66 2017-01-01
+## 2:  2.5 -30   200 12333.17 2017-01-01
+## 3:  5.0 -30   200 12335.23 2017-01-01
+## 4:  7.5 -30   200 12339.44 2017-01-01
+## 5: 10.0 -30   200 12344.92 2017-01-01
+## 6: 12.5 -30   200 12351.60 2017-01-01
+&lt;/code&gt;&lt;/pre&gt;
+</description>
     </item>
     
     <item>
@@ -38,7 +629,151 @@ Unfortunately, this deluge of questions is met with a shortage of conclusive ans
       <pubDate>Wed, 16 May 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/en/2018/05/how-to-make-a-generic-stat-in-ggplot2/</guid>
-      <description>For a while now I&amp;rsquo;ve been thinking that, yes, ggplot2 is awesome and offers a lot of geoms and stats, but it would be great if it could be extended with new user-generated geoms and stats. Then I learnt that ggplot2 actually has a pretty great extension system so I could create my own geoms I needed for my work or just for fun. But still, creating a geom from scratch is an involved process that doesn&amp;rsquo;t lend itself to simple transformations.</description>
+      <description>&lt;p&gt;For a while now I&amp;rsquo;ve been thinking that, yes, &lt;code&gt;ggplot2&lt;/code&gt; is awesome and offers a lot of &lt;code&gt;geoms&lt;/code&gt; and &lt;code&gt;stats&lt;/code&gt;, but it would be great if it could be extended with new user-generated &lt;code&gt;geoms&lt;/code&gt; and &lt;code&gt;stats&lt;/code&gt;. Then I learnt that &lt;code&gt;ggplot2&lt;/code&gt; actually has a pretty great extension system so I could create my own geoms I needed for my work or &lt;a href=&#34;https://twitter.com/d_olivaw/status/993669229810503680&#34;&gt;just for fun&lt;/a&gt;. But still, creating a geom from scratch is an involved process that doesn&amp;rsquo;t lend itself to simple transformations.&lt;/p&gt;
+
+&lt;p&gt;Finally, I thought of a possible solution: create a &lt;em&gt;generic&lt;/em&gt; &lt;code&gt;stat&lt;/code&gt; &amp;ndash;a tabula rasa, if you will&amp;ndash; that can work on the data with any function. Natively &lt;code&gt;ggplot2&lt;/code&gt; offers &lt;code&gt;stat_summary()&lt;/code&gt;, but it&amp;rsquo;s only meant to be used with, well, summary statistics. What I wanted was something completely generic and this is my first try.&lt;/p&gt;
+
+&lt;p&gt;Below is the code for &lt;code&gt;stat_rasa()&lt;/code&gt; (better name pending). It works just like any other &lt;code&gt;stat&lt;/code&gt; except that it works with any function that takes a data.frame and returns a transformed data.frame that can be interpreted by the chosen &lt;code&gt;geom&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# ggproto object
+StatRasa &amp;lt;- ggplot2::ggproto(&amp;quot;StatRasa&amp;quot;, ggplot2::Stat,
+  compute_group = function(data, scales, fun, fun.args) {
+     # Change default arguments of the function to the 
+     # values in fun.args
+     args &amp;lt;- formals(fun)
+     for (i in seq_along(fun.args)) {
+        if (names(fun.args[i]) %in% names(fun.args)) {
+           args[[names(fun.args[i])]] &amp;lt;- fun.args[[i]]
+        } 
+     }
+     formals(fun) &amp;lt;- args
+     
+     # Apply function to data
+     fun(data)
+})
+
+# stat function used in ggplot
+stat_rasa &amp;lt;- function(mapping = NULL, data = NULL,
+                      geom = &amp;quot;point&amp;quot;, 
+                      position = &amp;quot;identity&amp;quot;,
+                      fun = NULL,
+                      ...,
+                      show.legend = NA,
+                      inherit.aes = TRUE) {
+   # Check arguments 
+   if (!is.function(fun)) stop(&amp;quot;fun must be a function&amp;quot;)
+   
+   # Pass dotted arguments to a list
+   fun.args &amp;lt;- match.call(expand.dots = FALSE)$`...`
+   
+   ggplot2::layer(
+      data = data,
+      mapping = mapping,
+      stat = StatRasa,
+      geom = geom,
+      position = position,
+      show.legend = show.legend,
+      inherit.aes = inherit.aes,
+      check.aes = FALSE,
+      check.param = FALSE,
+      params = list(
+         fun = fun, 
+         fun.args = fun.args,
+         na.rm = FALSE,
+         ...
+      )
+   )
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For example, let&amp;rsquo;s say we want to quickly glance at detrended data. We then create a very simple function&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;Detrend &amp;lt;- function(data, method = &amp;quot;lm&amp;quot;, span = 0.2) {
+   if (method == &amp;quot;lm&amp;quot;) {
+      data$y &amp;lt;- resid(lm(y ~ x, data = data))
+   } else {
+      data$y &amp;lt;- resid(loess(y ~ x, span = span, data = data))
+   }
+   as.data.frame(data)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and pass it to &lt;code&gt;stat_rasa()&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(ggplot2)
+set.seed(42)
+x &amp;lt;- seq(-1, 3, length.out = 30)
+y &amp;lt;- x^2 + rnorm(30)*0.5
+df &amp;lt;- data.frame(x = x, y = y)
+ggplot(df, aes(x, y)) +
+   geom_line() +
+   stat_rasa(geom = &amp;quot;line&amp;quot;, fun = Detrend, method = &amp;quot;smooth&amp;quot;,
+             color = &amp;quot;steelblue&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-05-16-how-to-make-a-generic-stat-in-ggplot2.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We can get better legibility and less typing by creating a wrapper function with a more descriptive name.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;stat_detrend &amp;lt;- function(...) {
+   stat_rasa(fun = Detrend, ...)
+}
+
+ggplot(df, aes(x, y)) +
+   geom_line() +
+   stat_detrend(method = &amp;quot;lm&amp;quot;, color = &amp;quot;blue&amp;quot;, geom = &amp;quot;line&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-05-16-how-to-make-a-generic-stat-in-ggplot2.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Another case could be calculating contours from an irregular grid. Since &lt;code&gt;ggplot2::stat_contour()&lt;/code&gt; uses &lt;code&gt;grDevices::contourLines()&lt;/code&gt;, it needs values defined in a regular grid, but there&amp;rsquo;s a package called &lt;code&gt;contoureR&lt;/code&gt; that can compute contours from irregularly spaced observations. With &lt;code&gt;stat_rasa()&lt;/code&gt; we can integrate it with &lt;code&gt;ggplot2&lt;/code&gt; effortlessly by creating a small function and using &lt;code&gt;geom = &amp;quot;path&amp;quot;&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;IrregularContour &amp;lt;- function(data, breaks = scales::fullseq, 
+                             binwidth = NULL,
+                             bins = 10) {
+   if (is.function(breaks)) {
+      # If no parameters set, use pretty bins to calculate binwidth
+      if (is.null(binwidth)) {
+         binwidth &amp;lt;- diff(range(data$z)) / bins
+      }
+      
+      breaks &amp;lt;- breaks(range(data$z), binwidth)
+   }
+   
+   cl &amp;lt;- contoureR::getContourLines(x = data$x, y = data$y, z = data$z, 
+                                    levels = breaks)
+   
+   if (length(cl) == 0) {
+      warning(&amp;quot;Not possible to generate contour data&amp;quot;, call. = FALSE)
+      return(data.frame())
+   }
+   cl &amp;lt;- cl[, 3:7]
+   colnames(cl) &amp;lt;- c(&amp;quot;piece&amp;quot;, &amp;quot;group&amp;quot;, &amp;quot;x&amp;quot;, &amp;quot;y&amp;quot;, &amp;quot;level&amp;quot;)
+   return(cl)
+}
+
+stat_contour_irregular &amp;lt;- function(...) {
+   stat_rasa(fun = IrregularContour, geom = &amp;quot;path&amp;quot;, ...)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;set.seed(42)
+df &amp;lt;- data.frame(x = rnorm(500),
+                 y = rnorm(500))
+df$z &amp;lt;- with(df, -x*y*exp(-x^2 - y^2))
+
+ggplot(df, aes(x, y)) +
+   geom_point(aes(color = z)) +
+   stat_contour_irregular(aes(z = z, color = ..level..), bins = 15) +
+   scale_color_viridis_c()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-05-16-how-to-make-a-generic-stat-in-ggplot2.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And voilà.&lt;/p&gt;
+
+&lt;p&gt;There&amp;rsquo;s always things to improve. For example, the possibility of using a custom function to compute parameters that depend on the data, but I believe that as it stands covers 80% of simple applications. I should also use a better name, but naming things is hard work.&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -47,8 +782,214 @@ Unfortunately, this deluge of questions is met with a shortage of conclusive ans
       <pubDate>Sun, 04 Feb 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/en/2018/02/how-to-make-shaded-relief-in-r/</guid>
-      <description>While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
-What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun.</description>
+      <description>&lt;p&gt;While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;../images/shading.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun. After some further research I learned that this is actually done in cartography and is called &lt;a href=&#34;http://www.reliefshading.com/analytical/shading-methods/&#34;&gt;&lt;em&gt;aspect-based shading&lt;/em&gt;&lt;/a&gt;. I also learned that it&amp;rsquo;s not the best method, and I&amp;rsquo;m itching to try others. But for now, let&amp;rsquo;s keep things simple and &lt;a href=&#34;https://kkulma.github.io/2017-12-29-end-of-year-thoughts/&#34;&gt;get stuff actually done&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Just as an example, I will be using our old friend, the &lt;code&gt;volcano&lt;/code&gt; database. I will be also using &lt;code&gt;data.table&lt;/code&gt; syntax because that how I roll. Deal with it, &lt;code&gt;dplyr&lt;/code&gt; lovers 😎.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(data.table)
+library(ggplot2)
+data(volcano)
+volcano &amp;lt;- as.data.table(melt(volcano, varnames = c(&amp;quot;x&amp;quot;, &amp;quot;y&amp;quot;),
+                              value.name = &amp;quot;h&amp;quot;))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So then I take the derivative (this is a function I made in my personal package, but bear with me 🙏) and take the angle. The minus sign are there&amp;hellip; well, because it works &amp;ndash;I&amp;rsquo;m not sure about the exact maths here.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;volcano[, c(&amp;quot;dx&amp;quot;, &amp;quot;dy&amp;quot;) := metR::Derivate(h ~ x + y)]
+volcano[, angle := atan2(-dy, -dx)]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And with that, we can set the angle from which the Sun is shinning (usually from the top left) and with a little bit of code, we get an acceptable result.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;sun.angle &amp;lt;- pi/3
+ggplot(volcano, aes(x, y)) +
+   geom_raster(aes(fill = cos(angle + sun.angle)), alpha = 1, interpolate = TRUE) +
+   scale_fill_gradient2(low = &amp;quot;white&amp;quot;, high = &amp;quot;white&amp;quot;, mid = &amp;quot;gray20&amp;quot;, 
+                        midpoint = sun.angle, guide = &amp;quot;none&amp;quot;) +
+   coord_fixed() +
+   theme_void() 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;2018-01-24-como-hacer-efecto-de-relieve-en-r.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Excellent! 💜&lt;/p&gt;
+
+&lt;p&gt;But hey, don&amp;rsquo;t leave, there&amp;rsquo;s more. What if you want to use this &lt;em&gt;gorgeous&lt;/em&gt; shading as a background to map &lt;em&gt;other&lt;/em&gt; data? For example, let&amp;rsquo;s say you had surface temperature readings, or sulphur concentration data. Since our &lt;code&gt;scale_fill&lt;/code&gt; is being taken by the shading and &lt;code&gt;ggplot2&lt;/code&gt; does not allow for more than one scale per aesthetic, you couldn&amp;rsquo;t use another &lt;code&gt;geom_raster()&lt;/code&gt; to &amp;ldquo;paint&amp;rdquo; the data over this background.&lt;/p&gt;
+
+&lt;p&gt;One solution is to take the plot we made above, extract the raster grob (GRaphical OBject) and put it over another plot as an annotation. This is akin to a plot transplant and &amp;ndash;just as organ transplants&amp;ndash; it&amp;rsquo;s an ugly mess that will become a forgotten practice of a less civilized age once we master 3D printing of organs. But it works and is the best we&amp;rsquo;ve got so far.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;shade &amp;lt;- ggplot(volcano, aes(x, y)) +
+   geom_raster(aes(fill = cos(angle + sun.angle)), alpha = 0.5, interpolate = TRUE) +
+   scale_fill_gradient2(low = &amp;quot;white&amp;quot;, high = &amp;quot;white&amp;quot;, mid = &amp;quot;black&amp;quot;, 
+                        midpoint = sun.angle, guide = &amp;quot;none&amp;quot;)
+
+grob.shade &amp;lt;- ggplotGrob(shade)
+grob.shade &amp;lt;- grob.shade$grobs[[6]]$children[[3]]
+
+ggplot(volcano, aes(x, y)) +
+   geom_raster(aes(fill = h), alpha = 1, interpolate = TRUE) +
+   annotation_custom(grob = grob.shade) +
+   scale_fill_viridis_c(guide = &amp;quot;none&amp;quot;, option = &amp;quot;A&amp;quot;) +
+   coord_fixed() +
+   theme_void() 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;2018-01-24-como-hacer-efecto-de-relieve-en-r.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Lucky for us, at least for this kind of plot transplant, there&amp;rsquo;s already a better way: just make a &lt;code&gt;geom&lt;/code&gt;! Once we are inside the guts of &lt;code&gt;ggplot2&lt;/code&gt; we are no longer bound by the tyranny of scales can do the craziest things. In this case, we use a modified version of &lt;code&gt;geom_tile()&lt;/code&gt; that performs all the calculations we need and builds the grayscale pattern (modifiable by the user via the &lt;code&gt;light&lt;/code&gt; and &lt;code&gt;dark&lt;/code&gt; aesthetics). It allows changing &lt;code&gt;sun.angle&lt;/code&gt; and decide whether to use &lt;code&gt;raster&lt;/code&gt; or &lt;code&gt;rect&lt;/code&gt; and whether to interpolate for a smoother finish. I give to you &lt;code&gt;geom_relief()&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;geom_relief &amp;lt;- function(mapping = NULL, data = NULL,
+                        stat = &amp;quot;identity&amp;quot;, position = &amp;quot;identity&amp;quot;,
+                        ...,
+                        raster = TRUE,
+                        interpolate = TRUE,
+                        na.rm = FALSE,
+                        show.legend = NA,
+                        inherit.aes = TRUE) {
+   ggplot2::layer(
+      data = data,
+      mapping = mapping,
+      stat = stat,
+      geom = GeomRelief,
+      position = position,
+      show.legend = show.legend,
+      inherit.aes = inherit.aes,
+      params = list(
+         raster = raster,
+         interpolate = interpolate,
+         na.rm = na.rm,
+         ...
+      )
+   )
+}
+
+GeomRelief &amp;lt;- ggplot2::ggproto(&amp;quot;GeomRelief&amp;quot;, GeomTile,
+  required_aes = c(&amp;quot;x&amp;quot;, &amp;quot;y&amp;quot;, &amp;quot;z&amp;quot;),
+  default_aes = ggplot2::aes(color = NA, fill = &amp;quot;grey35&amp;quot;, size = 0.5, linetype = 1,
+                             alpha = NA, light = &amp;quot;white&amp;quot;, dark = &amp;quot;gray20&amp;quot;, sun.angle = 60),
+  draw_panel = function(data, panel_scales, coord, raster, interpolate) {
+     if (!coord$is_linear()) {
+        stop(&amp;quot;non lineal coordinates are not implemented in GeomRelief&amp;quot;, call. = FALSE)
+     } else {
+        coords &amp;lt;- as.data.table(coord$transform(data, panel_scales))
+        
+        # This is the only part that&#39;s actually new. The rest is essentially 
+        # copy-pasted from geom_raster and geom_tile
+        coords[, sun.angle := (sun.angle + 90)*pi/180]
+        coords[, dx := .derv(z, x), by = y]
+        coords[, dy := .derv(z, y), by = x]
+        coords[, shade := (cos(atan2(-dy, -dx) - sun.angle) + 1)/2]
+        coords[is.na(shade), shade := 0]
+        coords[, fill := .rgb2hex(colorRamp(c(dark, light), space = &amp;quot;Lab&amp;quot;)(shade)),
+               by = .(dark, light)]
+        
+        # From geom_raster and geom_tile
+        if (raster == TRUE){
+           if (!inherits(coord, &amp;quot;CoordCartesian&amp;quot;)) {
+              stop(&amp;quot;geom_raster only works with Cartesian coordinates&amp;quot;, call. = FALSE)
+           }
+           # Convert vector of data to raster
+           x_pos &amp;lt;- as.integer((coords$x - min(coords$x)) / resolution(coords$x, FALSE))
+           y_pos &amp;lt;- as.integer((coords$y - min(coords$y)) / resolution(coords$y, FALSE))
+           
+           nrow &amp;lt;- max(y_pos) + 1
+           ncol &amp;lt;- max(x_pos) + 1
+           
+           raster &amp;lt;- matrix(NA_character_, nrow = nrow, ncol = ncol)
+           raster[cbind(nrow - y_pos, x_pos + 1)] &amp;lt;- alpha(coords$fill, coords$alpha)
+           
+           # Figure out dimensions of raster on plot
+           x_rng &amp;lt;- c(min(coords$xmin, na.rm = TRUE), max(coords$xmax, na.rm = TRUE))
+           y_rng &amp;lt;- c(min(coords$ymin, na.rm = TRUE), max(coords$ymax, na.rm = TRUE))
+           
+           grid::rasterGrob(raster,
+                            x = mean(x_rng), y = mean(y_rng),
+                            width = diff(x_rng), height = diff(y_rng),
+                            default.units = &amp;quot;native&amp;quot;, interpolate = interpolate
+           )
+           
+        } else {
+           ggplot2:::ggname(&amp;quot;geom_rect&amp;quot;, grid::rectGrob(
+              coords$xmin, coords$ymax,
+              width = coords$xmax - coords$xmin,
+              height = coords$ymax - coords$ymin,
+              default.units = &amp;quot;native&amp;quot;,
+              just = c(&amp;quot;left&amp;quot;, &amp;quot;top&amp;quot;),
+              gp = grid::gpar(
+                 col = coords$fill,
+                 fill = alpha(coords$fill, coords$alpha),
+                 lwd = coords$size * .pt,
+                 lty = coords$linetype,
+                 lineend = &amp;quot;butt&amp;quot;
+              )
+           ))
+           
+        }
+     }
+  }
+)
+
+rect_to_poly &amp;lt;- function(xmin, xmax, ymin, ymax) {
+   data.frame(
+      y = c(ymax, ymax, ymin, ymin, ymax),
+      x = c(xmin, xmax, xmax, xmin, xmin)
+   )
+}
+
+.rgb2hex &amp;lt;- function(array) {
+   rgb(array[, 1], array[, 2], array[, 3], maxColorValue = 255)
+}
+
+
+.derv &amp;lt;- function(x, y, order = 1, cyclical = FALSE, fill = FALSE) {
+   N &amp;lt;- length(x)
+   d &amp;lt;- y[2] - y[1]
+   if (order &amp;gt;= 3) {
+      dxdy &amp;lt;- .derv(.derv(x, y, order = 2, cyclical = cyclical, fill = fill),
+                    y, order = order - 2, cyclical = cyclical, fill = fill)
+   } else {
+      if (order == 1) {
+         dxdy &amp;lt;- (x[c(2:N, 1)] - x[c(N, 1:(N-1))])/(2*d)
+      } else if (order == 2) {
+         dxdy &amp;lt;- (x[c(2:N, 1)] + x[c(N, 1:(N-1))] - 2*x)/d^2
+      }
+      if (!cyclical) {
+         if (!fill) {
+            dxdy[c(1, N)] &amp;lt;- NA
+         }
+         if (fill) {
+            dxdy[1] &amp;lt;- (-11/6*x[1] + 3*x[2] - 3/2*x[3] + 1/3*x[4])/d
+            dxdy[N] &amp;lt;- (11/6*x[N] - 3*x[N-1] + 3/2*x[N-2] - 1/3*x[N-3])/d
+         }
+      }
+      
+   }
+   return(dxdy)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s use it to show real topographic data from The Andes near the Aconcagua, courtesy of &lt;a href=&#34;https://www.ngdc.noaa.gov/mgg/global/&#34;&gt;NOAA&amp;rsquo;s ETOPO1&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;aconcagua &amp;lt;- metR::GetTopography(-70.0196223 - 3 + 360, -70.0196223 + 3 + 360,
+                                 -32.6531782 + 2, -32.6531782 - 2, 
+                                 resolution = 1/60)
+aconcagua[, c(&amp;quot;light&amp;quot;, &amp;quot;dark&amp;quot;) := .(ifelse(h &amp;gt; 0, &amp;quot;white&amp;quot;, &amp;quot;slategray2&amp;quot;),
+                                ifelse(h &amp;gt; 0, &amp;quot;gray20&amp;quot;, &amp;quot;midnightblue&amp;quot;))] 
+ggplot(aconcagua, aes(lon, lat)) +
+   geom_relief(aes(z = h, light = light, dark = dark), 
+               raster = TRUE, interpolate = TRUE, sun.angle = 60) +
+   coord_fixed(expand = FALSE) +
+   theme_void()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;2018-01-24-como-hacer-efecto-de-relieve-en-r.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The result, if you ask me: delicious  👌&lt;/p&gt;
+</description>
     </item>
     
   </channel>

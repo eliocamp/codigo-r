@@ -1,0 +1,1139 @@
+
+
+  
+    
+  
+
+
+  
+
+
+
+
+  
+
+
+  
+
+<!DOCTYPE html>
+<html lang="es-es">
+  <head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hugo 0.52 with theme Tranquilpeak 0.4.3-BETA">
+    <title>Metamerismo estadístico</title>
+    <meta name="author" content="Elio Campitelli">
+    <meta name="keywords" content=", R">
+
+    <link rel="icon" href="../../../favicon.png">
+    
+
+    
+    <meta name="description" content="Cómo generar data sets muy distintos pero con iguales estadísticos (metámeros) usando el paquete &#34;metamer&#34;.">
+    <meta property="og:description" content="Cómo generar data sets muy distintos pero con iguales estadísticos (metámeros) usando el paquete &#34;metamer&#34;.">
+    <meta property="og:type" content="blog">
+    <meta property="og:title" content="Metamerismo estadístico">
+    <meta property="og:url" content="/2018/12/metamerismo-estad%C3%ADstico/">
+    <meta property="og:site_name" content="Código R">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Código R">
+    <meta name="twitter:description" content="Cómo generar data sets muy distintos pero con iguales estadísticos (metámeros) usando el paquete &#34;metamer&#34;.">
+    
+      <meta name="twitter:creator" content="@d_olivaw">
+    
+    
+
+    
+    
+
+    
+      <meta property="og:image" content="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=640">
+    
+
+    
+    
+    
+
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="../../../css/style-jsjn0006wyhpyzivf6yceb31gvpjatbcs3qzjvlumobfnugccvobqwxnnaj8.min.css" />
+    
+    
+      
+        <link rel="stylesheet"  href="../../../css/custom.css">
+      
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="2">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="../../../">Código R</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="../../../#about">
+    
+    
+    
+      
+        <img class="header-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=90" alt="Foto de autor" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="2">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="../../../#about">
+          <img class="sidebar-profile-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=110" alt="Foto de autor" />
+        </a>
+        <h4 class="sidebar-profile-name">Elio Campitelli</h4>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Inicio</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">Categorías</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archivos</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">Acerca de</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/eliocamp">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://twitter.com/d_olivaw">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="2"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Metamerismo estadístico
+    </h1>
+  
+  
+
+    
+        In English: <a href="../../../en/2018/12/statistical-metamerism/">Statistical metamerism</a>
+    
+
+
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2018-12-18T00:00:00Z">
+        
+  Diciembre 18, 2018
+
+      </time>
+    
+    
+  
+  
+    <span>en</span>
+    
+      <a class="category-link" href="../../../categories/r">R</a>, 
+    
+      <a class="category-link" href="../../../categories/estad%c3%adstica">estadística</a>
+    
+  
+
+  </div>
+
+</div>
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    });
+    </script>
+    <script type="text/javascript"
+      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+
+
+<div id="resumen" class="section level1">
+<h1>Resumen</h1>
+<p>El paquete <a href="https://github.com/eliocamp/metamer">metamer</a> implementa en R el algoritmo descripto por <span class="citation">Matejka and Fitzmaurice (<a href="#ref-Matejka2017">2017</a>)</span> para generar sets de datos distintos entre sí pero con estadísticos idénticos. Además, propongo el nombre “metámeros” para estos grupos de datos en analogía con el concepto proveniente de colorimetría.</p>
+<div id="metameros-en-la-vision" class="section level2">
+<h2>Metámeros en la visión</h2>
+<p>Esto <strong>no es</strong> un prisma separando la luz blanca en las longitudes de onda que la componen. Es una <em>imagen</em> de un prisma separando la luz blanca en las longitudes de onda que la componen.</p>
+<div class="figure" style="text-align: center"><span id="fig:prism"></span>
+<img src="../../../images/Prism_flat_rainbow.jpg" alt="C'est ne pas un prisme."  />
+<p class="caption">
+Fig. 1: C’est ne pas un prisme.
+</p>
+</div>
+<p>Esta observación magrittiana no es trivial. El monitor que está mostrando la imagen sólo tiene tres LEDs que emiten luz en sólo tres longitudes de onda (más o menos). ¿Cómo hace para reproducir todo el espectro de la luz blanca? La respuesta es que no lo hace. Para cada color de ese arcoíris, el monitor está emitiendo una mezcla de longitudes de onda roja, verde y azul que nuestro sistema visual interpreta como el mismo color que esa longitud de onda específica.</p>
+<p>Cómo sucede todo eso es complicadísimo y va más allá de lo que pueda explicar en este artículo (pero sí recomiendo leer <a href="http://jamie-wong.com/post/color/">esta excelente nota</a> sobre el tema) pero el núcleo de la cuestión es que nuestros ojos tienen sólo tres tipos de receptores (conos) que responden a longitudes de onda cortas (S), medias (M) y largas (L). Por lo tanto, cualquier distribución de longitudes de onda que llegue a nuestros ojos, sin importar cuán complicada sea es reducida a únicamente tres números: la excitación de los receptores S, M y L. Y cualquier distribución de longitudes de onda que excite nuestros receptores en la misma proporción va a ser percibido como el mismo color. En colorimetría, esto se conoce como <em>metamerismo</em> <span class="citation">(Hunt <a href="#ref-Hunt2004-7">2004</a>)</span>. El amarillo monocromático que se ve en un prisma se percibe igual que el amarillo producido por el monitor aunque no tenga ni remotamente el mismo espectro. Son metámeros.</p>
+<p>La creación de pares metaméricos es la base de la reproducción del color en monitores, impresiones y cuadros, pero también tiene su lado oscuro. Dos pigmentos pueden ser pares metaméricos bajo ciertas condiciones de iluminación pero tener colores muy distintos en otras. Esto puede ser un problema, por ejemplo, al comprar ropa en un negocio con iluminación artificial y luego usarla bajo la luz del Sol.</p>
+</div>
+<div id="metameros-en-la-estadistica" class="section level2">
+<h2>Metámeros en la estadística</h2>
+<p>Ahora pensemos en el famoso cuarteto de Anscombe</p>
+<div class="figure"><span id="fig:anscombe-plot"></span>
+<img src="../../../post/2018-12-18-metamerismo-estad%C3%ADstico_files/figure-html/anscombe-plot-1.png" alt="Cuarteto de Anscombe" width="672" />
+<p class="caption">
+Fig. 2: Cuarteto de Anscombe
+</p>
+</div>
+<p>A pesar de ser cuatro sets de datos muy distintos, los miembros del cuarteto comparten el promedio y desvío estándar de cada variable, así como la correlación entre ambas <span class="citation">(Anscombe <a href="#ref-Anscombe1973">1973</a>)</span>. Vistos a través de esta transformación estadística, los cuatro sets de datos se ven iguales aún cuando no son ni remotamente similares. Son metámeros.</p>
+<p>Al igual que los pares metaméricos de colores, los metámeros estadísticos muestran sus diferencias cuando se los ve con otra “iluminación.” En este caso, un gráfico.</p>
+<p>El concepto de “datos con estadísticos idénticos pero gráficos distintos” todavía tiene relevancia, con varias publicaciones describiendo distintos métodos para crearlos <span class="citation">(p.e. Chatterjee and Firat <a href="#ref-Chatterjee2007">2007</a>; Govindaraju and Haslett <a href="#ref-Govindaraju2008">2008</a>; Haslett and Govindaraju <a href="#ref-Haslett2009">2009</a>; Matejka and Fitzmaurice <a href="#ref-Matejka2017">2017</a>)</span> pero, que yo sepa, nunca fue nombrado. En analogía al metamerismo del color, en este artículo voy a llamar “metámeros” a cualquier conjunto de sets de datos que se comporta de forma idéntica bajo una determinada transformación estadística.</p>
+<p>El paquete <a href="https://github.com/eliocamp/metamer">metamer</a> implementa el algoritmo de <span class="citation">Matejka and Fitzmaurice (<a href="#ref-Matejka2017">2017</a>)</span> para generar metámeros. La función principal, <code>metamerize()</code>, permite generar metámeros a partir de un data set inicial y una función a preservar. Opcionalmente, se puede establecer una función que deben minimizar los metámeros sucesivos.</p>
+<p>Primero, la función <code>delayed_with()</code> sirve para definir la serie de transformaciones estadísticas que deben ser preservadas. Los cuatro elementos del cuarteto de anscombe preservan estas propiedades con hasta tres cifras significativas (salvo por la correlación entre x e y en el cuarto cuarteto).</p>
+<pre class="r"><code>library(metamer)
+
+summ_fun &lt;- delayed_with(mean_x = mean(x), 
+                         mean_y = mean(y), 
+                         sd_x = sd(x), 
+                         sd_y = sd(y), 
+                         cor_xy = cor(x, y))
+summ_names &lt;-  c(&quot;$\\overline{x}$&quot;, &quot;$\\overline{y}$&quot;, 
+                 &quot;$S_x$&quot;,  &quot;$S_y$&quot;, &quot;$r(x, y)$&quot;)
+
+anscombe[, as.list(signif(summ_fun(.SD), 3)), by = quartet] %&gt;% 
+   knitr::kable(col.names = c(&quot;Cuarteto&quot;, summ_names),
+                escape = FALSE, 
+                caption = &quot;Propiedades estadísticas del cuarteto de Anscombe&quot;)</code></pre>
+<table>
+<caption><span id="tab:anscombe-summ">Tab. 1: </span>Propiedades estadísticas del cuarteto de Anscombe</caption>
+<thead>
+<tr class="header">
+<th align="left">Cuarteto</th>
+<th align="right"><span class="math inline">\(\overline{x}\)</span></th>
+<th align="right"><span class="math inline">\(\overline{y}\)</span></th>
+<th align="right"><span class="math inline">\(S_x\)</span></th>
+<th align="right"><span class="math inline">\(S_y\)</span></th>
+<th align="right"><span class="math inline">\(r(x, y)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="right">9</td>
+<td align="right">7.5</td>
+<td align="right">3.32</td>
+<td align="right">2.03</td>
+<td align="right">0.816</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="right">9</td>
+<td align="right">7.5</td>
+<td align="right">3.32</td>
+<td align="right">2.03</td>
+<td align="right">0.816</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="right">9</td>
+<td align="right">7.5</td>
+<td align="right">3.32</td>
+<td align="right">2.03</td>
+<td align="right">0.816</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="right">9</td>
+<td align="right">7.5</td>
+<td align="right">3.32</td>
+<td align="right">2.03</td>
+<td align="right">0.817</td>
+</tr>
+</tbody>
+</table>
+<p>Para encontrar metámeros “entre” el primero y el segundo cuarteto, se puede empezar por el primero y generar metámeros que minimicen la distancia media al segundo. La función <code>mean_dist_to()</code> sirve para este caso.</p>
+<pre class="r"><code># Extraigo el segundo cuarteto y eliminto la columna `quartet`
+start_data &lt;- subset(anscombe, quartet == 1)
+start_data$quartet &lt;- NULL
+
+# Exraigo el tercer cuarteto y eliminto la columna `quartet`
+target &lt;- subset(anscombe, quartet == 2)
+target$quartet &lt;- NULL
+
+set.seed(42)  # para resultados reproducibles
+metamers &lt;- metamerize(start_data, 
+                       preserve = summ_fun,
+                       minimize = mean_dist_to(target), 
+                       signif = 3,
+                       change = &quot;y&quot;,
+                       perturbation = 0.008, 
+                       N = 30000)
+print(metamers)</code></pre>
+<pre><code>## List of 4690 metamers</code></pre>
+<p>El proceso genera 4689 metámeros además de los datos originales. Seleccionando sólo 10 usando <code>trim()</code> y aplicando <code>summ_fun()</code> a cada uno se confirma que tienen las mismas propiedades con 3 cifras significativas.</p>
+<pre class="r"><code>metamers %&gt;% 
+   trim(10) %&gt;% 
+   lapply(summ_fun) %&gt;% 
+   lapply(signif, digits = 3) %&gt;% 
+   do.call(rbind, .) %&gt;% 
+   knitr::kable(col.names = c(summ_names),
+                caption = &quot;Propiedades estadísticas de los metámeros generados (redondeados a tres cifras significativas).&quot;)</code></pre>
+<table>
+<caption><span id="tab:anscombe-metamers">Tab. 2: </span>Propiedades estadísticas de los metámeros generados (redondeados a tres cifras significativas).</caption>
+<thead>
+<tr class="header">
+<th align="right"><span class="math inline">\(\overline{x}\)</span></th>
+<th align="right"><span class="math inline">\(\overline{y}\)</span></th>
+<th align="right"><span class="math inline">\(S_x\)</span></th>
+<th align="right"><span class="math inline">\(S_y\)</span></th>
+<th align="right"><span class="math inline">\(r(x, y)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">9</td>
+<td align="right">7.5</td>
+<td align="right">3.32</td>
+<td align="right">2.03</td>
+<td align="right">0.816</td>
+</tr>
+<tr class="even">
+<td align="right">9</td>
+<td align="right">7.5</td>
+<td align="right">3.32</td>
+<td align="right">2.03</td>
+<td align="right">0.816</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="right">7.5</td>
+<td align="right">3.32</td>
+<td align="right">2.03</td>
+<td align="right">0.816</td>
+</tr>
+<tr class="even">
+<td align="right">9</td>
+<td align="right">7.5</td>
+<td align="right">3.32</td>
+<td align="right">2.03</td>
+<td align="right">0.816</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="right">7.5</td>
+<td align="right">3.32</td>
+<td align="right">2.03</td>
+<td align="right">0.816</td>
+</tr>
+<tr class="even">
+<td align="right">9</td>
+<td align="right">7.5</td>
+<td align="right">3.32</td>
+<td align="right">2.03</td>
+<td align="right">0.816</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="right">7.5</td>
+<td align="right">3.32</td>
+<td align="right">2.03</td>
+<td align="right">0.816</td>
+</tr>
+<tr class="even">
+<td align="right">9</td>
+<td align="right">7.5</td>
+<td align="right">3.32</td>
+<td align="right">2.03</td>
+<td align="right">0.816</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="right">7.5</td>
+<td align="right">3.32</td>
+<td align="right">2.03</td>
+<td align="right">0.816</td>
+</tr>
+<tr class="even">
+<td align="right">9</td>
+<td align="right">7.5</td>
+<td align="right">3.32</td>
+<td align="right">2.03</td>
+<td align="right">0.816</td>
+</tr>
+</tbody>
+</table>
+<p>Y usando <a href="https://github.com/thomasp85/gganimate">gganimate</a> se puede visualizar cómo pasar del segundo al tercer cuarteto. Todos los pasos intermedios son metámeros del original.</p>
+<pre class="r"><code>library(gganimate)
+
+metamers %&gt;% 
+   trim(100) %&gt;% 
+   as.data.frame() %&gt;%
+   ggplot(aes(x, y)) +
+   geom_point() +
+   transition_manual(.metamer)</code></pre>
+<div class="figure"><span id="fig:anscombe-animate"></span>
+<img src="../../../post/2018-12-18-metamerismo-estad%C3%ADstico_files/figure-html/anscombe-animate-1.gif" alt="Transformación del segundo al tercer cuarteto de Anscombe."  />
+<p class="caption">
+Fig. 3: Transformación del segundo al tercer cuarteto de Anscombe.
+</p>
+</div>
+<p>En general la discusión alrededor del metamerismo estadístico suele ser sobre la importancia de graficar los datos en vez de únicamente calcular estadísticas resumidas. Anscombe creó su cuarteto para contradecir la idea de que “los cálculos numéricos son exactos, mientras que los gráficos son aproximados”. Actualmente esa es la interpretación que se sigue dando a este fenómeno:</p>
+<div class="figure" style="text-align: center"><span id="fig:tweet"></span>
+<img src="../../../images/datasaurus_tweet.png" alt="Descargá el Datasaurio: Nunca confíes sólo en las estadísticas resumidas; siempre visualizá tus datos. ([Tweet](https://twitter.com/albertocairo/status/770267777169035264))"  />
+<p class="caption">
+Fig. 4: Descargá el Datasaurio: Nunca confíes sólo en las estadísticas resumidas; siempre visualizá tus datos. (<a href="https://twitter.com/albertocairo/status/770267777169035264">Tweet</a>)
+</p>
+</div>
+<p>Sin embargo, creo que hay un principio más fundamental. El problema de las <em>summary statistics</em> es la parte de <em>summary</em>. El rol de la estadística es, en muchos casos, <em>resumir</em> datos. Tomar una gran cantidad de observaciones que no pueden ser entendidas en su completitud porque nuestro entendimiento es limitado, y reducirlas a unos pocos números o propiedades que podemos entender fácilmente. El problema es que lo que se gana en entendimiento, se pierde información.</p>
+<p>Por ejemplo, un censo de los ingresos de todos los ciudadanos de un país tiene una enorme cantidad de información, pero tomados como datos separados dicen poco. Se puede resumir con el promedio (el primer momento) para tener alguna idea del valor “típico” de esta variable. Obviamente, este número esconde una gran desigualdad, por lo que es conveniente usar el desvío estándar (segundo momento) para tener una idea de cuán variable es la distribución del ingreso. Pero es muy probable que la distribución no sea simétrica. Se puede usar la asimetría (tercer momento) para empezar a cuantificar ese efecto.</p>
+<p>Cada momento que se agrega permite tener más información sobre los datos crudos. El límite es cuando se tienen tantos momentos como datos en la muestra. Una muestra univariada de tamaño N puede ser descripta unívocamente por sus N primeros momentos. Esto tiene sentido intuitivamente –no se debería necesitar más de N números para describir N números– pero también <a href="https://math.stackexchange.com/questions/3033407/is-a-sample-of-size-n-uniquely-described-by-n-sample-moments">tiene demostración</a> matemática<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
+<p>En otras palabras, la transformación “primeros N momentos de una muestra de tamaño N” no tiene metámeros estadísticos salvo cualquier permutación de la muestra original (pero ver <a href="#fn1">1</a>).</p>
+<p>Esta propiedad no es única de los momentos estadísticos. La transformada de fourier tiene la misma propiedad, lo mismo que las componentes principales, análisis factorial, clustering, etc…<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. El problema no es gráficos vs. números sino “todos los números” vs. “sólo algunos números”. La ventaja de los gráficos es que permiten representar gran cantidad de números de una forma eficiente e intuitiva, permitiendo una <em>gestalt</em> que es imposible lograr simplemente mirando una serie de números.</p>
+<p>Esta observación permite predecir en qué casos será más fácil encontrar metámeros y cuándo es matemáticamente imposible. Por ejemplo, no se puede encontrar metámeros de una muestra de tamaño 10 que preserve 10 momentos.</p>
+<pre class="r"><code>set.seed(42) 
+start_data &lt;- data.frame(x = rnorm(10))
+
+metamerize(start_data, 
+           moments_n(1:10),
+           signif = 3,
+           perturbation = 0.05,
+           N = 30000)</code></pre>
+<pre><code>## List of 1 metamers</code></pre>
+<p>Pero sí se puede encontrar metámeros que preserven dos momentos.</p>
+<pre class="r"><code>set.seed(42) 
+metamerize(start_data, 
+           moments_n(1:2), 
+           signif = 3,
+           perturbation = 0.01,
+           N = 30000)</code></pre>
+<pre><code>## List of 263 metamers</code></pre>
+<p>Un boxplot representa una muestra mediante unos 5 números, por lo que es esperable que demuestre metamerismo para muestras de <span class="math inline">\(N&gt;5\)</span>. Una estimación de densidad usando métodos paramétricos, en cambio, devuelve potencialmente infinitos puntos a partir de una muestra de cualquier tamaño. La posibilidad de metamerismo en ese caso depende de la “resolución” con la que se describa la curva. Si la curva es descripta con menos puntos que el tamaño de la muestra, va a tener metámeros.</p>
+<pre class="r"><code>coarse_density &lt;- function(data) {
+   density(data$x, n = 16)$y
+}
+set.seed(42) 
+metamerize(data.frame(x = rnorm(100)),
+           preserve = coarse_density,
+           N = 5000,
+           signif = 3,
+           perturbation = 0.001)</code></pre>
+<pre><code>## List of 11 metamers</code></pre>
+<p>Mientras que si se la describe con más puntos, no permite metamerismo.</p>
+<pre class="r"><code>highdef_density &lt;- function(data) {
+   density(data$x, n = 200)$y
+}
+set.seed(42) 
+metamerize(data.frame(x = rnorm(100)),
+           preserve = highdef_density,
+           N = 5000,
+           signif = 3,
+           perturbation = 0.001)</code></pre>
+<pre><code>## List of 1 metamers</code></pre>
+<p>Este principio general está bien, pero no está completo. Imaginemos una transformación estadística que devuelva un vector de tamaño N con el promedio de una muestra repetido N veces. A pesar de obtener N números a partir de una muestra de tamaño N, tiene la misma información que si fuera sólo el promedio. Generar metámeros para esta transformación es trivial.</p>
+<pre class="r"><code>mean_n_times &lt;- function(data) {
+   rep(mean(data$x), length.out = length(data$x))
+}
+set.seed(42) 
+metamerize(data.frame(x = rnorm(100)),
+           preserve = mean_n_times,
+           perturbation = 0.1, 
+           N = 1000)</code></pre>
+<pre><code>## List of 43 metamers</code></pre>
+<p>Esto motiva definir la categoría de transformaciones estadísticas “eficaces” como aquellas que pueden describir una muestra univariada de tamaño N con unicidad a partir de N números o menos. Bajo esta definición, “los primeros N momentos” es una transformación eficaz mientras que “repetir el primer momento N veces” no lo es. Esto, igual es pura especulación mía.</p>
+<p>Vale la pena notar que en la búsqueda empírica de metámeros hay que establecer un nivel de exactitud tolerable (con el argumento <code>signif</code>). Si se quiere ser exactos, éstos no son metámeros verdaderos sino más bien “semi-metámeros”. Esta diferencia implica que si se tolera una exactitud baja es posible encontrar (semi)-metámeros aún cuando teóricamente no debería ser posible.</p>
+<pre class="r"><code>set.seed(42) 
+metamerize(data.frame(x = rnorm(3)),
+                       moments_n(1:4), 
+                       signif = 1, 
+                       perturbation = 0.001, 
+                       N = 1000)</code></pre>
+<pre><code>## List of 1000 metamers</code></pre>
+</div>
+<div id="metameros-avanzados" class="section level2">
+<h2>Metámeros avanzados</h2>
+<p>Finalmente, me gustaría mostrar algunas utilidades de metamer que facilitan mucho la creación de nuevos metámeros. Con <code>draw_data()</code> uno puede dibujar datos a mano alzada en una interfaz de shiny, opcionalmente usando otra base de datos como fondo.</p>
+<pre class="r"><code>start_data &lt;- subset(datasauRus::datasaurus_dozen, dataset == &quot;dino&quot;)
+start_data$dataset &lt;- NULL
+
+smiley &lt;- draw_data(start_data)
+simley$.group &lt;- NULL</code></pre>
+<div class="figure" style="text-align: center"><span id="fig:draw-data"></span>
+<img src="../../../images/draw_data.png" alt="Interfaz de `draw_data()`."  />
+<p class="caption">
+Fig. 5: Interfaz de <code>draw_data()</code>.
+</p>
+</div>
+<p>Además, <code>metamerize()</code> puede encadenarse y guarda los parámetros que se usaron antes, excepto <code>N</code> y <code>trim</code>. De esta forma se puede hacer secuencias.</p>
+<pre class="r"><code>X &lt;- subset(datasauRus::datasaurus_dozen, dataset == &quot;x_shape&quot;)
+X$dataset &lt;- NULL
+
+star &lt;- subset(datasauRus::datasaurus_dozen, dataset == &quot;star&quot;)
+star$dataset &lt;- NULL</code></pre>
+<pre class="r"><code>metamers &lt;- metamerize(start_data, 
+                       preserve = delayed_with(mean(x), mean(y), cor(x, y)),
+                       minimize = mean_dist_to(smiley), 
+                       perturbation = 0.08,
+                       N = 30000,
+                       trim = 150) %&gt;% 
+   metamerize(minimize = NULL, 
+              N = 3000, trim = 10) %&gt;% 
+   metamerize(minimize = mean_dist_to(X), 
+              N = 30000, trim = 150) %&gt;% 
+   metamerize(minimize = NULL, 
+              N = 3000, trim = 10) %&gt;% 
+   metamerize(minimize = mean_dist_to(star), 
+              N = 30000, trim = 150) %&gt;%
+   metamerize(minimize = NULL, 
+              N = 3000, trim = 10) %&gt;% 
+   metamerize(minimize = mean_dist_to(start_data),
+              N = 30000, trim = 150)</code></pre>
+<p>Esta serie de metámeros muestra al datasaurio metamorfoseando en distintas figuras, siempre manteniendo las mismas propiedades estadísticas y logrando algo similar a <a href="https://www.autodeskresearch.com/publications/samestats">la animación de Justin Matejka y George Fitzmaurice</a>.</p>
+<pre class="r"><code>metamers %&gt;% 
+   as.data.frame() %&gt;% 
+   ggplot(aes(x, y)) +
+   geom_point() +
+   transition_manual(.metamer)</code></pre>
+<div class="figure"><span id="fig:metamer-chain-anim"></span>
+<img src="../../../post/2018-12-18-metamerismo-estad%C3%ADstico_files/figure-html/metamer-chain-anim-1.gif" alt="Metamorfosis del datasaurio."  />
+<p class="caption">
+Fig. 6: Metamorfosis del datasaurio.
+</p>
+</div>
+</div>
+<div id="referencias" class="section level2 unnumbered">
+<h2>Referencias</h2>
+<div id="refs" class="references">
+<div id="ref-Anscombe1973">
+<p>Anscombe, F J. 1973. “Graphs in Statistical Analysis.” <em>The American Statistician</em> 27 (1): 17–21. <a href="https://doi.org/10.1007/978-3-540-71915-1_35" class="uri">https://doi.org/10.1007/978-3-540-71915-1_35</a>.</p>
+</div>
+<div id="ref-Chatterjee2007">
+<p>Chatterjee, Sangit, and Aykut Firat. 2007. “Generating data with identical statistics but dissimilar graphics: A follow up to the anscombe dataset.” <em>American Statistician</em> 61 (3): 248–54. <a href="https://doi.org/10.1198/000313007X220057" class="uri">https://doi.org/10.1198/000313007X220057</a>.</p>
+</div>
+<div id="ref-Govindaraju2008">
+<p>Govindaraju, K., and S. J. Haslett. 2008. “Illustration of regression towards the means.” <em>International Journal of Mathematical Education in Science and Technology</em> 39 (4): 544–50. <a href="https://doi.org/10.1080/00207390701753788" class="uri">https://doi.org/10.1080/00207390701753788</a>.</p>
+</div>
+<div id="ref-Haslett2009">
+<p>Haslett, S. J., and K. Govindaraju. 2009. “Cloning data: Generating datasets with exactly the same multiple linear regression fit.” <em>Australian and New Zealand Journal of Statistics</em> 51 (4): 499–503. <a href="https://doi.org/10.1111/j.1467-842X.2009.00560.x" class="uri">https://doi.org/10.1111/j.1467-842X.2009.00560.x</a>.</p>
+</div>
+<div id="ref-Hunt2004-7">
+<p>Hunt, R. W. G. 2004. “The Colour Triangle.” In <em>The Reproduction of Colour</em>, 6th ed., 68–91. <a href="https://doi.org/10.1002/0470024275" class="uri">https://doi.org/10.1002/0470024275</a>.</p>
+</div>
+<div id="ref-Matejka2017">
+<p>Matejka, Justin, and George Fitzmaurice. 2017. “Same Stats, Different Graphs.” <em>Proceedings of the 2017 CHI Conference on Human Factors in Computing Systems - CHI ’17</em>, 1290–4. <a href="https://doi.org/10.1145/3025453.3025912" class="uri">https://doi.org/10.1145/3025453.3025912</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Técnicamente la descripción es única a menos a menos de permutaciones de los valores. Esto no es casualidad. El caso donde el orden de los valores importa es, en realidad, un caso de muestras bivariadas (cada “dato” es un par de valores (x; y)). La intuición es que además de los momentos de cada variable, son necesarios los momentos cruzados (covarianza, etc…). La demostración para el caso multivariado <a href="https://mathoverflow.net/questions/201719/moment-problem-for-discrete-distributions">es complicada pero parece que existe</a>, aunque no creo poder entenderla. Por intuición me parece plausible que en ese caso sea necesaria la matriz <span class="math inline">\(A^{N\times N}\)</span> donde el elemento de la fila <span class="math inline">\(i\)</span> y columna <span class="math inline">\(j\)</span> es <span class="math inline">\(x^iy^j\)</span>; lo cual implica necesitar <span class="math inline">\(N^2 - 1\)</span> momentos.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>El caso de la transformada de fourier es interesante porque describe una serie <em>ordenada</em> de tamaño <span class="math inline">\(N\)</span> con dos series ordenadas de <span class="math inline">\(N/2\)</span> números (una real y otra imaginaria). Es decir, <span class="math inline">\(2N\)</span> números en total (las dos series y sus respectivos órdenes). Esto es mucho menor que <span class="math inline">\(N^2-1\)</span> supuesto antes pero sospecho que esto es porque esta propiedad de fourier es para series <em>equiespaciadas</em>. Si los datos tienen alguna restricción, se puede “comprimir” la información.<a href="#fnref2" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">ETIQUETADO EN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="../../../tags/paquetes/">paquetes</a>
+
+                  </div>
+                
+              
+            
+            
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/11/metr-esta-en-cran/" data-tooltip="metR 0.2.0 está en CRAN">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2018/12/metamerismo-estad%C3%ADstico/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2018/12/metamerismo-estad%C3%ADstico/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2018/12/metamerismo-estad%C3%ADstico/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+            
+              
+                <div id="disqus_thread">
+  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2019 Elio Campitelli. Todos los derechos reservados
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
+        
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/11/metr-esta-en-cran/" data-tooltip="metR 0.2.0 está en CRAN">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2018/12/metamerismo-estad%C3%ADstico/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2018/12/metamerismo-estad%C3%ADstico/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2018/12/metamerismo-estad%C3%ADstico/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2F2018%2F12%2Fmetamerismo-estad%25C3%25ADstico%2F">
+          <i class="fa fa-facebook-official"></i><span>Compartir en Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2F2018%2F12%2Fmetamerismo-estad%25C3%25ADstico%2F">
+          <i class="fa fa-twitter"></i><span>Compartir en Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2F2018%2F12%2Fmetamerismo-estad%25C3%25ADstico%2F">
+          <i class="fa fa-google-plus"></i><span>Compartir en Google&#43;</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=110" alt="Foto de autor" />
+    
+    <h4 id="about-card-name">Elio Campitelli</h4>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Atmospheric sciences graduate researcher at CONICET
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Argentina
+      </div>
+    
+  </div>
+</div>
+
+    <div id="algolia-search-modal" class="modal-container">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="close-button"><i class="fa fa-close"></i></span>
+      <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+        <span class="searchby-algolia-text text-color-light text-small">by</span>
+        <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+      </a>
+      <i class="search-icon fa fa-search"></i>
+      <form id="algolia-search-form">
+        <input type="text" id="algolia-search-input" name="search"
+          class="form-control input--large search-input" placeholder="Buscar" />
+      </form>
+    </div>
+    <div class="modal-body">
+      <div class="no-result text-color-light text-center">no se encontraron artículos</div>
+      <div class="results">
+        
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/12/metamerismo-estad%C3%ADstico/">
+                <h3 class="media-heading">Metamerismo estadístico</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Dec 12, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Resumen El paquete metamer implementa en R el algoritmo descripto por Matejka and Fitzmaurice (2017) para generar sets de datos distintos entre sí pero con estadísticos idénticos. Además, propongo el nombre “metámeros” para estos grupos de datos en analogía con el concepto proveniente de colorimetría.
+Metámeros en la visión Esto no es un prisma separando la luz blanca en las longitudes de onda que la componen. Es una imagen de un prisma separando la luz blanca en las longitudes de onda que la componen.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/11/metr-esta-en-cran/">
+                <h3 class="media-heading">metR 0.2.0 está en CRAN</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Nov 11, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Después de muchísimo desarrollo y no sé cuántos commits, al fin metR está en CRAN emo::ji(&quot;tada&quot;)!
+metR empezó en julio de 2017 cuando estaba haciendo mi tesis de licenciatura en Ciencias de la Atmósfera y había ido creando pequeñas funciones para facilitar mi trabajo.
+metR es un paquete que brinda herramientas para trabajar con datos de campos espaciales. Tanto su nombre como su aplicación directa están relacionados con las Ciencias de la Atmósfera porque esa es mi área de estudio, pero tiene muchas cosas que pueden servir a cualquiera.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/10/leyendo-informacion-incucai/">
+                <h3 class="media-heading">Leyendo información del INCUCAI</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Oct 10, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">El otro día el diario Clarín sacó una nota afirmando que el pasado agosto se había dado el récord histórico de transplantes de órganos y se lo adjudicaba a la &ldquo;Ley Justina&rdquo;, que establece que todos somos donantes presuntos a menos que se declare lo contrario en vida. Dado que esta ley se aprobó hace poco más de un mes y todavía no está reglamentada, es poco probable que este récord se deba al cambio legal.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/09/multiple-color-fill-scales-ggplot2/">
+                <h3 class="media-heading">Multiple color (and fill) scales with ggplot2</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Sep 9, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">(Versión en español)
+tl;dr: The functionality shown in this post is now on the ggnewscale package! 📦. You can find the original code in this gist.
+A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
+
+Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/09/multiples-escalas-colores-ggplot2/">
+                <h3 class="media-heading">Múltiples escalas de colores en ggplot2</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Sep 9, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">tl;dr: Esta funcionalidad está ahora en el paquete ggnewscale! 📦 En este gist está la versión origial del código.
+Un dolor importante para algunos usuarios de ggplot2 es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
+
+Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &ldquo;no se puede, pero esta es otra forma de graficar tus datos&rdquo;.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/08/periodic-data-ggplot2-ggperiodic/">
+                <h3 class="media-heading">Wrapping around ggplot2 with ggperiodic</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Aug 8, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">As an atmospheric scientists, a lot of my research consists on plotting and looking at global fields of atmospheric variables like pressure, temperature and the like. Since our planet is a sphere (well, almost), it is unbound and so longitude is a periodic dimension. That is, to the right of 180°E you go back to 180°W. But ggplot2 and other plotting systems, for the most part, assume linear dimensions.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/06/c%C3%B3mo-funcionan-las-componentes-prinipales/">
+                <h3 class="media-heading">Cómo funcionan las componentes prinipales</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jun 6, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather"></div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/06/tu-propio-geom-smooth/">
+                <h3 class="media-heading">Tu propio smooth en geom_smooth()</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jun 6, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Algo increíblemente satisfactorio de ggplot2 es la posibilidad de ajustar curvas a los datos de manera súper fácil con geom_smooth(). Para mi investigación estaba mirando la relación entre dos ángulos y me di cuenta que la recta ajustada por cuadrados mínimos no estaba funcionando para ilustrar la obvia estructura que había en los datos.
+library(ggplot2) df &lt;- readRDS(&quot;data/smooth_example.Rds&quot;) ggplot(df, aes(pc.angle, phase)) + geom_point() + geom_smooth(method = &quot;lm&quot;)  Se me ocurrió que un mejor modelo podría ser usando el estimador de Theil-Sen, que es la mediana de todas las pendientes entre dos puntos distintos y está implementado en el paquete mblm.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/05/notificaciones-autom%C3%A1ticas-al-terminar-knitr/">
+                <h3 class="media-heading">Notificaciones automáticas al terminar knitr</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  May 5, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">start.time &lt;- Sys.time() # Notification start.time &lt;- unclass(Sys.time()) min.time &lt;- 10 knit_doc &lt;- knitr::knit_hooks$get(&quot;document&quot;) knitr::knit_hooks$set(document = function(x) { took &lt;- unclass(Sys.time()) - start.time if (unclass(Sys.time()) - start.time &gt;= min.time) { notify(&quot;Done knitting!&quot;, paste0(&quot;Took &quot;, round(took), &quot; seconds&quot;), time = 5) } knit_doc(x) }) notify &lt;- function(title = &quot;title&quot;, text = NULL, time = 2) { time &lt;- time*1000 system(paste0('notify-send &quot;', title, '&quot; &quot;', text, '&quot; -t ', time, ' -a rstudio')) }  </div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/05/presentacion-powerpoint-rmarkdown/">
+                <h3 class="media-heading">Hacer una presentación de PowerPoint a partir de rmarkdown</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  May 5, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+      </div>
+    </div>
+    <div class="modal-footer">
+      <p class="results-count text-medium"
+         data-message-zero="no se encontraron artículos"
+         data-message-one="1 artículo encontrado"
+         data-message-other="{n} artículos encontrados">
+         18 posts found
+      </p>
+    </div>
+  </div>
+</div>
+    
+  
+    
+    <div id="cover" style="background-image:url('/images/cover2.jpg');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js" integrity="sha256-XrZQp+ZMfovqr6Hb2M6okHvSEYaB/+Xbx7toWmOOZUM=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-light.min.css" integrity="sha256-KacbO6Nou2geGJEUzQeKzKEdp/DENVGJKAd2v37moh0=" crossorigin="anonymous" />
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="../../../js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
+
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+      <script>
+        var disqus_config = function () {
+          this.page.url = '\/2018\/12\/metamerismo-estad%C3%ADstico\/';
+          
+            this.page.identifier = '\/2018\/12\/metamerismo-estad%C3%ADstico\/'
+          
+        };
+        (function() {
+          
+          
+          if (window.location.hostname == "localhost") {
+            return;
+          }
+          var d = document, s = d.createElement('script');
+          var disqus_shortname = 'codigo-r';
+          s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+      </script>
+    
+  
+
+
+
+    
+  </body>
+</html>
+

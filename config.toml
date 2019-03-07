@@ -1,4 +1,4 @@
-ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$", "_bookdown.yml"]
 enableEmoji = true
 # Tranquilpeak
 # Version : 0.4.3-BETA
@@ -101,8 +101,14 @@ canonifyurls = true
   name = "Twitter"
   pre = "<i class=\"sidebar-button-icon fa fa-lg fa-twitter\"></i>"
   url = "http://twitter.com/d_olivaw"
-
-
+ 
+[[menu.links]]
+  weight = 1
+  identifier = "rbloggers"
+  name = "R-Bloggers"
+  pre = "<i class=\"sidebar-button-icon fa fa-lg fa-rss\"></i>"
+  url = "https://www.r-bloggers.com/"
+  
 [[menu.misc]]
   weight = 1
   identifier = "rss"

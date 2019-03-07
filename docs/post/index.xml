@@ -6,10 +6,393 @@
     <description>Recent content in Posts on Código R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Tue, 02 Oct 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 03 Jan 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="https://eliocamp.github.io/codigo-r/post/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://eliocamp.github.io/codigo-r/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Metamerismo estadístico</title>
+      <link>https://eliocamp.github.io/codigo-r/2019/01/metamerismo-estad%C3%ADstico/</link>
+      <pubDate>Thu, 03 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://eliocamp.github.io/codigo-r/2019/01/metamerismo-estad%C3%ADstico/</guid>
+      <description>
+
+
+&lt;div id=&#34;resumen&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Resumen&lt;/h1&gt;
+&lt;p&gt;El paquete &lt;a href=&#34;https://github.com/eliocamp/metamer&#34;&gt;metamer&lt;/a&gt; implementa en R el algoritmo descripto por &lt;span class=&#34;citation&#34;&gt;Matejka and Fitzmaurice (&lt;a href=&#34;#ref-Matejka2017&#34;&gt;2017&lt;/a&gt;)&lt;/span&gt; para generar sets de datos distintos entre sí pero con estadísticos idénticos. Además, propongo el nombre “metámeros” para estos grupos de datos en analogía con el concepto proveniente de colorimetría.&lt;/p&gt;
+&lt;div id=&#34;metameros-en-la-vision&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Metámeros en la visión&lt;/h2&gt;
+&lt;p&gt;Esto &lt;strong&gt;no es&lt;/strong&gt; un prisma separando la luz blanca en las longitudes de onda que la componen. Es una &lt;em&gt;imagen&lt;/em&gt; de un prisma separando la luz blanca en las longitudes de onda que la componen.&lt;/p&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:prism&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../images/Prism_flat_rainbow.jpg&#34; alt=&#34;C&#39;est ne pas un prisme.&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 1: C’est ne pas un prisme.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Esta observación magrittiana no es trivial. El monitor que está mostrando la imagen sólo tiene tres LEDs que emiten luz en sólo tres longitudes de onda (más o menos). ¿Cómo hace para reproducir todo el espectro de la luz blanca? La respuesta es que no lo hace. Para cada color de ese arcoíris, el monitor está emitiendo una mezcla de longitudes de onda roja, verde y azul que nuestro sistema visual interpreta como el mismo color que esa longitud de onda específica.&lt;/p&gt;
+&lt;p&gt;Cómo sucede todo eso es complicadísimo y va más allá de lo que pueda explicar en este artículo (pero sí recomiendo leer &lt;a href=&#34;http://jamie-wong.com/post/color/&#34;&gt;esta excelente nota&lt;/a&gt; sobre el tema) pero el núcleo de la cuestión es que nuestros ojos tienen sólo tres tipos de receptores (conos) que responden a longitudes de onda cortas (S), medias (M) y largas (L). Por lo tanto, cualquier distribución de longitudes de onda que llegue a nuestros ojos, sin importar cuán complicada sea es reducida a únicamente tres números: la excitación de los receptores S, M y L. Y cualquier distribución de longitudes de onda que excite nuestros receptores en la misma proporción va a ser percibido como el mismo color. En colorimetría, esto se conoce como &lt;em&gt;metamerismo&lt;/em&gt; &lt;span class=&#34;citation&#34;&gt;(Hunt &lt;a href=&#34;#ref-Hunt2004-7&#34;&gt;2004&lt;/a&gt;)&lt;/span&gt;. El amarillo monocromático que se ve en un prisma se percibe igual que el amarillo producido por el monitor aunque no tenga ni remotamente el mismo espectro. Son metámeros.&lt;/p&gt;
+&lt;p&gt;La creación de pares metaméricos es la base de la reproducción del color en monitores, impresiones y cuadros, pero también tiene su lado oscuro. Dos pigmentos pueden ser pares metaméricos bajo ciertas condiciones de iluminación pero tener colores muy distintos en otras. Esto puede ser un problema, por ejemplo, al comprar ropa en un negocio con iluminación artificial y luego usarla bajo la luz del Sol.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;metameros-en-la-estadistica&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Metámeros en la estadística&lt;/h2&gt;
+&lt;p&gt;Ahora pensemos en el famoso cuarteto de Anscombe&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:anscombe-plot&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../post/2018-12-18-metamerismo-estad%C3%ADstico_files/figure-html/anscombe-plot-1.png&#34; alt=&#34;Cuarteto de Anscombe&#34; width=&#34;672&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 2: Cuarteto de Anscombe
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;A pesar de ser cuatro sets de datos muy distintos, los miembros del cuarteto comparten el promedio y desvío estándar de cada variable, así como la correlación entre ambas &lt;span class=&#34;citation&#34;&gt;(Anscombe &lt;a href=&#34;#ref-Anscombe1973&#34;&gt;1973&lt;/a&gt;)&lt;/span&gt;. Vistos a través de esta transformación estadística, los cuatro sets de datos se ven iguales aún cuando no son ni remotamente similares. Son metámeros.&lt;/p&gt;
+&lt;p&gt;Al igual que los pares metaméricos de colores, los metámeros estadísticos muestran sus diferencias cuando se los ve con otra “iluminación.” En este caso, un gráfico.&lt;/p&gt;
+&lt;p&gt;El concepto de “datos con estadísticos idénticos pero gráficos distintos” todavía tiene relevancia, con varias publicaciones describiendo distintos métodos para crearlos &lt;span class=&#34;citation&#34;&gt;(p.e. Chatterjee and Firat &lt;a href=&#34;#ref-Chatterjee2007&#34;&gt;2007&lt;/a&gt;; Govindaraju and Haslett &lt;a href=&#34;#ref-Govindaraju2008&#34;&gt;2008&lt;/a&gt;; Haslett and Govindaraju &lt;a href=&#34;#ref-Haslett2009&#34;&gt;2009&lt;/a&gt;; Matejka and Fitzmaurice &lt;a href=&#34;#ref-Matejka2017&#34;&gt;2017&lt;/a&gt;)&lt;/span&gt; pero, que yo sepa, nunca fue nombrado. En analogía al metamerismo del color, en este artículo voy a llamar “metámeros” a cualquier conjunto de sets de datos que se comporta de forma idéntica bajo una determinada transformación estadística.&lt;/p&gt;
+&lt;p&gt;El paquete &lt;a href=&#34;https://github.com/eliocamp/metamer&#34;&gt;metamer&lt;/a&gt; implementa el algoritmo de &lt;span class=&#34;citation&#34;&gt;Matejka and Fitzmaurice (&lt;a href=&#34;#ref-Matejka2017&#34;&gt;2017&lt;/a&gt;)&lt;/span&gt; para generar metámeros. La función principal, &lt;code&gt;metamerize()&lt;/code&gt;, permite generar metámeros a partir de un data set inicial y una función a preservar. Opcionalmente, se puede establecer una función que deben minimizar los metámeros sucesivos.&lt;/p&gt;
+&lt;p&gt;Primero, la función &lt;code&gt;delayed_with()&lt;/code&gt; sirve para definir la serie de transformaciones estadísticas que deben ser preservadas. Los cuatro elementos del cuarteto de anscombe preservan estas propiedades con hasta tres cifras significativas (salvo por la correlación entre x e y en el cuarto cuarteto).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(metamer)
+
+summ_fun &amp;lt;- delayed_with(mean_x = mean(x), 
+                         mean_y = mean(y), 
+                         sd_x = sd(x), 
+                         sd_y = sd(y), 
+                         cor_xy = cor(x, y))
+summ_names &amp;lt;-  c(&amp;quot;$\\overline{x}$&amp;quot;, &amp;quot;$\\overline{y}$&amp;quot;, 
+                 &amp;quot;$S_x$&amp;quot;,  &amp;quot;$S_y$&amp;quot;, &amp;quot;$r(x, y)$&amp;quot;)
+
+anscombe[, as.list(signif(summ_fun(.SD), 3)), by = quartet] %&amp;gt;% 
+   knitr::kable(col.names = c(&amp;quot;Cuarteto&amp;quot;, summ_names),
+                escape = FALSE, 
+                caption = &amp;quot;Propiedades estadísticas del cuarteto de Anscombe&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;caption&gt;&lt;span id=&#34;tab:anscombe-summ&#34;&gt;Tab. 1: &lt;/span&gt;Propiedades estadísticas del cuarteto de Anscombe&lt;/caption&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Cuarteto&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(\overline{x}\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(\overline{y}\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(S_x\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(S_y\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(r(x, y)\)&lt;/span&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.817&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Para encontrar metámeros “entre” el primero y el segundo cuarteto, se puede empezar por el primero y generar metámeros que minimicen la distancia media al segundo. La función &lt;code&gt;mean_dist_to()&lt;/code&gt; sirve para este caso.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Extraigo el segundo cuarteto y eliminto la columna `quartet`
+start_data &amp;lt;- subset(anscombe, quartet == 1)
+start_data$quartet &amp;lt;- NULL
+
+# Exraigo el tercer cuarteto y eliminto la columna `quartet`
+target &amp;lt;- subset(anscombe, quartet == 2)
+target$quartet &amp;lt;- NULL
+
+set.seed(42)  # para resultados reproducibles
+metamers &amp;lt;- metamerize(start_data, 
+                       preserve = summ_fun,
+                       minimize = mean_dist_to(target), 
+                       signif = 3,
+                       change = &amp;quot;y&amp;quot;,
+                       perturbation = 0.008, 
+                       N = 30000)
+print(metamers)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 4690 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El proceso genera 4689 metámeros además de los datos originales. Seleccionando sólo 10 usando &lt;code&gt;trim()&lt;/code&gt; y aplicando &lt;code&gt;summ_fun()&lt;/code&gt; a cada uno se confirma que tienen las mismas propiedades con 3 cifras significativas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;metamers %&amp;gt;% 
+   trim(10) %&amp;gt;% 
+   lapply(summ_fun) %&amp;gt;% 
+   lapply(signif, digits = 3) %&amp;gt;% 
+   do.call(rbind, .) %&amp;gt;% 
+   knitr::kable(col.names = c(summ_names),
+                caption = &amp;quot;Propiedades estadísticas de los metámeros generados (redondeados a tres cifras significativas).&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;caption&gt;&lt;span id=&#34;tab:anscombe-metamers&#34;&gt;Tab. 2: &lt;/span&gt;Propiedades estadísticas de los metámeros generados (redondeados a tres cifras significativas).&lt;/caption&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(\overline{x}\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(\overline{y}\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(S_x\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(S_y\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(r(x, y)\)&lt;/span&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Y usando &lt;a href=&#34;https://github.com/thomasp85/gganimate&#34;&gt;gganimate&lt;/a&gt; se puede visualizar cómo pasar del segundo al tercer cuarteto. Todos los pasos intermedios son metámeros del original.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(gganimate)
+
+metamers %&amp;gt;% 
+   trim(100) %&amp;gt;% 
+   as.data.frame() %&amp;gt;%
+   ggplot(aes(x, y)) +
+   geom_point() +
+   transition_manual(.metamer)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:anscombe-animate&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../post/2018-12-18-metamerismo-estad%C3%ADstico_files/figure-html/anscombe-animate-1.gif&#34; alt=&#34;Transformación del segundo al tercer cuarteto de Anscombe.&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 3: Transformación del segundo al tercer cuarteto de Anscombe.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;En general la discusión alrededor del metamerismo estadístico suele ser sobre la importancia de graficar los datos en vez de únicamente calcular estadísticas resumidas. Anscombe creó su cuarteto para contradecir la idea de que “los cálculos numéricos son exactos, mientras que los gráficos son aproximados”. Actualmente esa es la interpretación que se sigue dando a este fenómeno:&lt;/p&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:tweet&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../images/datasaurus_tweet.png&#34; alt=&#34;Descargá el Datasaurio: Nunca confíes sólo en las estadísticas resumidas; siempre visualizá tus datos. ([Tweet](https://twitter.com/albertocairo/status/770267777169035264))&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 4: Descargá el Datasaurio: Nunca confíes sólo en las estadísticas resumidas; siempre visualizá tus datos. (&lt;a href=&#34;https://twitter.com/albertocairo/status/770267777169035264&#34;&gt;Tweet&lt;/a&gt;)
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Sin embargo, creo que hay un principio más fundamental. El problema de las &lt;em&gt;summary statistics&lt;/em&gt; es la parte de &lt;em&gt;summary&lt;/em&gt;. El rol de la estadística es, en muchos casos, &lt;em&gt;resumir&lt;/em&gt; datos. Tomar una gran cantidad de observaciones que no pueden ser entendidas en su completitud porque nuestro entendimiento es limitado, y reducirlas a unos pocos números o propiedades que podemos entender fácilmente. El problema es que lo que se gana en entendimiento, se pierde información.&lt;/p&gt;
+&lt;p&gt;Por ejemplo, un censo de los ingresos de todos los ciudadanos de un país tiene una enorme cantidad de información, pero tomados como datos separados dicen poco. Se puede resumir con el promedio (el primer momento) para tener alguna idea del valor “típico” de esta variable. Obviamente, este número esconde una gran desigualdad, por lo que es conveniente usar el desvío estándar (segundo momento) para tener una idea de cuán variable es la distribución del ingreso. Pero es muy probable que la distribución no sea simétrica. Se puede usar la asimetría (tercer momento) para empezar a cuantificar ese efecto.&lt;/p&gt;
+&lt;p&gt;Cada momento que se agrega permite tener más información sobre los datos crudos. El límite es cuando se tienen tantos momentos como datos en la muestra. Una muestra univariada de tamaño N puede ser descripta unívocamente por sus N primeros momentos. Esto tiene sentido intuitivamente –no se debería necesitar más de N números para describir N números– pero también &lt;a href=&#34;https://math.stackexchange.com/questions/3033407/is-a-sample-of-size-n-uniquely-described-by-n-sample-moments&#34;&gt;tiene demostración&lt;/a&gt; matemática&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;En otras palabras, la transformación “primeros N momentos de una muestra de tamaño N” no tiene metámeros estadísticos salvo cualquier permutación de la muestra original (pero ver &lt;a href=&#34;#fn1&#34;&gt;1&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;Esta propiedad no es única de los momentos estadísticos. La transformada de fourier tiene la misma propiedad, lo mismo que las componentes principales, análisis factorial, clustering, etc…&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;. El problema no es gráficos vs. números sino “todos los números” vs. “sólo algunos números”. La ventaja de los gráficos es que permiten representar gran cantidad de números de una forma eficiente e intuitiva, permitiendo una &lt;em&gt;gestalt&lt;/em&gt; que es imposible lograr simplemente mirando una serie de números.&lt;/p&gt;
+&lt;p&gt;Esta observación permite predecir en qué casos será más fácil encontrar metámeros y cuándo es matemáticamente imposible. Por ejemplo, no se puede encontrar metámeros de una muestra de tamaño 10 que preserve 10 momentos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(42) 
+start_data &amp;lt;- data.frame(x = rnorm(10))
+
+metamerize(start_data, 
+           moments_n(1:10),
+           signif = 3,
+           perturbation = 0.05,
+           N = 30000)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 1 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Pero sí se puede encontrar metámeros que preserven dos momentos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(42) 
+metamerize(start_data, 
+           moments_n(1:2), 
+           signif = 3,
+           perturbation = 0.01,
+           N = 30000)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 263 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Un boxplot representa una muestra mediante unos 5 números, por lo que es esperable que demuestre metamerismo para muestras de &lt;span class=&#34;math inline&#34;&gt;\(N&amp;gt;5\)&lt;/span&gt;. Una estimación de densidad usando métodos paramétricos, en cambio, devuelve potencialmente infinitos puntos a partir de una muestra de cualquier tamaño. La posibilidad de metamerismo en ese caso depende de la “resolución” con la que se describa la curva. Si la curva es descripta con menos puntos que el tamaño de la muestra, va a tener metámeros.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;coarse_density &amp;lt;- function(data) {
+   density(data$x, n = 16)$y
+}
+set.seed(42) 
+metamerize(data.frame(x = rnorm(100)),
+           preserve = coarse_density,
+           N = 5000,
+           signif = 3,
+           perturbation = 0.001)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 11 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Mientras que si se la describe con más puntos, no permite metamerismo.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;highdef_density &amp;lt;- function(data) {
+   density(data$x, n = 200)$y
+}
+set.seed(42) 
+metamerize(data.frame(x = rnorm(100)),
+           preserve = highdef_density,
+           N = 5000,
+           signif = 3,
+           perturbation = 0.001)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 1 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Este principio general está bien, pero no está completo. Imaginemos una transformación estadística que devuelva un vector de tamaño N con el promedio de una muestra repetido N veces. A pesar de obtener N números a partir de una muestra de tamaño N, tiene la misma información que si fuera sólo el promedio. Generar metámeros para esta transformación es trivial.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean_n_times &amp;lt;- function(data) {
+   rep(mean(data$x), length.out = length(data$x))
+}
+set.seed(42) 
+metamerize(data.frame(x = rnorm(100)),
+           preserve = mean_n_times,
+           perturbation = 0.1, 
+           N = 1000)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 43 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Esto motiva definir la categoría de transformaciones estadísticas “eficaces” como aquellas que pueden describir una muestra univariada de tamaño N con unicidad a partir de N números o menos. Bajo esta definición, “los primeros N momentos” es una transformación eficaz mientras que “repetir el primer momento N veces” no lo es. Esto, igual es pura especulación mía.&lt;/p&gt;
+&lt;p&gt;Vale la pena notar que en la búsqueda empírica de metámeros hay que establecer un nivel de exactitud tolerable (con el argumento &lt;code&gt;signif&lt;/code&gt;). Si se quiere ser exactos, éstos no son metámeros verdaderos sino más bien “semi-metámeros”. Esta diferencia implica que si se tolera una exactitud baja es posible encontrar (semi)-metámeros aún cuando teóricamente no debería ser posible.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(42) 
+metamerize(data.frame(x = rnorm(3)),
+                       moments_n(1:4), 
+                       signif = 1, 
+                       perturbation = 0.001, 
+                       N = 1000)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 1000 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;metameros-avanzados&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Metámeros avanzados&lt;/h2&gt;
+&lt;p&gt;Finalmente, me gustaría mostrar algunas utilidades de metamer que facilitan mucho la creación de nuevos metámeros. Con &lt;code&gt;draw_data()&lt;/code&gt; uno puede dibujar datos a mano alzada en una interfaz de shiny, opcionalmente usando otra base de datos como fondo.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;start_data &amp;lt;- subset(datasauRus::datasaurus_dozen, dataset == &amp;quot;dino&amp;quot;)
+start_data$dataset &amp;lt;- NULL
+
+smiley &amp;lt;- draw_data(start_data)
+simley$.group &amp;lt;- NULL&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:draw-data&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../images/draw_data.png&#34; alt=&#34;Interfaz de `draw_data()`.&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 5: Interfaz de &lt;code&gt;draw_data()&lt;/code&gt;.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Además, &lt;code&gt;metamerize()&lt;/code&gt; puede encadenarse y guarda los parámetros que se usaron antes, excepto &lt;code&gt;N&lt;/code&gt; y &lt;code&gt;trim&lt;/code&gt;. De esta forma se puede hacer secuencias.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;X &amp;lt;- subset(datasauRus::datasaurus_dozen, dataset == &amp;quot;x_shape&amp;quot;)
+X$dataset &amp;lt;- NULL
+
+star &amp;lt;- subset(datasauRus::datasaurus_dozen, dataset == &amp;quot;star&amp;quot;)
+star$dataset &amp;lt;- NULL&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;metamers &amp;lt;- metamerize(start_data, 
+                       preserve = delayed_with(mean(x), mean(y), cor(x, y)),
+                       minimize = mean_dist_to(smiley), 
+                       perturbation = 0.08,
+                       N = 30000,
+                       trim = 150) %&amp;gt;% 
+   metamerize(minimize = NULL, 
+              N = 3000, trim = 10) %&amp;gt;% 
+   metamerize(minimize = mean_dist_to(X), 
+              N = 30000, trim = 150) %&amp;gt;% 
+   metamerize(minimize = NULL, 
+              N = 3000, trim = 10) %&amp;gt;% 
+   metamerize(minimize = mean_dist_to(star), 
+              N = 30000, trim = 150) %&amp;gt;%
+   metamerize(minimize = NULL, 
+              N = 3000, trim = 10) %&amp;gt;% 
+   metamerize(minimize = mean_dist_to(start_data),
+              N = 30000, trim = 150)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Esta serie de metámeros muestra al datasaurio metamorfoseando en distintas figuras, siempre manteniendo las mismas propiedades estadísticas y logrando algo similar a &lt;a href=&#34;https://www.autodeskresearch.com/publications/samestats&#34;&gt;la animación de Justin Matejka y George Fitzmaurice&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;metamers %&amp;gt;% 
+   as.data.frame() %&amp;gt;% 
+   ggplot(aes(x, y)) +
+   geom_point() +
+   transition_manual(.metamer)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:metamer-chain-anim&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../post/2018-12-18-metamerismo-estad%C3%ADstico_files/figure-html/metamer-chain-anim-1.gif&#34; alt=&#34;Metamorfosis del datasaurio.&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 6: Metamorfosis del datasaurio.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;referencias&#34; class=&#34;section level2 unnumbered&#34;&gt;
+&lt;h2&gt;Referencias&lt;/h2&gt;
+&lt;div id=&#34;refs&#34; class=&#34;references&#34;&gt;
+&lt;div id=&#34;ref-Anscombe1973&#34;&gt;
+&lt;p&gt;Anscombe, F J. 1973. “Graphs in Statistical Analysis.” &lt;em&gt;The American Statistician&lt;/em&gt; 27 (1): 17–21. &lt;a href=&#34;https://doi.org/10.1007/978-3-540-71915-1_35&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1007/978-3-540-71915-1_35&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Chatterjee2007&#34;&gt;
+&lt;p&gt;Chatterjee, Sangit, and Aykut Firat. 2007. “Generating data with identical statistics but dissimilar graphics: A follow up to the anscombe dataset.” &lt;em&gt;American Statistician&lt;/em&gt; 61 (3): 248–54. &lt;a href=&#34;https://doi.org/10.1198/000313007X220057&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1198/000313007X220057&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Govindaraju2008&#34;&gt;
+&lt;p&gt;Govindaraju, K., and S. J. Haslett. 2008. “Illustration of regression towards the means.” &lt;em&gt;International Journal of Mathematical Education in Science and Technology&lt;/em&gt; 39 (4): 544–50. &lt;a href=&#34;https://doi.org/10.1080/00207390701753788&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1080/00207390701753788&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Haslett2009&#34;&gt;
+&lt;p&gt;Haslett, S. J., and K. Govindaraju. 2009. “Cloning data: Generating datasets with exactly the same multiple linear regression fit.” &lt;em&gt;Australian and New Zealand Journal of Statistics&lt;/em&gt; 51 (4): 499–503. &lt;a href=&#34;https://doi.org/10.1111/j.1467-842X.2009.00560.x&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1111/j.1467-842X.2009.00560.x&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Hunt2004-7&#34;&gt;
+&lt;p&gt;Hunt, R. W. G. 2004. “The Colour Triangle.” In &lt;em&gt;The Reproduction of Colour&lt;/em&gt;, 6th ed., 68–91. &lt;a href=&#34;https://doi.org/10.1002/0470024275&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1002/0470024275&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Matejka2017&#34;&gt;
+&lt;p&gt;Matejka, Justin, and George Fitzmaurice. 2017. “Same Stats, Different Graphs.” &lt;em&gt;Proceedings of the 2017 CHI Conference on Human Factors in Computing Systems - CHI ’17&lt;/em&gt;, 1290–4. &lt;a href=&#34;https://doi.org/10.1145/3025453.3025912&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1145/3025453.3025912&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Técnicamente la descripción es única a menos a menos de permutaciones de los valores. Esto no es casualidad. El caso donde el orden de los valores importa es, en realidad, un caso de muestras bivariadas (cada “dato” es un par de valores (x; y)). La intuición es que además de los momentos de cada variable, son necesarios los momentos cruzados (covarianza, etc…). La demostración para el caso multivariado &lt;a href=&#34;https://mathoverflow.net/questions/201719/moment-problem-for-discrete-distributions&#34;&gt;es complicada pero parece que existe&lt;/a&gt;, aunque no creo poder entenderla. Por intuición me parece plausible que en ese caso sea necesaria la matriz &lt;span class=&#34;math inline&#34;&gt;\(A^{N\times N}\)&lt;/span&gt; donde el elemento de la fila &lt;span class=&#34;math inline&#34;&gt;\(i\)&lt;/span&gt; y columna &lt;span class=&#34;math inline&#34;&gt;\(j\)&lt;/span&gt; es &lt;span class=&#34;math inline&#34;&gt;\(x^iy^j\)&lt;/span&gt;; lo cual implica necesitar &lt;span class=&#34;math inline&#34;&gt;\(N^2 - 1\)&lt;/span&gt; momentos.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;El caso de la transformada de fourier es interesante porque describe una serie &lt;em&gt;ordenada&lt;/em&gt; de tamaño &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; con dos series ordenadas de &lt;span class=&#34;math inline&#34;&gt;\(N/2\)&lt;/span&gt; números (una real y otra imaginaria). Es decir, &lt;span class=&#34;math inline&#34;&gt;\(2N\)&lt;/span&gt; números en total (las dos series y sus respectivos órdenes). Esto es mucho menor que &lt;span class=&#34;math inline&#34;&gt;\(N^2-1\)&lt;/span&gt; supuesto antes pero sospecho que esto es porque esta propiedad de fourier es para series &lt;em&gt;equiespaciadas&lt;/em&gt;. Si los datos tienen alguna restricción, se puede “comprimir” la información.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Leyendo información del INCUCAI</title>
@@ -17,7 +400,340 @@
       <pubDate>Tue, 02 Oct 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/2018/10/leyendo-informacion-incucai/</guid>
-      <description>El otro día el diario Clarín sacó una nota afirmando que el pasado agosto se había dado el récord histórico de transplantes de órganos y se lo adjudicaba a la &amp;ldquo;Ley Justina&amp;rdquo;, que establece que todos somos donantes presuntos a menos que se declare lo contrario en vida. Dado que esta ley se aprobó hace poco más de un mes y todavía no está reglamentada, es poco probable que este récord se deba al cambio legal.</description>
+      <description>
+
+&lt;p&gt;El otro día el diario Clarín sacó &lt;a href=&#34;https://www.clarin.com/sociedad/ley-justina-agosto-registro-record-historico-donantes-trasplante-organos_0_SyvU8EwwQ.html&#34;&gt;una nota&lt;/a&gt; afirmando que el pasado agosto se había dado el récord histórico de transplantes de órganos y se lo adjudicaba a la &amp;ldquo;Ley Justina&amp;rdquo;, que establece que todos somos donantes presuntos a menos que se declare lo contrario en vida. Dado que esta ley se aprobó hace poco más de un mes y todavía no está reglamentada, es poco probable que este récord se deba al cambio legal. En cualquier caso, la nota me despertó curiosidad. ¿Cómo evolucionó la donación de órganos en Argentina?&lt;/p&gt;
+
+&lt;p&gt;Como toda buena nota periodística, el artículo de Clarín sólo tira datos puntuales sin mostrar una linea de tiempo o poner los datos en perspectiva, así que tuve que ir a la fuente. El INCUCAI (Instituto Nacional Central Único Coordinador de Ablación e Implante) tiene un sistema de acceso a datos &lt;a href=&#34;https://cresi.incucai.gov.ar/IniciarCresiFromSintra.do&#34;&gt;llamado CRESI&lt;/a&gt; (Central de Reportes y Estadísticas del SINTRA (Sistema Nacional de Información de Procuración y Transplante de la República Argentina)) que es relativamente bueno por lo transparente, pero complicado para leer programáticamente. Esto me pareció un buen ejercicio para aprender a obtener datos de sitios web.&lt;/p&gt;
+
+&lt;p&gt;Mi objetivo final era conseguir una serie mensual de donaciones de órganos pero el sitio sólo permite obtener los datos totales por período. Obteniendo algo como esto:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;../images/cresi_tabla.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(Recién luego de todo lo que sigue me di cuenta que en otra parte se pueden ver los datos mensuales por año, lo que facilita un poco las cosas. Moraleja: ¡analizar bien la página &lt;em&gt;antes&lt;/em&gt; de empezar a escribir código!)&lt;/p&gt;
+
+&lt;p&gt;Como las consultas se hacen de forma dinámica (lo cual implicaba que no es tan fácil como ir a un url en particular y listo) usé las herramientas de desarrollo de Firefox (apretando F12) y me fijé qué pasaba en la solapa &lt;em&gt;Network&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;../images/cresi_post.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Así se puede ver que lo que hace es un &lt;code&gt;POST&lt;/code&gt; (uno de los &amp;ldquo;&lt;a href=&#34;https://robm.me.uk/web-development/2013/09/20/http-verbs.html&#34;&gt;verbos&lt;/a&gt;&amp;rdquo; del html) con una serie de parámetros entre los que está la fecha de inicio y final del período que busco y un número de &amp;ldquo;token&amp;rdquo;, que es el identificador único de mi sesión y que tengo que usar para acceder a los datos.&lt;/p&gt;
+
+&lt;p&gt;Ok, ¿cómo obtener ese número de forma programática? Luego de dar MUCHAS vueltas me fijé en el código fuente de la &lt;a href=&#34;https://cresi.incucai.gov.ar/IniciarCresiFromSintra.do&#34;&gt;página de inicio&lt;/a&gt; del CRESI (click derecho -&amp;gt; View page source) y me encontré con que el token estaba ahí!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;../images/cresi_token.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Excelente, entonces lo único que hay que hacer es navegar a esa página, leer el código fuente y extraer el ese valor. La función &lt;code&gt;get_token()&lt;/code&gt; hace eso.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(dplyr)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## 
+## Attaching package: &#39;dplyr&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(httr)
+library(xml2)
+get_token &amp;lt;- function() {
+   
+   fuente &amp;lt;- POST(&amp;quot;https://cresi.incucai.gov.ar/IniciarCresiFromSintra.do&amp;quot;,
+                      add_headers(Conection = &amp;quot;keep-alive&amp;quot;)) %&amp;gt;% 
+      read_html() 
+   token &amp;lt;- xml_attrs(xml_child(xml_child(xml_child(xml_child(fuente, 3), 1), 1), 3))
+   return(token[3])
+}
+
+(token &amp;lt;- get_token())
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;##         value 
+## &amp;quot;-1609985208&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Ahora con ese token, tengo que hacer dos &lt;code&gt;POST&lt;/code&gt;; el primero define el tipo de búsqueda y el segundo la forma de agrupación de los datos. Como primer paso busco los datos para el mes de enero de 2000.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;primer_paso &amp;lt;- POST(&amp;quot;https://cresi.incucai.gov.ar/reporte/resumenestadistico/DonantePaso2.do&amp;quot;,
+                          query = list(`5406` = &amp;quot;&amp;quot;,
+                                       `5407` = &amp;quot;&amp;quot;,
+                                       `5415` = &amp;quot;&amp;quot;,
+                                       `5416` = &amp;quot;&amp;quot;,
+                                       `5418` = &amp;quot;&amp;quot;,
+                                       `5419` = &amp;quot;&amp;quot;,
+                                       `5420_anio` = 2000,
+                                       `5420_dia` = 01,
+                                       `5420_mes` = 01,
+                                       `5421_anio` = 2000,
+                                       `5421_dia` = 31,
+                                       `5421_mes` = 01,
+                                       ABLACION = &amp;quot;&amp;quot;,
+                                       CMUERTE = &amp;quot;&amp;quot;,
+                                       CORAZONPD = &amp;quot;&amp;quot;,
+                                       DEPENDENCIA = &amp;quot;&amp;quot;,
+                                       ENTREVISTADOR = &amp;quot;&amp;quot;,
+                                       ENTREVISTADOR_DESCRIPCION = &amp;quot;&amp;quot;,
+                                       ESTABLECIMIENTO = &amp;quot;&amp;quot;,
+                                       ESTABLECIMIENTO_DESCRIPCION = &amp;quot;&amp;quot;,
+                                       ESTABLECIMIENTO_ORIGEN = 1,
+                                       ESTABLECIMIENTO_ORIGEN_DESCRIPCION = &amp;quot;ARGENTINO&amp;quot;,
+                                       FPROFESIONAL = &amp;quot;&amp;quot;,
+                                       MMUERTE = &amp;quot;&amp;quot;,
+                                       OPCIONES_AVANZADAS = &amp;quot;false&amp;quot;,
+                                       ORIGENPD = &amp;quot;&amp;quot;,
+                                       OTRO_ANIO = &amp;quot;&amp;quot;,
+                                       PERIODO = 5,
+                                       PERIODO_DESCRIPCION	= &amp;quot;ESPECIFICAR&amp;quot;,
+                                       SERVICIO = &amp;quot;&amp;quot;,
+                                       SPD = 4,
+                                       SPD_DESCRIPCION = &amp;quot;DONANTES+REALES&amp;quot;,
+                                       TIPO_DONANTE = &amp;quot;&amp;quot;,
+                                       TIPOEST = &amp;quot;&amp;quot;,
+                                       TOKEN = token))
+
+segundo_paso &amp;lt;- POST(&amp;quot;https://cresi.incucai.gov.ar/reporte/resumenestadistico/EjecutarConsultaDonante.do&amp;quot;, 
+                           query = list(`2` = &amp;quot;checked&amp;quot;,
+                                        TOKEN = token))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;La información está en lo que devuelve &lt;code&gt;segundo_paso&lt;/code&gt;. El texto de la página se lee usando &lt;code&gt;read_html()&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;(datos &amp;lt;- xml2::read_html(segundo_paso))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## {xml_document}
+## &amp;lt;html&amp;gt;
+## [1] &amp;lt;head&amp;gt;\n&amp;lt;meta http-equiv=&amp;quot;Content-Type&amp;quot; content=&amp;quot;text/html; charset= ...
+## [2] &amp;lt;script language=&amp;quot;JavaScript&amp;quot; type=&amp;quot;text/JavaScript&amp;quot;&amp;gt; \r\n\r\nfuncti ...
+## [3] &amp;lt;body onload=&amp;quot;&amp;quot;&amp;gt;\r\n&amp;lt;span class=&amp;quot;notranslate&amp;quot;&amp;gt; \r\n&amp;lt;form action=&amp;quot;Can ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;La cuestión es ahora extraer la tabla que quiero. Para eso está la magia del &lt;a href=&#34;https://selectorgadget.com/&#34;&gt;Selector Gadget&lt;/a&gt;. Es una herramienta que permite crear reglas para filtrar elementos de una página web a partir de ejemplos positivos y negativos. En este caso, quiero leer toda la tabla.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;../images/cresi_selector.png&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;(Intenté filtros para eliminar el encabezado, pero no funcionaban bien y decidí que era más fácil eliminarlo en R)&lt;/p&gt;
+
+&lt;p&gt;La parte que importa es ese &amp;ldquo;.textoTabla2&amp;rdquo;. Ahora uso el excelente paquete &lt;code&gt;rvest&lt;/code&gt; para filtrar ese &amp;ldquo;nodo&amp;rdquo; y luego convertirlo en un &lt;code&gt;data.frame&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;tabla &amp;lt;- datos %&amp;gt;% 
+    rvest::html_nodes(&amp;quot;.textoTabla2&amp;quot;) %&amp;gt;% 
+    rvest::html_table(fill = TRUE)
+head(tabla[[1]][-1, ])
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;##                  X1     X2     X3        X4     X5   X6     X7    X8
+## 2         Provincia Reales    %Re Efectivos    %Ef Mono    %Mo Multi
+## 3    2*BUENOS AIRES      8 100.0%         7  87.5%    -      -     8
+## 4 1*CAPITAL FEDERAL      5 100.0%         3  60.0%    3  60.0%     2
+## 5         6*CORDOBA      2 100.0%         2 100.0%    1  50.0%     1
+## 6       21*SANTA FE      1 100.0%         1 100.0%    1 100.0%     -
+## 7          5*CHUBUT      1 100.0%         1 100.0%    -      -     1
+##       X9     X10 X11    X12     X13   X14 X15
+## 2    %Mu Tejidos %Te %Total    DPMH TOTAL  NA
+## 3 100.0%       -   -  42.1% 0.6 PMH     8  NA
+## 4  40.0%       -   -  26.3% 1.7 PMH     5  NA
+## 5  50.0%       -   -  10.5% 0.6 PMH     2  NA
+## 6      -       -   -   5.3% 0.3 PMH     1  NA
+## 7 100.0%       -   -   5.3% 2.4 PMH     1  NA
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;¡Y ya tengo lo que necesito! 🎉 Sólo le falta un poco de limpieza relativamente trivial.&lt;/p&gt;
+
+&lt;p&gt;Lo que sí falta ahora es hacer conseguir los datos para todos los meses del período. El plan es hacer una función que devuelva el valor para un mes y luego iterarla sobre una lista de meses. Además voy a tener en cuenta un pequeño detalle y usar el paquete &lt;code&gt;memoise&lt;/code&gt; para guardar en caché el resultado de la función y no hacer dos veces el mismo request al servidor. Esto está bueno por so uno corre varias veces el código mientras debuggea cosas.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;donaciones_por_provincia_ &amp;lt;- function(fecha, verbose = FALSE) {
+  library(rvest)
+  library(httr)
+  library(lubridate)
+  
+  desde &amp;lt;- fecha
+  hasta &amp;lt;- fecha
+  day(hasta) &amp;lt;- days_in_month(desde)
+  
+  anio_0 &amp;lt;- year(desde)
+  mes_0 &amp;lt;- month(desde)
+  dia_0 &amp;lt;- day(desde)
+  
+  anio_f &amp;lt;- year(hasta)
+  mes_f &amp;lt;- month(hasta)
+  dia_f &amp;lt;- day(hasta)
+  
+  if (isTRUE(verbose)) {
+    cat(paste0(&amp;quot;Leyendo mes: &amp;quot;, anio_0, &amp;quot;-&amp;quot;, mes_0), &amp;quot;\r&amp;quot;)
+  }
+  
+  token &amp;lt;- get_token()
+  
+  # Scrapp web
+  primer_paso &amp;lt;- POST(&amp;quot;https://cresi.incucai.gov.ar/reporte/resumenestadistico/DonantePaso2.do&amp;quot;,
+                      query = list(`5406` = &amp;quot;&amp;quot;,
+                                   `5407` = &amp;quot;&amp;quot;,
+                                   `5415` = &amp;quot;&amp;quot;,
+                                   `5416` = &amp;quot;&amp;quot;,
+                                   `5418` = &amp;quot;&amp;quot;,
+                                   `5419` = &amp;quot;&amp;quot;,
+                                   `5420_anio` = anio_0,
+                                   `5420_dia` = dia_0,
+                                   `5420_mes` = mes_0,
+                                   `5421_anio` = anio_f,
+                                   `5421_dia` = dia_f,
+                                   `5421_mes` = mes_0,
+                                   ABLACION = &amp;quot;&amp;quot;,
+                                   CMUERTE = &amp;quot;&amp;quot;,
+                                   CORAZONPD = &amp;quot;&amp;quot;,
+                                   DEPENDENCIA = &amp;quot;&amp;quot;,
+                                   ENTREVISTADOR = &amp;quot;&amp;quot;,
+                                   ENTREVISTADOR_DESCRIPCION = &amp;quot;&amp;quot;,
+                                   ESTABLECIMIENTO = &amp;quot;&amp;quot;,
+                                   ESTABLECIMIENTO_DESCRIPCION = &amp;quot;&amp;quot;,
+                                   ESTABLECIMIENTO_ORIGEN = 1,
+                                   FPROFESIONAL = &amp;quot;&amp;quot;,
+                                   MMUERTE = &amp;quot;&amp;quot;,
+                                   OPCIONES_AVANZADAS = &amp;quot;false&amp;quot;,
+                                   ORIGENPD = &amp;quot;&amp;quot;,
+                                   OTRO_ANIO = &amp;quot;&amp;quot;,
+                                   PERIODO = 5,
+                                   PERIODO_DESCRIPCION	= &amp;quot;ESPECIFICAR&amp;quot;,
+                                   SERVICIO = &amp;quot;&amp;quot;,
+                                   SPD = 4,
+                                   TIPO_DONANTE = &amp;quot;&amp;quot;,
+                                   TIPOEST = &amp;quot;&amp;quot;,
+                                   TOKEN = token))
+  
+  segundo_paso &amp;lt;- POST(&amp;quot;https://cresi.incucai.gov.ar/reporte/resumenestadistico/EjecutarConsultaDonante.do&amp;quot;,
+                       query = list(`2` = &amp;quot;checked&amp;quot;,
+                                    TOKEN = token))
+  
+  
+  table &amp;lt;- read_html(segundo_paso) %&amp;gt;% 
+    html_nodes(&amp;quot;.textoTabla2&amp;quot;) %&amp;gt;% 
+    html_table(fill = TRUE) %&amp;gt;% 
+    .[[1]] %&amp;gt;% 
+    .[-1, ]
+  colnames(table) &amp;lt;- table[1, ]
+  
+  # Limpieza de columnas y filas inválidas
+  table &amp;lt;- table[-1, ]
+  table &amp;lt;- table[-nrow(table), ]
+  table &amp;lt;- table[-nrow(table), ]
+  table &amp;lt;- table[, -ncol(table)]
+  
+  # Elimino porcentajes
+  porcentajes &amp;lt;- stringi::stri_detect(colnames(table), fixed = &amp;quot;%&amp;quot;)
+  table &amp;lt;- table[, !porcentajes]
+  
+  # Limpio algunos datos
+  table$Provincia &amp;lt;- stringi::stri_replace(table$Provincia, &amp;quot;&amp;quot;,
+                                           regex = &amp;quot;\\d*\\*&amp;quot;)
+  table$DPMH &amp;lt;- stringi::stri_replace(table$DPMH, &amp;quot;&amp;quot;,
+                                      fixed = &amp;quot; PMH&amp;quot;)
+  
+  # Paso todo a numérico y los NA son ceros
+  table[, -1] &amp;lt;- suppressWarnings(lapply(table[, -1], as.numeric))
+  table[, -1] &amp;lt;- lapply(table[, -1], function(x) {
+    x[is.na(x)] &amp;lt;- 0
+    x })
+  table
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Antes de hacer nada, voy a probar si funciona&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;donaciones_por_provincia_(as.Date(&amp;quot;2018-01-05&amp;quot;))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## 
+## Attaching package: &#39;lubridate&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## The following object is masked from &#39;package:base&#39;:
+## 
+##     date
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;##          Provincia Reales Efectivos Mono Multi Tejidos DPMH TOTAL
+## 3     BUENOS AIRES      9         8    6     3       0  0.5     9
+## 4         SANTA FE      7         7    2     5       0  2.0     7
+## 5          TUCUMAN      6         6    3     3       0  3.6     6
+## 6          CORDOBA      5         5    1     4       0  1.4     5
+## 7  CAPITAL FEDERAL      4         4    2     2       0  1.3     4
+## 8          MENDOZA      2         1    2     0       0  1.0     2
+## 9            CHACO      1         1    0     1       0  0.8     1
+## 10      CORRIENTES      1         1    1     0       0  0.9     1
+## 11      ENTRE RIOS      1         1    1     0       0  0.7     1
+## 12           SALTA      1         1    1     0       0  0.7     1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;¡Bien! Todo lo anterior involucró una cantidad inimaginable de prueba y error y el resultado no es el código más robusto ni correcto. No sólo no tiene ninguna forma de informar sobre errores, sino que en el camino no me fijé si el &amp;ldquo;robots.txt&amp;rdquo; permite hacer este tipo de scrapping y no le puse un &amp;ldquo;sleep&amp;rdquo; para limitar la tasa de conecciones al servidor. Tengo pendiente aprender a hacer eso usando el paquete &lt;a href=&#34;https://github.com/dmi3kno/polite&#34;&gt;&lt;code&gt;polite&lt;/code&gt;&lt;/a&gt;. Pero bueno; si funciona, funciona. 😤&lt;/p&gt;
+
+&lt;p&gt;Para terminar, guardo la versión con caché&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;donaciones_por_provincia &amp;lt;- memoise::memoise(donaciones_por_provincia_)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Con esto ya estoy listo para bajar todos los datos. Que &lt;a href=&#34;https://twitter.com/jennybryan&#34;&gt;Jenny Bryan&lt;/a&gt; me perdone por no usar &lt;a href=&#34;https://purrr.tidyverse.org&#34;&gt;&lt;code&gt;purrr&lt;/code&gt;&lt;/a&gt;, pero todavía estoy acostumbrado al viejo y querido &lt;code&gt;lapply&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Vector con fechas desde enero de 1998 hasta agosto de 2018 de a un mes
+fechas &amp;lt;- seq.Date(ymd(&amp;quot;1998-01-01&amp;quot;), ymd(&amp;quot;2018-08-01&amp;quot;), by = &amp;quot;1 month&amp;quot;)
+
+# Para cada fecha, bajo las donaciones por provincia, les pongo nombre
+# a los elementos de la lista y luego los combino por filas. 
+donaciones &amp;lt;- lapply(fechas, donaciones_por_provincia, verbose = TRUE) %&amp;gt;% 
+  setNames(fechas) %&amp;gt;% 
+  data.table::rbindlist(idcol = &amp;quot;fecha&amp;quot;) 
+
+donaciones$fecha &amp;lt;- as.Date(donaciones$fecha)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Esta parte del código tarda mucho y acá está la gracia del memoise. Podemos cancelar el proceso en cualquier momento y al reiniciarlo sólo se descargan los meses que no corrieron.&lt;/p&gt;
+
+&lt;p&gt;No puedo terminar el post sin al menos la visualización de los datos que catalizaron todo esto. ¿Cómo varió la cantidad de transplantes con el tiempo?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(data.table)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## 
+## Attaching package: &#39;data.table&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &#39;package:lubridate&#39;:
+## 
+##     hour, isoweek, mday, minute, month, quarter, second, wday,
+##     week, yday, year
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &#39;package:dplyr&#39;:
+## 
+##     between, first, last
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(ggplot2)
+
+donaciones[, .(total = sum(TOTAL)), by = fecha] %&amp;gt;% 
+ggplot(aes(fecha, total)) +
+   geom_line() +
+   labs(x = &amp;quot;Fecha&amp;quot;, y = &amp;quot;&amp;quot;, 
+        title = &amp;quot;Cantidad de transplantes por mes&amp;quot;, 
+        caption = &amp;quot;Fuente: INCUCAI&amp;quot;) +
+   hrbrthemes::theme_ipsum_rc()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-10-02-leyendo-información-de-incucai_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Ahí lo tienen. Agosto de este año fue un mes anómalo, con muchos más transplantes que meses anteriores. Esperemos que marque el quiebre de la tendencia a la baja que viene desde 2010.&lt;/p&gt;
+
+&lt;h1 id=&#34;resumen&#34;&gt;Resumen&lt;/h1&gt;
+
+&lt;p&gt;Usé &lt;code&gt;httr&lt;/code&gt; para obtener información de un servidor y &lt;code&gt;xml2&lt;/code&gt; para interpretarla. Luego, con &lt;code&gt;rvest&lt;/code&gt; y Selector Gadget seleccioné la tabla con la información relevante. Finalmente, usando &lt;code&gt;memoise&lt;/code&gt; me aseguré de no descargar los mismos datos dos veces.&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -26,11 +742,107 @@
       <pubDate>Tue, 18 Sep 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/2018/09/multiple-color-fill-scales-ggplot2/</guid>
-      <description>(Versión en español)
-tl;dr: The functionality shown in this post is now on the ggnewscale package! 📦. You can find the original code in this gist.
-A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
+      <description>
 
-Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &amp;ldquo;you can&amp;rsquo;t, but here&amp;rsquo;s how to hack it or visualise the data differently&amp;rdquo;.</description>
+&lt;p&gt;(&lt;a href=&#34;https://eliocamp.github.io/codigo-r/2018/09/multiples-escalas-colores-ggplot2/&#34;&gt;Versión en español&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;tl;dr: The functionality shown in this post is now on the &lt;a href=&#34;https://github.com/eliocamp/ggnewscale&#34;&gt;&lt;code&gt;ggnewscale&lt;/code&gt;&lt;/a&gt; package! 📦. You can find the original code &lt;a href=&#34;https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32&#34;&gt;in this gist&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;A somewhat common annoyance for some &lt;code&gt;ggplot2&lt;/code&gt; users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://stackoverflow.com/search?q=ggplot2+two+color+scales&#34;&gt;&lt;img src=&#34;../images/ggplo2_twoscales_so_small.jpg&#34; alt=&#34;preguntas stack overflow&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &amp;ldquo;you can&amp;rsquo;t, but here&amp;rsquo;s how to hack it or visualise the data differently&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;Recently I came up with a way of tricking &lt;code&gt;ggplot2&lt;/code&gt; into displaying multiple scales. It relies on &lt;a href=&#34;https://github.com/tidyverse/ggplot2/pull/2555&#34;&gt;a recent addition&lt;/a&gt; by Claus Wilke that allows the usage of &amp;ldquo;non standard aesthetics&amp;rdquo; &amp;ndash;&lt;code&gt;scale_color_continuous(aesthetics = &amp;quot;fill&amp;quot;)&lt;/code&gt; sets a &lt;code&gt;fill&lt;/code&gt; scale&amp;ndash; and the use of &lt;code&gt;ggplot_add()&lt;/code&gt; that I learnt thanks to &lt;a href=&#34;https://yutani.rbind.io/post/2017-11-07-ggplot-add&#34;&gt;this post&lt;/a&gt; by Hiroaki Yutani.&lt;/p&gt;
+
+&lt;p&gt;Now let&amp;rsquo;s be serious for a moment and acknowledge that using multiple color scales is not for the faint of heart. There&amp;rsquo;s a very real risk of ending up with a plot with is at best confusing and at worst, misleading. But that doesn&amp;rsquo;t mean there are not situations that call for this kind of plot. Using very different scales allows you to condense more information in a single plot, letting you visualise more relationships between variables. In the Atmospheric Sciences, for example, plotting temperature and pressure in contour lines with different color scales is a common practice.&lt;/p&gt;
+
+&lt;p&gt;But &lt;em&gt;res non verba&lt;/em&gt;; this is how it looks like in action (with an example taken from &lt;a href=&#34;https://stackoverflow.com/questions/16129876/ggplot2-multiple-scales-legends-per-aesthetic-revisited&#34;&gt;this&lt;/a&gt; StackOverlow question)&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot(pd[pd$score1 != 0,], aes(x=x, y=species)) +
+   geom_tile(aes(fill  =score1)) +
+   scale_fill_gradient2(&amp;quot;Score 1&amp;quot;, limits = c(0, 4), 
+                        low = &amp;quot;#762A83&amp;quot;, mid = &amp;quot;white&amp;quot;, high = &amp;quot;#1B7837&amp;quot;) +
+   
+   new_scale(&amp;quot;fill&amp;quot;) +
+   
+   geom_tile(aes(fill = score2), data = subset(pd, score2 != 0)) +
+   scale_fill_gradient2(&amp;quot;Score 2&amp;quot;, limits = c(0, 3), 
+                        low = &amp;quot;#1B7837&amp;quot;, mid = &amp;quot;white&amp;quot;, high = &amp;quot;#762A83&amp;quot;) +
+   
+   geom_text(data=pd, aes(label = letters, color = factor(change))) +
+   scale_color_manual(&amp;quot;Change&amp;quot;, values = c(&amp;quot;black&amp;quot;, &amp;quot;#F2A11F&amp;quot;), 
+                      labels = c(&amp;quot;None&amp;quot;, &amp;quot;Some&amp;quot;)) +
+   coord_fixed(ratio = 1.5, xlim=c(0.5,16.5), ylim=c(0.5, 3.5)) 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-09-18-multiple-color-and-fill-scales-with-ggplot2_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;how-it-works&#34;&gt;How it works&lt;/h2&gt;
+
+&lt;p&gt;The code is a bit too long and tedious to show in this article, but you can find it on &lt;a href=&#34;https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32&#34;&gt;this gist&lt;/a&gt;. Here are the important bits.&lt;/p&gt;
+
+&lt;p&gt;First, the &lt;code&gt;new_scale()&lt;/code&gt; function does nothing.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;new_scale &amp;lt;- function(new_aes) {
+   structure(ggplot2::standardise_aes_names(new_aes), class = &amp;quot;new_aes&amp;quot;)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It merely returns an object of class &lt;code&gt;new_aes&lt;/code&gt; with a character vector with the &amp;ldquo;new&amp;rdquo; scales. All the magic is in the &lt;code&gt;+&lt;/code&gt; operator. &lt;code&gt;ggplot2&lt;/code&gt; objects are &amp;ldquo;summed&amp;rdquo; with &lt;code&gt;ggplot_add()&lt;/code&gt; function which allows to define the &amp;ldquo;add&amp;rdquo; operation for any arbitrary object to a ggplot. For the case of &lt;code&gt;new_aes&lt;/code&gt; object, this is what happens:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot_add.new_aes &amp;lt;- function(object, plot, object_name) {
+   plot$layers &amp;lt;- lapply(plot$layers, bump_aes, new_aes = object)
+   plot$scales$scales &amp;lt;- lapply(plot$scales$scales, bump_aes, new_aes = object)
+   plot$labels &amp;lt;- bump_aes(plot$labels, new_aes = object)
+   plot
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It modifies each layer, scale and label and renames the relevant aesthetic to something other than &amp;ldquo;fill&amp;rdquo; or &amp;ldquo;colour&amp;rdquo;. There&amp;rsquo;s also a bit of minimally invasive surgery to geoms so that they don&amp;rsquo;t reject the newly grafted aesthetic. Is somewhat ad-hoc, to be honest, and probably not very robuts, but it works!&lt;/p&gt;
+
+&lt;p&gt;There are many other ways to implement this and I went through &lt;a href=&#34;https://twitter.com/d_olivaw/status/1040722632675610626&#34;&gt;some iterations&lt;/a&gt;. The current implementation is friendly and consistent with the main &lt;code&gt;ggplot2&lt;/code&gt; &amp;ldquo;adding&amp;rdquo; idea, but it has some limitations and annoyances that prevent me from being 100% on board with it. I would love to get some feedback from the community 🤞!&lt;/p&gt;
+
+&lt;h2 id=&#34;a-more-real-ish-example&#34;&gt;A more real-ish example&lt;/h2&gt;
+
+&lt;p&gt;Why is any of this useful to me, you say? As I wrote before, being able to plot temperature and pressure in the same map with two different scales is very neat.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(metR)
+library(magrittr)
+time &amp;lt;- as.POSIXct(&amp;quot;1998-01-01&amp;quot;)
+# Temperature and sea level pressure for January 1st 1998
+atmos &amp;lt;- ReadNetCDF(&amp;quot;~/DATOS/NCEP Reanalysis/air.mon.mean.nc&amp;quot;, 
+                    subset = list(level = 850, 
+                                  time = time)) %&amp;gt;% 
+   .[, slp:= ReadNetCDF(&amp;quot;~/DATOS/NCEP Reanalysis/slp.mon.mean.nc&amp;quot;, 
+                        subset = list(time = time), out = &amp;quot;vector&amp;quot;)] %&amp;gt;% 
+   .[, lon := ConvertLongitude(lon)]
+
+ggplot(atmos, aes(lon, lat)) +
+   geom_world() +
+   geom_contour(aes(z = slp, color = ..level..), binwidth = 4) +
+   scale_color_viridis_c(&amp;quot;Sea level pressure&amp;quot;) +
+   
+   new_scale_color() +   # same as `new_scale(&amp;quot;color&amp;quot;)`
+   
+   geom_contour(aes(z = air, color = ..level..), binwidth = 4) +
+   scale_color_distiller(&amp;quot;Air Temperature&amp;quot;, palette = &amp;quot;Spectral&amp;quot;)  +
+   
+   scale_x_longitude(limits = c(-150, 0)) +
+   scale_y_latitude(ticks = 15) +
+   ggalt::coord_proj(&amp;quot;+proj=moll +lon_0=-75&amp;quot;, 
+                     ylim = c(-60, 0), xlim = c(-150, 0))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-09-18-multiple-color-and-fill-scales-with-ggplot2_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Visualising the relationship between pressure and temperature is very important for the analysis of the growth of atmospheric perturbations.&lt;/p&gt;
+
+&lt;p&gt;Of course, with great power comes great responsibility 🕸. Mixing multiple scales for the same aesthetic should be done sparingly and only if absolutely necessary. First always ask yourself if the same information cannot be shown in a better way.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;ggplot2&lt;/code&gt; doesn&amp;rsquo;t cease to amaze me. Is not only a very powerful package to construct any kind of complex plots in a stupidly simple way, but it&amp;rsquo;s also exceptionally extensible by allowing this kind of deep user customisation. ¡Long live the &lt;code&gt;ggplo2&lt;/code&gt; ✊!&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -39,10 +851,106 @@ Unfortunately, this deluge of questions is met with a shortage of conclusive ans
       <pubDate>Mon, 17 Sep 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/2018/09/multiples-escalas-colores-ggplot2/</guid>
-      <description>tl;dr: Esta funcionalidad está ahora en el paquete ggnewscale! 📦 En este gist está la versión origial del código.
-Un dolor importante para algunos usuarios de ggplot2 es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
+      <description>
 
-Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &amp;ldquo;no se puede, pero esta es otra forma de graficar tus datos&amp;rdquo;.</description>
+&lt;p&gt;tl;dr: Esta funcionalidad está ahora en el paquete &lt;a href=&#34;https://github.com/eliocamp/ggnewscale&#34;&gt;&lt;code&gt;ggnewscale&lt;/code&gt;&lt;/a&gt;! 📦
+En &lt;a href=&#34;https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32&#34;&gt;este gist&lt;/a&gt; está la versión origial del código.&lt;/p&gt;
+
+&lt;p&gt;Un dolor importante para algunos usuarios de &lt;code&gt;ggplot2&lt;/code&gt; es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://stackoverflow.com/search?q=ggplot2+two+color+scales&#34;&gt;&lt;img src=&#34;../images/ggplo2_twoscales_so_small.jpg&#34; alt=&#34;preguntas stack overflow&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &amp;ldquo;no se puede, pero esta es otra forma de graficar tus datos&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;Tener varias escalas distintas para el mismo parámetro estético tiene riesgos, pero también beneficios. Cuando las escalas son bien distintas, permiten condensar más información en un mismo gráfico, facilitando la visualización de interacciones entre distintas variables. En ciencias de la atmósfera, por ejemplo, es muy habitual graficar temperatura y presión con líneas de contorno usando distintas escalas de colores.&lt;/p&gt;
+
+&lt;p&gt;Recientemente, gracias a &lt;a href=&#34;https://github.com/tidyverse/ggplot2/pull/2555&#34;&gt;un aporte&lt;/a&gt; de Claus Wilke, &lt;code&gt;ggplot2&lt;/code&gt; permite usar &amp;ldquo;parámetros estéticos no estándar&amp;rdquo;. Por ejemplo, se puede hacer &lt;code&gt;scale_color_continuous(aesthetics = &amp;quot;fill&amp;quot;)&lt;/code&gt; para especificar la escala del &lt;code&gt;fill&lt;/code&gt;. Esto, junto con el uso de &lt;code&gt;ggplot_add()&lt;/code&gt; para &amp;ldquo;sumarle&amp;rdquo; cualquier elemento a un objecto de ggplot2 (gracias a Hiroaki Yutani por &lt;a href=&#34;https://yutani.rbind.io/post/2017-11-07-ggplot-add&#34;&gt;su post&lt;/a&gt;!), permite hacer algunas triquiñuelas para agregar múltiples escalas de color (o fill, o lo que sea).&lt;/p&gt;
+
+&lt;p&gt;Déjenme ilustrar con un ejemplo sacado de &lt;a href=&#34;https://stackoverflow.com/questions/16129876/ggplot2-multiple-scales-legends-per-aesthetic-revisited&#34;&gt;esta pregunta&lt;/a&gt; de StackOverflow:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot(pd[pd$score1 != 0,], aes(x=x, y=species)) +
+   geom_tile(aes(fill  =score1)) +
+   scale_fill_gradient2(&amp;quot;Score 1&amp;quot;, limits = c(0, 4), 
+                        low = &amp;quot;#762A83&amp;quot;, mid = &amp;quot;white&amp;quot;, high = &amp;quot;#1B7837&amp;quot;) +
+   
+   new_scale(&amp;quot;fill&amp;quot;) +
+   
+   geom_tile(aes(fill = score2), data = subset(pd, score2 != 0)) +
+   scale_fill_gradient2(&amp;quot;Score 2&amp;quot;, limits = c(0, 3), 
+                        low = &amp;quot;#1B7837&amp;quot;, mid = &amp;quot;white&amp;quot;, high = &amp;quot;#762A83&amp;quot;) +
+   
+   geom_text(data=pd, aes(label = letters, color = factor(change))) +
+   scale_color_manual(&amp;quot;Change&amp;quot;, values = c(&amp;quot;black&amp;quot;, &amp;quot;#F2A11F&amp;quot;), 
+                      labels = c(&amp;quot;None&amp;quot;, &amp;quot;Some&amp;quot;)) +
+     coord_fixed(ratio = 1.5, xlim=c(0.5,16.5), ylim=c(0.5, 3.5)) 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-09-17-multiples-escalas-de-colores-en-ggplot2_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;cómo-funciona&#34;&gt;Cómo funciona&lt;/h2&gt;
+
+&lt;p&gt;El código es un tanto largo y tedioso para ponerlo en un artículo (pueden encontrarlo en &lt;a href=&#34;https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32&#34;&gt;este gist&lt;/a&gt;) así que acá voy a hablar de la parte más importante.&lt;/p&gt;
+
+&lt;p&gt;Primero, la función &lt;code&gt;new_scale()&lt;/code&gt; no hace nada. Sólo crea un objeto de clase &lt;code&gt;new_aes&lt;/code&gt; que no es más que un vector de texto con las escalas &amp;ldquo;nuevas&amp;rdquo;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;new_scale &amp;lt;- function(new_aes) {
+  structure(ggplot2::standardise_aes_names(new_aes), class = &amp;quot;new_aes&amp;quot;)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;La magia está en el &lt;code&gt;+&lt;/code&gt;. Al sumar objectos de ggplot, se usa la función genérica &lt;code&gt;ggplot_add()&lt;/code&gt;. Este es el método para los objectos de clase &lt;code&gt;new_aes&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot_add.new_aes &amp;lt;- function(object, plot, object_name) {
+  plot$layers &amp;lt;- lapply(plot$layers, bump_aes, new_aes = object)
+  plot$scales$scales &amp;lt;- lapply(plot$scales$scales, bump_aes, new_aes = object)
+  plot$labels &amp;lt;- bump_aes(plot$labels, new_aes = object)
+  plot
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Lo que hace es agarrar cada capa, escala y etiqueta y cambiarle el nombre de los parámetros estéticos; efectivamente les agrega la palabra &amp;ldquo;_new&amp;rdquo; de manera que el &amp;ldquo;color&amp;rdquo; pasa a ser &amp;ldquo;color_new&amp;rdquo;. Hay que hacer un poco de cirugía interna mínimamente invasiva (la laparoscopía de la programación) para que los geoms no se vuelvan locos al recibir un data frame con una columna llamada &amp;ldquo;color_new&amp;rdquo; en vez de &amp;ldquo;color&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;Hay varias formas de hacer lo mismo y podrán ver que el proyecto pasó por &lt;a href=&#34;https://twitter.com/d_olivaw/status/1040722632675610626&#34;&gt;varias iteraciones&lt;/a&gt;. Todavía no estoy 100% de que esta forma sea totalmente amigable y sería genial recibir un poco de feedback de la comunidad 🤞.&lt;/p&gt;
+
+&lt;h2 id=&#34;ejemplo-real&#34;&gt;Ejemplo real&lt;/h2&gt;
+
+&lt;p&gt;¿Para qué sirve todo esto en definitiva? Bueno, como decía antes, una posibilidad es la de graficar temperatura y presión en un mismo mapa usando dos escalas distintas.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(metR)
+library(magrittr)
+time &amp;lt;- &amp;quot;1998-01-01&amp;quot;
+# Temperatura y presión a nivel del mar para el 1° de enero de 1998
+atmos &amp;lt;- ReadNetCDF(&amp;quot;~/DATOS/NCEP Reanalysis/air.mon.mean.nc&amp;quot;, 
+                          subset = list(level = 850, 
+                                        time = time)) %&amp;gt;% 
+   .[, slp:= ReadNetCDF(&amp;quot;~/DATOS/NCEP Reanalysis/slp.mon.mean.nc&amp;quot;, 
+                  subset = list(time = time), out = &amp;quot;vector&amp;quot;)] %&amp;gt;% 
+   .[, lon := ConvertLongitude(lon)]
+
+ggplot(atmos, aes(lon, lat)) +
+   geom_world() +
+   geom_contour(aes(z = slp, color = ..level..), binwidth = 4) +
+   scale_color_viridis_c(&amp;quot;Presión a nivel del mar&amp;quot;) +
+   
+   new_scale_color() +   # lo mismo que `new_scale(&amp;quot;color&amp;quot;)`
+   
+   geom_contour(aes(z = air, color = ..level..), binwidth = 4) +
+   scale_color_distiller(&amp;quot;Temperatura del aire&amp;quot;, palette = &amp;quot;Spectral&amp;quot;)  +
+   
+   scale_x_longitude(limits = c(-150, 0)) +
+   scale_y_latitude(ticks = 15) +
+   ggalt::coord_proj(&amp;quot;+proj=moll +lon_0=-75&amp;quot;, 
+                     ylim = c(-60, 0), xlim = c(-150, 0))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-09-17-multiples-escalas-de-colores-en-ggplot2_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Observar la relación entre la presión y la temperatura permite analizar procesos del crecimiento de las perturbaciones de la atmósfera.&lt;/p&gt;
+
+&lt;p&gt;Por supuesto, un gran poder conlleva una gran responsabilidad 🕸. Mezclar muchas escalas no es para cualquiera y debe ser usado bien y sólo si es absolutamente necesario. Siempre conviene pensar si no hay una mejor manera de mostrar lo mismo.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;ggplot2&lt;/code&gt; nunca deja de maravillarme. No sólo es un paquete poderosísimo para hacer toda clase gráficos de una manera estúpidamente simple y amigable, sino que es excepcionalmente extensible permitiendo este tipo de modificación por parte de los usuarios. ¡Larga vida a &lt;code&gt;ggplot2&lt;/code&gt; ✊!&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -51,7 +959,120 @@ Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría 
       <pubDate>Tue, 21 Aug 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/2018/08/periodic-data-ggplot2-ggperiodic/</guid>
-      <description>As an atmospheric scientists, a lot of my research consists on plotting and looking at global fields of atmospheric variables like pressure, temperature and the like. Since our planet is a sphere (well, almost), it is unbound and so longitude is a periodic dimension. That is, to the right of 180°E you go back to 180°W. But ggplot2 and other plotting systems, for the most part, assume linear dimensions.</description>
+      <description>
+
+&lt;p&gt;As an atmospheric scientists, a lot of my research consists on plotting and looking at global fields of atmospheric variables like pressure, temperature and the like. Since our planet is a sphere (well, &lt;a href=&#34;https://chem.tufts.edu/answersinscience/relativityofwrong.htm&#34;&gt;almost&lt;/a&gt;), it is unbound and so longitude is a &lt;em&gt;periodic&lt;/em&gt; dimension. That is, to the right of 180°E you go back to 180°W. But ggplot2 and other plotting systems, for the most part, assume linear dimensions.&lt;/p&gt;
+
+&lt;p&gt;To show why this is a problem, let us plot a fairly basic scalar field defined in a regular grid with 2.5° of resolution for the southern hemisphere.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot(data, aes(lon, lat)) +
+   geom_contour_fill(aes(z = gh)) +
+   map.SH +
+   scale_fill_viridis_c(&amp;quot;Geopotential\nHeight&amp;quot;) +
+   coord_polar()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-08-21-wrapping-around-ggplot2_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Did you spot it? The field is defined between 0° and 357.5°. Because 360° is the same as 0°, you would be double counting if you had a value at both extremes. But since ggplot2 only &amp;lsquo;sees&amp;rsquo; the data you feed to it, it fails to plot the implied data between 357.5° and 360°.&lt;/p&gt;
+
+&lt;h2 id=&#34;defining-the-problem&#34;&gt;Defining the problem&lt;/h2&gt;
+
+&lt;p&gt;The scope of the problem as I see it is much broader than global maps of atmospheric data.&lt;/p&gt;
+
+&lt;p&gt;We have a periodic function defined at regular &lt;em&gt;or irregular&lt;/em&gt; locations inside one period. Since this finite number of locations actually define the infinite domain of the function, when we plot we want to &lt;em&gt;wrap&lt;/em&gt; these locations around any arbitrary domain we need. This should be fast and automatic.&lt;/p&gt;
+
+&lt;p&gt;This translates, I think, to having two distinct domains. On the one hand there&amp;rsquo;s the &lt;em&gt;period&lt;/em&gt; defined by the sampled data, and on the other there&amp;rsquo;s the &lt;em&gt;range&lt;/em&gt; we want to &lt;em&gt;wrap&lt;/em&gt; this data around. The first is a property of the &lt;em&gt;data&lt;/em&gt;, the second one is a property of the &lt;em&gt;visualisation&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;Somewhere on the plotting process, then, &lt;code&gt;ggplot2&lt;/code&gt; must repeat the data so that it wraps it around the desired range.&lt;/p&gt;
+
+&lt;h2 id=&#34;solving-the-problem&#34;&gt;Solving the problem&lt;/h2&gt;
+
+&lt;p&gt;The &lt;a href=&#34;https://github.com/eliocamp/ggperiodic&#34;&gt;ggperiodic&lt;/a&gt; package embodies these ideas. First, we define the period of each of the periodic variables on our data. In this case, &lt;code&gt;lon&lt;/code&gt; is periodic between 0° and 306°&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(ggperiodic)
+data &amp;lt;- periodic(data, lon = c(0, 360))
+head(data)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;##     lon lat level       gh       time
+## 1:  0.0 -30   200 12333.66 2017-01-01
+## 2:  2.5 -30   200 12333.17 2017-01-01
+## 3:  5.0 -30   200 12335.23 2017-01-01
+## 4:  7.5 -30   200 12339.44 2017-01-01
+## 5: 10.0 -30   200 12344.92 2017-01-01
+## 6: 12.5 -30   200 12351.60 2017-01-01
+## lon = [0; 360]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now &lt;code&gt;data&lt;/code&gt; is of a new class of &amp;ldquo;periodic_df&amp;rdquo;, but so far the actual content of &lt;code&gt;data&lt;/code&gt; has remain unchanged. The magic comes on the second step 🌟. Now we can &lt;code&gt;wrap&lt;/code&gt; the data in any arbitrary range. For example, lets change longitude to be between -180° and 180°&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;data180 &amp;lt;- wrap(data, lon = c(-180, 180))
+head(data180)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;##       lon lat level       gh       time
+## 1: -180.0 -30   200 12311.90 2017-01-01
+## 2: -177.5 -30   200 12310.48 2017-01-01
+## 3: -175.0 -30   200 12311.84 2017-01-01
+## 4: -172.5 -30   200 12316.52 2017-01-01
+## 5: -170.0 -30   200 12324.02 2017-01-01
+## 6: -167.5 -30   200 12333.00 2017-01-01
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You &lt;em&gt;could&lt;/em&gt; do this manually every time you what to plot your data, but there&amp;rsquo;s a better way. When ggplot2 gets a &lt;code&gt;data&lt;/code&gt; argument, it doesn&amp;rsquo;t just pass it along. First, it feeds it to a function called &lt;code&gt;fortify()&lt;/code&gt;. ggperiodic implements &lt;code&gt;fortify.periodic_df()&lt;/code&gt; so that the wrapping can be performed automatically at plotting time.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot(data, aes(lon, lat)) +
+   geom_contour_fill(aes(z = gh)) +
+   map.SH +
+   scale_fill_viridis_c(&amp;quot;Geopotential\nHeight&amp;quot;) +
+   coord_polar()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-08-21-wrapping-around-ggplot2_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This is completely automatic 🤖, robust to transformations and very friendly to the user. By default the data is wrapped around the same range as the period, but that can be changed using the same syntax as with &lt;code&gt;wrap()&lt;/code&gt;. For example, it could be useful to show three whole periods so that any 360° range could be seen with no interruptions.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot(data, aes(lon, lat), lon = c(0, 360)*3) +
+   geom_contour_fill(aes(z = gh)) +
+   scale_fill_viridis_c(&amp;quot;Geopotential\nHeight&amp;quot;) 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-08-21-wrapping-around-ggplot2_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Since ggplot2 also uses &lt;code&gt;fortify()&lt;/code&gt; for data passed to geoms, it also works there.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot() +
+   geom_contour_fill(data = data, aes(lon, lat, z = gh), lon = c(-180, 180)) +
+   map.SH2 +
+   scale_fill_viridis_c(&amp;quot;Geopotential\nHeight&amp;quot;) +
+   coord_polar()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## Warning: Ignoring unknown parameters: lon
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-08-21-wrapping-around-ggplot2_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In this case works well but there are some limitations related to the somewhat ugly hack I had to use to pass the extra parameters to &lt;code&gt;fortify.periodic_df()&lt;/code&gt;. If used on a layer, the name of the periodic dimension must not be the same as any possible aesthetic or any other arguments passed to the geom, i.e. having &lt;code&gt;x&lt;/code&gt; or &lt;code&gt;binwidth&lt;/code&gt; as the periodic dimension is verboten. Also there&amp;rsquo;s an annoying warning 😤.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve tried to make the periodic information &lt;em&gt;sticky&lt;/em&gt; (thanks to the &lt;a href=&#34;https://github.com/decisionpatterns/sticky&#34;&gt;sticky&lt;/a&gt; 📦) across data manipulations, but I&amp;rsquo;ve still haven&amp;rsquo;t tested thoroughly. And since I mostly use data.table, I&amp;rsquo;m not familiar enough with dplyr to do know the whole range of possible transformations. &lt;a href=&#34;https://github.com/eliocamp/ggperiodic/issues&#34;&gt;Issues&lt;/a&gt; are welcome!&lt;/p&gt;
+
+&lt;p&gt;In any case, if or when you get tired of all this nonsense, you can just remove all periodicity information and go on with your life.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;data &amp;lt;- unperiodic(data)
+head(data)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;##     lon lat level       gh       time
+## 1:  0.0 -30   200 12333.66 2017-01-01
+## 2:  2.5 -30   200 12333.17 2017-01-01
+## 3:  5.0 -30   200 12335.23 2017-01-01
+## 4:  7.5 -30   200 12339.44 2017-01-01
+## 5: 10.0 -30   200 12344.92 2017-01-01
+## 6: 12.5 -30   200 12351.60 2017-01-01
+&lt;/code&gt;&lt;/pre&gt;
+</description>
     </item>
     
     <item>
@@ -60,8 +1081,130 @@ Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría 
       <pubDate>Fri, 01 Jun 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/</guid>
-      <description>Algo increíblemente satisfactorio de ggplot2 es la posibilidad de ajustar curvas a los datos de manera súper fácil con geom_smooth(). Para mi investigación estaba mirando la relación entre dos ángulos y me di cuenta que la recta ajustada por cuadrados mínimos no estaba funcionando para ilustrar la obvia estructura que había en los datos.
-library(ggplot2) df &amp;lt;- readRDS(&amp;quot;data/smooth_example.Rds&amp;quot;) ggplot(df, aes(pc.angle, phase)) + geom_point() + geom_smooth(method = &amp;quot;lm&amp;quot;)  Se me ocurrió que un mejor modelo podría ser usando el estimador de Theil-Sen, que es la mediana de todas las pendientes entre dos puntos distintos y está implementado en el paquete mblm.</description>
+      <description>&lt;p&gt;Algo increíblemente satisfactorio de ggplot2 es la posibilidad de ajustar curvas a los datos de manera súper fácil con &lt;code&gt;geom_smooth()&lt;/code&gt;. Para mi investigación estaba mirando la relación entre dos ángulos y me di cuenta que la recta ajustada por cuadrados mínimos no estaba funcionando para ilustrar la obvia estructura que había en los datos.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(ggplot2)
+
+df &amp;lt;- readRDS(&amp;quot;data/smooth_example.Rds&amp;quot;)
+
+ggplot(df, aes(pc.angle, phase)) +
+   geom_point() +
+   geom_smooth(method = &amp;quot;lm&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-06-01-tu-propio-smooth-en-geom-smooth_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Se me ocurrió que un mejor modelo podría ser usando el estimador de &lt;a href=&#34;https://en.wikipedia.org/wiki/Theil%E2%80%93Sen_estimator&#34;&gt;Theil-Sen&lt;/a&gt;, que es la mediana de todas las pendientes entre dos puntos distintos y está  implementado en el paquete mblm. El problema es que al usar esa función como método, me dio este críptico mensaje de error:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot(df, aes(pc.angle, phase)) +
+   geom_point() +
+   geom_smooth(method = &amp;quot;mblm::mblm&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## Warning: Computation failed in `stat_smooth()`:
+## object &#39;mblm::mblm&#39; of mode &#39;function&#39; was not found
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-06-01-tu-propio-smooth-en-geom-smooth_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;🤔&lt;/p&gt;
+
+&lt;p&gt;Tuve que ponerme a leer el código de ggplot2 para entender de dónde venía el problema, pero gracias a eso aprendí más sobre cómo funciona &lt;code&gt;geom_smooth()&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;geom_smooth()&lt;/code&gt; acepta cualquier método para hacer el modelo, pero con dos detalles importantes:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;la función que hace el modelo debe aceptar una fórmula como primer argumento y tener argumentos &lt;code&gt;data&lt;/code&gt; y &lt;code&gt;weigths&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;el objeto que devuelve la función debe tener un método para &lt;code&gt;predictdf()&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Lo primero es fácil de entender. Dentro de &lt;code&gt;geom_smooth()&lt;/code&gt;, ggplot2 básicamente llama algo así como &lt;code&gt;lm(formula, data, weights, ...)&lt;/code&gt;. Si la función no acepta alguno de esos argumentos, nos encontramos con un error. La función &lt;code&gt;mblm&lt;/code&gt; no entiende el argumento &lt;code&gt;weights&lt;/code&gt;. La solución en ese caso fue crear mi propia función que llame a &lt;code&gt;mblm::mblm()&lt;/code&gt; descartando ese argumento (y de paso le puse un nombre más inteligible).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;TheilSen &amp;lt;- function(..., weights = NULL) {
+   mblm::mblm(...)
+}
+
+ggplot(df, aes(pc.angle, phase)) +
+   geom_point() +
+   geom_smooth(method = &amp;quot;TheilSen&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-06-01-tu-propio-smooth-en-geom-smooth_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;¡Mucho mejor! 🕺&lt;/p&gt;
+
+&lt;p&gt;El segundo requisito en este ejemplo viene &amp;ldquo;gratis&amp;rdquo; porque &lt;code&gt;mblm()&lt;/code&gt; es compatible con los métodos de &lt;code&gt;predict()&lt;/code&gt; de &lt;code&gt;lm()&lt;/code&gt;, pero no siempre es así. En este segundo ejemplo, quiero hacer un suavizado que se base en hacer la transformada de fourier y eliminar una determinada cantidad de frecuencias. Una función que hace eso sería esta:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# n es la proporción de frecuencias que vamos a eliminar. 
+# n = 0.5 significa sacar la mitad.
+FFTSmooth &amp;lt;- function(formula, data, weights, n = 0.5) {
+   f &amp;lt;- fft(data$y)
+   keep &amp;lt;- c(0, seq_len(floor(length(f)/2*n)))
+   keep &amp;lt;- c(keep + 1, length(f) - keep[keep != 0] + 1)
+   f[-keep] &amp;lt;- 0 + 0i
+   Re(fft(f, inverse = T))/length(f)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Notar que la función ignora por completo la formula y los pesos, pero hay que ponerlos para que funcione en &lt;code&gt;geom_smooth()&lt;/code&gt;. Esta función sirve en el sentido de que hace un suavizado correcto de los datos (¡siempre que estén definidos en intervalos de x regulares!), pero si usamos &lt;code&gt;geom_smooth(method = &amp;quot;FFTSmooth&amp;quot;)&lt;/code&gt; ggplot2 nos va a tirar un error:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Computation failed in &lt;code&gt;stat_smooth()&lt;/code&gt;: no applicable method for &amp;lsquo;predict&amp;rsquo; applied to an object of class &amp;ldquo;c(&amp;lsquo;double&amp;rsquo;, &amp;lsquo;numeric&amp;rsquo;)&amp;rdquo;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;El problema es que &lt;code&gt;FTTSmooth()&lt;/code&gt; devuelve los valores suavizados, pero lo que tiene que devolver es un &amp;ldquo;modelo&amp;rdquo; que devuelva los valores suavizados al hacer &lt;code&gt;predictdf(model, xseq, se, level)&lt;/code&gt; (donde &lt;code&gt;xseq&lt;/code&gt; son los puntos de x donde se evalúa el modelo, &lt;code&gt;se&lt;/code&gt; es TRUE o FALSE según si queremos un intervalo de confianza y &lt;code&gt;level&lt;/code&gt; es el nivel de confianza de dicho intervalo). Esta segunda implementación del suavizado sí funciona.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;FFTSmooth &amp;lt;- function(formula, data, weights, n = 0.5) {
+   f &amp;lt;- fft(data$y)
+   keep &amp;lt;- c(0, seq_len(floor(length(f)/2*n)))
+   keep &amp;lt;- c(keep + 1, length(f) - keep[keep != 0] + 1)
+   f[-keep] &amp;lt;- 0 + 0i
+   
+   model &amp;lt;- list(x = data$x, pred = Re(fft(f, inverse = T))/length(f))
+   class(model) &amp;lt;- &amp;quot;my_smooth&amp;quot;
+   return(model)
+}
+
+predictdf.my_smooth &amp;lt;- function(model, xseq, se, level) {
+   data.frame(x = model$x, y = model$pred)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;La diferencia importante en &lt;code&gt;FFTSmooth()&lt;/code&gt; es que ahora devuelve una lista con los valores de &lt;code&gt;x&lt;/code&gt; y los de &lt;code&gt;y&lt;/code&gt; suavizados pero que tiene clase &amp;ldquo;my_smooth&amp;rdquo;. Cuando ggplot2 llame &lt;code&gt;predictdf(model, ...)&lt;/code&gt;, R va a buscar la función &lt;code&gt;predictdf.my_smooth()&lt;/code&gt; (así es básicamente cómo funcionan las &lt;a href=&#34;http://adv-r.had.co.nz/S3.html&#34;&gt;clases&lt;/a&gt; en R). &lt;code&gt;predictdf.my_smooth()&lt;/code&gt;, por su parte, ignora casi todos los inputs y simplemente devuelve un &lt;code&gt;data.frame&lt;/code&gt; con los valores de &lt;code&gt;x&lt;/code&gt; e &lt;code&gt;y&lt;/code&gt; guardados en el modelo.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;set.seed(42)
+df &amp;lt;- data.frame(x = seq(0, 360, length.out = 100))
+df$y &amp;lt;- with(df, 5*cos(x*pi/180) + 3*sin(x*pi/180*3) + 1.6*rnorm(100))
+
+ggplot(df, aes(x, y)) +
+   geom_point() +
+   geom_smooth(method = &amp;quot;FFTSmooth&amp;quot;, method.args = list(n = 0.2))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-06-01-tu-propio-smooth-en-geom-smooth_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;¡Y listo! 🍰&lt;/p&gt;
+
+&lt;p&gt;Sólo hace falta definir &lt;code&gt;predictdf.my_smooth()&lt;/code&gt; una vez. Por ejemplo, si queremos usar una Spline.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;SplineSmooth &amp;lt;- function(formula, data, weights, span = 0.5, ...) {
+   pred &amp;lt;- smooth.spline(data$x, data$y, df = length(data$y)*span,...)$y
+   # print(pred[1:10])
+   model &amp;lt;- list(x = data$x, pred = pred)
+   class(model) &amp;lt;- &amp;quot;my_smooth&amp;quot;
+   model
+}
+
+ggplot(df, aes(x, y)) +
+   geom_point() +
+   geom_smooth(method = &amp;quot;SplineSmooth&amp;quot;, method.args = list(span = 0.1))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-06-01-tu-propio-smooth-en-geom-smooth_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Un resultado similar puede conseguirse de manera más directa con &lt;a href=&#34;../2018/05/como-hacer-un-stat-generico-en-ggplot2/&#34;&gt;&lt;code&gt;stat_rasa()&lt;/code&gt;&lt;/a&gt;, pero me pareció interesante urgar un poco dentro del funcionamiento de ggplot2.&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -70,7 +1213,68 @@ library(ggplot2) df &amp;lt;- readRDS(&amp;quot;data/smooth_example.Rds&amp;quot
       <pubDate>Wed, 23 May 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/2018/05/presentacion-powerpoint-rmarkdown/</guid>
-      <description>La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.</description>
+      <description>&lt;p&gt;La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.&lt;/p&gt;
+
+&lt;p&gt;La clave está en &amp;ldquo;secuestrar&amp;rdquo; la función que knitr ejecuta cuando se encuentra con un plot y agregar la imagen a un ppt con el paquete &lt;a href=&#34;https://davidgohel.github.io/officer/index.html&#34;&gt;&lt;code&gt;officer&lt;/code&gt;&lt;/a&gt;. Lo primero necesario es un archivo con un template. De este archivo va a salir el patrón para agregar distintas diapositivas según lo que queramos insertar. Esto se puede editar cambiando el &lt;a href=&#34;https://support.office.com/es-es/article/%C2%BFqu%C3%A9-es-un-patr%C3%B3n-de-diapositivas-b9abb2a0-7aef-4257-a14e-4329c904da54&#34;&gt;Patrón de Diapositivas&lt;/a&gt;. Como yo soy muy básico, creé uno que tiene una imagen con un texto abajo y nada más y lo llamé &amp;ldquo;figure&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;Una vez hecho esto, hay que poner esto en el primer chunk de setup:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(officer)
+library(magrittr)
+
+## Opciones que hay que cambiar. 
+ppt &amp;lt;- TRUE                        # ¿quiero que salga un ppt?
+pptfile &amp;lt;- &amp;quot;figuras.pptx&amp;quot;          # nombre de archivo del ppt saliente
+ppttemplate &amp;lt;- &amp;quot;ppttemplate.pptx&amp;quot;  # nombre del template
+
+# Crea el archivo inicial
+if (ppt == TRUE){
+   my_pres &amp;lt;- read_pptx(ppttemplate)
+   print(my_pres, pptfile)   
+}
+
+# Hay que apagar la cache en los chunks con figuras
+knitr::opts_hooks$set(fig.cap = function(options) {
+   if (ppt == TRUE) options$cache &amp;lt;- FALSE
+   options
+})
+
+# Agrega un slide con el gráfico y el caption
+# para cada chunk con figuras
+knit_plot &amp;lt;- knitr::knit_hooks$get(&amp;quot;plot&amp;quot;)
+
+knitr::knit_hooks$set(plot = function(x, options) {
+   if (ppt == TRUE) {
+      if (inherits(last_plot(), &amp;quot;gg&amp;quot;)) {
+         read_pptx(pptfile)  %&amp;gt;%
+            add_slide(layout = &amp;quot;figure&amp;quot;, master = &amp;quot;Office Theme&amp;quot;) %&amp;gt;%
+            ph_with_gg(last_plot(), type = &amp;quot;pic&amp;quot;) %&amp;gt;%
+            ph_with_text(options$fig.cap, type = &amp;quot;body&amp;quot;) %&amp;gt;%
+            print(pptfile)
+         set_last_plot(NULL)   # remove last_plot()
+      } else {
+         read_pptx(pptfile)  %&amp;gt;%
+            add_slide(layout = &amp;quot;figure&amp;quot;, master = &amp;quot;Office Theme&amp;quot;) %&amp;gt;%
+            rvg::ph_with_vg(code = eval(parse(text = options$code)), 
+                            type = &amp;quot;pic&amp;quot;) %&amp;gt;%
+            ph_with_text(options$fig.cap, type = &amp;quot;body&amp;quot;) %&amp;gt;% 
+            print(pptfile)
+      }
+   }
+   knit_plot(x, options)
+})
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Hay dos cosas importantes. Primero es setear un &lt;code&gt;opts_hook&lt;/code&gt; que se ejecute siempre que la opción &lt;code&gt;fig.cap&lt;/code&gt; no sea &lt;code&gt;NULL&lt;/code&gt; que desactive la cache. Esto es porque sino knitr no ejecuta nada de lo que sigue y entonces no agrega la figura al ppt.&lt;/p&gt;
+
+&lt;p&gt;Luego está la parte más jugosa. Cambiamos el &lt;code&gt;knit_hook&lt;/code&gt; para el &lt;code&gt;plot&lt;/code&gt; para que antes de hacer lo que hace siempre (que primero guardamos con &lt;code&gt;knitr::knit_hooks$get(&amp;quot;plot&amp;quot;)&lt;/code&gt;) le decimos que guarde el plot en una nueva diapositiva. El código es ligeramente distinto si se trata de un gráfico de &lt;code&gt;ggplot2&lt;/code&gt; o uno de &lt;code&gt;base&lt;/code&gt;. En el caso de &lt;code&gt;ggplot2&lt;/code&gt;, usamos la función &lt;code&gt;last_plot()&lt;/code&gt; para guardar el último plot generado en la nueva diapositiva y luego seteamos que el &lt;code&gt;last_plot&lt;/code&gt; sea &lt;code&gt;NULL&lt;/code&gt; (por si el siguiente gráfico que hay que guardar es uno en base). Si es base, hay que pasarle el código del chunk evaluado a la función &lt;code&gt;ph_with_vg()&lt;/code&gt;, que crea un gráfico de vectores a partir de un gráfico base.&lt;/p&gt;
+
+&lt;p&gt;Y listo. Al &lt;em&gt;knitear&lt;/em&gt; el documento se va a generar el pdf o html y, además, el ppt.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;../images/ppt.jpg#center&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Así como está es una versión mínima que cubre mis necesidades. Sólo tiene en cuenta los gráficos con epígrafe, no funciona sin un chunk genera varias figuras, el proceso de renderizar todo es lento (porque desactiva la cache) y peor aún si los chunks que generan figuras también tienen código que manipula datos. Además, no guarda tablas ni texto plano.&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -79,9 +1283,127 @@ library(ggplot2) df &amp;lt;- readRDS(&amp;quot;data/smooth_example.Rds&amp;quot
       <pubDate>Sun, 20 May 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/2018/05/arte-reproducible-del-subte-de-buenos-aires/</guid>
-      <description>El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía unas ilustraciones en las paredes hechas a partir de líneas de distinto grosor.
-Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
-Lo primero que hago es leer la imagen. Este paso depende del formato (a menos que haya alguna forma de seleccionar el formato correcto automáticamente, pero no conozco).</description>
+      <description>&lt;p&gt;El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía &lt;a href=&#34;http://www.buenosaires.gob.ar/noticias/arte-urbano-en-la-estacion-angel-gallardo&#34;&gt;unas ilustraciones&lt;/a&gt; en las paredes hechas a partir de líneas de distinto grosor.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;../images/subte.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Charlamos un poco sobre ese estilo y cómo se podía replicar con &lt;code&gt;ggplot2&lt;/code&gt; usando el paquete &lt;a href=&#34;https://github.com/clauswilke/ggridges&#34;&gt;&lt;code&gt;ggridges&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Lo primero que hago es leer la imagen. Este paso depende del formato (a menos que haya alguna forma de seleccionar el formato correcto automáticamente, pero no conozco). La función &lt;code&gt;readJPEG&lt;/code&gt; del paquete &lt;code&gt;jpeg&lt;/code&gt; convierte una imagen en un array:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;im &amp;lt;- jpeg::readJPEG(&amp;quot;../../static/images/example.jpg&amp;quot;)
+str(im)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;##  num [1:400, 1:400, 1:3] 1 1 1 1 1 1 1 1 1 1 ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;La imagen es de 400x400 y tiene 3 canales (rojo, verde y azul). Lo que voy a hacer es pasarla a escala de grises y luego transformar los datos en un data.frame para poder graficarlo con &lt;code&gt;ggplot2&lt;/code&gt;. El &amp;ldquo;algoritmo&amp;rdquo; que uso acá para pasar de color a grises es simplemente sumar la intensidad de cada color y luego dividir por 3. No sé si es la manera más correcta, pero funciona. Notar que al nombrar las dimensiones del array, revierto el orden de las coordenadas y con &lt;code&gt;rev&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;im &amp;lt;- apply(im, c(1, 2), sum)   # para cada valor de las primeras 2 dimensiones, suma
+im &amp;lt;- im/3
+
+ys &amp;lt;- nrow(im)
+xs &amp;lt;- ncol(im)
+dimnames(im) &amp;lt;- list(y = rev(seq_len(nrow(im))), x = seq_len(ncol(im)))
+im &amp;lt;- reshape2::melt(im)
+str(im)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;## &#39;data.frame&#39;:	160000 obs. of  3 variables:
+##  $ y    : int  400 399 398 397 396 395 394 393 392 391 ...
+##  $ x    : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ value: num  1 1 1 1 1 1 1 1 1 1 ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Ahora que tengo un lindo data.frame, puedo graficarlo. La idea es, para cada línea horizontal (es decir, cada valor de y), graficar un área blanca cuya altura sea proporcional al valor de gris. Además, sólo voy a graficar cada 10 líneas para bajar un poco la resolución y se note más el efecto.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(ggplot2)
+library(ggridges)
+plotim &amp;lt;- subset(im, y  %in% seq(1, ys, by = 10))
+ggplot(plotim, aes(x, y)) +
+   geom_ridgeline(aes(height = value*9, group = y), 
+                  fill = &amp;quot;white&amp;quot;, color = NA) +
+   theme(panel.background = element_rect(fill = &amp;quot;black&amp;quot;))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-05-20-arte-reproducible-del-subte-de-buenos-aires_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Le falta pulir algunas cosas, pero va bien!&lt;/p&gt;
+
+&lt;p&gt;La imagen del subte que quiero reproducir en realidad no usa líneas rectas sino sinusoidales. No estoy seguro si eso se puede reproducir con &lt;code&gt;geom_ridgeline()&lt;/code&gt; pero a esta altura decidí meterme con un geom de más bajo nivel. Usando &lt;code&gt;geom_ribbon()&lt;/code&gt; puedo poner directamente cuál es el máximo y el mínimo del área, entonces puedo meter un coseno con la amplitud, período y fase que quiera. Además, como esto es Arte&lt;sup&gt;&amp;trade;&lt;/sup&gt;, conviene sacar las leyendas y los ejes.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;scale &amp;lt;- 10
+per  &amp;lt;- 6
+phase &amp;lt;- 0.001
+ampl &amp;lt;- scale/5
+forecolor &amp;lt;- &amp;quot;white&amp;quot;
+backcolor &amp;lt;- &amp;quot;#110C0E&amp;quot;
+
+ggplot(subset(im, y %in% seq(1, ys, by = scale - 1)), aes(x)) +
+   geom_ribbon(aes(ymin = y + ampl*cos(x/max(x)*2*pi*per - phase*y) - value*scale/2, 
+                   ymax = y + ampl*cos(x/max(x)*2*pi*per - phase*y) + value*scale/2,
+                   group = y), fill = forecolor) +
+   scale_x_continuous(expand = c(0, 0)) +
+   scale_y_continuous(expand = c(0, 0)) +
+   coord_equal() +
+   theme_void() +
+   theme(plot.background = element_rect(fill = backcolor))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-05-20-arte-reproducible-del-subte-de-buenos-aires_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Sólo para que sea más divertido, acá abajo está el código completo, armado en una función y que además permite hacer un efecto medio warholiano si se usan los 3 colores en vez de una escala de grises.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;Ridgefy &amp;lt;- function(file, scale = 10, ampl = 1/5, per = 6, phase = 0,
+                    forecolor = &amp;quot;white&amp;quot;, backcolor = &amp;quot;black&amp;quot;, ncol = 3) {
+   im &amp;lt;- jpeg::readJPEG(file)
+   ys &amp;lt;- nrow(im)
+   xs &amp;lt;- ncol(im)
+   if (length(forecolor) == 3) {
+      dimnames(im) &amp;lt;- list(y = rev(seq_len(ys)),
+                           x = seq_len(xs),
+                           forecolor = forecolor)
+      im &amp;lt;- reshape2::melt(im)
+   } else {
+      im &amp;lt;- apply(im, c(1, 2), sum)
+      im &amp;lt;- im/max(im)
+      
+      dimnames(im) &amp;lt;- list(y = rev(seq_len(ys)), 
+                           x = seq_len(xs))
+      im &amp;lt;- reshape2::melt(im)
+      im$forecolor = forecolor
+   }
+
+   ampl &amp;lt;- scale*ampl
+   
+   ggplot(subset(im, y %in% seq(1, ys, by = scale - 1)), aes(x)) +
+      geom_ribbon(aes(ymin = y + ampl*cos(x/max(x)*2*pi*per - phase*y) - value*scale/2, 
+                      ymax = y + ampl*cos(x/max(x)*2*pi*per - phase*y) + value*scale/2,
+                      group = y,
+                      fill = forecolor)) +
+      scale_fill_manual(values = forecolor, guide = FALSE) +
+      scale_x_continuous(expand = c(0, 0)) +
+      scale_y_continuous(expand = c(0, 0)) +
+      coord_equal() +
+      theme_void() +
+      facet_wrap(~forecolor, ncol = ncol) +
+      theme(plot.background = element_rect(fill = backcolor), 
+            panel.spacing = unit(0, &amp;quot;lines&amp;quot;),
+            strip.text = element_blank(),
+            strip.background = element_blank())
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Para terminar, por qué no hacer una imagen bien meta y usar este estilo para transformar la imagen original que me dio la idea.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;Ridgefy(&amp;quot;../../static/images/subte.jpg&amp;quot;, scale = 4, ampl = 0.1,
+        forecolor = &amp;quot;#EE0000&amp;quot;, 
+        backcolor = &amp;quot;#6E1414&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-05-20-arte-reproducible-del-subte-de-buenos-aires_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -90,7 +1412,151 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
       <pubDate>Wed, 16 May 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-generico-en-ggplot2/</guid>
-      <description>Hace un tiempo que venía pensando que si bien ggplot2 es genial y tiene un montón de geoms y stats, le faltaba la opción de extenderlo a stats y geoms creados por el usuario. Luego, aprendí que ggplot2 tiene un excelente sistema para extenderlo y empecé a crear mis propios stats. Pero aún así, hacer un stat específico cada vez que uno quiere hacer un plot en particular es demasiado complicado.</description>
+      <description>&lt;p&gt;Hace un tiempo que venía pensando que si bien &lt;code&gt;ggplot2&lt;/code&gt; es genial y tiene un montón de geoms y stats, le faltaba la opción de extenderlo a stats y geoms creados por el usuario. Luego, aprendí que &lt;code&gt;ggplot2&lt;/code&gt; tiene un excelente sistema para extenderlo y empecé a crear mis propios stats. Pero aún así, hacer un &lt;code&gt;stat&lt;/code&gt; específico cada vez que uno quiere hacer un plot en particular es demasiado complicado.&lt;/p&gt;
+
+&lt;p&gt;Entonces se me ocurrió una posible solución. Hacer un &lt;code&gt;stat&lt;/code&gt; &lt;em&gt;genérico&lt;/em&gt;; una tabula rasa que acepte una función creada por el usuario. Nativamente &lt;code&gt;ggplot2&lt;/code&gt; viene con &lt;code&gt;stat_summary()&lt;/code&gt; que hace algo similar, pero sólo acepta funciones que (como su nombre lo indica) sumaricen los datos de alguna manera. Lo que yo quería era algo totalmente genérico y este es mi primer intento.&lt;/p&gt;
+
+&lt;p&gt;Debajo, es el código de &lt;code&gt;stat_rasa()&lt;/code&gt;, que toma los datos y una función que devuelva un data.frame interpretable por el &lt;code&gt;geom&lt;/code&gt; elegido.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# ggproto object
+StatRasa &amp;lt;- ggplot2::ggproto(&amp;quot;StatRasa&amp;quot;, ggplot2::Stat,
+  compute_group = function(data, scales, fun, fun.args) {
+     # Change default arguments of the function to the 
+     # values in fun.args
+     args &amp;lt;- formals(fun)
+     for (i in seq_along(fun.args)) {
+        if (names(fun.args[i]) %in% names(fun.args)) {
+           args[[names(fun.args[i])]] &amp;lt;- fun.args[[i]]
+        } 
+     }
+     formals(fun) &amp;lt;- args
+     
+     # Apply function to data
+     fun(data)
+})
+
+# stat function used in ggplot
+stat_rasa &amp;lt;- function(mapping = NULL, data = NULL,
+                      geom = &amp;quot;point&amp;quot;, 
+                      position = &amp;quot;identity&amp;quot;,
+                      fun = NULL,
+                      ...,
+                      show.legend = NA,
+                      inherit.aes = TRUE) {
+   # Check arguments 
+   if (!is.function(fun)) stop(&amp;quot;fun must be a function&amp;quot;)
+   
+   # Pass dotted arguments to a list
+   fun.args &amp;lt;- match.call(expand.dots = FALSE)$`...`
+   
+   ggplot2::layer(
+      data = data,
+      mapping = mapping,
+      stat = StatRasa,
+      geom = geom,
+      position = position,
+      show.legend = show.legend,
+      inherit.aes = inherit.aes,
+      check.aes = FALSE,
+      check.param = FALSE,
+      params = list(
+         fun = fun, 
+         fun.args = fun.args,
+         na.rm = FALSE,
+         ...
+      )
+   )
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Por ejemplo, si queremos rápidamente visualizar los datos menos sin la tendencia, podemos crear una función relativamente simple:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;Detrend &amp;lt;- function(data, method = &amp;quot;lm&amp;quot;, span = 0.2) {
+   if (method == &amp;quot;lm&amp;quot;) {
+      data$y &amp;lt;- resid(lm(y ~ x, data = data))
+   } else {
+      data$y &amp;lt;- resid(loess(y ~ x, span = span, data = data))
+   }
+   as.data.frame(data)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Y luego obtener los residuos en una sola línea.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(ggplot2)
+set.seed(42)
+x &amp;lt;- seq(-1, 3, length.out = 30)
+y &amp;lt;- x^2 + rnorm(30)*0.5
+df &amp;lt;- data.frame(x = x, y = y)
+ggplot(df, aes(x, y)) +
+   geom_line() +
+   stat_rasa(geom = &amp;quot;line&amp;quot;, fun = Detrend, method = &amp;quot;smooth&amp;quot;,
+             color = &amp;quot;steelblue&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-05-16-como-hacer-un-stat-generico-en-ggplot2_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Si queremos un poco más de legibilidad, podemos hacer una función con un nombre más informativo:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;stat_detrend &amp;lt;- function(...) {
+   stat_rasa(fun = Detrend, ...)
+}
+
+ggplot(df, aes(x, y)) +
+   geom_line() +
+   stat_detrend(method = &amp;quot;lm&amp;quot;, color = &amp;quot;blue&amp;quot;, geom = &amp;quot;line&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-05-16-como-hacer-un-stat-generico-en-ggplot2_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Otro caso es el de calcular contornos a partir de una grilla irregular. &lt;code&gt;ggplot2::stat_contour()&lt;/code&gt; usa &lt;code&gt;grDevices::contourLines()&lt;/code&gt; para computar los contornos y requiere una grilla regular y el paquete &lt;code&gt;contoureR&lt;/code&gt; tiene una función que acepta una grilla irregular. Para usarla sin problemas lo único que tenemos que hacer es armar una pequeña función y usar &lt;code&gt;geom = &amp;quot;path&amp;quot;&lt;/code&gt; en &lt;code&gt;stat_rasa()&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;IrregularContour &amp;lt;- function(data, breaks = scales::fullseq, 
+                             binwidth = NULL,
+                             bins = 10) {
+   if (is.function(breaks)) {
+      # If no parameters set, use pretty bins to calculate binwidth
+      if (is.null(binwidth)) {
+         binwidth &amp;lt;- diff(range(data$z)) / bins
+      }
+      
+      breaks &amp;lt;- breaks(range(data$z), binwidth)
+   }
+   
+   cl &amp;lt;- contoureR::getContourLines(x = data$x, y = data$y, z = data$z, 
+                                    levels = breaks)
+   
+   if (length(cl) == 0) {
+      warning(&amp;quot;Not possible to generate contour data&amp;quot;, call. = FALSE)
+      return(data.frame())
+   }
+   cl &amp;lt;- cl[, 3:7]
+   colnames(cl) &amp;lt;- c(&amp;quot;piece&amp;quot;, &amp;quot;group&amp;quot;, &amp;quot;x&amp;quot;, &amp;quot;y&amp;quot;, &amp;quot;level&amp;quot;)
+   return(cl)
+}
+
+stat_contour_irregular &amp;lt;- function(...) {
+   stat_rasa(fun = IrregularContour, geom = &amp;quot;path&amp;quot;, ...)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;set.seed(42)
+df &amp;lt;- data.frame(x = rnorm(500),
+                 y = rnorm(500))
+df$z &amp;lt;- with(df, -x*y*exp(-x^2 - y^2))
+
+ggplot(df, aes(x, y)) +
+   geom_point(aes(color = z)) +
+   stat_contour_irregular(aes(z = z, color = ..level..), bins = 15) +
+   scale_color_viridis_c()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-05-16-como-hacer-un-stat-generico-en-ggplot2_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Y voilà.&lt;/p&gt;
+
+&lt;p&gt;Quedan algunos detalles para mejorar, como por ejemplo la posibilidad de utilizar una función para decidir los parámetros a usar de acuerdo a los datos, pero creo que así como está sirve para el 80% de las aplicaciones simples. También debería ponerle un mejor nombre, pero nombrar cosas es muy difícil.&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -99,7 +1565,151 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
       <pubDate>Wed, 16 May 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/2018/05/how-to-make-a-generic-stat-in-ggplot2/</guid>
-      <description>For a while now I&amp;rsquo;ve been thinking that, yes, ggplot2 is awesome and offers a lot of geoms and stats, but it would be great if it could be extended with new user-generated geoms and stats. Then I learnt that ggplot2 actually has a pretty great extension system so I could create my own geoms I needed for my work or just for fun. But still, creating a geom from scratch is an involved process that doesn&amp;rsquo;t lend itself to simple transformations.</description>
+      <description>&lt;p&gt;For a while now I&amp;rsquo;ve been thinking that, yes, &lt;code&gt;ggplot2&lt;/code&gt; is awesome and offers a lot of &lt;code&gt;geoms&lt;/code&gt; and &lt;code&gt;stats&lt;/code&gt;, but it would be great if it could be extended with new user-generated &lt;code&gt;geoms&lt;/code&gt; and &lt;code&gt;stats&lt;/code&gt;. Then I learnt that &lt;code&gt;ggplot2&lt;/code&gt; actually has a pretty great extension system so I could create my own geoms I needed for my work or &lt;a href=&#34;https://twitter.com/d_olivaw/status/993669229810503680&#34;&gt;just for fun&lt;/a&gt;. But still, creating a geom from scratch is an involved process that doesn&amp;rsquo;t lend itself to simple transformations.&lt;/p&gt;
+
+&lt;p&gt;Finally, I thought of a possible solution: create a &lt;em&gt;generic&lt;/em&gt; &lt;code&gt;stat&lt;/code&gt; &amp;ndash;a tabula rasa, if you will&amp;ndash; that can work on the data with any function. Natively &lt;code&gt;ggplot2&lt;/code&gt; offers &lt;code&gt;stat_summary()&lt;/code&gt;, but it&amp;rsquo;s only meant to be used with, well, summary statistics. What I wanted was something completely generic and this is my first try.&lt;/p&gt;
+
+&lt;p&gt;Below is the code for &lt;code&gt;stat_rasa()&lt;/code&gt; (better name pending). It works just like any other &lt;code&gt;stat&lt;/code&gt; except that it works with any function that takes a data.frame and returns a transformed data.frame that can be interpreted by the chosen &lt;code&gt;geom&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# ggproto object
+StatRasa &amp;lt;- ggplot2::ggproto(&amp;quot;StatRasa&amp;quot;, ggplot2::Stat,
+  compute_group = function(data, scales, fun, fun.args) {
+     # Change default arguments of the function to the 
+     # values in fun.args
+     args &amp;lt;- formals(fun)
+     for (i in seq_along(fun.args)) {
+        if (names(fun.args[i]) %in% names(fun.args)) {
+           args[[names(fun.args[i])]] &amp;lt;- fun.args[[i]]
+        } 
+     }
+     formals(fun) &amp;lt;- args
+     
+     # Apply function to data
+     fun(data)
+})
+
+# stat function used in ggplot
+stat_rasa &amp;lt;- function(mapping = NULL, data = NULL,
+                      geom = &amp;quot;point&amp;quot;, 
+                      position = &amp;quot;identity&amp;quot;,
+                      fun = NULL,
+                      ...,
+                      show.legend = NA,
+                      inherit.aes = TRUE) {
+   # Check arguments 
+   if (!is.function(fun)) stop(&amp;quot;fun must be a function&amp;quot;)
+   
+   # Pass dotted arguments to a list
+   fun.args &amp;lt;- match.call(expand.dots = FALSE)$`...`
+   
+   ggplot2::layer(
+      data = data,
+      mapping = mapping,
+      stat = StatRasa,
+      geom = geom,
+      position = position,
+      show.legend = show.legend,
+      inherit.aes = inherit.aes,
+      check.aes = FALSE,
+      check.param = FALSE,
+      params = list(
+         fun = fun, 
+         fun.args = fun.args,
+         na.rm = FALSE,
+         ...
+      )
+   )
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For example, let&amp;rsquo;s say we want to quickly glance at detrended data. We then create a very simple function&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;Detrend &amp;lt;- function(data, method = &amp;quot;lm&amp;quot;, span = 0.2) {
+   if (method == &amp;quot;lm&amp;quot;) {
+      data$y &amp;lt;- resid(lm(y ~ x, data = data))
+   } else {
+      data$y &amp;lt;- resid(loess(y ~ x, span = span, data = data))
+   }
+   as.data.frame(data)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and pass it to &lt;code&gt;stat_rasa()&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(ggplot2)
+set.seed(42)
+x &amp;lt;- seq(-1, 3, length.out = 30)
+y &amp;lt;- x^2 + rnorm(30)*0.5
+df &amp;lt;- data.frame(x = x, y = y)
+ggplot(df, aes(x, y)) +
+   geom_line() +
+   stat_rasa(geom = &amp;quot;line&amp;quot;, fun = Detrend, method = &amp;quot;smooth&amp;quot;,
+             color = &amp;quot;steelblue&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-05-16-how-to-make-a-generic-stat-in-ggplot2.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We can get better legibility and less typing by creating a wrapper function with a more descriptive name.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;stat_detrend &amp;lt;- function(...) {
+   stat_rasa(fun = Detrend, ...)
+}
+
+ggplot(df, aes(x, y)) +
+   geom_line() +
+   stat_detrend(method = &amp;quot;lm&amp;quot;, color = &amp;quot;blue&amp;quot;, geom = &amp;quot;line&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-05-16-how-to-make-a-generic-stat-in-ggplot2.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Another case could be calculating contours from an irregular grid. Since &lt;code&gt;ggplot2::stat_contour()&lt;/code&gt; uses &lt;code&gt;grDevices::contourLines()&lt;/code&gt;, it needs values defined in a regular grid, but there&amp;rsquo;s a package called &lt;code&gt;contoureR&lt;/code&gt; that can compute contours from irregularly spaced observations. With &lt;code&gt;stat_rasa()&lt;/code&gt; we can integrate it with &lt;code&gt;ggplot2&lt;/code&gt; effortlessly by creating a small function and using &lt;code&gt;geom = &amp;quot;path&amp;quot;&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;IrregularContour &amp;lt;- function(data, breaks = scales::fullseq, 
+                             binwidth = NULL,
+                             bins = 10) {
+   if (is.function(breaks)) {
+      # If no parameters set, use pretty bins to calculate binwidth
+      if (is.null(binwidth)) {
+         binwidth &amp;lt;- diff(range(data$z)) / bins
+      }
+      
+      breaks &amp;lt;- breaks(range(data$z), binwidth)
+   }
+   
+   cl &amp;lt;- contoureR::getContourLines(x = data$x, y = data$y, z = data$z, 
+                                    levels = breaks)
+   
+   if (length(cl) == 0) {
+      warning(&amp;quot;Not possible to generate contour data&amp;quot;, call. = FALSE)
+      return(data.frame())
+   }
+   cl &amp;lt;- cl[, 3:7]
+   colnames(cl) &amp;lt;- c(&amp;quot;piece&amp;quot;, &amp;quot;group&amp;quot;, &amp;quot;x&amp;quot;, &amp;quot;y&amp;quot;, &amp;quot;level&amp;quot;)
+   return(cl)
+}
+
+stat_contour_irregular &amp;lt;- function(...) {
+   stat_rasa(fun = IrregularContour, geom = &amp;quot;path&amp;quot;, ...)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;set.seed(42)
+df &amp;lt;- data.frame(x = rnorm(500),
+                 y = rnorm(500))
+df$z &amp;lt;- with(df, -x*y*exp(-x^2 - y^2))
+
+ggplot(df, aes(x, y)) +
+   geom_point(aes(color = z)) +
+   stat_contour_irregular(aes(z = z, color = ..level..), bins = 15) +
+   scale_color_viridis_c()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-05-16-how-to-make-a-generic-stat-in-ggplot2.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And voilà.&lt;/p&gt;
+
+&lt;p&gt;There&amp;rsquo;s always things to improve. For example, the possibility of using a custom function to compute parameters that depend on the data, but I believe that as it stands covers 80% of simple applications. I should also use a better name, but naming things is hard work.&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -108,9 +1718,216 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
       <pubDate>Sun, 04 Feb 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/2018/02/how-to-make-shaded-relief-in-r/</guid>
-      <description>Spanish version of this post
-While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
-What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun.</description>
+      <description>&lt;p&gt;&lt;a href=&#34;../2018/02/como-hacer-efecto-de-relieve-en-r&#34;&gt;Spanish version of this post&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;../images/shading.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun. After some further research I learned that this is actually done in cartography and is called &lt;a href=&#34;http://www.reliefshading.com/analytical/shading-methods/&#34;&gt;&lt;em&gt;aspect-based shading&lt;/em&gt;&lt;/a&gt;. I also learned that it&amp;rsquo;s not the best method, and I&amp;rsquo;m itching to try others. But for now, let&amp;rsquo;s keep things simple and &lt;a href=&#34;https://kkulma.github.io/2017-12-29-end-of-year-thoughts/&#34;&gt;get stuff actually done&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Just as an example, I will be using our old friend, the &lt;code&gt;volcano&lt;/code&gt; database. I will be also using &lt;code&gt;data.table&lt;/code&gt; syntax because that how I roll. Deal with it, &lt;code&gt;dplyr&lt;/code&gt; lovers 😎.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(data.table)
+library(ggplot2)
+data(volcano)
+volcano &amp;lt;- as.data.table(melt(volcano, varnames = c(&amp;quot;x&amp;quot;, &amp;quot;y&amp;quot;),
+                              value.name = &amp;quot;h&amp;quot;))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So then I take the derivative (this is a function I made in my personal package, but bear with me 🙏) and take the angle. The minus sign are there&amp;hellip; well, because it works &amp;ndash;I&amp;rsquo;m not sure about the exact maths here.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;volcano[, c(&amp;quot;dx&amp;quot;, &amp;quot;dy&amp;quot;) := metR::Derivate(h ~ x + y)]
+volcano[, angle := atan2(-dy, -dx)]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And with that, we can set the angle from which the Sun is shinning (usually from the top left) and with a little bit of code, we get an acceptable result.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;sun.angle &amp;lt;- pi/3
+ggplot(volcano, aes(x, y)) +
+   geom_raster(aes(fill = cos(angle + sun.angle)), alpha = 1, interpolate = TRUE) +
+   scale_fill_gradient2(low = &amp;quot;white&amp;quot;, high = &amp;quot;white&amp;quot;, mid = &amp;quot;gray20&amp;quot;, 
+                        midpoint = sun.angle, guide = &amp;quot;none&amp;quot;) +
+   coord_fixed() +
+   theme_void() 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-02-04-how-to-make-a-shaded-relief-in-r_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Excellent! 💜&lt;/p&gt;
+
+&lt;p&gt;But hey, don&amp;rsquo;t leave, there&amp;rsquo;s more. What if you want to use this &lt;em&gt;gorgeous&lt;/em&gt; shading as a background to map &lt;em&gt;other&lt;/em&gt; data? For example, let&amp;rsquo;s say you had surface temperature readings, or sulphur concentration data. Since our &lt;code&gt;scale_fill&lt;/code&gt; is being taken by the shading and &lt;code&gt;ggplot2&lt;/code&gt; does not allow for more than one scale per aesthetic, you couldn&amp;rsquo;t use another &lt;code&gt;geom_raster()&lt;/code&gt; to &amp;ldquo;paint&amp;rdquo; the data over this background.&lt;/p&gt;
+
+&lt;p&gt;One solution is to take the plot we made above, extract the raster grob (GRaphical OBject) and put it over another plot as an annotation. This is akin to a plot transplant and &amp;ndash;just as organ transplants&amp;ndash; it&amp;rsquo;s an ugly mess that will become a forgotten practice of a less civilized age once we master 3D printing of organs. But it works and is the best we&amp;rsquo;ve got so far.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;shade &amp;lt;- ggplot(volcano, aes(x, y)) +
+   geom_raster(aes(fill = cos(angle + sun.angle)), alpha = 0.5, interpolate = TRUE) +
+   scale_fill_gradient2(low = &amp;quot;white&amp;quot;, high = &amp;quot;white&amp;quot;, mid = &amp;quot;black&amp;quot;, 
+                        midpoint = sun.angle, guide = &amp;quot;none&amp;quot;)
+
+grob.shade &amp;lt;- ggplotGrob(shade)
+grob.shade &amp;lt;- grob.shade$grobs[[6]]$children[[3]]
+
+ggplot(volcano, aes(x, y)) +
+   geom_raster(aes(fill = h), alpha = 1, interpolate = TRUE) +
+   annotation_custom(grob = grob.shade) +
+   scale_fill_viridis_c(guide = &amp;quot;none&amp;quot;, option = &amp;quot;A&amp;quot;) +
+   coord_fixed() +
+   theme_void() 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-02-04-how-to-make-a-shaded-relief-in-r_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Lucky for us, at least for this kind of plot transplant, there&amp;rsquo;s already a better way: just make a &lt;code&gt;geom&lt;/code&gt;! Once we are inside the guts of &lt;code&gt;ggplot2&lt;/code&gt; we are no longer bound by the tyranny of scales can do the craziest things. In this case, we use a modified version of &lt;code&gt;geom_tile()&lt;/code&gt; that performs all the calculations we need and builds the grayscale pattern (modifiable by the user via the &lt;code&gt;light&lt;/code&gt; and &lt;code&gt;dark&lt;/code&gt; aesthetics). It allows changing &lt;code&gt;sun.angle&lt;/code&gt; and decide whether to use &lt;code&gt;raster&lt;/code&gt; or &lt;code&gt;rect&lt;/code&gt; and whether to interpolate for a smoother finish. I give to you &lt;code&gt;geom_relief()&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;geom_relief &amp;lt;- function(mapping = NULL, data = NULL,
+                        stat = &amp;quot;identity&amp;quot;, position = &amp;quot;identity&amp;quot;,
+                        ...,
+                        raster = TRUE,
+                        interpolate = TRUE,
+                        na.rm = FALSE,
+                        show.legend = NA,
+                        inherit.aes = TRUE) {
+   ggplot2::layer(
+      data = data,
+      mapping = mapping,
+      stat = stat,
+      geom = GeomRelief,
+      position = position,
+      show.legend = show.legend,
+      inherit.aes = inherit.aes,
+      params = list(
+         raster = raster,
+         interpolate = interpolate,
+         na.rm = na.rm,
+         ...
+      )
+   )
+}
+
+GeomRelief &amp;lt;- ggplot2::ggproto(&amp;quot;GeomRelief&amp;quot;, GeomTile,
+  required_aes = c(&amp;quot;x&amp;quot;, &amp;quot;y&amp;quot;, &amp;quot;z&amp;quot;),
+  default_aes = ggplot2::aes(color = NA, fill = &amp;quot;grey35&amp;quot;, size = 0.5, linetype = 1,
+                             alpha = NA, light = &amp;quot;white&amp;quot;, dark = &amp;quot;gray20&amp;quot;, sun.angle = 60),
+  draw_panel = function(data, panel_scales, coord, raster, interpolate) {
+     if (!coord$is_linear()) {
+        stop(&amp;quot;non lineal coordinates are not implemented in GeomRelief&amp;quot;, call. = FALSE)
+     } else {
+        coords &amp;lt;- as.data.table(coord$transform(data, panel_scales))
+        
+        # This is the only part that&#39;s actually new. The rest is essentially 
+        # copy-pasted from geom_raster and geom_tile
+        coords[, sun.angle := (sun.angle + 90)*pi/180]
+        coords[, dx := .derv(z, x), by = y]
+        coords[, dy := .derv(z, y), by = x]
+        coords[, shade := (cos(atan2(-dy, -dx) - sun.angle) + 1)/2]
+        coords[is.na(shade), shade := 0]
+        coords[, fill := .rgb2hex(colorRamp(c(dark, light), space = &amp;quot;Lab&amp;quot;)(shade)),
+               by = .(dark, light)]
+        
+        # From geom_raster and geom_tile
+        if (raster == TRUE){
+           if (!inherits(coord, &amp;quot;CoordCartesian&amp;quot;)) {
+              stop(&amp;quot;geom_raster only works with Cartesian coordinates&amp;quot;, call. = FALSE)
+           }
+           # Convert vector of data to raster
+           x_pos &amp;lt;- as.integer((coords$x - min(coords$x)) / resolution(coords$x, FALSE))
+           y_pos &amp;lt;- as.integer((coords$y - min(coords$y)) / resolution(coords$y, FALSE))
+           
+           nrow &amp;lt;- max(y_pos) + 1
+           ncol &amp;lt;- max(x_pos) + 1
+           
+           raster &amp;lt;- matrix(NA_character_, nrow = nrow, ncol = ncol)
+           raster[cbind(nrow - y_pos, x_pos + 1)] &amp;lt;- alpha(coords$fill, coords$alpha)
+           
+           # Figure out dimensions of raster on plot
+           x_rng &amp;lt;- c(min(coords$xmin, na.rm = TRUE), max(coords$xmax, na.rm = TRUE))
+           y_rng &amp;lt;- c(min(coords$ymin, na.rm = TRUE), max(coords$ymax, na.rm = TRUE))
+           
+           grid::rasterGrob(raster,
+                            x = mean(x_rng), y = mean(y_rng),
+                            width = diff(x_rng), height = diff(y_rng),
+                            default.units = &amp;quot;native&amp;quot;, interpolate = interpolate
+           )
+           
+        } else {
+           ggplot2:::ggname(&amp;quot;geom_rect&amp;quot;, grid::rectGrob(
+              coords$xmin, coords$ymax,
+              width = coords$xmax - coords$xmin,
+              height = coords$ymax - coords$ymin,
+              default.units = &amp;quot;native&amp;quot;,
+              just = c(&amp;quot;left&amp;quot;, &amp;quot;top&amp;quot;),
+              gp = grid::gpar(
+                 col = coords$fill,
+                 fill = alpha(coords$fill, coords$alpha),
+                 lwd = coords$size * .pt,
+                 lty = coords$linetype,
+                 lineend = &amp;quot;butt&amp;quot;
+              )
+           ))
+           
+        }
+     }
+  }
+)
+
+rect_to_poly &amp;lt;- function(xmin, xmax, ymin, ymax) {
+   data.frame(
+      y = c(ymax, ymax, ymin, ymin, ymax),
+      x = c(xmin, xmax, xmax, xmin, xmin)
+   )
+}
+
+.rgb2hex &amp;lt;- function(array) {
+   rgb(array[, 1], array[, 2], array[, 3], maxColorValue = 255)
+}
+
+
+.derv &amp;lt;- function(x, y, order = 1, cyclical = FALSE, fill = FALSE) {
+   N &amp;lt;- length(x)
+   d &amp;lt;- y[2] - y[1]
+   if (order &amp;gt;= 3) {
+      dxdy &amp;lt;- .derv(.derv(x, y, order = 2, cyclical = cyclical, fill = fill),
+                    y, order = order - 2, cyclical = cyclical, fill = fill)
+   } else {
+      if (order == 1) {
+         dxdy &amp;lt;- (x[c(2:N, 1)] - x[c(N, 1:(N-1))])/(2*d)
+      } else if (order == 2) {
+         dxdy &amp;lt;- (x[c(2:N, 1)] + x[c(N, 1:(N-1))] - 2*x)/d^2
+      }
+      if (!cyclical) {
+         if (!fill) {
+            dxdy[c(1, N)] &amp;lt;- NA
+         }
+         if (fill) {
+            dxdy[1] &amp;lt;- (-11/6*x[1] + 3*x[2] - 3/2*x[3] + 1/3*x[4])/d
+            dxdy[N] &amp;lt;- (11/6*x[N] - 3*x[N-1] + 3/2*x[N-2] - 1/3*x[N-3])/d
+         }
+      }
+      
+   }
+   return(dxdy)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s use it to show real topographic data from The Andes near the Aconcagua, courtesy of &lt;a href=&#34;https://www.ngdc.noaa.gov/mgg/global/&#34;&gt;NOAA&amp;rsquo;s ETOPO1&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;aconcagua &amp;lt;- metR::GetTopography(-70.0196223 - 3 + 360, -70.0196223 + 3 + 360,
+                                 -32.6531782 + 2, -32.6531782 - 2, 
+                                 resolution = 1/60)
+aconcagua[, c(&amp;quot;light&amp;quot;, &amp;quot;dark&amp;quot;) := .(ifelse(h &amp;gt; 0, &amp;quot;white&amp;quot;, &amp;quot;slategray2&amp;quot;),
+                                ifelse(h &amp;gt; 0, &amp;quot;gray20&amp;quot;, &amp;quot;midnightblue&amp;quot;))] 
+ggplot(aconcagua, aes(lon, lat)) +
+   geom_relief(aes(z = h, light = light, dark = dark), 
+               raster = TRUE, interpolate = TRUE, sun.angle = 60) +
+   coord_fixed(expand = FALSE) +
+   theme_void()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-02-04-how-to-make-a-shaded-relief-in-r_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The result, if you ask me: delicious  👌&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -119,9 +1936,231 @@ What I accidentally discovered is that one way of approximating this look is by 
       <pubDate>Wed, 24 Jan 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/</guid>
-      <description>Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.
-Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida volcano.
-library(data.table) library(ggplot2) data(volcano) volcano &amp;lt;- as.</description>
+      <description>&lt;p&gt;Estaba tratando de hacer una guía de colores circular (que los extremos tengan el mismo color) para hacer gráficos de ángulos o direcciones del viento, cuando descubrí una forma interesante de crear un efecto de relieve en mapas de topografía.&lt;/p&gt;
+
+&lt;p&gt;Digamos que tenemos datos de altura del suelo sobre el nivel del mar en una grilla regular. Como ejemplo vamos a usar la vieja y querida &lt;code&gt;volcano&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(data.table)
+library(ggplot2)
+data(volcano)
+volcano &amp;lt;- as.data.table(melt(volcano, varnames = c(&amp;quot;x&amp;quot;, &amp;quot;y&amp;quot;),
+                              value.name = &amp;quot;h&amp;quot;))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;La forma más básica de visualizarlos (en &lt;code&gt;ggplot2&lt;/code&gt;) es con un &lt;code&gt;geom_raster()&lt;/code&gt; (o &lt;code&gt;geom_tile()&lt;/code&gt;):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;ggplot(volcano, aes(x, y)) + 
+   geom_raster(aes(fill = h), interpolate = TRUE) +
+   scale_fill_viridis_c(option = &amp;quot;A&amp;quot;, guide = &amp;quot;none&amp;quot;) +
+   coord_fixed() +
+   theme_void()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-01-24-como-hacer-efecto-de-relieve-en-r_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Y está bien. Grafica los datos correctamente y encima elegimos una escala de colores uniforme y no asquerosa. Pero si uno quiere que tenga un poco más de &lt;em&gt;punch&lt;/em&gt;, y quizás está dispuesto a perder un poco de exactitud en la representación en favor de una impresión más instintiva de la forma de este volcán, podría preferir que tuviera algún sombreado que de una idea del relieve. Algo llamativo como esto:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;../images/shading.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Lindo, ¿no? En R podemos hacer algo aproximado. Lo que vamos a hacer es calcular la pendiente en cada punto de grilla y luego pensar que la intensidad de las luces y sombras son proporcionales al producto escalar entre ésta y el ángulo con el que llega el Sol.&lt;/p&gt;
+
+&lt;p&gt;Tomando que el Sol brilla desde arriba a la izquierda, si una región tiene pendiente hacia arriba a la derecha, el producto escalar es negativo y tenemos una región de sombra. Lo mismo pasa al contrario&amp;hellip; creo. En realidad no pensé esta parte demasiado bien, ¡pero el resultado en el gráfico es bueno y creo que que &lt;a href=&#34;http://www.reliefshading.com/analytical/shading-methods/&#34;&gt;coincide con métodos existentes&lt;/a&gt;! (Créanme 🙏).&lt;/p&gt;
+
+&lt;p&gt;Primero, tenemos que calcular el gradiente de la altura en cada punto. Acá estoy usando una función de mi paquete personal (que ustedes pueden adquirir en el puesto instalado en el hall del teatro&amp;hellip; digo, &lt;a href=&#34;https://github.com/eliocamp/metR&#34;&gt;en github&lt;/a&gt;).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;volcano[, c(&amp;quot;dx&amp;quot;, &amp;quot;dy&amp;quot;) := metR::Derivate(h ~ x + y)]
+volcano[, angle := atan2(-dy, -dx)]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Ya con esto simplemente mapeamos el coseno del ángulo (por el producto vectorial) a una escala de grises que empiece y termine en el mismo color.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;sun.angle &amp;lt;- pi/3
+ggplot(volcano, aes(x, y)) +
+   geom_raster(aes(fill = cos(angle + sun.angle)), alpha = 1, interpolate = TRUE) +
+   scale_fill_gradient2(low = &amp;quot;white&amp;quot;, high = &amp;quot;white&amp;quot;, mid = &amp;quot;gray20&amp;quot;, 
+                        midpoint = sun.angle, guide = &amp;quot;none&amp;quot;) +
+   coord_fixed() +
+   theme_void() 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-01-24-como-hacer-efecto-de-relieve-en-r_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;¡Hermoso! 💜 Si queremos cambiar la hora del día, sólo basta con cambiar el ángulo del sol. Esas áreas horribles en gris llano son regiones con errores, donde los datos son constantes, la derivada es nula y el ángulo entonces es cero. Por ahora dejémoslas ser porque todavía hay una última cosa que hacer.&lt;/p&gt;
+
+&lt;p&gt;¿Qué tal si además de este sombreado genial queremos de alguna mantera mostrar la altura? ¿U otra variable como la temperatura o el uso del terreno o lo que sea? Como nuestra &lt;code&gt;scale_fill()&lt;/code&gt; está siendo usada por el relieve, no podemos mapear otras variables a ese parámetro. Es decir, no podemos usar un &lt;code&gt;geom_tile()&lt;/code&gt; con transparencia, por ejemplo. Que yo sepa hay dos formas de solucionar esto. Una fácil y una difícil.&lt;/p&gt;
+
+&lt;p&gt;La primera implica hacer un poco de cirugía de plots. Primero, creamos un plot similar al anterior pero con transparencia y sin tanta fanfarria y más contraste. Después lo convertimos en un grob (GRaphical OBject) y luego le extraemos la parte que nos interesa. Esto acá está hecho manual pero podría automatizarse. Hay que buscar primero el grob que sea &lt;code&gt;gTree&lt;/code&gt; (el 5, en este caso) y luego, entre sus &lt;code&gt;children&lt;/code&gt;, encontrar el que sea un &lt;code&gt;rect&lt;/code&gt; (el 3).&lt;/p&gt;
+
+&lt;p&gt;Finalmente, con el grob del sombreado ya en nuestras manos, hacemos el gráfico que queremos, con las escalas que se nos ocurra, pero le agregamos el sombreado como una anotación con &lt;code&gt;annotation_custom()&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;shade &amp;lt;- ggplot(volcano, aes(x, y)) +
+   geom_raster(aes(fill = cos(angle + sun.angle)), alpha = 0.5, interpolate = TRUE) +
+   scale_fill_gradient2(low = &amp;quot;white&amp;quot;, high = &amp;quot;white&amp;quot;, mid = &amp;quot;black&amp;quot;, 
+                        midpoint = sun.angle, guide = &amp;quot;none&amp;quot;)
+
+grob.shade &amp;lt;- ggplotGrob(shade)
+grob.shade &amp;lt;- grob.shade$grobs[[6]]$children[[3]]
+
+ggplot(volcano, aes(x, y)) +
+   geom_raster(aes(fill = h), alpha = 1, interpolate = TRUE) +
+   annotation_custom(grob = grob.shade) +
+   scale_fill_viridis_c(guide = &amp;quot;none&amp;quot;, option = &amp;quot;A&amp;quot;) +
+   coord_fixed() +
+   theme_void() 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-01-24-como-hacer-efecto-de-relieve-en-r_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;La forma más difícil en realidad es difícil para quien escribe, pero mucho más fácil para quien lee: hacer un &lt;code&gt;geom&lt;/code&gt; propio. Una vez que uno se mete en las entrañas de &lt;code&gt;ggplot2&lt;/code&gt;, puede liberarse de las cadenas de las escalas y hacer &lt;code&gt;geoms&lt;/code&gt; que dibujen las cosas como uno quiera. En este caso, creamos una versión de &lt;code&gt;geom_tile()&lt;/code&gt; que, además de hacer los cálculos de derivadas internamente, genera el degradé (que puede ser modificado por el usuario mediante los parámetros &lt;code&gt;light&lt;/code&gt; y &lt;code&gt;dark&lt;/code&gt;) sin tocar ninguna escala. Además, se puede cambiar el ángulo del sol con &lt;code&gt;sun.angle&lt;/code&gt;, decidir si se usa &lt;code&gt;raster&lt;/code&gt; (rápido y permite interpolación, pero sólo en coordenadas cartesianas) o &lt;code&gt;rect&lt;/code&gt; (más lento) y si interpola para un efecto más lindo. Les presento a &lt;code&gt;geom_relief()&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;geom_relief &amp;lt;- function(mapping = NULL, data = NULL,
+                        stat = &amp;quot;identity&amp;quot;, position = &amp;quot;identity&amp;quot;,
+                        ...,
+                        raster = TRUE,
+                        interpolate = TRUE,
+                        na.rm = FALSE,
+                        show.legend = NA,
+                        inherit.aes = TRUE) {
+   ggplot2::layer(
+      data = data,
+      mapping = mapping,
+      stat = stat,
+      geom = GeomRelief,
+      position = position,
+      show.legend = show.legend,
+      inherit.aes = inherit.aes,
+      params = list(
+         raster = raster,
+         interpolate = interpolate,
+         na.rm = na.rm,
+         ...
+      )
+   )
+}
+
+GeomRelief &amp;lt;- ggplot2::ggproto(&amp;quot;GeomRelief&amp;quot;, GeomTile,
+  required_aes = c(&amp;quot;x&amp;quot;, &amp;quot;y&amp;quot;, &amp;quot;z&amp;quot;),
+  default_aes = ggplot2::aes(color = NA, fill = &amp;quot;grey35&amp;quot;, size = 0.5, linetype = 1,
+                             alpha = NA, light = &amp;quot;white&amp;quot;, dark = &amp;quot;gray20&amp;quot;, sun.angle = 60),
+  draw_panel = function(data, panel_scales, coord, raster, interpolate) {
+     if (!coord$is_linear()) {
+        stop(&amp;quot;non lineal coordinates are not implemented in GeomRelief&amp;quot;, call. = FALSE)
+     } else {
+        coords &amp;lt;- as.data.table(coord$transform(data, panel_scales))
+        
+        # Esto es lo único que es nuevo. El resto es básicamente copy-paste
+        # de geom_raster y geom_tile.
+        coords[, sun.angle := (sun.angle + 90)*pi/180]
+        coords[, dx := .derv(z, x), by = y]
+        coords[, dy := .derv(z, y), by = x]
+        coords[, shade := (cos(atan2(-dy, -dx) - sun.angle) + 1)/2]
+        coords[is.na(shade), shade := 0]
+        coords[, fill := .rgb2hex(colorRamp(c(dark, light), space = &amp;quot;Lab&amp;quot;)(shade)),
+               by = .(dark, light)]
+        
+        # Desde geom_raster y geom_tile
+        if (raster == TRUE){
+           if (!inherits(coord, &amp;quot;CoordCartesian&amp;quot;)) {
+              stop(&amp;quot;geom_raster only works with Cartesian coordinates&amp;quot;, call. = FALSE)
+           }
+           # Convert vector of data to raster
+           x_pos &amp;lt;- as.integer((coords$x - min(coords$x)) / resolution(coords$x, FALSE))
+           y_pos &amp;lt;- as.integer((coords$y - min(coords$y)) / resolution(coords$y, FALSE))
+           
+           nrow &amp;lt;- max(y_pos) + 1
+           ncol &amp;lt;- max(x_pos) + 1
+           
+           raster &amp;lt;- matrix(NA_character_, nrow = nrow, ncol = ncol)
+           raster[cbind(nrow - y_pos, x_pos + 1)] &amp;lt;- alpha(coords$fill, coords$alpha)
+           
+           # Figure out dimensions of raster on plot
+           x_rng &amp;lt;- c(min(coords$xmin, na.rm = TRUE), max(coords$xmax, na.rm = TRUE))
+           y_rng &amp;lt;- c(min(coords$ymin, na.rm = TRUE), max(coords$ymax, na.rm = TRUE))
+           
+           grid::rasterGrob(raster,
+                            x = mean(x_rng), y = mean(y_rng),
+                            width = diff(x_rng), height = diff(y_rng),
+                            default.units = &amp;quot;native&amp;quot;, interpolate = interpolate
+           )
+           
+        } else {
+           ggplot2:::ggname(&amp;quot;geom_rect&amp;quot;, grid::rectGrob(
+              coords$xmin, coords$ymax,
+              width = coords$xmax - coords$xmin,
+              height = coords$ymax - coords$ymin,
+              default.units = &amp;quot;native&amp;quot;,
+              just = c(&amp;quot;left&amp;quot;, &amp;quot;top&amp;quot;),
+              gp = grid::gpar(
+                 col = coords$fill,
+                 fill = alpha(coords$fill, coords$alpha),
+                 lwd = coords$size * .pt,
+                 lty = coords$linetype,
+                 lineend = &amp;quot;butt&amp;quot;
+              )
+           ))
+           
+        }
+     }
+  }
+)
+
+rect_to_poly &amp;lt;- function(xmin, xmax, ymin, ymax) {
+   data.frame(
+      y = c(ymax, ymax, ymin, ymin, ymax),
+      x = c(xmin, xmax, xmax, xmin, xmin)
+   )
+}
+
+.rgb2hex &amp;lt;- function(array) {
+   rgb(array[, 1], array[, 2], array[, 3], maxColorValue = 255)
+}
+
+
+.derv &amp;lt;- function(x, y, order = 1, cyclical = FALSE, fill = FALSE) {
+   N &amp;lt;- length(x)
+   d &amp;lt;- y[2] - y[1]
+   if (order &amp;gt;= 3) {
+      dxdy &amp;lt;- .derv(.derv(x, y, order = 2, cyclical = cyclical, fill = fill),
+                    y, order = order - 2, cyclical = cyclical, fill = fill)
+   } else {
+      if (order == 1) {
+         dxdy &amp;lt;- (x[c(2:N, 1)] - x[c(N, 1:(N-1))])/(2*d)
+      } else if (order == 2) {
+         dxdy &amp;lt;- (x[c(2:N, 1)] + x[c(N, 1:(N-1))] - 2*x)/d^2
+      }
+      if (!cyclical) {
+         if (!fill) {
+            dxdy[c(1, N)] &amp;lt;- NA
+         }
+         if (fill) {
+            dxdy[1] &amp;lt;- (-11/6*x[1] + 3*x[2] - 3/2*x[3] + 1/3*x[4])/d
+            dxdy[N] &amp;lt;- (11/6*x[N] - 3*x[N-1] + 3/2*x[N-2] - 1/3*x[N-3])/d
+         }
+      }
+      
+   }
+   return(dxdy)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;De yapa, apliquemos esta técnica a datos topográficos reales de la Cordillera de los Andes cerca del Aconcagua, provistos por &lt;a href=&#34;https://www.ngdc.noaa.gov/mgg/global/&#34;&gt;ETOPO1 de la NOAA&lt;/a&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;aconcagua &amp;lt;- metR::GetTopography(-70.0196223 - 3 + 360, -70.0196223 + 3 + 360,
+                                 -32.6531782 + 2, -32.6531782 - 2, 
+                                 resolution = 1/60)
+aconcagua[, c(&amp;quot;light&amp;quot;, &amp;quot;dark&amp;quot;) := .(ifelse(h &amp;gt; 0, &amp;quot;white&amp;quot;, &amp;quot;slategray2&amp;quot;),
+                                ifelse(h &amp;gt; 0, &amp;quot;gray20&amp;quot;, &amp;quot;midnightblue&amp;quot;))] 
+ggplot(aconcagua, aes(lon, lat)) +
+   geom_relief(aes(z = h, light = light, dark = dark), 
+               raster = TRUE, interpolate = TRUE, sun.angle = 60) +
+   coord_fixed(expand = FALSE) +
+   theme_void()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img src=&#34;../post/2018-01-24-como-hacer-efecto-de-relieve-en-r_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;El resultado, para chuparse los dedos. 👌&lt;/p&gt;
+</description>
     </item>
     
     <item>
@@ -130,8 +2169,93 @@ library(data.table) library(ggplot2) data(volcano) volcano &amp;lt;- as.</descri
       <pubDate>Sat, 06 Jan 2018 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/2018/01/buen-ejemplo-reproducible-en-r/</guid>
-      <description>Es muy difícil dar ayuda si no se sabe cuál es el problema. Un buen ejemplo de lo que está mal que cualquiera pueda correr en sus computadoras es casi esencial para recibir ayuda.
-Un buen ejemplo reproducible (o reprex) es básicamente el feliz matrimonio entre un set de datos mínimo y un código mínimo que ilustre el problema y que cualquiera pueda copiar, pegar en un script y obtener exactamente los mismos resultados.</description>
+      <description>
+
+
+&lt;p&gt;Es muy difícil dar ayuda si no se sabe cuál es el problema. Un buen ejemplo de lo que está mal que cualquiera pueda correr en sus computadoras es casi esencial para recibir ayuda.&lt;/p&gt;
+&lt;p&gt;Un buen ejemplo reproducible (o reprex) es básicamente el feliz matrimonio entre un set de datos &lt;strong&gt;mínimo&lt;/strong&gt; y un código &lt;strong&gt;mínimo&lt;/strong&gt; que ilustre el problema y que cualquiera pueda copiar, pegar en un script y obtener &lt;strong&gt;exactamente los mismos resultados&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Obtener un reprex mínimo no es una tarea trivial. A veces puede tomar más de media hora y dar maś de un dolor de cabeza. Pero en el proceso uno aprende mucho sobre las características específicas de su problema y a veces incluso termina por resolverlo solo. Aún si no se resuelve, el tiempo que uno invierte en hacer el ejemplo reproducible implican más chances de que algún usuario responda, más rápido y con más claridad.&lt;/p&gt;
+&lt;div id=&#34;datos-minimos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Datos mínimos&lt;/h2&gt;
+&lt;p&gt;Hay dos formas principales de obtener sets de datos para ejemplos reproducibles, creándolos uno mismo o usando datos que vienen en distintos paquetes. La cantidad de sets de datos a los que cualquier usuario de R puede tener acceso sin salir de casa &lt;a href=&#34;http://vincentarelbundock.github.io/Rdatasets/datasets.html&#34;&gt;es inmensa&lt;/a&gt;. Distintos datos sirven para ilustrar distintos problemas.&lt;/p&gt;
+&lt;p&gt;Por ejemplo, yo trabajo mucho con datos espaciales en grillas regulares y si quiero probar algo uso mucho el dataset &lt;code&gt;volcano&lt;/code&gt;, que tiene información topográfica del volcán Maunga Whau en Auckland con una resolución de 10m. Como es una matriz y en general prefiero trabajar con data.frames, para usarla tengo que usar &lt;code&gt;reshape2::melt()&lt;/code&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
+ggplot(reshape2::melt(volcano), aes(Var1, Var2)) +
+   geom_contour(aes(z = value, color = ..level..)) +
+   coord_equal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../post/2018-01-06-buen-ejemplo-reproducible_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Para datos más puntales, &lt;code&gt;ggplot2&lt;/code&gt; tiene el dataset &lt;code&gt;diamonds&lt;/code&gt; que contiene más de 50.000 filas de datos numéricos y factores&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(diamonds, aes(carat, price)) +
+   geom_point(aes(color = clarity)) +
+   facet_grid(color ~ cut)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../post/2018-01-06-buen-ejemplo-reproducible_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Y para el que prefiera autos de lujo a anillos de diamantes, está &lt;code&gt;mtcars&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Si uno prefiere usar datos ficticios, siempre puede generar números aleatorios con &lt;code&gt;rnorm&lt;/code&gt;, &lt;code&gt;runif&lt;/code&gt;, &lt;code&gt;rgamma&lt;/code&gt; o cualquier otra distribución (ver &lt;code&gt;?distributions&lt;/code&gt; para una lista). &lt;strong&gt;Siempre&lt;/strong&gt; que uno use alguna de estas funciones tiene que setear la semilla del generador de números aleatorios con &lt;code&gt;set.seed()&lt;/code&gt;. De esta forma uno se asegura que todo aquel que ejecute el código obtenga exactamente los mismos números (pero aleatorios 🤔).&lt;/p&gt;
+&lt;p&gt;Una función que a mí me resolvió muchísimos problemas es &lt;code&gt;expand.grid&lt;/code&gt;. Devuelve un data.frame con todas las combinaciones de los elementos de distintos vectores. Es una función muy flexible que puede ser usada para generar una grilla regular&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;df &amp;lt;- expand.grid(x = 1:10, y = 1:10)
+df$z &amp;lt;- with(df, x*y)
+ggplot(df, aes(x, y)) +
+   geom_tile(aes(fill = z))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../post/2018-01-06-buen-ejemplo-reproducible_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;o para asignar valores a distintos factores&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
+df &amp;lt;- expand.grid(tiempo = 1:30, sujeto = factor(letters[1:3]))
+set.seed(42)
+df$valor &amp;lt;- with(df, tiempo*0.1*as.numeric(sujeto) + rnorm(nrow(df)))
+ggplot(df, aes(tiempo, valor, color = sujeto)) +
+   geom_line()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../post/2018-01-06-buen-ejemplo-reproducible_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;A veces los problemas dependen de los datos utilizados. Si resulta imposible reproducir un problema con datos públicos o artificiales, la última opción es compartir los datos propios. En ese caso, lo que uno debe hacer es minimizar los datos para que puedan ser compartidos fácilmente. Por ejemplo, yo estaba teniendo unos problemas con unos datos de &lt;a href=&#34;https://en.wikipedia.org/wiki/Stream_function&#34;&gt;función corriente&lt;/a&gt; para distintos modelos climáticos y distintas estaciones. Parte de resolverlo implicó reducirlo a sólo un campo.&lt;/p&gt;
+&lt;p&gt;Si los datos reducidos quedan bastante chicos, la manera más fácil de compartirlos es con la función &lt;code&gt;dput&lt;/code&gt;, que convierte un objeto de R en un código que lo reproduce:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dput(cars)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## structure(list(speed = c(4, 4, 7, 7, 8, 9, 10, 10, 10, 11, 11, 
+## 12, 12, 12, 12, 13, 13, 13, 13, 14, 14, 14, 14, 15, 15, 15, 16, 
+## 16, 17, 17, 17, 18, 18, 18, 18, 19, 19, 19, 20, 20, 20, 20, 20, 
+## 22, 23, 24, 24, 24, 24, 25), dist = c(2, 10, 4, 22, 16, 10, 18, 
+## 26, 34, 17, 28, 14, 20, 24, 28, 26, 34, 34, 46, 26, 36, 60, 80, 
+## 20, 26, 54, 32, 40, 32, 40, 50, 42, 56, 76, 84, 36, 46, 68, 32, 
+## 48, 52, 56, 64, 66, 54, 70, 92, 93, 120, 85)), class = &amp;quot;data.frame&amp;quot;, row.names = c(NA, 
+## -50L))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Si aún reduciéndolo al mínimo los datos son demasiado grandes o complicados para compartirlos como texto, la mejor opción es guardarlo como un archivo .Rds&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;saveRDS(diamonds, file = &amp;quot;diamonds.Rds&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;y luego subir el archivo a algún sitio de intercambio.&lt;/p&gt;
+&lt;p&gt;En el código de ejemplo, leer los archivos con&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;diamonds &amp;lt;- readRDS(&amp;quot;diamonds.Rds&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;codigo-minimo&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Código mínimo&lt;/h2&gt;
+&lt;p&gt;Una vez que se tiene la menor cantidad de datos que reproducen un problema, lo que sigue es minimizar el código. A veces puede ser complicado, pero a grandes rasgos son cuestiones obvias.&lt;/p&gt;
+&lt;p&gt;Cargar la menor cantidad de paquetes posibles. No crear variables innecesariamente. Si es una cuestión con gráficos, sacar la mayor cantidad de personalización posible (usar las escalas default en &lt;code&gt;ggplot2&lt;/code&gt;, por ejemplo).&lt;/p&gt;
+&lt;p&gt;Personalmente, si el código original usa sintaxis de &lt;code&gt;dplyr&lt;/code&gt; o &lt;code&gt;data.table&lt;/code&gt; (mi favorita 💜), trato de reducir todo a R base. Casi seguro que el problema no está ahí y no está bueno obligar a otros a instalar paquetes nuevos para ayudar.&lt;/p&gt;
+&lt;p&gt;Todo esto requiere una intuición de dónde podría estar el error pero en caso de no tenerla, ayuda a desarrollarla. Ir sacando pedazos de código y chequeando si el problema continua es una buena forma de encontrar la causa del problema. Como dijo Sherlock:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Una vez descartado lo imposible, el código que queda, por improbable que parezca, debe ser la causa del error.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;(o algo así)&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;finalmente&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Finalmente&lt;/h2&gt;
+&lt;p&gt;Una vez que están los datos mínimos y el código mínimo, hay que compartir todo eso. Uno de mis paquetes favoritos y que uso constantemente es &lt;a href=&#34;https://github.com/tidyverse/reprex&#34;&gt;&lt;code&gt;reprex&lt;/code&gt;&lt;/a&gt;. Es un paquete pensado especialmente para hacer desaparecer todas las dificultades de compartir código y es increíblemente fácil de usar.&lt;/p&gt;
+&lt;p&gt;Una vez que se tiene el código escrito, lo único que hay que hacer es copiarlo todo al portapapeles y correr &lt;code&gt;reprex::reprex()&lt;/code&gt; para que lo corra y copie el resultado en el portapapeles. Si hay gráficos, los sube automáticamente a imgur y genera los tags correctos para que se vean bien. Muestra los mensajes de error que aparezcan y permite elegir distintas convenciones de código según si queremos compartir nuestro ejemplo en GitHub, StackOverflow o un script de R.&lt;/p&gt;
+&lt;p&gt;Por ejemplo, dándole el código anterior, &lt;code&gt;reprex&lt;/code&gt; devuelve esto:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;```r
+library(ggplot2)
+df &amp;lt;- expand.grid(tiempo = 1:30, sujeto = factor(letters[1:3]))
+dfset.seed(42)
+$valor &amp;lt;- with(df, tiempo*0.1*as.numeric(sujeto) + rnorm(nrow(df)))
+ggplot(df, aes(tiempo, valor, color = sujeto)) +
+   geom_line()
+```
+
+![](https://i.imgur.com/51BdMze.png)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Que está listo para pegar en GitHub y que salga todo perfecto.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;buen-reprex-mata-galan&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Buen reprex mata galán&lt;/h2&gt;
+&lt;p&gt;Pedir ayuda o reportar bugs con un buen ejemplo mínimo reproducible mejora la calidad de las consultas, ayuda a los que quieren ayudar, te hace ganar amigos y bajar 7 libras en 2 semanas. Sea bueno, haga un reprex.&lt;/p&gt;
+&lt;/div&gt;
+</description>
     </item>
     
     <item>
@@ -140,8 +2264,143 @@ Un buen ejemplo reproducible (o reprex) es básicamente el feliz matrimonio entr
       <pubDate>Thu, 21 Dec 2017 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/2017/12/calcular-ipe-r/</guid>
-      <description>El Índice de Precipitación Estandarizado (SPI por Standarized Precipitation Index) es un índice para evaluar el estado de sequía o exceso de lluvia. La idea del SPI es tener una idea de qué tan probable es tener una cantidad de lluvia igual o menor. Valores altos del SPI están asociados con épocas muy húmedas mientras que valores bajos indican sequía.
-En la práctica lo que se hace es la función de probabilidad acumulada a partir de los registros históricos y luego estimar la probabilidad para la cantidad observada en cada mes.</description>
+      <description>
+
+
+&lt;p&gt;El Índice de Precipitación Estandarizado (SPI por Standarized Precipitation Index) es un índice para evaluar el estado de sequía o exceso de lluvia. La idea del SPI es tener una idea de qué tan probable es tener una cantidad de lluvia igual o menor. Valores altos del SPI están asociados con épocas muy húmedas mientras que valores bajos indican sequía.&lt;/p&gt;
+&lt;p&gt;En la práctica lo que se hace es la función de probabilidad acumulada a partir de los registros históricos y luego estimar la probabilidad para la cantidad observada en cada mes. Luego, esa probabildiad se convierte a su cuantil apropiado según una distribución normal estándar. De manera que, al final, el SPI indica cuántos desvíos estándar lejos de la media es la precipitación en cada mes.&lt;/p&gt;
+&lt;p&gt;En otras palabras, a grandes razgos:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;spi &amp;lt;- qnorm(ecdf(precipitacion)(precipitacion))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Algunos detalles extra:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;antes se suele aplica un promedio móvil para capturar las variaciones de precipitación en determinadas escalas temporales.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;el SPI calculado de esta manera da casos con precipitación tan extrema que R tira &lt;span class=&#34;math inline&#34;&gt;\(\pm \infty\)&lt;/span&gt;. Entonces hay que rellenar esos datos de manera que el desvío etándar de toda la serie siga siendo 1 y luego restar la media para que quede centrado en 0.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;En R existe un paquete llamado &lt;code&gt;spi&lt;/code&gt;, pero analizando el código fuente de &lt;code&gt;spi::spi&lt;/code&gt;, me parece que tiene algunos bugs importantes que hacen que su resultado no sea fiable. Aparentemente una traducción de un código de FORTRAN o algún otro lenguaje de bajo nivel, en un bloque &lt;code&gt;if&lt;/code&gt; en el que debería transponer la matriz de datos, en realidad resulta una matriz con sólo 3 columnas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;for (i in 2:ncolumn) {
+   if (i == 2) {
+      data_aux1 = rbind(t(data[i - 1, ]), t(data[i, ]))
+   }
+   else {
+      data_aux = rbind(data_aux1, t(data[i, ]))    # acá está el problema
+   }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Siguiendo lo que hace el &lt;code&gt;for&lt;/code&gt;, se ve que al final el &lt;code&gt;data_aux&lt;/code&gt; es una matriz transpuesta pero sólo de las columnas de &lt;code&gt;data&lt;/code&gt; 1, 2 y &lt;code&gt;ncolum&lt;/code&gt;. La matriz &lt;code&gt;data_aux&lt;/code&gt; es la que luego se usa para estimar la función de probabilidad acumulada; en vez de hacerse sobre toda la serie, se hace sobre 3 años.&lt;/p&gt;
+&lt;p&gt;Además, el SPI debe estimarse &lt;strong&gt;para cada mes por separado&lt;/strong&gt; de manera de filtrar cualquier ciclo estacional. Pero &lt;code&gt;spi::spi&lt;/code&gt; hace el cálculo sobre todo junto. Esto explica por qué en el gráfico de ejemplo se ve un claro ciclo estacional que no debería estar ahí.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(spi)
+data(spi_data)
+write.table(spi_data,file=&amp;quot;spi.txt&amp;quot;,quote=FALSE,row.names=TRUE)
+spi::spi(7,&amp;quot;spi.txt&amp;quot;,1963,2010,&amp;quot;Standardized Precipitation Index - Rio Grande do Norte State&amp;quot;,1,&amp;quot;years&amp;quot;,&amp;quot;months&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../post/2017-12-21-como-calcular-spi-r_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Existe otro paquete, &lt;a href=&#34;https://cran.r-project.org/web/packages/precintcon/index.html&#34;&gt;&lt;code&gt;precintcon&lt;/code&gt;&lt;/a&gt;, que no parece tener esos problemas y además en vez de estimar la distribución de probabilidad acumulada, le ajusta una distribución Gamma, que es bastante usada para modelar precipitación. El problema, para mí, es que las funciones relacionadas con PSI sólo se pueden aplicar sobre data.frames enteros y con clases especiales. Yo prefiero trabajar con clases primitivas que sé lo que hacen y qué son y que brinden más libertad al usuario. En particular, prefiero datos que estén en formato &lt;em&gt;tidy&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Pero entonces hay que armarse la función propia:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Media movil
+rollmean &amp;lt;- function(x, k = 3, na.rm = TRUE) {
+   lapply(k, function(e) .rollmean(x, e, na.rm = na.rm))
+}
+
+.rollmean &amp;lt;- function(x, k, na.rm ) {
+   i &amp;lt;- seq_along(x)
+   j &amp;lt;- i - k + 1
+   j &amp;lt;- ifelse(j &amp;lt;= 0, 1, j)
+   pp &amp;lt;- sapply(i, function (e)  mean(x[j[e]:e], na.rm = na.rm))
+}
+
+# SPI
+spi &amp;lt;- function(pp) {
+   norm &amp;lt;- qnorm(ecdf(pp)(pp))
+   
+   # de http://www.cmc.org.ve/mediawiki/index.php?title=Herramienta_en_R_para_diagn%C3%B3stico
+   norm.fin &amp;lt;- norm[norm != Inf &amp;amp; norm != -Inf]
+   minimize &amp;lt;- function(x) (1 - sd(c(x, norm.fin)))^2
+   norm[norm == Inf] &amp;lt;- optimize(minimize, lower=0, upper=100)$minimum
+   return(norm - mean(norm))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;La razón por la cual hay 2 funciones de media móvil es que la primera está vectorizada en &lt;code&gt;k&lt;/code&gt;, lo que significa que se puede hacer &lt;code&gt;roll &amp;lt;- rollmean(x, 1:3)&lt;/code&gt; para obtener una lista con 3 medias móviles con distinto &lt;code&gt;k&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Y listo. Para probar la función con los datos de &lt;code&gt;spi&lt;/code&gt;, primero hay que tenerlos en un formato razonable.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(data.table)
+pp &amp;lt;- setDT(melt(spi_data, id.vars = &amp;quot;Months&amp;quot;, variable.name = &amp;quot;year&amp;quot;, value.name = &amp;quot;pp&amp;quot;))
+pp[, year := as.numeric(substr(year, 2, 5))]
+pp[, month.n := 1:7, by = year]
+pp[, date := lubridate::ymd(paste0(year, &amp;quot;-&amp;quot;, month.n, &amp;quot;-15&amp;quot;))]
+
+pp &amp;lt;- pp[, .(date, pp)]
+knitr::kable(head(pp))&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;date&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;pp&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1963-01-15&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;74.1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1963-02-15&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;155.2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1963-03-15&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;226.4&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1963-04-15&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;186.7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1963-05-15&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;37.2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1963-06-15&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;23.6&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Así, con una observación de precipitación para cada fecha, podemos calcular el SPI en una sola línea:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pp[, pp.roll := rollmean(pp, k = 3)]
+pp[, SPI := spi(pp.roll), by = month(date)]
+
+meses &amp;lt;- c(&amp;quot;Ene&amp;quot;, &amp;quot;Feb&amp;quot;, &amp;quot;Mar&amp;quot;, &amp;quot;Abr&amp;quot;, &amp;quot;May&amp;quot;, &amp;quot;Jun&amp;quot;, 
+           &amp;quot;Jul&amp;quot;, &amp;quot;Ago&amp;quot;, &amp;quot;Sep&amp;quot;, &amp;quot;Oct&amp;quot;, &amp;quot;Nov&amp;quot;, &amp;quot;Dic&amp;quot;)
+spi.breaks &amp;lt;- c(-2.4, -2, -1.6, -1.3, -0.8, -0.5, 0.5, 0.8, 1.3, 1.6, 2, 2.4)
+library(ggplot2)
+ggplot(pp, aes(month(date), year(date))) +
+   geom_contour(aes(z = SPI, color = ..level..), breaks = spi.breaks) +
+   scale_color_distiller(name = &amp;quot;SPI&amp;quot;, 
+                         palette = &amp;quot;BrBG&amp;quot;, direction = 1) +
+   scale_x_continuous(name = &amp;quot;Mes&amp;quot;, expand = c(0, 0), 
+                      breaks = 1:7, 
+                      labels = meses[1:7]) +
+   scale_y_continuous(name = &amp;quot;Año&amp;quot;, expand = c(0, 0), trans = &amp;quot;reverse&amp;quot;) +
+   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../post/2017-12-21-como-calcular-spi-r_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Cabe aclarar que como los datos no cubren todo el año, en realidad el promedio movil no tiene sentido. Para probarlo voy a primero crear una serie de datos sintética con un ciclo anual.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pp2 &amp;lt;- data.table(date = seq.Date(as.Date(&amp;quot;1985-01-01&amp;quot;), as.Date(&amp;quot;2015-12-01&amp;quot;), 
+                                  by = &amp;quot;1 month&amp;quot;))
+set.seed(42)    # ¡reproducible!
+pp2[, pp := rgamma(.N, shape = 1, scale = 10*(cos((month(date) - 1)/11*pi*2) + 1))]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Y ahora sí, calcular el SPI como se debe y para todas las escalas de tiempo que queramos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pp2[, as.character(1:12) := rollmean(pp, 1:12)]
+pp.long &amp;lt;- melt(pp2[, -&amp;quot;pp&amp;quot;], id.vars = &amp;quot;date&amp;quot;, variable.name = &amp;quot;k&amp;quot;, value.name = &amp;quot;pp&amp;quot;)
+pp.long[, k := as.numeric(as.character(k))]
+pp.long[, SPI := spi(pp), by = .(month(date), k)]
+
+ggplot(pp.long, aes(date, k)) +
+   geom_tile(aes(fill = SPI, color = SPI)) +
+   scale_fill_distiller(name = &amp;quot;SPI&amp;quot;, 
+                         palette = &amp;quot;BrBG&amp;quot;, direction = 1) +
+      scale_color_distiller(name = &amp;quot;SPI&amp;quot;, 
+                         palette = &amp;quot;BrBG&amp;quot;, direction = 1) +
+   scale_x_date(name = &amp;quot;Fecha&amp;quot;, expand = c(0, 0)) +
+   scale_y_continuous(name = &amp;quot;Escala temporal&amp;quot;, expand = c(0, 0), 
+                      breaks = 1:12) +
+   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../post/2017-12-21-como-calcular-spi-r_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+</description>
     </item>
     
   </channel>

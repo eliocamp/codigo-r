@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Packages on Code R</title>
+    <link>https://eliocamp.github.io/codigo-r/en/tags/packages/</link>
+    <description>Recent content in Packages on Code R</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es-es</language>
+    <lastBuildDate>Thu, 03 Jan 2019 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="https://eliocamp.github.io/codigo-r/en/tags/packages/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Statistical metamerism</title>
+      <link>https://eliocamp.github.io/codigo-r/en/2019/01/statistical-metamerism/</link>
+      <pubDate>Thu, 03 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://eliocamp.github.io/codigo-r/en/2019/01/statistical-metamerism/</guid>
+      <description>
+
+
+&lt;div id=&#34;summary&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Summary&lt;/h1&gt;
+&lt;p&gt;The &lt;a href=&#34;https://github.com/eliocamp/metamer&#34;&gt;metamer&lt;/a&gt; package implements &lt;span class=&#34;citation&#34;&gt;Matejka and Fitzmaurice (&lt;a href=&#34;#ref-Matejka2017&#34;&gt;2017&lt;/a&gt;)&lt;/span&gt; algorithm for generating datasets with distinct appearance but identical statistical properties. I propose to call them “metamers” as an analogy with the colorimetry concept.&lt;/p&gt;
+&lt;div id=&#34;metamers-in-vision&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Metamers in vision&lt;/h2&gt;
+&lt;p&gt;This is &lt;strong&gt;not&lt;/strong&gt; a prism separating white light into its component wavelengths. It is an &lt;em&gt;image&lt;/em&gt; of a prism separating white light into its component wavelengths.&lt;/p&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:prism&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../../../images/Prism_flat_rainbow.jpg&#34; alt=&#34;C&#39;est ne pas un prisme.&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 1: C’est ne pas un prisme.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;This is not just a Magritte-style observation. The important distinction comes into play when you realise that the monitor you are looking at has just three LEDs that emit light in just three wavelengths (sort of). How can it still reproduce a full spectrum of light? It doesn’t. For each (approximately) monochromatic colour in that rainbow, your monitor is actually emitting an unique mixture of red, green and blue light that tricks your visual system (and mine) into seeing the colour associated with that wavelength.&lt;/p&gt;
+&lt;p&gt;How that works is unreasonably complex and beyond what I can explain in this article (I do recommend this &lt;a href=&#34;http://jamie-wong.com/post/color/&#34;&gt;amazing article&lt;/a&gt;, though) but the core insight is that our eyes have only three colour receptors that are sensible to wide range of short (S), medium (M) and long (L) wavelengths. Any spectrum distribution that reaches our eyes is reduced to just three numbers: the excitation of the S, M and L receptors. Hence, any spectrum distribution that excites them in the same way will be perceived as the same colour, even if they are wildly different. In colorimetry this is known as &lt;em&gt;metamerism&lt;/em&gt; &lt;span class=&#34;citation&#34;&gt;(Hunt &lt;a href=&#34;#ref-Hunt2004-7&#34;&gt;2004&lt;/a&gt;)&lt;/span&gt;. The monochromatic yellow emitted by the prism looks to you identical as the red, green and blue mixture emitted by of your monitor even though their spectrum distribution is not even remotely similar. They are metamers.&lt;/p&gt;
+&lt;p&gt;Coming up with metameric matches is the basis for colour reproduction in computer screens, printing and painting, but it also has a dark side. Two pigments can be metameric matches under certain light conditions but have very different colours when illuminated with another type light. This can be a problem, for example, when buying clothes in a store with artificial lighting and then wearing them outside.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;metamers-in-statistics&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Metamers in statistics&lt;/h2&gt;
+&lt;p&gt;Now let’s focus our attention on the famous Anscombe quartet&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:anscombe-plot&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../../../post/2018-12-18-metamerismo-estad%C3%ADstico.en_files/figure-html/anscombe-plot-1.png&#34; alt=&#34;Anscombe quartet&#34; width=&#34;672&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 2: Anscombe quartet
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Even though they are very different datasets, the members of the quartet have the same mean and standard deviation of each variable as well as the correlation between the two &lt;span class=&#34;citation&#34;&gt;(Anscombe &lt;a href=&#34;#ref-Anscombe1973&#34;&gt;1973&lt;/a&gt;)&lt;/span&gt;. From the point of view of that statistical transformation, the four datasets look the same even though they are not even remotely similar. They are metamers.&lt;/p&gt;
+&lt;p&gt;And exactly the same as metameric colour matches, statistical metamers reveal their differences when viewed under a new light. In this case, when plotted.&lt;/p&gt;
+&lt;p&gt;The concept of “data with different graphs but same statistics” is still relevant, with multiple published papers describing methods for their creation &lt;span class=&#34;citation&#34;&gt;(e.g. Chatterjee and Firat &lt;a href=&#34;#ref-Chatterjee2007&#34;&gt;2007&lt;/a&gt;; Govindaraju and Haslett &lt;a href=&#34;#ref-Govindaraju2008&#34;&gt;2008&lt;/a&gt;; Haslett and Govindaraju &lt;a href=&#34;#ref-Haslett2009&#34;&gt;2009&lt;/a&gt;; Matejka and Fitzmaurice &lt;a href=&#34;#ref-Matejka2017&#34;&gt;2017&lt;/a&gt;)&lt;/span&gt;. In this post I will use the term “metamers” to refer to sets of datasets that have the same behaviour under some statistical transformation as an analogy with the colorimetry concept.&lt;/p&gt;
+&lt;p&gt;The &lt;a href=&#34;https://github.com/eliocamp/metamer&#34;&gt;metamer&lt;/a&gt; package implements &lt;span class=&#34;citation&#34;&gt;Matejka and Fitzmaurice (&lt;a href=&#34;#ref-Matejka2017&#34;&gt;2017&lt;/a&gt;)&lt;/span&gt; algorithm to construct metamers. The main function, &lt;code&gt;metamerize()&lt;/code&gt;, generates metamers from an initial dataset and the statistical transformation that needs to be preserved. Optionally, it can take a function that will be minimised in each successive metamer.&lt;/p&gt;
+&lt;p&gt;First, the function &lt;code&gt;delayed_with()&lt;/code&gt; is useful for defining the statistical transformation that need to be preserved. The four datasets in the Anscombe quartet share these properties up to three significant figures.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(metamer)
+
+summ_fun &amp;lt;- delayed_with(mean_x = mean(x), 
+                         mean_y = mean(y), 
+                         sd_x = sd(x), 
+                         sd_y = sd(y), 
+                         cor_xy = cor(x, y))
+summ_names &amp;lt;-  c(&amp;quot;$\\overline{x}$&amp;quot;, &amp;quot;$\\overline{y}$&amp;quot;, 
+                 &amp;quot;$S_x$&amp;quot;,  &amp;quot;$S_y$&amp;quot;, &amp;quot;$r(x, y)$&amp;quot;)
+
+anscombe[, as.list(signif(summ_fun(.SD), 3)), by = quartet] %&amp;gt;% 
+   knitr::kable(col.names = c(&amp;quot;Quartet&amp;quot;, summ_names),
+                escape = FALSE, 
+                caption = &amp;quot;Statistical properties of the Anscombe quartet.&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;caption&gt;&lt;span id=&#34;tab:anscombe-summ&#34;&gt;Tab. 1: &lt;/span&gt;Statistical properties of the Anscombe quartet.&lt;/caption&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Quartet&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(\overline{x}\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(\overline{y}\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(S_x\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(S_y\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(r(x, y)\)&lt;/span&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.817&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;To find metamers “between” the first and second quartet, one can start from one and generate metamers that minimise the mean distance to the other. The &lt;code&gt;mean_dist_to()&lt;/code&gt; function is a handy utility for that case.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Extracts the first quartet and removes the `quartet` column.
+start_data &amp;lt;- subset(anscombe, quartet == 1)
+start_data$quartet &amp;lt;- NULL
+
+# Extracts the second quartet and removes the `quartet` column.
+target &amp;lt;- subset(anscombe, quartet == 2)
+target$quartet &amp;lt;- NULL
+
+set.seed(42)  # for reproducibility
+metamers &amp;lt;- metamerize(start_data, 
+                       preserve = summ_fun,
+                       minimize = mean_dist_to(target), 
+                       signif = 3,
+                       change = &amp;quot;y&amp;quot;,
+                       perturbation = 0.008, 
+                       N = 30000)
+print(metamers)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 4690 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The process generates 4689 metamers plus the original dataset. Selecting only 10 of them with &lt;code&gt;trim()&lt;/code&gt; and applying &lt;code&gt;summ_fun()&lt;/code&gt; to each one, it is confirmed that they have the same properties up to three significant figures.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;metamers %&amp;gt;% 
+   trim(10) %&amp;gt;% 
+   lapply(summ_fun) %&amp;gt;% 
+   lapply(signif, digits = 3) %&amp;gt;% 
+   do.call(rbind, .) %&amp;gt;% 
+   knitr::kable(col.names = c(summ_names),
+                caption = &amp;quot;Statistical properties of the generated metamers (rounded to three significant figures).&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;caption&gt;&lt;span id=&#34;tab:anscombe-metamers&#34;&gt;Tab. 2: &lt;/span&gt;Statistical properties of the generated metamers (rounded to three significant figures).&lt;/caption&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(\overline{x}\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(\overline{y}\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(S_x\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(S_y\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(r(x, y)\)&lt;/span&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;With &lt;a href=&#34;https://github.com/thomasp85/gganimate&#34;&gt;gganimate&lt;/a&gt; it is possible to visualise the transformation. Every intermediate step is a metamer of the original.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(gganimate)
+
+metamers %&amp;gt;% 
+   trim(100) %&amp;gt;% 
+   as.data.frame() %&amp;gt;% 
+   ggplot(aes(x, y)) +
+   geom_point() +
+   transition_manual(.metamer)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:anscombe-animate&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../../../post/2018-12-18-metamerismo-estad%C3%ADstico.en_files/figure-html/anscombe-animate-1.gif&#34; alt=&#34;Metamorphosys of the first two quartets.&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 3: Metamorphosys of the first two quartets.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;The discussion around statistical metamerism is usually framed as the importance of visualising data instead of relying on summary statistics. Anscombe created his quartet to rebut the idea that “numerical calculations are exact, but graphs are rough”. Now this is still the interpretation of the phenomenon:&lt;/p&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:tweet&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../../../images/datasaurus_tweet.png&#34; alt=&#34;Download the datasaurus. ([Tweet](https://twitter.com/albertocairo/status/770267777169035264))&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 4: Download the datasaurus. (&lt;a href=&#34;https://twitter.com/albertocairo/status/770267777169035264&#34;&gt;Tweet&lt;/a&gt;)
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;However, I believe there is a more fundamental principle at play. The problem with &lt;em&gt;summary statistics&lt;/em&gt; is the &lt;em&gt;summary&lt;/em&gt; part. In many cases, the role of statistics is to sum up data. To take a big set of observations that cannot be grasped in their entirety because the limitations of our comprehension, and condense them into a few numbers or properties that we can easily get. The problem is that what is gained in understanding is lost in information.&lt;/p&gt;
+&lt;p&gt;For example, a complete earnings census is a huge amount of data, but as raw numbers they are impossible to understand. One can start by taking the average (first moment) to get some idea of the “typical” earning of a citizen. Of course, this single number hides a great deal of income inequality, so one can compute the standard deviation (second moment) to get an idea of the variability. It is very likely, though, that the distribution is not symmetrical, and one can use the skewness (third moment) to quantify that.&lt;/p&gt;
+&lt;p&gt;With each subsequent moment one can get a richer picture of the underlying data. The limit is when one has the same amount of moments as the sample size. A single univariate sample of size N can be unequivocally described by its N first moments. This makes sense intuitively –why should you need more than N numbers to describe N numbers?– but it can be &lt;a href=&#34;https://math.stackexchange.com/questions/3033407/is-a-sample-of-size-n-uniquely-described-by-n-sample-moments&#34;&gt;demonstrated&lt;/a&gt;&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In other words, the transformation “first N moments” has no metamers for samples smaller than N, except for any permutation of the same sample (but see &lt;a href=&#34;#fn1&#34;&gt;1&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;But this property is not exclusive to statistical moments. The same goes for the fourier transform, principal component analysis, factor analysis, clustering, etc….&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; The issue is not plots vs. numbers but “all the numbers” vs. “just some numbers”. The big advantage of plots is that they can show an enormous amount of numbers efficiently and intuitively, in addition allowing to see a &lt;em&gt;gestalt&lt;/em&gt; that is impossible to get by just looking at series of numbers.&lt;/p&gt;
+&lt;p&gt;With this in mind, it is possible to predict when it will be easy to find metamers and in which cases it is a mathematical impossibility. For example, it is impossible to find metamers of a sample of size 10 that preserves 10 moments.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(42) 
+start_data &amp;lt;- data.frame(x = rnorm(10))
+
+metamerize(start_data, 
+           moments_n(1:10),
+           signif = 3,
+           perturbation = 0.05,
+           N = 30000)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 1 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But it is possible to find metamers that preserve just two.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(42) 
+metamerize(start_data, 
+           moments_n(1:2), 
+           signif = 3,
+           perturbation = 0.01,
+           N = 30000)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 310 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Boxplots try to represent a sample with about 5 numbers. Hence, it is expected to have metamerism for samples with &lt;span class=&#34;math inline&#34;&gt;\(N&amp;gt;5\)&lt;/span&gt;. A density estimation using parametric methods, on the other hand, can be evaluated at potentially infinite points even for small samples. The possibility of metamerism in this case depends on the “resolution” with which the curve is described. If it is rendered with fewer points than the sample size, then it will metamerise.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;coarse_density &amp;lt;- function(data) {
+   density(data$x, n = 16)$y
+}
+set.seed(42) 
+metamerize(data.frame(x = rnorm(100)),
+           preserve = coarse_density,
+           N = 5000,
+           signif = 3,
+           perturbation = 0.001)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 11 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;However, if it is rendered with more points, it will not metamerise.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;highdef_density &amp;lt;- function(data) {
+   density(data$x, n = 200)$y
+}
+set.seed(42) 
+metamerize(data.frame(x = rnorm(100)),
+           preserve = highdef_density,
+           N = 5000,
+           signif = 3,
+           perturbation = 0.001)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 1 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The general principle works, but it is not complete. Imagine a statistical transformation defined as the sample mean repeated N times. Even though it returns N numbers from a N-sized sample, it does not have more information than just the mean. Generating metamers is then trivial.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean_n_times &amp;lt;- function(data) {
+   rep(mean(data$x), length.out = length(data$x))
+}
+set.seed(42) 
+metamerize(data.frame(x = rnorm(100)),
+           preserve = mean_n_times,
+           perturbation = 0.1, 
+           N = 1000)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 43 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This motivates to define the category of “effective” statistical transformations as transformation that can uniquely describe a univariate sample of size N with, at most, N numbers. Under this definition, “the first N moments” is effective, while “the first moment repeated N times” is no. At this point, this is pure speculation, so take it with a grain of salt.&lt;/p&gt;
+&lt;p&gt;It is worth noticing that when searching for metamers empirically there is a need to set the numerical tolerance (with the argument &lt;code&gt;signif&lt;/code&gt;). Being pedantic, these are more like “semi-metamers” than true metamers. With a high enough tolerance it is possible to find (semi) metamers even when it should not be possible.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(42) 
+metamerize(data.frame(x = rnorm(3)),
+                       moments_n(1:4), 
+                       signif = 1, 
+                       perturbation = 0.001, 
+                       N = 1000)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 1000 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;advanced-metamers&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Advanced metamers&lt;/h2&gt;
+&lt;p&gt;I would like to close with a showcase of some utilities in the metamer package. &lt;code&gt;draw_data()&lt;/code&gt; opens up a shiny interface to freehand draw datasets with an optional dataset as backdrop.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;start_data &amp;lt;- subset(datasauRus::datasaurus_dozen, dataset == &amp;quot;dino&amp;quot;)
+start_data$dataset &amp;lt;- NULL
+
+smiley &amp;lt;- draw_data(start_data)
+simley$.group &amp;lt;- NULL&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:draw-data&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../../../images/draw_data.png&#34; alt=&#34;`draw_data()` interface.&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 5: &lt;code&gt;draw_data()&lt;/code&gt; interface.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Moreover, &lt;code&gt;metamerize()&lt;/code&gt; can be piped, saving the parameters of each call (except &lt;code&gt;N&lt;/code&gt; and &lt;code&gt;trim&lt;/code&gt;). This way one can perform sequences.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;X &amp;lt;- subset(datasauRus::datasaurus_dozen, dataset == &amp;quot;x_shape&amp;quot;)
+X$dataset &amp;lt;- NULL
+
+star &amp;lt;- subset(datasauRus::datasaurus_dozen, dataset == &amp;quot;star&amp;quot;)
+star$dataset &amp;lt;- NULL&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;metamers &amp;lt;- metamerize(start_data, 
+                       preserve = delayed_with(mean(x), mean(y), cor(x, y)),
+                       minimize = mean_dist_to(smiley), 
+                       perturbation = 0.08,
+                       N = 30000,
+                       trim = 150) %&amp;gt;% 
+   metamerize(minimize = NULL, 
+              N = 3000, trim = 10) %&amp;gt;% 
+   metamerize(minimize = mean_dist_to(X), 
+              N = 30000, trim = 150) %&amp;gt;% 
+   metamerize(minimize = NULL, 
+              N = 3000, trim = 10) %&amp;gt;% 
+   metamerize(minimize = mean_dist_to(star), 
+              N = 30000, trim = 150) %&amp;gt;%
+   metamerize(minimize = NULL, 
+              N = 3000, trim = 10) %&amp;gt;% 
+   metamerize(minimize = mean_dist_to(start_data),
+              N = 30000, trim = 150)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This metamers show the datasaurus metamorphosing into different figures, always preserving the same statistical properties. This replicates &lt;a href=&#34;https://www.autodeskresearch.com/publications/samestats&#34;&gt;Justin Matejka’s y George Fitzmaurice’s animation&lt;/a&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;metamers %&amp;gt;% 
+   as.data.frame() %&amp;gt;% 
+   ggplot(aes(x, y)) +
+   geom_point() +
+   transition_manual(.metamer)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:metamer-chain-anim&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../../../post/2018-12-18-metamerismo-estad%C3%ADstico.en_files/figure-html/metamer-chain-anim-1.gif&#34; alt=&#34;Datasaurus metamorphisis.&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 6: Datasaurus metamorphisis.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;references&#34; class=&#34;section level2 unnumbered&#34;&gt;
+&lt;h2&gt;References&lt;/h2&gt;
+&lt;div id=&#34;refs&#34; class=&#34;references&#34;&gt;
+&lt;div id=&#34;ref-Anscombe1973&#34;&gt;
+&lt;p&gt;Anscombe, F J. 1973. “Graphs in Statistical Analysis.” &lt;em&gt;The American Statistician&lt;/em&gt; 27 (1): 17–21. &lt;a href=&#34;https://doi.org/10.1007/978-3-540-71915-1_35&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1007/978-3-540-71915-1_35&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Chatterjee2007&#34;&gt;
+&lt;p&gt;Chatterjee, Sangit, and Aykut Firat. 2007. “Generating data with identical statistics but dissimilar graphics: A follow up to the anscombe dataset.” &lt;em&gt;American Statistician&lt;/em&gt; 61 (3): 248–54. &lt;a href=&#34;https://doi.org/10.1198/000313007X220057&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1198/000313007X220057&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Govindaraju2008&#34;&gt;
+&lt;p&gt;Govindaraju, K., and S. J. Haslett. 2008. “Illustration of regression towards the means.” &lt;em&gt;International Journal of Mathematical Education in Science and Technology&lt;/em&gt; 39 (4): 544–50. &lt;a href=&#34;https://doi.org/10.1080/00207390701753788&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1080/00207390701753788&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Haslett2009&#34;&gt;
+&lt;p&gt;Haslett, S. J., and K. Govindaraju. 2009. “Cloning data: Generating datasets with exactly the same multiple linear regression fit.” &lt;em&gt;Australian and New Zealand Journal of Statistics&lt;/em&gt; 51 (4): 499–503. &lt;a href=&#34;https://doi.org/10.1111/j.1467-842X.2009.00560.x&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1111/j.1467-842X.2009.00560.x&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Hunt2004-7&#34;&gt;
+&lt;p&gt;Hunt, R. W. G. 2004. “The Colour Triangle.” In &lt;em&gt;The Reproduction of Colour&lt;/em&gt;, 6th ed., 68–91. &lt;a href=&#34;https://doi.org/10.1002/0470024275&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1002/0470024275&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Matejka2017&#34;&gt;
+&lt;p&gt;Matejka, Justin, and George Fitzmaurice. 2017. “Same Stats, Different Graphs.” &lt;em&gt;Proceedings of the 2017 CHI Conference on Human Factors in Computing Systems - CHI ’17&lt;/em&gt;, 1290–4. &lt;a href=&#34;https://doi.org/10.1145/3025453.3025912&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1145/3025453.3025912&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Technically, the solution is unique up to any permutation. This is not an accident. If the order matters, then it is a case of bivariate samples (each “datum” is actually a pair of values (x; y)). Intuition tells that besides the moment of each variable, the joint moments (covariance and such) are needed. So it seems plausible that in this case the matrix &lt;span class=&#34;math inline&#34;&gt;\(A^{N\times N}\)&lt;/span&gt;, where the element in the ith row and jth column is &lt;span class=&#34;math inline&#34;&gt;\(x^iy^j\)&lt;/span&gt; would be needed; which implies the need of &lt;span class=&#34;math inline&#34;&gt;\(N^2 -1\)&lt;/span&gt; moments.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;The fourier transform case is interesting because it describes an &lt;em&gt;ordered&lt;/em&gt; sample of size &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; with two ordered series of &lt;span class=&#34;math inline&#34;&gt;\(N/2\)&lt;/span&gt; numbers (one real and one imaginary) which sum up to &lt;span class=&#34;math inline&#34;&gt;\(2N\)&lt;/span&gt; numbers (the two series plus their respective order). This is much less than the assumed &lt;span class=&#34;math inline&#34;&gt;\(N^1-1\)&lt;/span&gt; needed in general. I suspect that this is because for this to happen, a regularly sampled series is needed. With this restriction, the fourier transform can “compress” the information.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

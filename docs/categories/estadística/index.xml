@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Estadística on Código R</title>
+    <link>https://eliocamp.github.io/codigo-r/categories/estad%C3%ADstica/</link>
+    <description>Recent content in Estadística on Código R</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>es-es</language>
+    <lastBuildDate>Thu, 03 Jan 2019 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="https://eliocamp.github.io/codigo-r/categories/estad%C3%ADstica/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Metamerismo estadístico</title>
+      <link>https://eliocamp.github.io/codigo-r/2019/01/metamerismo-estad%C3%ADstico/</link>
+      <pubDate>Thu, 03 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://eliocamp.github.io/codigo-r/2019/01/metamerismo-estad%C3%ADstico/</guid>
+      <description>
+
+
+&lt;div id=&#34;resumen&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Resumen&lt;/h1&gt;
+&lt;p&gt;El paquete &lt;a href=&#34;https://github.com/eliocamp/metamer&#34;&gt;metamer&lt;/a&gt; implementa en R el algoritmo descripto por &lt;span class=&#34;citation&#34;&gt;Matejka and Fitzmaurice (&lt;a href=&#34;#ref-Matejka2017&#34;&gt;2017&lt;/a&gt;)&lt;/span&gt; para generar sets de datos distintos entre sí pero con estadísticos idénticos. Además, propongo el nombre “metámeros” para estos grupos de datos en analogía con el concepto proveniente de colorimetría.&lt;/p&gt;
+&lt;div id=&#34;metameros-en-la-vision&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Metámeros en la visión&lt;/h2&gt;
+&lt;p&gt;Esto &lt;strong&gt;no es&lt;/strong&gt; un prisma separando la luz blanca en las longitudes de onda que la componen. Es una &lt;em&gt;imagen&lt;/em&gt; de un prisma separando la luz blanca en las longitudes de onda que la componen.&lt;/p&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:prism&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../../images/Prism_flat_rainbow.jpg&#34; alt=&#34;C&#39;est ne pas un prisme.&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 1: C’est ne pas un prisme.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Esta observación magrittiana no es trivial. El monitor que está mostrando la imagen sólo tiene tres LEDs que emiten luz en sólo tres longitudes de onda (más o menos). ¿Cómo hace para reproducir todo el espectro de la luz blanca? La respuesta es que no lo hace. Para cada color de ese arcoíris, el monitor está emitiendo una mezcla de longitudes de onda roja, verde y azul que nuestro sistema visual interpreta como el mismo color que esa longitud de onda específica.&lt;/p&gt;
+&lt;p&gt;Cómo sucede todo eso es complicadísimo y va más allá de lo que pueda explicar en este artículo (pero sí recomiendo leer &lt;a href=&#34;http://jamie-wong.com/post/color/&#34;&gt;esta excelente nota&lt;/a&gt; sobre el tema) pero el núcleo de la cuestión es que nuestros ojos tienen sólo tres tipos de receptores (conos) que responden a longitudes de onda cortas (S), medias (M) y largas (L). Por lo tanto, cualquier distribución de longitudes de onda que llegue a nuestros ojos, sin importar cuán complicada sea es reducida a únicamente tres números: la excitación de los receptores S, M y L. Y cualquier distribución de longitudes de onda que excite nuestros receptores en la misma proporción va a ser percibido como el mismo color. En colorimetría, esto se conoce como &lt;em&gt;metamerismo&lt;/em&gt; &lt;span class=&#34;citation&#34;&gt;(Hunt &lt;a href=&#34;#ref-Hunt2004-7&#34;&gt;2004&lt;/a&gt;)&lt;/span&gt;. El amarillo monocromático que se ve en un prisma se percibe igual que el amarillo producido por el monitor aunque no tenga ni remotamente el mismo espectro. Son metámeros.&lt;/p&gt;
+&lt;p&gt;La creación de pares metaméricos es la base de la reproducción del color en monitores, impresiones y cuadros, pero también tiene su lado oscuro. Dos pigmentos pueden ser pares metaméricos bajo ciertas condiciones de iluminación pero tener colores muy distintos en otras. Esto puede ser un problema, por ejemplo, al comprar ropa en un negocio con iluminación artificial y luego usarla bajo la luz del Sol.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;metameros-en-la-estadistica&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Metámeros en la estadística&lt;/h2&gt;
+&lt;p&gt;Ahora pensemos en el famoso cuarteto de Anscombe&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:anscombe-plot&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../../post/2018-12-18-metamerismo-estad%C3%ADstico_files/figure-html/anscombe-plot-1.png&#34; alt=&#34;Cuarteto de Anscombe&#34; width=&#34;672&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 2: Cuarteto de Anscombe
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;A pesar de ser cuatro sets de datos muy distintos, los miembros del cuarteto comparten el promedio y desvío estándar de cada variable, así como la correlación entre ambas &lt;span class=&#34;citation&#34;&gt;(Anscombe &lt;a href=&#34;#ref-Anscombe1973&#34;&gt;1973&lt;/a&gt;)&lt;/span&gt;. Vistos a través de esta transformación estadística, los cuatro sets de datos se ven iguales aún cuando no son ni remotamente similares. Son metámeros.&lt;/p&gt;
+&lt;p&gt;Al igual que los pares metaméricos de colores, los metámeros estadísticos muestran sus diferencias cuando se los ve con otra “iluminación.” En este caso, un gráfico.&lt;/p&gt;
+&lt;p&gt;El concepto de “datos con estadísticos idénticos pero gráficos distintos” todavía tiene relevancia, con varias publicaciones describiendo distintos métodos para crearlos &lt;span class=&#34;citation&#34;&gt;(p.e. Chatterjee and Firat &lt;a href=&#34;#ref-Chatterjee2007&#34;&gt;2007&lt;/a&gt;; Govindaraju and Haslett &lt;a href=&#34;#ref-Govindaraju2008&#34;&gt;2008&lt;/a&gt;; Haslett and Govindaraju &lt;a href=&#34;#ref-Haslett2009&#34;&gt;2009&lt;/a&gt;; Matejka and Fitzmaurice &lt;a href=&#34;#ref-Matejka2017&#34;&gt;2017&lt;/a&gt;)&lt;/span&gt; pero, que yo sepa, nunca fue nombrado. En analogía al metamerismo del color, en este artículo voy a llamar “metámeros” a cualquier conjunto de sets de datos que se comporta de forma idéntica bajo una determinada transformación estadística.&lt;/p&gt;
+&lt;p&gt;El paquete &lt;a href=&#34;https://github.com/eliocamp/metamer&#34;&gt;metamer&lt;/a&gt; implementa el algoritmo de &lt;span class=&#34;citation&#34;&gt;Matejka and Fitzmaurice (&lt;a href=&#34;#ref-Matejka2017&#34;&gt;2017&lt;/a&gt;)&lt;/span&gt; para generar metámeros. La función principal, &lt;code&gt;metamerize()&lt;/code&gt;, permite generar metámeros a partir de un data set inicial y una función a preservar. Opcionalmente, se puede establecer una función que deben minimizar los metámeros sucesivos.&lt;/p&gt;
+&lt;p&gt;Primero, la función &lt;code&gt;delayed_with()&lt;/code&gt; sirve para definir la serie de transformaciones estadísticas que deben ser preservadas. Los cuatro elementos del cuarteto de anscombe preservan estas propiedades con hasta tres cifras significativas (salvo por la correlación entre x e y en el cuarto cuarteto).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(metamer)
+
+summ_fun &amp;lt;- delayed_with(mean_x = mean(x), 
+                         mean_y = mean(y), 
+                         sd_x = sd(x), 
+                         sd_y = sd(y), 
+                         cor_xy = cor(x, y))
+summ_names &amp;lt;-  c(&amp;quot;$\\overline{x}$&amp;quot;, &amp;quot;$\\overline{y}$&amp;quot;, 
+                 &amp;quot;$S_x$&amp;quot;,  &amp;quot;$S_y$&amp;quot;, &amp;quot;$r(x, y)$&amp;quot;)
+
+anscombe[, as.list(signif(summ_fun(.SD), 3)), by = quartet] %&amp;gt;% 
+   knitr::kable(col.names = c(&amp;quot;Cuarteto&amp;quot;, summ_names),
+                escape = FALSE, 
+                caption = &amp;quot;Propiedades estadísticas del cuarteto de Anscombe&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;caption&gt;&lt;span id=&#34;tab:anscombe-summ&#34;&gt;Tab. 1: &lt;/span&gt;Propiedades estadísticas del cuarteto de Anscombe&lt;/caption&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Cuarteto&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(\overline{x}\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(\overline{y}\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(S_x\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(S_y\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(r(x, y)\)&lt;/span&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.817&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Para encontrar metámeros “entre” el primero y el segundo cuarteto, se puede empezar por el primero y generar metámeros que minimicen la distancia media al segundo. La función &lt;code&gt;mean_dist_to()&lt;/code&gt; sirve para este caso.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Extraigo el segundo cuarteto y eliminto la columna `quartet`
+start_data &amp;lt;- subset(anscombe, quartet == 1)
+start_data$quartet &amp;lt;- NULL
+
+# Exraigo el tercer cuarteto y eliminto la columna `quartet`
+target &amp;lt;- subset(anscombe, quartet == 2)
+target$quartet &amp;lt;- NULL
+
+set.seed(42)  # para resultados reproducibles
+metamers &amp;lt;- metamerize(start_data, 
+                       preserve = summ_fun,
+                       minimize = mean_dist_to(target), 
+                       signif = 3,
+                       change = &amp;quot;y&amp;quot;,
+                       perturbation = 0.008, 
+                       N = 30000)
+print(metamers)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 4690 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El proceso genera 4689 metámeros además de los datos originales. Seleccionando sólo 10 usando &lt;code&gt;trim()&lt;/code&gt; y aplicando &lt;code&gt;summ_fun()&lt;/code&gt; a cada uno se confirma que tienen las mismas propiedades con 3 cifras significativas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;metamers %&amp;gt;% 
+   trim(10) %&amp;gt;% 
+   lapply(summ_fun) %&amp;gt;% 
+   lapply(signif, digits = 3) %&amp;gt;% 
+   do.call(rbind, .) %&amp;gt;% 
+   knitr::kable(col.names = c(summ_names),
+                caption = &amp;quot;Propiedades estadísticas de los metámeros generados (redondeados a tres cifras significativas).&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;caption&gt;&lt;span id=&#34;tab:anscombe-metamers&#34;&gt;Tab. 2: &lt;/span&gt;Propiedades estadísticas de los metámeros generados (redondeados a tres cifras significativas).&lt;/caption&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(\overline{x}\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(\overline{y}\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(S_x\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(S_y\)&lt;/span&gt;&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;&lt;span class=&#34;math inline&#34;&gt;\(r(x, y)\)&lt;/span&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;right&#34;&gt;9&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.5&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3.32&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2.03&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.816&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Y usando &lt;a href=&#34;https://github.com/thomasp85/gganimate&#34;&gt;gganimate&lt;/a&gt; se puede visualizar cómo pasar del segundo al tercer cuarteto. Todos los pasos intermedios son metámeros del original.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(gganimate)
+
+metamers %&amp;gt;% 
+   trim(100) %&amp;gt;% 
+   as.data.frame() %&amp;gt;%
+   ggplot(aes(x, y)) +
+   geom_point() +
+   transition_manual(.metamer)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:anscombe-animate&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../../post/2018-12-18-metamerismo-estad%C3%ADstico_files/figure-html/anscombe-animate-1.gif&#34; alt=&#34;Transformación del segundo al tercer cuarteto de Anscombe.&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 3: Transformación del segundo al tercer cuarteto de Anscombe.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;En general la discusión alrededor del metamerismo estadístico suele ser sobre la importancia de graficar los datos en vez de únicamente calcular estadísticas resumidas. Anscombe creó su cuarteto para contradecir la idea de que “los cálculos numéricos son exactos, mientras que los gráficos son aproximados”. Actualmente esa es la interpretación que se sigue dando a este fenómeno:&lt;/p&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:tweet&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../../images/datasaurus_tweet.png&#34; alt=&#34;Descargá el Datasaurio: Nunca confíes sólo en las estadísticas resumidas; siempre visualizá tus datos. ([Tweet](https://twitter.com/albertocairo/status/770267777169035264))&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 4: Descargá el Datasaurio: Nunca confíes sólo en las estadísticas resumidas; siempre visualizá tus datos. (&lt;a href=&#34;https://twitter.com/albertocairo/status/770267777169035264&#34;&gt;Tweet&lt;/a&gt;)
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Sin embargo, creo que hay un principio más fundamental. El problema de las &lt;em&gt;summary statistics&lt;/em&gt; es la parte de &lt;em&gt;summary&lt;/em&gt;. El rol de la estadística es, en muchos casos, &lt;em&gt;resumir&lt;/em&gt; datos. Tomar una gran cantidad de observaciones que no pueden ser entendidas en su completitud porque nuestro entendimiento es limitado, y reducirlas a unos pocos números o propiedades que podemos entender fácilmente. El problema es que lo que se gana en entendimiento, se pierde información.&lt;/p&gt;
+&lt;p&gt;Por ejemplo, un censo de los ingresos de todos los ciudadanos de un país tiene una enorme cantidad de información, pero tomados como datos separados dicen poco. Se puede resumir con el promedio (el primer momento) para tener alguna idea del valor “típico” de esta variable. Obviamente, este número esconde una gran desigualdad, por lo que es conveniente usar el desvío estándar (segundo momento) para tener una idea de cuán variable es la distribución del ingreso. Pero es muy probable que la distribución no sea simétrica. Se puede usar la asimetría (tercer momento) para empezar a cuantificar ese efecto.&lt;/p&gt;
+&lt;p&gt;Cada momento que se agrega permite tener más información sobre los datos crudos. El límite es cuando se tienen tantos momentos como datos en la muestra. Una muestra univariada de tamaño N puede ser descripta unívocamente por sus N primeros momentos. Esto tiene sentido intuitivamente –no se debería necesitar más de N números para describir N números– pero también &lt;a href=&#34;https://math.stackexchange.com/questions/3033407/is-a-sample-of-size-n-uniquely-described-by-n-sample-moments&#34;&gt;tiene demostración&lt;/a&gt; matemática&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;En otras palabras, la transformación “primeros N momentos de una muestra de tamaño N” no tiene metámeros estadísticos salvo cualquier permutación de la muestra original (pero ver &lt;a href=&#34;#fn1&#34;&gt;1&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;Esta propiedad no es única de los momentos estadísticos. La transformada de fourier tiene la misma propiedad, lo mismo que las componentes principales, análisis factorial, clustering, etc…&lt;a href=&#34;#fn2&#34; class=&#34;footnote-ref&#34; id=&#34;fnref2&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt;. El problema no es gráficos vs. números sino “todos los números” vs. “sólo algunos números”. La ventaja de los gráficos es que permiten representar gran cantidad de números de una forma eficiente e intuitiva, permitiendo una &lt;em&gt;gestalt&lt;/em&gt; que es imposible lograr simplemente mirando una serie de números.&lt;/p&gt;
+&lt;p&gt;Esta observación permite predecir en qué casos será más fácil encontrar metámeros y cuándo es matemáticamente imposible. Por ejemplo, no se puede encontrar metámeros de una muestra de tamaño 10 que preserve 10 momentos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(42) 
+start_data &amp;lt;- data.frame(x = rnorm(10))
+
+metamerize(start_data, 
+           moments_n(1:10),
+           signif = 3,
+           perturbation = 0.05,
+           N = 30000)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 1 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Pero sí se puede encontrar metámeros que preserven dos momentos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(42) 
+metamerize(start_data, 
+           moments_n(1:2), 
+           signif = 3,
+           perturbation = 0.01,
+           N = 30000)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 263 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Un boxplot representa una muestra mediante unos 5 números, por lo que es esperable que demuestre metamerismo para muestras de &lt;span class=&#34;math inline&#34;&gt;\(N&amp;gt;5\)&lt;/span&gt;. Una estimación de densidad usando métodos paramétricos, en cambio, devuelve potencialmente infinitos puntos a partir de una muestra de cualquier tamaño. La posibilidad de metamerismo en ese caso depende de la “resolución” con la que se describa la curva. Si la curva es descripta con menos puntos que el tamaño de la muestra, va a tener metámeros.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;coarse_density &amp;lt;- function(data) {
+   density(data$x, n = 16)$y
+}
+set.seed(42) 
+metamerize(data.frame(x = rnorm(100)),
+           preserve = coarse_density,
+           N = 5000,
+           signif = 3,
+           perturbation = 0.001)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 11 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Mientras que si se la describe con más puntos, no permite metamerismo.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;highdef_density &amp;lt;- function(data) {
+   density(data$x, n = 200)$y
+}
+set.seed(42) 
+metamerize(data.frame(x = rnorm(100)),
+           preserve = highdef_density,
+           N = 5000,
+           signif = 3,
+           perturbation = 0.001)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 1 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Este principio general está bien, pero no está completo. Imaginemos una transformación estadística que devuelva un vector de tamaño N con el promedio de una muestra repetido N veces. A pesar de obtener N números a partir de una muestra de tamaño N, tiene la misma información que si fuera sólo el promedio. Generar metámeros para esta transformación es trivial.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean_n_times &amp;lt;- function(data) {
+   rep(mean(data$x), length.out = length(data$x))
+}
+set.seed(42) 
+metamerize(data.frame(x = rnorm(100)),
+           preserve = mean_n_times,
+           perturbation = 0.1, 
+           N = 1000)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 43 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Esto motiva definir la categoría de transformaciones estadísticas “eficaces” como aquellas que pueden describir una muestra univariada de tamaño N con unicidad a partir de N números o menos. Bajo esta definición, “los primeros N momentos” es una transformación eficaz mientras que “repetir el primer momento N veces” no lo es. Esto, igual es pura especulación mía.&lt;/p&gt;
+&lt;p&gt;Vale la pena notar que en la búsqueda empírica de metámeros hay que establecer un nivel de exactitud tolerable (con el argumento &lt;code&gt;signif&lt;/code&gt;). Si se quiere ser exactos, éstos no son metámeros verdaderos sino más bien “semi-metámeros”. Esta diferencia implica que si se tolera una exactitud baja es posible encontrar (semi)-metámeros aún cuando teóricamente no debería ser posible.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;set.seed(42) 
+metamerize(data.frame(x = rnorm(3)),
+                       moments_n(1:4), 
+                       signif = 1, 
+                       perturbation = 0.001, 
+                       N = 1000)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 1000 metamers&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;metameros-avanzados&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Metámeros avanzados&lt;/h2&gt;
+&lt;p&gt;Finalmente, me gustaría mostrar algunas utilidades de metamer que facilitan mucho la creación de nuevos metámeros. Con &lt;code&gt;draw_data()&lt;/code&gt; uno puede dibujar datos a mano alzada en una interfaz de shiny, opcionalmente usando otra base de datos como fondo.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;start_data &amp;lt;- subset(datasauRus::datasaurus_dozen, dataset == &amp;quot;dino&amp;quot;)
+start_data$dataset &amp;lt;- NULL
+
+smiley &amp;lt;- draw_data(start_data)
+simley$.group &amp;lt;- NULL&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34; style=&#34;text-align: center&#34;&gt;&lt;span id=&#34;fig:draw-data&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../../images/draw_data.png&#34; alt=&#34;Interfaz de `draw_data()`.&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 5: Interfaz de &lt;code&gt;draw_data()&lt;/code&gt;.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Además, &lt;code&gt;metamerize()&lt;/code&gt; puede encadenarse y guarda los parámetros que se usaron antes, excepto &lt;code&gt;N&lt;/code&gt; y &lt;code&gt;trim&lt;/code&gt;. De esta forma se puede hacer secuencias.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;X &amp;lt;- subset(datasauRus::datasaurus_dozen, dataset == &amp;quot;x_shape&amp;quot;)
+X$dataset &amp;lt;- NULL
+
+star &amp;lt;- subset(datasauRus::datasaurus_dozen, dataset == &amp;quot;star&amp;quot;)
+star$dataset &amp;lt;- NULL&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;metamers &amp;lt;- metamerize(start_data, 
+                       preserve = delayed_with(mean(x), mean(y), cor(x, y)),
+                       minimize = mean_dist_to(smiley), 
+                       perturbation = 0.08,
+                       N = 30000,
+                       trim = 150) %&amp;gt;% 
+   metamerize(minimize = NULL, 
+              N = 3000, trim = 10) %&amp;gt;% 
+   metamerize(minimize = mean_dist_to(X), 
+              N = 30000, trim = 150) %&amp;gt;% 
+   metamerize(minimize = NULL, 
+              N = 3000, trim = 10) %&amp;gt;% 
+   metamerize(minimize = mean_dist_to(star), 
+              N = 30000, trim = 150) %&amp;gt;%
+   metamerize(minimize = NULL, 
+              N = 3000, trim = 10) %&amp;gt;% 
+   metamerize(minimize = mean_dist_to(start_data),
+              N = 30000, trim = 150)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Esta serie de metámeros muestra al datasaurio metamorfoseando en distintas figuras, siempre manteniendo las mismas propiedades estadísticas y logrando algo similar a &lt;a href=&#34;https://www.autodeskresearch.com/publications/samestats&#34;&gt;la animación de Justin Matejka y George Fitzmaurice&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;metamers %&amp;gt;% 
+   as.data.frame() %&amp;gt;% 
+   ggplot(aes(x, y)) +
+   geom_point() +
+   transition_manual(.metamer)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34;&gt;&lt;span id=&#34;fig:metamer-chain-anim&#34;&gt;&lt;/span&gt;
+&lt;img src=&#34;../../post/2018-12-18-metamerismo-estad%C3%ADstico_files/figure-html/metamer-chain-anim-1.gif&#34; alt=&#34;Metamorfosis del datasaurio.&#34;  /&gt;
+&lt;p class=&#34;caption&#34;&gt;
+Fig. 6: Metamorfosis del datasaurio.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;referencias&#34; class=&#34;section level2 unnumbered&#34;&gt;
+&lt;h2&gt;Referencias&lt;/h2&gt;
+&lt;div id=&#34;refs&#34; class=&#34;references&#34;&gt;
+&lt;div id=&#34;ref-Anscombe1973&#34;&gt;
+&lt;p&gt;Anscombe, F J. 1973. “Graphs in Statistical Analysis.” &lt;em&gt;The American Statistician&lt;/em&gt; 27 (1): 17–21. &lt;a href=&#34;https://doi.org/10.1007/978-3-540-71915-1_35&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1007/978-3-540-71915-1_35&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Chatterjee2007&#34;&gt;
+&lt;p&gt;Chatterjee, Sangit, and Aykut Firat. 2007. “Generating data with identical statistics but dissimilar graphics: A follow up to the anscombe dataset.” &lt;em&gt;American Statistician&lt;/em&gt; 61 (3): 248–54. &lt;a href=&#34;https://doi.org/10.1198/000313007X220057&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1198/000313007X220057&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Govindaraju2008&#34;&gt;
+&lt;p&gt;Govindaraju, K., and S. J. Haslett. 2008. “Illustration of regression towards the means.” &lt;em&gt;International Journal of Mathematical Education in Science and Technology&lt;/em&gt; 39 (4): 544–50. &lt;a href=&#34;https://doi.org/10.1080/00207390701753788&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1080/00207390701753788&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Haslett2009&#34;&gt;
+&lt;p&gt;Haslett, S. J., and K. Govindaraju. 2009. “Cloning data: Generating datasets with exactly the same multiple linear regression fit.” &lt;em&gt;Australian and New Zealand Journal of Statistics&lt;/em&gt; 51 (4): 499–503. &lt;a href=&#34;https://doi.org/10.1111/j.1467-842X.2009.00560.x&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1111/j.1467-842X.2009.00560.x&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Hunt2004-7&#34;&gt;
+&lt;p&gt;Hunt, R. W. G. 2004. “The Colour Triangle.” In &lt;em&gt;The Reproduction of Colour&lt;/em&gt;, 6th ed., 68–91. &lt;a href=&#34;https://doi.org/10.1002/0470024275&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1002/0470024275&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Matejka2017&#34;&gt;
+&lt;p&gt;Matejka, Justin, and George Fitzmaurice. 2017. “Same Stats, Different Graphs.” &lt;em&gt;Proceedings of the 2017 CHI Conference on Human Factors in Computing Systems - CHI ’17&lt;/em&gt;, 1290–4. &lt;a href=&#34;https://doi.org/10.1145/3025453.3025912&#34; class=&#34;uri&#34;&gt;https://doi.org/10.1145/3025453.3025912&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Técnicamente la descripción es única a menos a menos de permutaciones de los valores. Esto no es casualidad. El caso donde el orden de los valores importa es, en realidad, un caso de muestras bivariadas (cada “dato” es un par de valores (x; y)). La intuición es que además de los momentos de cada variable, son necesarios los momentos cruzados (covarianza, etc…). La demostración para el caso multivariado &lt;a href=&#34;https://mathoverflow.net/questions/201719/moment-problem-for-discrete-distributions&#34;&gt;es complicada pero parece que existe&lt;/a&gt;, aunque no creo poder entenderla. Por intuición me parece plausible que en ese caso sea necesaria la matriz &lt;span class=&#34;math inline&#34;&gt;\(A^{N\times N}\)&lt;/span&gt; donde el elemento de la fila &lt;span class=&#34;math inline&#34;&gt;\(i\)&lt;/span&gt; y columna &lt;span class=&#34;math inline&#34;&gt;\(j\)&lt;/span&gt; es &lt;span class=&#34;math inline&#34;&gt;\(x^iy^j\)&lt;/span&gt;; lo cual implica necesitar &lt;span class=&#34;math inline&#34;&gt;\(N^2 - 1\)&lt;/span&gt; momentos.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li id=&#34;fn2&#34;&gt;&lt;p&gt;El caso de la transformada de fourier es interesante porque describe una serie &lt;em&gt;ordenada&lt;/em&gt; de tamaño &lt;span class=&#34;math inline&#34;&gt;\(N\)&lt;/span&gt; con dos series ordenadas de &lt;span class=&#34;math inline&#34;&gt;\(N/2\)&lt;/span&gt; números (una real y otra imaginaria). Es decir, &lt;span class=&#34;math inline&#34;&gt;\(2N\)&lt;/span&gt; números en total (las dos series y sus respectivos órdenes). Esto es mucho menor que &lt;span class=&#34;math inline&#34;&gt;\(N^2-1\)&lt;/span&gt; supuesto antes pero sospecho que esto es porque esta propiedad de fourier es para series &lt;em&gt;equiespaciadas&lt;/em&gt;. Si los datos tienen alguna restricción, se puede “comprimir” la información.&lt;a href=&#34;#fnref2&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
