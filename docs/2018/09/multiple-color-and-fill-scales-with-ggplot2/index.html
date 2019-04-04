@@ -22,7 +22,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Hugo 0.54.0 with theme Tranquilpeak 0.4.3-BETA">
-    <title>Leyendo información del INCUCAI</title>
+    <title>Multiple color (and fill) scales with ggplot2</title>
     <meta name="author" content="Elio Campitelli">
     <meta name="keywords" content=", R">
 
@@ -30,15 +30,27 @@
     
 
     
-    <meta name="description" content="El otro día el diario Clarín sacó una nota afirmando que el pasado agosto se había dado el récord histórico de transplantes de órganos y se lo adjudicaba a la &ldquo;Ley Justina&rdquo;, que establece que todos somos donantes presuntos a menos que se declare lo contrario en vida. Dado que esta ley se aprobó hace poco más de un mes y todavía no está reglamentada, es poco probable que este récord se deba al cambio legal.">
-    <meta property="og:description" content="El otro día el diario Clarín sacó una nota afirmando que el pasado agosto se había dado el récord histórico de transplantes de órganos y se lo adjudicaba a la &ldquo;Ley Justina&rdquo;, que establece que todos somos donantes presuntos a menos que se declare lo contrario en vida. Dado que esta ley se aprobó hace poco más de un mes y todavía no está reglamentada, es poco probable que este récord se deba al cambio legal.">
+    <meta name="description" content="(Versión en español)
+tl;dr: The functionality shown in this post is now on the ggnewscale package! 📦. You can find the original code in this gist.
+A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
+
+Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.">
+    <meta property="og:description" content="(Versión en español)
+tl;dr: The functionality shown in this post is now on the ggnewscale package! 📦. You can find the original code in this gist.
+A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
+
+Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.">
     <meta property="og:type" content="blog">
-    <meta property="og:title" content="Leyendo información del INCUCAI">
-    <meta property="og:url" content="/2018/10/leyendo-informacion-incucai/">
+    <meta property="og:title" content="Multiple color (and fill) scales with ggplot2">
+    <meta property="og:url" content="/2018/09/multiple-color-and-fill-scales-with-ggplot2/">
     <meta property="og:site_name" content="Código R">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Código R">
-    <meta name="twitter:description" content="El otro día el diario Clarín sacó una nota afirmando que el pasado agosto se había dado el récord histórico de transplantes de órganos y se lo adjudicaba a la &ldquo;Ley Justina&rdquo;, que establece que todos somos donantes presuntos a menos que se declare lo contrario en vida. Dado que esta ley se aprobó hace poco más de un mes y todavía no está reglamentada, es poco probable que este récord se deba al cambio legal.">
+    <meta name="twitter:description" content="(Versión en español)
+tl;dr: The functionality shown in this post is now on the ggnewscale package! 📦. You can find the original code in this gist.
+A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
+
+Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.">
     
       <meta name="twitter:creator" content="@d_olivaw">
     
@@ -217,7 +229,7 @@
             <div class="post-header main-content-wrap text-left">
   
     <h1 class="post-title" itemprop="headline">
-      Leyendo información del INCUCAI
+      Multiple color (and fill) scales with ggplot2
     </h1>
   
   
@@ -226,9 +238,9 @@
   
   <div class="postShorten-meta post-meta">
     
-      <time itemprop="datePublished" datetime="2018-10-02T00:00:00Z">
+      <time itemprop="datePublished" datetime="2018-09-18T00:00:00Z">
         
-  Octubre 2, 2018
+  Septiembre 18, 2018
 
       </time>
     
@@ -262,337 +274,104 @@
             <div class="main-content-wrap">
               
 
-<p>El otro día el diario Clarín sacó <a href="https://www.clarin.com/sociedad/ley-justina-agosto-registro-record-historico-donantes-trasplante-organos_0_SyvU8EwwQ.html">una nota</a> afirmando que el pasado agosto se había dado el récord histórico de transplantes de órganos y se lo adjudicaba a la &ldquo;Ley Justina&rdquo;, que establece que todos somos donantes presuntos a menos que se declare lo contrario en vida. Dado que esta ley se aprobó hace poco más de un mes y todavía no está reglamentada, es poco probable que este récord se deba al cambio legal. En cualquier caso, la nota me despertó curiosidad. ¿Cómo evolucionó la donación de órganos en Argentina?</p>
+<p>(<a href="https://eliocamp.github.io/codigo-r/2018/09/multiples-escalas-colores-ggplot2/">Versión en español</a>)</p>
 
-<p>Como toda buena nota periodística, el artículo de Clarín sólo tira datos puntuales sin mostrar una linea de tiempo o poner los datos en perspectiva, así que tuve que ir a la fuente. El INCUCAI (Instituto Nacional Central Único Coordinador de Ablación e Implante) tiene un sistema de acceso a datos <a href="https://cresi.incucai.gov.ar/IniciarCresiFromSintra.do">llamado CRESI</a> (Central de Reportes y Estadísticas del SINTRA (Sistema Nacional de Información de Procuración y Transplante de la República Argentina)) que es relativamente bueno por lo transparente, pero complicado para leer programáticamente. Esto me pareció un buen ejercicio para aprender a obtener datos de sitios web.</p>
+<p>tl;dr: The functionality shown in this post is now on the <a href="https://github.com/eliocamp/ggnewscale"><code>ggnewscale</code></a> package! 📦. You can find the original code <a href="https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32">in this gist</a>.</p>
 
-<p>Mi objetivo final era conseguir una serie mensual de donaciones de órganos pero el sitio sólo permite obtener los datos totales por período. Obteniendo algo como esto:</p>
+<p>A somewhat common annoyance for some <code>ggplot2</code> users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:</p>
 
-<p><img src="../../../images/cresi_tabla.png" alt="" /></p>
+<p><a href="https://stackoverflow.com/search?q=ggplot2+two+color+scales"><img src="../../../images/ggplo2_twoscales_so_small.jpg" alt="preguntas stack overflow" /></a></p>
 
-<p>(Recién luego de todo lo que sigue me di cuenta que en otra parte se pueden ver los datos mensuales por año, lo que facilita un poco las cosas. Moraleja: ¡analizar bien la página <em>antes</em> de empezar a escribir código!)</p>
+<p>Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.</p>
 
-<p>Como las consultas se hacen de forma dinámica (lo cual implicaba que no es tan fácil como ir a un url en particular y listo) usé las herramientas de desarrollo de Firefox (apretando F12) y me fijé qué pasaba en la solapa <em>Network</em></p>
+<p>Recently I came up with a way of tricking <code>ggplot2</code> into displaying multiple scales. It relies on <a href="https://github.com/tidyverse/ggplot2/pull/2555">a recent addition</a> by Claus Wilke that allows the usage of &ldquo;non standard aesthetics&rdquo; &ndash;<code>scale_color_continuous(aesthetics = &quot;fill&quot;)</code> sets a <code>fill</code> scale&ndash; and the use of <code>ggplot_add()</code> that I learnt thanks to <a href="https://yutani.rbind.io/post/2017-11-07-ggplot-add">this post</a> by Hiroaki Yutani.</p>
 
-<p><img src="../../../images/cresi_post.png" alt="" /></p>
+<p>Now let&rsquo;s be serious for a moment and acknowledge that using multiple color scales is not for the faint of heart. There&rsquo;s a very real risk of ending up with a plot with is at best confusing and at worst, misleading. But that doesn&rsquo;t mean there are not situations that call for this kind of plot. Using very different scales allows you to condense more information in a single plot, letting you visualise more relationships between variables. In the Atmospheric Sciences, for example, plotting temperature and pressure in contour lines with different color scales is a common practice.</p>
 
-<p>Así se puede ver que lo que hace es un <code>POST</code> (uno de los &ldquo;<a href="https://robm.me.uk/web-development/2013/09/20/http-verbs.html">verbos</a>&rdquo; del html) con una serie de parámetros entre los que está la fecha de inicio y final del período que busco y un número de &ldquo;token&rdquo;, que es el identificador único de mi sesión y que tengo que usar para acceder a los datos.</p>
+<p>But <em>res non verba</em>; this is how it looks like in action (with an example taken from <a href="https://stackoverflow.com/questions/16129876/ggplot2-multiple-scales-legends-per-aesthetic-revisited">this</a> StackOverlow question)</p>
 
-<p>Ok, ¿cómo obtener ese número de forma programática? Luego de dar MUCHAS vueltas me fijé en el código fuente de la <a href="https://cresi.incucai.gov.ar/IniciarCresiFromSintra.do">página de inicio</a> del CRESI (click derecho -&gt; View page source) y me encontré con que el token estaba ahí!</p>
-
-<p><img src="../../../images/cresi_token.png" alt="" /></p>
-
-<p>Excelente, entonces lo único que hay que hacer es navegar a esa página, leer el código fuente y extraer el ese valor. La función <code>get_token()</code> hace eso.</p>
-
-<pre><code class="language-r">library(dplyr)
-</code></pre>
-
-<pre><code>## 
-## Attaching package: 'dplyr'
-</code></pre>
-
-<pre><code>## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-</code></pre>
-
-<pre><code>## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-</code></pre>
-
-<pre><code class="language-r">library(httr)
-library(xml2)
-get_token &lt;- function() {
+<pre><code class="language-r">ggplot(pd[pd$score1 != 0,], aes(x=x, y=species)) +
+   geom_tile(aes(fill  =score1)) +
+   scale_fill_gradient2(&quot;Score 1&quot;, limits = c(0, 4), 
+                        low = &quot;#762A83&quot;, mid = &quot;white&quot;, high = &quot;#1B7837&quot;) +
    
-   fuente &lt;- POST(&quot;https://cresi.incucai.gov.ar/IniciarCresiFromSintra.do&quot;,
-                      add_headers(Conection = &quot;keep-alive&quot;)) %&gt;% 
-      read_html() 
-   token &lt;- xml_attrs(xml_child(xml_child(xml_child(xml_child(fuente, 3), 1), 1), 3))
-   return(token[3])
-}
-
-(token &lt;- get_token())
+   new_scale(&quot;fill&quot;) +
+   
+   geom_tile(aes(fill = score2), data = subset(pd, score2 != 0)) +
+   scale_fill_gradient2(&quot;Score 2&quot;, limits = c(0, 3), 
+                        low = &quot;#1B7837&quot;, mid = &quot;white&quot;, high = &quot;#762A83&quot;) +
+   
+   geom_text(data=pd, aes(label = letters, color = factor(change))) +
+   scale_color_manual(&quot;Change&quot;, values = c(&quot;black&quot;, &quot;#F2A11F&quot;), 
+                      labels = c(&quot;None&quot;, &quot;Some&quot;)) +
+   coord_fixed(ratio = 1.5, xlim=c(0.5,16.5), ylim=c(0.5, 3.5)) 
 </code></pre>
 
-<pre><code>##         value 
-## &quot;-1609985208&quot;
-</code></pre>
+<p><img src="../../../post/2018-09-18-multiple-color-and-fill-scales-with-ggplot2_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 
-<p>Ahora con ese token, tengo que hacer dos <code>POST</code>; el primero define el tipo de búsqueda y el segundo la forma de agrupación de los datos. Como primer paso busco los datos para el mes de enero de 2000.</p>
+<h2 id="how-it-works">How it works</h2>
 
-<pre><code class="language-r">primer_paso &lt;- POST(&quot;https://cresi.incucai.gov.ar/reporte/resumenestadistico/DonantePaso2.do&quot;,
-                          query = list(`5406` = &quot;&quot;,
-                                       `5407` = &quot;&quot;,
-                                       `5415` = &quot;&quot;,
-                                       `5416` = &quot;&quot;,
-                                       `5418` = &quot;&quot;,
-                                       `5419` = &quot;&quot;,
-                                       `5420_anio` = 2000,
-                                       `5420_dia` = 01,
-                                       `5420_mes` = 01,
-                                       `5421_anio` = 2000,
-                                       `5421_dia` = 31,
-                                       `5421_mes` = 01,
-                                       ABLACION = &quot;&quot;,
-                                       CMUERTE = &quot;&quot;,
-                                       CORAZONPD = &quot;&quot;,
-                                       DEPENDENCIA = &quot;&quot;,
-                                       ENTREVISTADOR = &quot;&quot;,
-                                       ENTREVISTADOR_DESCRIPCION = &quot;&quot;,
-                                       ESTABLECIMIENTO = &quot;&quot;,
-                                       ESTABLECIMIENTO_DESCRIPCION = &quot;&quot;,
-                                       ESTABLECIMIENTO_ORIGEN = 1,
-                                       ESTABLECIMIENTO_ORIGEN_DESCRIPCION = &quot;ARGENTINO&quot;,
-                                       FPROFESIONAL = &quot;&quot;,
-                                       MMUERTE = &quot;&quot;,
-                                       OPCIONES_AVANZADAS = &quot;false&quot;,
-                                       ORIGENPD = &quot;&quot;,
-                                       OTRO_ANIO = &quot;&quot;,
-                                       PERIODO = 5,
-                                       PERIODO_DESCRIPCION	= &quot;ESPECIFICAR&quot;,
-                                       SERVICIO = &quot;&quot;,
-                                       SPD = 4,
-                                       SPD_DESCRIPCION = &quot;DONANTES+REALES&quot;,
-                                       TIPO_DONANTE = &quot;&quot;,
-                                       TIPOEST = &quot;&quot;,
-                                       TOKEN = token))
+<p>The code is a bit too long and tedious to show in this article, but you can find it on <a href="https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32">this gist</a>. Here are the important bits.</p>
 
-segundo_paso &lt;- POST(&quot;https://cresi.incucai.gov.ar/reporte/resumenestadistico/EjecutarConsultaDonante.do&quot;, 
-                           query = list(`2` = &quot;checked&quot;,
-                                        TOKEN = token))
-</code></pre>
+<p>First, the <code>new_scale()</code> function does nothing.</p>
 
-<p>La información está en lo que devuelve <code>segundo_paso</code>. El texto de la página se lee usando <code>read_html()</code>.</p>
-
-<pre><code class="language-r">(datos &lt;- xml2::read_html(segundo_paso))
-</code></pre>
-
-<pre><code>## {xml_document}
-## &lt;html&gt;
-## [1] &lt;head&gt;\n&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset= ...
-## [2] &lt;script language=&quot;JavaScript&quot; type=&quot;text/JavaScript&quot;&gt; \r\n\r\nfuncti ...
-## [3] &lt;body onload=&quot;&quot;&gt;\r\n&lt;span class=&quot;notranslate&quot;&gt; \r\n&lt;form action=&quot;Can ...
-</code></pre>
-
-<p>La cuestión es ahora extraer la tabla que quiero. Para eso está la magia del <a href="https://selectorgadget.com/">Selector Gadget</a>. Es una herramienta que permite crear reglas para filtrar elementos de una página web a partir de ejemplos positivos y negativos. En este caso, quiero leer toda la tabla.</p>
-
-<p><img src="../../../images/cresi_selector.png" alt="" /></p>
-
-<p>(Intenté filtros para eliminar el encabezado, pero no funcionaban bien y decidí que era más fácil eliminarlo en R)</p>
-
-<p>La parte que importa es ese &ldquo;.textoTabla2&rdquo;. Ahora uso el excelente paquete <code>rvest</code> para filtrar ese &ldquo;nodo&rdquo; y luego convertirlo en un <code>data.frame</code></p>
-
-<pre><code class="language-r">tabla &lt;- datos %&gt;% 
-    rvest::html_nodes(&quot;.textoTabla2&quot;) %&gt;% 
-    rvest::html_table(fill = TRUE)
-head(tabla[[1]][-1, ])
-</code></pre>
-
-<pre><code>##                  X1     X2     X3        X4     X5   X6     X7    X8
-## 2         Provincia Reales    %Re Efectivos    %Ef Mono    %Mo Multi
-## 3    2*BUENOS AIRES      8 100.0%         7  87.5%    -      -     8
-## 4 1*CAPITAL FEDERAL      5 100.0%         3  60.0%    3  60.0%     2
-## 5         6*CORDOBA      2 100.0%         2 100.0%    1  50.0%     1
-## 6       21*SANTA FE      1 100.0%         1 100.0%    1 100.0%     -
-## 7          5*CHUBUT      1 100.0%         1 100.0%    -      -     1
-##       X9     X10 X11    X12     X13   X14 X15
-## 2    %Mu Tejidos %Te %Total    DPMH TOTAL  NA
-## 3 100.0%       -   -  42.1% 0.6 PMH     8  NA
-## 4  40.0%       -   -  26.3% 1.7 PMH     5  NA
-## 5  50.0%       -   -  10.5% 0.6 PMH     2  NA
-## 6      -       -   -   5.3% 0.3 PMH     1  NA
-## 7 100.0%       -   -   5.3% 2.4 PMH     1  NA
-</code></pre>
-
-<p>¡Y ya tengo lo que necesito! 🎉 Sólo le falta un poco de limpieza relativamente trivial.</p>
-
-<p>Lo que sí falta ahora es hacer conseguir los datos para todos los meses del período. El plan es hacer una función que devuelva el valor para un mes y luego iterarla sobre una lista de meses. Además voy a tener en cuenta un pequeño detalle y usar el paquete <code>memoise</code> para guardar en caché el resultado de la función y no hacer dos veces el mismo request al servidor. Esto está bueno por so uno corre varias veces el código mientras debuggea cosas.</p>
-
-<pre><code class="language-r">donaciones_por_provincia_ &lt;- function(fecha, verbose = FALSE) {
-  library(rvest)
-  library(httr)
-  library(lubridate)
-  
-  desde &lt;- fecha
-  hasta &lt;- fecha
-  day(hasta) &lt;- days_in_month(desde)
-  
-  anio_0 &lt;- year(desde)
-  mes_0 &lt;- month(desde)
-  dia_0 &lt;- day(desde)
-  
-  anio_f &lt;- year(hasta)
-  mes_f &lt;- month(hasta)
-  dia_f &lt;- day(hasta)
-  
-  if (isTRUE(verbose)) {
-    cat(paste0(&quot;Leyendo mes: &quot;, anio_0, &quot;-&quot;, mes_0), &quot;\r&quot;)
-  }
-  
-  token &lt;- get_token()
-  
-  # Scrapp web
-  primer_paso &lt;- POST(&quot;https://cresi.incucai.gov.ar/reporte/resumenestadistico/DonantePaso2.do&quot;,
-                      query = list(`5406` = &quot;&quot;,
-                                   `5407` = &quot;&quot;,
-                                   `5415` = &quot;&quot;,
-                                   `5416` = &quot;&quot;,
-                                   `5418` = &quot;&quot;,
-                                   `5419` = &quot;&quot;,
-                                   `5420_anio` = anio_0,
-                                   `5420_dia` = dia_0,
-                                   `5420_mes` = mes_0,
-                                   `5421_anio` = anio_f,
-                                   `5421_dia` = dia_f,
-                                   `5421_mes` = mes_0,
-                                   ABLACION = &quot;&quot;,
-                                   CMUERTE = &quot;&quot;,
-                                   CORAZONPD = &quot;&quot;,
-                                   DEPENDENCIA = &quot;&quot;,
-                                   ENTREVISTADOR = &quot;&quot;,
-                                   ENTREVISTADOR_DESCRIPCION = &quot;&quot;,
-                                   ESTABLECIMIENTO = &quot;&quot;,
-                                   ESTABLECIMIENTO_DESCRIPCION = &quot;&quot;,
-                                   ESTABLECIMIENTO_ORIGEN = 1,
-                                   FPROFESIONAL = &quot;&quot;,
-                                   MMUERTE = &quot;&quot;,
-                                   OPCIONES_AVANZADAS = &quot;false&quot;,
-                                   ORIGENPD = &quot;&quot;,
-                                   OTRO_ANIO = &quot;&quot;,
-                                   PERIODO = 5,
-                                   PERIODO_DESCRIPCION	= &quot;ESPECIFICAR&quot;,
-                                   SERVICIO = &quot;&quot;,
-                                   SPD = 4,
-                                   TIPO_DONANTE = &quot;&quot;,
-                                   TIPOEST = &quot;&quot;,
-                                   TOKEN = token))
-  
-  segundo_paso &lt;- POST(&quot;https://cresi.incucai.gov.ar/reporte/resumenestadistico/EjecutarConsultaDonante.do&quot;,
-                       query = list(`2` = &quot;checked&quot;,
-                                    TOKEN = token))
-  
-  
-  table &lt;- read_html(segundo_paso) %&gt;% 
-    html_nodes(&quot;.textoTabla2&quot;) %&gt;% 
-    html_table(fill = TRUE) %&gt;% 
-    .[[1]] %&gt;% 
-    .[-1, ]
-  colnames(table) &lt;- table[1, ]
-  
-  # Limpieza de columnas y filas inválidas
-  table &lt;- table[-1, ]
-  table &lt;- table[-nrow(table), ]
-  table &lt;- table[-nrow(table), ]
-  table &lt;- table[, -ncol(table)]
-  
-  # Elimino porcentajes
-  porcentajes &lt;- stringi::stri_detect(colnames(table), fixed = &quot;%&quot;)
-  table &lt;- table[, !porcentajes]
-  
-  # Limpio algunos datos
-  table$Provincia &lt;- stringi::stri_replace(table$Provincia, &quot;&quot;,
-                                           regex = &quot;\\d*\\*&quot;)
-  table$DPMH &lt;- stringi::stri_replace(table$DPMH, &quot;&quot;,
-                                      fixed = &quot; PMH&quot;)
-  
-  # Paso todo a numérico y los NA son ceros
-  table[, -1] &lt;- suppressWarnings(lapply(table[, -1], as.numeric))
-  table[, -1] &lt;- lapply(table[, -1], function(x) {
-    x[is.na(x)] &lt;- 0
-    x })
-  table
+<pre><code class="language-r">new_scale &lt;- function(new_aes) {
+   structure(ggplot2::standardise_aes_names(new_aes), class = &quot;new_aes&quot;)
 }
 </code></pre>
 
-<p>Antes de hacer nada, voy a probar si funciona</p>
+<p>It merely returns an object of class <code>new_aes</code> with a character vector with the &ldquo;new&rdquo; scales. All the magic is in the <code>+</code> operator. <code>ggplot2</code> objects are &ldquo;summed&rdquo; with <code>ggplot_add()</code> function which allows to define the &ldquo;add&rdquo; operation for any arbitrary object to a ggplot. For the case of <code>new_aes</code> object, this is what happens:</p>
 
-<pre><code class="language-r">donaciones_por_provincia_(as.Date(&quot;2018-01-05&quot;))
+<pre><code class="language-r">ggplot_add.new_aes &lt;- function(object, plot, object_name) {
+   plot$layers &lt;- lapply(plot$layers, bump_aes, new_aes = object)
+   plot$scales$scales &lt;- lapply(plot$scales$scales, bump_aes, new_aes = object)
+   plot$labels &lt;- bump_aes(plot$labels, new_aes = object)
+   plot
+}
 </code></pre>
 
-<pre><code>## 
-## Attaching package: 'lubridate'
+<p>It modifies each layer, scale and label and renames the relevant aesthetic to something other than &ldquo;fill&rdquo; or &ldquo;colour&rdquo;. There&rsquo;s also a bit of minimally invasive surgery to geoms so that they don&rsquo;t reject the newly grafted aesthetic. Is somewhat ad-hoc, to be honest, and probably not very robuts, but it works!</p>
+
+<p>There are many other ways to implement this and I went through <a href="https://twitter.com/d_olivaw/status/1040722632675610626">some iterations</a>. The current implementation is friendly and consistent with the main <code>ggplot2</code> &ldquo;adding&rdquo; idea, but it has some limitations and annoyances that prevent me from being 100% on board with it. I would love to get some feedback from the community 🤞!</p>
+
+<h2 id="a-more-real-ish-example">A more real-ish example</h2>
+
+<p>Why is any of this useful to me, you say? As I wrote before, being able to plot temperature and pressure in the same map with two different scales is very neat.</p>
+
+<pre><code class="language-r">library(metR)
+library(magrittr)
+time &lt;- as.POSIXct(&quot;1998-01-01&quot;)
+# Temperature and sea level pressure for January 1st 1998
+atmos &lt;- ReadNetCDF(&quot;~/DATOS/NCEP Reanalysis/air.mon.mean.nc&quot;, 
+                    subset = list(level = 850, 
+                                  time = time)) %&gt;% 
+   .[, slp:= ReadNetCDF(&quot;~/DATOS/NCEP Reanalysis/slp.mon.mean.nc&quot;, 
+                        subset = list(time = time), out = &quot;vector&quot;)] %&gt;% 
+   .[, lon := ConvertLongitude(lon)]
+
+ggplot(atmos, aes(lon, lat)) +
+   geom_world() +
+   geom_contour(aes(z = slp, color = ..level..), binwidth = 4) +
+   scale_color_viridis_c(&quot;Sea level pressure&quot;) +
+   
+   new_scale_color() +   # same as `new_scale(&quot;color&quot;)`
+   
+   geom_contour(aes(z = air, color = ..level..), binwidth = 4) +
+   scale_color_distiller(&quot;Air Temperature&quot;, palette = &quot;Spectral&quot;)  +
+   
+   scale_x_longitude(limits = c(-150, 0)) +
+   scale_y_latitude(ticks = 15) +
+   ggalt::coord_proj(&quot;+proj=moll +lon_0=-75&quot;, 
+                     ylim = c(-60, 0), xlim = c(-150, 0))
 </code></pre>
 
-<pre><code>## The following object is masked from 'package:base':
-## 
-##     date
-</code></pre>
+<p><img src="../../../post/2018-09-18-multiple-color-and-fill-scales-with-ggplot2_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 
-<pre><code>##          Provincia Reales Efectivos Mono Multi Tejidos DPMH TOTAL
-## 3     BUENOS AIRES      9         8    6     3       0  0.5     9
-## 4         SANTA FE      7         7    2     5       0  2.0     7
-## 5          TUCUMAN      6         6    3     3       0  3.6     6
-## 6          CORDOBA      5         5    1     4       0  1.4     5
-## 7  CAPITAL FEDERAL      4         4    2     2       0  1.3     4
-## 8          MENDOZA      2         1    2     0       0  1.0     2
-## 9            CHACO      1         1    0     1       0  0.8     1
-## 10      CORRIENTES      1         1    1     0       0  0.9     1
-## 11      ENTRE RIOS      1         1    1     0       0  0.7     1
-## 12           SALTA      1         1    1     0       0  0.7     1
-</code></pre>
+<p>Visualising the relationship between pressure and temperature is very important for the analysis of the growth of atmospheric perturbations.</p>
 
-<p>¡Bien! Todo lo anterior involucró una cantidad inimaginable de prueba y error y el resultado no es el código más robusto ni correcto. No sólo no tiene ninguna forma de informar sobre errores, sino que en el camino no me fijé si el &ldquo;robots.txt&rdquo; permite hacer este tipo de scrapping y no le puse un &ldquo;sleep&rdquo; para limitar la tasa de conecciones al servidor. Tengo pendiente aprender a hacer eso usando el paquete <a href="https://github.com/dmi3kno/polite"><code>polite</code></a>. Pero bueno; si funciona, funciona. 😤</p>
+<p>Of course, with great power comes great responsibility 🕸. Mixing multiple scales for the same aesthetic should be done sparingly and only if absolutely necessary. First always ask yourself if the same information cannot be shown in a better way.</p>
 
-<p>Para terminar, guardo la versión con caché</p>
-
-<pre><code class="language-r">donaciones_por_provincia &lt;- memoise::memoise(donaciones_por_provincia_)
-</code></pre>
-
-<p>Con esto ya estoy listo para bajar todos los datos. Que <a href="https://twitter.com/jennybryan">Jenny Bryan</a> me perdone por no usar <a href="https://purrr.tidyverse.org"><code>purrr</code></a>, pero todavía estoy acostumbrado al viejo y querido <code>lapply</code>.</p>
-
-<pre><code class="language-r"># Vector con fechas desde enero de 1998 hasta agosto de 2018 de a un mes
-fechas &lt;- seq.Date(ymd(&quot;1998-01-01&quot;), ymd(&quot;2018-08-01&quot;), by = &quot;1 month&quot;)
-
-# Para cada fecha, bajo las donaciones por provincia, les pongo nombre
-# a los elementos de la lista y luego los combino por filas. 
-donaciones &lt;- lapply(fechas, donaciones_por_provincia, verbose = TRUE) %&gt;% 
-  setNames(fechas) %&gt;% 
-  data.table::rbindlist(idcol = &quot;fecha&quot;) 
-
-donaciones$fecha &lt;- as.Date(donaciones$fecha)
-</code></pre>
-
-<p>Esta parte del código tarda mucho y acá está la gracia del memoise. Podemos cancelar el proceso en cualquier momento y al reiniciarlo sólo se descargan los meses que no corrieron.</p>
-
-<p>No puedo terminar el post sin al menos la visualización de los datos que catalizaron todo esto. ¿Cómo varió la cantidad de transplantes con el tiempo?</p>
-
-<pre><code class="language-r">library(data.table)
-</code></pre>
-
-<pre><code>## 
-## Attaching package: 'data.table'
-</code></pre>
-
-<pre><code>## The following objects are masked from 'package:lubridate':
-## 
-##     hour, isoweek, mday, minute, month, quarter, second, wday,
-##     week, yday, year
-</code></pre>
-
-<pre><code>## The following objects are masked from 'package:dplyr':
-## 
-##     between, first, last
-</code></pre>
-
-<pre><code class="language-r">library(ggplot2)
-
-donaciones[, .(total = sum(TOTAL)), by = fecha] %&gt;% 
-ggplot(aes(fecha, total)) +
-   geom_line() +
-   labs(x = &quot;Fecha&quot;, y = &quot;&quot;, 
-        title = &quot;Cantidad de transplantes por mes&quot;, 
-        caption = &quot;Fuente: INCUCAI&quot;) +
-   hrbrthemes::theme_ipsum_rc()
-</code></pre>
-
-<p><img src="../../../post/2018-10-02-leyendo-información-de-incucai_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-
-<p>Ahí lo tienen. Agosto de este año fue un mes anómalo, con muchos más transplantes que meses anteriores. Esperemos que marque el quiebre de la tendencia a la baja que viene desde 2010.</p>
-
-<h1 id="resumen">Resumen</h1>
-
-<p>Usé <code>httr</code> para obtener información de un servidor y <code>xml2</code> para interpretarla. Luego, con <code>rvest</code> y Selector Gadget seleccioné la tabla con la información relevante. Finalmente, usando <code>memoise</code> me aseguré de no descargar los mismos datos dos veces.</p>
+<p><code>ggplot2</code> doesn&rsquo;t cease to amaze me. Is not only a very powerful package to construct any kind of complex plots in a stupidly simple way, but it&rsquo;s also exceptionally extensible by allowing this kind of deep user customisation. ¡Long live the <code>ggplo2</code> ✊!</p>
 
               
             </div>
@@ -605,7 +384,7 @@ ggplot(aes(fecha, total)) +
                   <div class="post-footer-tags">
                     <span class="text-color-light text-small">ETIQUETADO EN</span><br/>
                     
-  <a class="tag tag--primary tag--small" href="../../../tags/webscapping/">webscapping</a>
+  <a class="tag tag--primary tag--small" href="../../../tags/ggplot2/">ggplot2</a>
 
                   </div>
                 
@@ -618,7 +397,7 @@ ggplot(aes(fecha, total)) +
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2019/01/metamerismo-estad%C3%ADstico/" data-tooltip="Metamerismo estadístico">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/10/leyendo-informacion-incucai/" data-tooltip="Leyendo información del INCUCAI">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
@@ -626,7 +405,7 @@ ggplot(aes(fecha, total)) +
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/09/multiple-color-and-fill-scales-with-ggplot2/" data-tooltip="Multiple color (and fill) scales with ggplot2">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/09/multiples-escalas-colores-ggplot2/" data-tooltip="Múltiples escalas de colores en ggplot2">
               
                   <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
                   <i class="fa fa-angle-right"></i>
@@ -644,19 +423,19 @@ ggplot(aes(fecha, total)) +
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/10/leyendo-informacion-incucai/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/09/multiple-color-and-fill-scales-with-ggplot2/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/10/leyendo-informacion-incucai/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/09/multiple-color-and-fill-scales-with-ggplot2/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/10/leyendo-informacion-incucai/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/09/multiple-color-and-fill-scales-with-ggplot2/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -704,7 +483,7 @@ ggplot(aes(fecha, total)) +
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2019/01/metamerismo-estad%C3%ADstico/" data-tooltip="Metamerismo estadístico">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/10/leyendo-informacion-incucai/" data-tooltip="Leyendo información del INCUCAI">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
@@ -712,7 +491,7 @@ ggplot(aes(fecha, total)) +
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/09/multiple-color-and-fill-scales-with-ggplot2/" data-tooltip="Multiple color (and fill) scales with ggplot2">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/09/multiples-escalas-colores-ggplot2/" data-tooltip="Múltiples escalas de colores en ggplot2">
               
                   <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
                   <i class="fa fa-angle-right"></i>
@@ -730,19 +509,19 @@ ggplot(aes(fecha, total)) +
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/10/leyendo-informacion-incucai/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2018/09/multiple-color-and-fill-scales-with-ggplot2/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/10/leyendo-informacion-incucai/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2018/09/multiple-color-and-fill-scales-with-ggplot2/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/10/leyendo-informacion-incucai/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2018/09/multiple-color-and-fill-scales-with-ggplot2/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -772,19 +551,19 @@ ggplot(aes(fecha, total)) +
   <ul class="share-options">
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F10%2Fleyendo-informacion-incucai%2F">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F09%2Fmultiple-color-and-fill-scales-with-ggplot2%2F">
           <i class="fa fa-facebook-official"></i><span>Compartir en Facebook</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F10%2Fleyendo-informacion-incucai%2F">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F09%2Fmultiple-color-and-fill-scales-with-ggplot2%2F">
           <i class="fa fa-twitter"></i><span>Compartir en Twitter</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F10%2Fleyendo-informacion-incucai%2F">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2018%2F09%2Fmultiple-color-and-fill-scales-with-ggplot2%2F">
           <i class="fa fa-google-plus"></i><span>Compartir en Google&#43;</span>
         </a>
       </li>
@@ -1072,9 +851,9 @@ $(document).ready(function() {
     
       <script>
         var disqus_config = function () {
-          this.page.url = 'https:\/\/eliocamp.github.io\/codigo-r\/2018\/10\/leyendo-informacion-incucai\/';
+          this.page.url = 'https:\/\/eliocamp.github.io\/codigo-r\/2018\/09\/multiple-color-and-fill-scales-with-ggplot2\/';
           
-            this.page.identifier = '\/2018\/10\/leyendo-informacion-incucai\/'
+            this.page.identifier = '\/2018\/09\/multiple-color-and-fill-scales-with-ggplot2\/'
           
         };
         (function() {
