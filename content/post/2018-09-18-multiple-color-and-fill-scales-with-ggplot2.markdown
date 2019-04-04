@@ -10,9 +10,6 @@ tags:
 ---
 
 
-
-
-
 ([Versión en español](https://eliocamp.github.io/codigo-r/2018/09/multiples-escalas-colores-ggplot2/))
 
 tl;dr: The functionality shown in this post is now on the [`ggnewscale`](https://github.com/eliocamp/ggnewscale) package! 📦. You can find the original code [in this gist](https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32).
