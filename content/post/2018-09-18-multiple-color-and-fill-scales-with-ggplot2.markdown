@@ -2,12 +2,15 @@
 title: Multiple color (and fill) scales with ggplot2
 author: Elio Campitelli
 date: '2018-09-18'
-slug: multiple-color-fill-scales-ggplot2
+slug: multiple-color-and-fill-scales-ggplot2
 categories:
   - R
 tags:
   - ggplot2
 ---
+
+
+
 
 
 ([Versión en español](https://eliocamp.github.io/codigo-r/2018/09/multiples-escalas-colores-ggplot2/))
