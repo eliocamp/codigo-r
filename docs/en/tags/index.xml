@@ -6,10 +6,19 @@
     <description>Recent content in Tags on Code R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Tue, 18 Sep 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 19 Apr 2019 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://eliocamp.github.io/codigo-r/en/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Ejemplos</title>
+      <link>https://eliocamp.github.io/codigo-r/en/tags/ejemplos/</link>
+      <pubDate>Fri, 19 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://eliocamp.github.io/codigo-r/en/tags/ejemplos/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Ggplot2</title>
@@ -26,6 +35,15 @@
       <pubDate>Thu, 03 Jan 2019 00:00:00 +0000</pubDate>
       
       <guid>https://eliocamp.github.io/codigo-r/en/tags/packages/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Paquetes</title>
+      <link>https://eliocamp.github.io/codigo-r/en/tags/paquetes/</link>
+      <pubDate>Fri, 19 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://eliocamp.github.io/codigo-r/en/tags/paquetes/</guid>
       <description></description>
     </item>
     

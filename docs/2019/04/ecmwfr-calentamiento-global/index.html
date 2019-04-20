@@ -1,0 +1,926 @@
+
+
+  
+    
+  
+
+
+  
+
+
+
+
+  
+
+
+  
+
+<!DOCTYPE html>
+<html lang="es-es">
+  <head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hugo 0.54.0 with theme Tranquilpeak 0.4.3-BETA">
+    <title>Midiendo el calentamiento global con ecmwfr</title>
+    <meta name="author" content="Elio Campitelli">
+    <meta name="keywords" content=", R">
+
+    <link rel="icon" href="../../../favicon.png">
+    
+
+    
+    <meta name="description" content="Para mi investigación necesitaba bajar datos meteorológicos grillados del ERA-Interim, que es una base de datos generada por el ECMWF. Bajar los datos en su sitio web es muy incómido y requiere muchos clicks. Por suerte, me encontré con el paquete ecmwfr con el que pude bajar los datos directamente desde R y muy fácilmente. Una de las cosas geniales del código abierto, es que los usuarios pueden ser colaboradores, así que sugerí algunas cosas y aporté un poco de código.">
+    <meta property="og:description" content="Para mi investigación necesitaba bajar datos meteorológicos grillados del ERA-Interim, que es una base de datos generada por el ECMWF. Bajar los datos en su sitio web es muy incómido y requiere muchos clicks. Por suerte, me encontré con el paquete ecmwfr con el que pude bajar los datos directamente desde R y muy fácilmente. Una de las cosas geniales del código abierto, es que los usuarios pueden ser colaboradores, así que sugerí algunas cosas y aporté un poco de código.">
+    <meta property="og:type" content="blog">
+    <meta property="og:title" content="Midiendo el calentamiento global con ecmwfr">
+    <meta property="og:url" content="/2019/04/ecmwfr-calentamiento-global/">
+    <meta property="og:site_name" content="Código R">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Código R">
+    <meta name="twitter:description" content="Para mi investigación necesitaba bajar datos meteorológicos grillados del ERA-Interim, que es una base de datos generada por el ECMWF. Bajar los datos en su sitio web es muy incómido y requiere muchos clicks. Por suerte, me encontré con el paquete ecmwfr con el que pude bajar los datos directamente desde R y muy fácilmente. Una de las cosas geniales del código abierto, es que los usuarios pueden ser colaboradores, así que sugerí algunas cosas y aporté un poco de código.">
+    
+      <meta name="twitter:creator" content="@d_olivaw">
+    
+    
+
+    
+    
+
+    
+      <meta property="og:image" content="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=640">
+    
+
+    
+    
+    
+
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="../../../css/style-jsjn0006wyhpyzivf6yceb31gvpjatbcs3qzjvlumobfnugccvobqwxnnaj8.min.css" />
+    
+    
+      
+        <link rel="stylesheet"  href="https://eliocamp.github.io/codigo-r/css/custom.css">
+      
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="2">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="../../../">Código R</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="../../../#about">
+    
+    
+    
+      
+        <img class="header-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=90" alt="Foto de autor" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="2">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="../../../#about">
+          <img class="sidebar-profile-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=110" alt="Foto de autor" />
+        </a>
+        <h4 class="sidebar-profile-name">Elio Campitelli</h4>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Inicio</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">Categorías</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archivos</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">Acerca de</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/eliocamp" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://www.r-bloggers.com/" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">R-Bloggers</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://twitter.com/d_olivaw" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="2"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Midiendo el calentamiento global con ecmwfr
+    </h1>
+  
+  
+
+    
+        In English: <a href="https://eliocamp.github.io/codigo-r/en/2019/04/ecmwfr-global-warming/">Using ecmwfr to measure global warming</a>
+    
+
+
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2019-04-19T00:00:00Z">
+        
+  Abril 19, 2019
+
+      </time>
+    
+    
+  
+  
+    <span>en</span>
+    
+      <a class="category-link" href="../../../categories/r">R</a>
+    
+  
+
+  </div>
+
+</div>
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    });
+    </script>
+    <script type="text/javascript"
+      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+
+
+<p>Para mi investigación necesitaba bajar datos meteorológicos grillados del ERA-Interim, que es una base de datos generada por el <a href="https://www.ecmwf.int/">ECMWF</a>. Bajar los datos en su sitio web es <strong>muy</strong> incómido y requiere <strong>muchos</strong> clicks. Por suerte, me encontré con el paquete <a href="https://github.com/khufkens/ecmwfr">ecmwfr</a> con el que pude bajar los datos directamente desde R y muy fácilmente. Una de las cosas geniales del código abierto, es que los usuarios pueden ser colaboradores, así que sugerí algunas cosas y aporté un poco de código.</p>
+<p>Ahora, una nueva versión está de camino a CRAN, así que quería mostrar un pequeño ejemplo de lo que se puede hacer con el paquete.</p>
+<p>Para bajar datos de los servidores del ECMWF hace falta tener una cuenta. Si van a seguir estos pasos, antes que nada van a tener que crearse una y agregar la key del API al keyring de ecmwfr. Esto se hace todo interactivamente con este comando:</p>
+<pre class="r"><code>library(ecmwfr)
+
+wf_set_key(service = &quot;webapi&quot;)</code></pre>
+<p>Eso los lleva a la URL correcta donde pueden conseguir la clave y después configura todo para usarla.</p>
+<p>Lo segundo que hace fatla es un <em>request</em> válido. Como la API tiene un montón de dataset distintos, con distinta resolución temporal y otras propiedades, armar uno desde cero es más bien complicado. Es preferible ir <a href="https://apps.ecmwf.int/datasets/">a la página</a> y usar su interfaz para crear un <em>request</em> básico del dataset de interes. En mi caso, voy a usar datos mensuales de <a href="https://apps.ecmwf.int/datasets/data/interim-full-daily/levtype=sfc/">ERA Interim</a>.</p>
+<div class="figure">
+<img src="../../../post/2019-04-19-como-cambio-el-tiempo-desde-que-naci_files/webapi-erainterim.png" alt="ERA Interim request" />
+<p class="caption">ERA Interim request</p>
+</div>
+<p>Se puede ver que no hay forma alguna de descargar todos los años usando la interfaz web. Pero abajo dse todo hay un botón que dice “View the MARS request”.</p>
+<div class="figure">
+<img src="../../../post/2019-04-19-como-cambio-el-tiempo-desde-que-naci_files/webapi-erainterim2.png" alt="ERA Interim MARS" />
+<p class="caption">ERA Interim MARS</p>
+</div>
+<p>Y eso provee el texto del <em>request</em> que después voy a modificar un poco. En R, convierto este template en una lista usando la addin de RStudio “MARS to list” (pero si quieren peuden hacerlo a mano). Agregué <code>format  = &quot;netcdf&quot;</code> al final para que me devuelva todo en formato NetCDF.</p>
+<p>Después le paso esa lista a la función <code>wf_archetype()</code>.</p>
+<pre class="r"><code>ERAI_monthly &lt;- wf_archetype(
+   request = list(
+      class   = &quot;ei&quot;,
+      dataset = &quot;interim&quot;,
+      date    = &quot;19790101/19790201/19790301/19790401/19790501/19790601/19790701/19790801/19790901/19791001/19791101/19791201&quot;,
+      expver  = &quot;1&quot;,
+      grid    = &quot;0.75/0.75&quot;,
+      levtype = &quot;sfc&quot;,
+      param   = &quot;167.128&quot;,
+      stream  = &quot;moda&quot;,
+      type    = &quot;an&quot;,
+      target  = &quot;output&quot;,
+      format  = &quot;netcdf&quot;),
+   dynamic_fields = c(&quot;date&quot;, &quot;grid&quot;, &quot;target&quot;))</code></pre>
+<p>Esto me crea una función (que llamé “ERAI_monthly”) con argumentos “date”, “grid” and “target”. No cambio la lista a mano porque quiero estar seguro de siempre tener un <em>request</em> válido que apunte a ERA Interim. Para este pequeño ejemplo es medio mucho, pero es útil para usar en un proyecto más grande.</p>
+<p>Una cosa a notar es que el formato de las fechas es bastante largo. Voy a armarme una función que haga el trabajo pesado por mí.</p>
+<pre class="r"><code>format_dates &lt;- function(dates) {
+   dates &lt;- as.Date(dates)
+   paste0(lubridate::year(dates),
+          formatC(lubridate::month(dates), width = 2, flag = &quot;0&quot;),
+          formatC(lubridate::day(dates), width = 2, flag = &quot;0&quot;),
+          collapse = &quot;/&quot;)
+}
+
+format_dates(c(&quot;2018-01-01&quot;, &quot;2018-02-01&quot;))</code></pre>
+<pre><code>## [1] &quot;20180101/20180201&quot;</code></pre>
+<p>Ahora estoy listo para descargar los datos! Como nací en agosto de 1988, voy a ver cómo aumentó la temperatura media de ese mes desde ese año. Y como no me interesan mucho los detalles locales, voy a usar una resolución de 3° por 3°.</p>
+<pre class="r"><code>dates &lt;- seq.Date(as.Date(&quot;1988-08-01&quot;), as.Date(&quot;2018-08-01&quot;), &quot;1 year&quot;)
+
+my_request &lt;- ERAI_monthly(date = format_dates(dates), 
+                           grid = &quot;3/3&quot;,
+                           target = &quot;august_monthly.nc&quot;)
+str(my_request)</code></pre>
+<pre><code>## List of 11
+##  $ class  : chr &quot;ei&quot;
+##  $ dataset: chr &quot;interim&quot;
+##  $ date   : chr &quot;19880801/19890801/19900801/19910801/19920801/19930801/19940801/19950801/19960801/19970801/19980801/19990801/200&quot;| __truncated__
+##  $ expver : chr &quot;1&quot;
+##  $ grid   : chr &quot;3/3&quot;
+##  $ levtype: chr &quot;sfc&quot;
+##  $ param  : chr &quot;167.128&quot;
+##  $ stream : chr &quot;moda&quot;
+##  $ type   : chr &quot;an&quot;
+##  $ target : chr &quot;august_monthly.nc&quot;
+##  $ format : chr &quot;netcdf&quot;</code></pre>
+<p>Y con esto, uso <code>wf_request()</code> para bajar los datos. Esto puede llevar su tiempo. No porque el archivo sea muy pesado (para nada, sólo 455kb), sino porque el servidor tiene que procesar el <em>request</em> y unir todos los datos. Si están siguiendo esto desde su casa, éste es el momento para ir a hacere un té o, en mi caso, un mate. 🍵</p>
+<pre class="r"><code>wf_request(request = my_request,
+           user = &quot;eliocampitelli@gmail.com&quot;, 
+           transfer = TRUE,
+           path = &quot;data&quot;, 
+           verbose = FALSE)</code></pre>
+<p>Ahora que tengo mis datos en “august_monthly.nc”, sólo necesito cargarlo en memoria para analizarlo. Voy a usar mi paquete <a href="https://eliocamp.github.io/metR/">metR</a>.</p>
+<pre class="r"><code>library(metR)
+library(ggplot2)
+library(data.table)</code></pre>
+<pre class="r"><code>august_temp &lt;- ReadNetCDF(&quot;data/august_monthly.nc&quot;)</code></pre>
+<p>Primero, mirar un poco la estructura de los datos.</p>
+<pre class="r"><code>str(august_temp)</code></pre>
+<pre><code>## Classes &#39;data.table&#39; and &#39;data.frame&#39;:   226920 obs. of  4 variables:
+##  $ longitude: int  0 3 6 9 12 15 18 21 24 27 ...
+##  $ latitude : int  90 90 90 90 90 90 90 90 90 90 ...
+##  $ t2m      : num  273 273 273 273 273 ...
+##  $ time     : POSIXct, format: &quot;1988-08-01&quot; &quot;1988-08-01&quot; ...
+##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
+<p>Es un data frame con un valor de <code>t2m</code> para cada longitud, latitud y tiempo. La temperatura está en Kelvin. Quiero ver un campo; el primero.</p>
+<pre class="r"><code># mapa
+world &lt;- list(geom_path(data = map_data(&quot;world2&quot;), 
+                        aes(long, lat, group = group), 
+                        size = 0.2, color = &quot;gray50&quot;),
+              coord_quickmap(),
+              scale_x_longitude(),
+              scale_y_latitude())
+
+ggplot(august_temp[time == time[1]], aes(longitude, latitude)) +
+   geom_contour_fill(aes(z = t2m - 273.15)) +
+   world +
+   scale_fill_divergent(&quot;Temperatura a 2m (°C)&quot;) +
+   metR:::theme_field()</code></pre>
+<p><img src="../../../post/2019-04-19-como-cambio-el-tiempo-desde-que-naci_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Los trópicos son más cálidos que los polos, como debe ser.</p>
+<p>Luego de conocer los datos, voy a computar la tendencia lineal de la temperatura para cada punto de grilla. Estoy usando una forma <strong>muy bruta</strong> para evaluar la significancia estadística.</p>
+<pre class="r"><code>trends &lt;- august_temp[, FitLm(year = year(time), t2m, se = TRUE), 
+                      by = .(longitude, latitude)] 
+trends[, p.value :=  pt(abs(estimate)/std.error, df, lower.tail = FALSE)]
+
+ggplot(trends[term == &quot;year&quot;], aes(longitude, latitude)) +
+   geom_contour_fill(aes(z = estimate*10), 
+                     breaks = AnchorBreaks(0, 0.25, exclude = 0)) +
+   stat_subset(aes(subset = p.value &lt;= 0.01), 
+               geom = &quot;point&quot;, size = 0.1, alpha = 0.5) +
+   world +
+   scale_fill_divergent(&quot;Tendencia de temperatura a 2m \n (°C/década)&quot;) +
+   metR:::theme_field() +
+   labs(subtitle = &quot;Cambio de la temperatura media de agosto 1988-2018&quot;, 
+        caption = &quot;Datos: ERA Interim&quot;)</code></pre>
+<p><img src="../../../post/2019-04-19-como-cambio-el-tiempo-desde-que-naci_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>No es sorprendente que la tendencia sea positiva en casi todos lados, aunque no es estadísticamente significativa siempre (usando este método <strong>muy bruto</strong>). Notablemente, la temperatura de agosto no aumentó mucho donde yo vivo.</p>
+<p>Voy a construir (a lo bruto) una serie temporal de temperatura media global de agosto promediando todos los puntos de grilla para cada año (usando como peso el coseno de la latitud).</p>
+<pre class="r"><code>gmat &lt;- august_temp[, .(t2m = weighted.mean(t2m, cos(latitude*pi/180))), 
+                   by = year(time)]
+
+ggplot(gmat, aes(year, t2m - 273.15)) +
+   geom_line() +
+   geom_smooth(method = &quot;lm&quot;) +
+   scale_y_continuous(&quot;Temperatura media a 2m global de agosto (°C)&quot;) +
+   hrbrthemes::theme_ipsum_rc()</code></pre>
+<p><img src="../../../post/2019-04-19-como-cambio-el-tiempo-desde-que-naci_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>De nuevo, no sorprende a nadie que la temperatura global está aumentando. Voy a calcular la tasa de aumento.</p>
+<pre class="r"><code>trend &lt;- lm(t2m ~ I(year/10), data = gmat)
+summary(trend)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = t2m ~ I(year/10), data = gmat)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.28121 -0.05954 -0.01535  0.06890  0.28129 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 255.78307    4.71318  54.270  &lt; 2e-16 ***
+## I(year/10)    0.16756    0.02353   7.121 7.77e-08 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.1172 on 29 degrees of freedom
+## Multiple R-squared:  0.6362, Adjusted R-squared:  0.6236 
+## F-statistic: 50.71 on 1 and 29 DF,  p-value: 7.772e-08</code></pre>
+<p>La tendencia (1.68 °C/década) es consistente con <a href="https://www.ipcc.ch/site/assets/uploads/2018/02/AR5_SYR_FINAL_SPM.pdf">estimaciones mejores</a>. 🔥</p>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">ETIQUETADO EN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="../../../tags/ejemplos/">ejemplos</a>
+
+  <a class="tag tag--primary tag--small" href="../../../tags/paquetes/">paquetes</a>
+
+                  </div>
+                
+              
+            
+            
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2019/01/metamerismo-estad%C3%ADstico/" data-tooltip="Metamerismo estadístico">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2019/04/ecmwfr-calentamiento-global/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2019/04/ecmwfr-calentamiento-global/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2019/04/ecmwfr-calentamiento-global/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+            
+              
+                <div id="disqus_thread">
+  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2019 Elio Campitelli. Todos los derechos reservados
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
+        
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2019/01/metamerismo-estad%C3%ADstico/" data-tooltip="Metamerismo estadístico">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https://eliocamp.github.io/codigo-r/2019/04/ecmwfr-calentamiento-global/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=https://eliocamp.github.io/codigo-r/2019/04/ecmwfr-calentamiento-global/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=https://eliocamp.github.io/codigo-r/2019/04/ecmwfr-calentamiento-global/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2019%2F04%2Fecmwfr-calentamiento-global%2F">
+          <i class="fa fa-facebook-official"></i><span>Compartir en Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2019%2F04%2Fecmwfr-calentamiento-global%2F">
+          <i class="fa fa-twitter"></i><span>Compartir en Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Feliocamp.github.io%2Fcodigo-r%2F2019%2F04%2Fecmwfr-calentamiento-global%2F">
+          <i class="fa fa-google-plus"></i><span>Compartir en Google&#43;</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=110" alt="Foto de autor" />
+    
+    <h4 id="about-card-name">Elio Campitelli</h4>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Atmospheric sciences graduate researcher at CONICET
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Argentina
+      </div>
+    
+  </div>
+</div>
+
+    <div id="algolia-search-modal" class="modal-container">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="close-button"><i class="fa fa-close"></i></span>
+      <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+        <span class="searchby-algolia-text text-color-light text-small">by</span>
+        <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+      </a>
+      <i class="search-icon fa fa-search"></i>
+      <form id="algolia-search-form">
+        <input type="text" id="algolia-search-input" name="search"
+          class="form-control input--large search-input" placeholder="Buscar" />
+      </form>
+    </div>
+    <div class="modal-body">
+      <div class="no-result text-color-light text-center">no se encontraron artículos</div>
+      <div class="results">
+        
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2019/04/ecmwfr-calentamiento-global/">
+                <h3 class="media-heading">Midiendo el calentamiento global con ecmwfr</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Apr 4, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Para mi investigación necesitaba bajar datos meteorológicos grillados del ERA-Interim, que es una base de datos generada por el ECMWF. Bajar los datos en su sitio web es muy incómido y requiere muchos clicks. Por suerte, me encontré con el paquete ecmwfr con el que pude bajar los datos directamente desde R y muy fácilmente. Una de las cosas geniales del código abierto, es que los usuarios pueden ser colaboradores, así que sugerí algunas cosas y aporté un poco de código.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2019/01/metamerismo-estad%C3%ADstico/">
+                <h3 class="media-heading">Metamerismo estadístico</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jan 1, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Resumen El paquete metamer implementa en R el algoritmo descripto por Matejka and Fitzmaurice (2017) para generar sets de datos distintos entre sí pero con estadísticos idénticos. Además, propongo el nombre “metámeros” para estos grupos de datos en analogía con el concepto proveniente de colorimetría.
+Metámeros en la visión Esto no es un prisma separando la luz blanca en las longitudes de onda que la componen. Es una imagen de un prisma separando la luz blanca en las longitudes de onda que la componen.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/10/leyendo-informacion-incucai/">
+                <h3 class="media-heading">Leyendo información del INCUCAI</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Oct 10, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">El otro día el diario Clarín sacó una nota afirmando que el pasado agosto se había dado el récord histórico de transplantes de órganos y se lo adjudicaba a la &ldquo;Ley Justina&rdquo;, que establece que todos somos donantes presuntos a menos que se declare lo contrario en vida. Dado que esta ley se aprobó hace poco más de un mes y todavía no está reglamentada, es poco probable que este récord se deba al cambio legal.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/09/multiple-color-and-fill-scales-with-ggplot2/">
+                <h3 class="media-heading">Multiple color (and fill) scales with ggplot2</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Sep 9, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">(Versión en español)
+tl;dr: The functionality shown in this post is now on the ggnewscale package! 📦. You can find the original code in this gist.
+A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
+
+Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/09/multiples-escalas-colores-ggplot2/">
+                <h3 class="media-heading">Múltiples escalas de colores en ggplot2</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Sep 9, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">tl;dr: Esta funcionalidad está ahora en el paquete ggnewscale! 📦 En este gist está la versión origial del código.
+Un dolor importante para algunos usuarios de ggplot2 es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
+
+Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &ldquo;no se puede, pero esta es otra forma de graficar tus datos&rdquo;.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/08/periodic-data-ggplot2-ggperiodic/">
+                <h3 class="media-heading">Wrapping around ggplot2 with ggperiodic</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Aug 8, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">As an atmospheric scientists, a lot of my research consists on plotting and looking at global fields of atmospheric variables like pressure, temperature and the like. Since our planet is a sphere (well, almost), it is unbound and so longitude is a periodic dimension. That is, to the right of 180°E you go back to 180°W. But ggplot2 and other plotting systems, for the most part, assume linear dimensions.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/">
+                <h3 class="media-heading">Tu propio smooth en geom_smooth()</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jun 6, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Algo increíblemente satisfactorio de ggplot2 es la posibilidad de ajustar curvas a los datos de manera súper fácil con geom_smooth(). Para mi investigación estaba mirando la relación entre dos ángulos y me di cuenta que la recta ajustada por cuadrados mínimos no estaba funcionando para ilustrar la obvia estructura que había en los datos.
+library(ggplot2) df &lt;- readRDS(&quot;data/smooth_example.Rds&quot;) ggplot(df, aes(pc.angle, phase)) + geom_point() + geom_smooth(method = &quot;lm&quot;)  Se me ocurrió que un mejor modelo podría ser usando el estimador de Theil-Sen, que es la mediana de todas las pendientes entre dos puntos distintos y está implementado en el paquete mblm.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/05/presentacion-powerpoint-rmarkdown/">
+                <h3 class="media-heading">Hacer una presentación de PowerPoint a partir de rmarkdown</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  May 5, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/05/arte-reproducible-del-subte-de-buenos-aires/">
+                <h3 class="media-heading">Arte reproducible del Subte de Buenos Aires</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  May 5, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía unas ilustraciones en las paredes hechas a partir de líneas de distinto grosor.
+Charlamos un poco sobre ese estilo y cómo se podía replicar con ggplot2 usando el paquete ggridges.
+Lo primero que hago es leer la imagen. Este paso depende del formato (a menos que haya alguna forma de seleccionar el formato correcto automáticamente, pero no conozco).</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-generico-en-ggplot2/">
+                <h3 class="media-heading">Como hacer un stat genérico en ggplot2</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  May 5, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Hace un tiempo que venía pensando que si bien ggplot2 es genial y tiene un montón de geoms y stats, le faltaba la opción de extenderlo a stats y geoms creados por el usuario. Luego, aprendí que ggplot2 tiene un excelente sistema para extenderlo y empecé a crear mis propios stats. Pero aún así, hacer un stat específico cada vez que uno quiere hacer un plot en particular es demasiado complicado.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+      </div>
+    </div>
+    <div class="modal-footer">
+      <p class="results-count text-medium"
+         data-message-zero="no se encontraron artículos"
+         data-message-one="1 artículo encontrado"
+         data-message-other="{n} artículos encontrados">
+         15 posts found
+      </p>
+    </div>
+  </div>
+</div>
+    
+  
+    
+    <div id="cover" style="background-image:url('https://eliocamp.github.io/codigo-r/images/cover2.jpg');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js" integrity="sha256-XrZQp+ZMfovqr6Hb2M6okHvSEYaB/+Xbx7toWmOOZUM=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-light.min.css" integrity="sha256-KacbO6Nou2geGJEUzQeKzKEdp/DENVGJKAd2v37moh0=" crossorigin="anonymous" />
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="../../../js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
+
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+      <script>
+        var disqus_config = function () {
+          this.page.url = 'https:\/\/eliocamp.github.io\/codigo-r\/2019\/04\/ecmwfr-calentamiento-global\/';
+          
+            this.page.identifier = '\/2019\/04\/ecmwfr-calentamiento-global\/'
+          
+        };
+        (function() {
+          
+          
+          if (window.location.hostname == "localhost") {
+            return;
+          }
+          var d = document, s = d.createElement('script');
+          var disqus_shortname = 'codigo-r';
+          s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+      </script>
+    
+  
+
+
+
+    
+  </body>
+</html>
+
