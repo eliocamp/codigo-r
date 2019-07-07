@@ -81,7 +81,7 @@ But with all those quotes I fear for the integrity of my "shift" and "two" keys.
 temperature[, mean(air)]
 ```
 
-Exquisite! The beautiful thing is that this works with **any** function, which means that, again, I can apply all my previous base R knowledge without having to learn a whole new set of functions or operations. 
+Exquisite! The beautiful thing is that this works with **any expresion**QQ, which means that, again, I can apply all my previous base R knowledge without having to learn a whole new set of functions or operations. 
 
 The last wonderful basic building block of data.table syntax is the `by` argument. I often need to split the data in groups, apply some function and the join it all together. Using a normal data.frame this could be done artisanally with a for loop, or the more industrialised `by()` function or `tapply()` (maybe, I've never really understood how it works). But not only would I hurt my hand due to repetitive typing, but I would also fall prey to memory issues. With data.table, applying any function to each group of the data is a breeze:
 
