@@ -20,7 +20,7 @@
       <description>
 
 
-&lt;p&gt;I’ve been an R user for a few year now and the &lt;a href=&#34;https://github.com/Rdatatable/data.table/wiki&#34;&gt;data.table&lt;/a&gt; package has been my staple package for most of it. In this post I wanted to talk about why almost every script and RMarkdown report I write start with:&lt;/p&gt;
+&lt;p&gt;I’ve been an R user for a few years now and the &lt;a href=&#34;https://github.com/Rdatatable/data.table/wiki&#34;&gt;data.table&lt;/a&gt; package has been my staple package for most of it. In this post I wanted to talk about why almost every script and RMarkdown report I write start with:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(data.table)&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;my-memory-issues&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;My memory issues&lt;/h1&gt;

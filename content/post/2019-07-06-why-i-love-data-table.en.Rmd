@@ -10,7 +10,7 @@ tags:
   - data.table
 ---
 
-I've been an R user for a few year now and the [data.table](https://github.com/Rdatatable/data.table/wiki) package has been my staple package for most of it. In this post I wanted to talk about why almost every script and RMarkdown report I write start with:
+I've been an R user for a few years now and the [data.table](https://github.com/Rdatatable/data.table/wiki) package has been my staple package for most of it. In this post I wanted to talk about why almost every script and RMarkdown report I write start with:
 
 ```{r}
 library(data.table)
