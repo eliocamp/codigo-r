@@ -1,0 +1,47 @@
+---
+title: Lo que aprendí en LatinR 2019
+author: Elio Campitelli
+date: '2019-10-04'
+slug: lo-que-aprendí-en-latinr-2019
+categories:
+  - R
+tags: []
+draft: 
+---
+
+
+
+Este año viajé a Santiago de Chile para 
+
+# Workshops
+
+A la mañana del primer día asistí al workshop de Mine Çetinkaya-Rundel sobre enseñanza de R. Ejemplificó algunos principios básicos a la hora de diseñar clases. La idea de "dejales comer el pastel primero" creo que es la principal enseñanza. No empezar con las nimedades aburridas de la programación, sino con un pantallazo general que muestre todo el poder de R y, en particular, R Markdown. 
+
+Luego experimentamos en primera persona cómo usar RStudio Cloud para adminitrar un curso. Yo soy un poco reticente a depender de plataformas en "la nube" (que es el disco rígido de otro), pero aún así veo que hay muchísimo potencial. Es maravilloso poder abrir el explorador y poder empezar a correr R sin tener que preocuparse por instalar cosas en las computadoras de los estudiantes. Uno se libera de los dolores de cabeza de las librerías de sistema, las diferencias entre linux, windows y mac, y no requiere una laptop potente. 
+
+La noticia es que apenas una semana luego de hacer el workshop, mi novia yo yo aplicamos lo que aprendimos en una pequeña clase que dimos para una materia de la facultad. La clase fue un éxito rotundo (lo que no quiere decir que no haya cosas para mejorar). Los materiales están acá. 
+
+(foto!)
+
+# Charlas que me resultador interesantes
+
+Juan Cruz Rodriguez mostró su trabajo con el paquete autokeras. Es la primera vez que escuché hablar sobre auto machine learning. Resulta interesante y a la vez preocupante. Es más que conocido el abuso y mal uso que se hace de los algoritmos de machine learning y lo peligroso que es usar modelos ciegamente sin apreciar las suposiciones que acarrea tanto el modelo como los datos que se usaron para entrenarlo. Por otro lado, estoy seguro que va a ser muy útil para usar como "baseline" en los futuros desarrollos. ¿Si te pasaste semanas rompiéndote el bocho desarollando la arquitectura de una red neuronal que luego es peor que una entrenada "ciegamente"?
+
+Claro que todo esto lo úncio que hace es pasar la discusión a otro nivel de abstracción. Ahora hay cientos de parámetros y métodos de auto machine learning. ¿Para cuando el auto auto machine learning para optimizarlos?
+
+
+Mi charla se tituló "Si te gusta la estadística, bancate los metámeros". Los lectores del blog ya sabrán de qué se trata (link)... 
+
+GCM compareR: una aplicación web para evaluar escenarios de cambio climático
+
+
+
+
+rvad: perfiles verticales de viento a patir de datos de radares meteorológicos
+
+
+
+Mapeando la Vulnerabilidad Sanitaria en Argentina con R
+
+
+
