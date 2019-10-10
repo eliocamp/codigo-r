@@ -6,10 +6,287 @@
     <description>Recent content in R on Code R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Thu, 03 Jan 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 06 Jul 2019 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://eliocamp.github.io/codigo-r/en/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Why I love data.table</title>
+      <link>https://eliocamp.github.io/codigo-r/en/2019/07/why-i-love-data-table/</link>
+      <pubDate>Sat, 06 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://eliocamp.github.io/codigo-r/en/2019/07/why-i-love-data-table/</guid>
+      <description>
+
+
+&lt;p&gt;I’ve been an R user for a few years now and the &lt;a href=&#34;https://github.com/Rdatatable/data.table/wiki&#34;&gt;data.table&lt;/a&gt; package has been my staple package for most of it. In this post I wanted to talk about why almost every script and RMarkdown report I write start with:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(data.table)&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;my-memory-issues&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;My memory issues&lt;/h1&gt;
+&lt;p&gt;I started working on my &lt;a href=&#34;https://en.wikipedia.org/wiki/Licentiate_(degree)&#34;&gt;licenciate&lt;/a&gt; thesis (the argentinian equivalent to a Masters Degree) around mid 2016. I had been using R for school work and fun for some time and knew that I wanted to perform all my analysis in R and write my thesis in RMarkdown. In the end, &lt;a href=&#34;https://github.com/eliocamp/tesis/&#34;&gt;I did&lt;/a&gt; but in the process I had to learn new tools and also create my own (which materialised in the &lt;a href=&#34;https://eliocamp.github.io/metR/&#34;&gt;metR package&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;The big problem I encountered early on was how to store and manipulate data. My main source of data were the output of atmospheric models which are stored usually in regularly spaced grids. The most natural way to store that kind of data would be in a multidimensional array like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;file &amp;lt;- &amp;quot;~/DATOS/NCEP Reanalysis/air.mon.mean.nc&amp;quot;
+subset &amp;lt;- list(level = 1000:800, 
+               time = c(&amp;quot;1979-01-01&amp;quot;, &amp;quot;2018-12-01&amp;quot;))
+temperature &amp;lt;- metR::ReadNetCDF(file, 
+                                subset = subset,
+                                out = &amp;quot;array&amp;quot;)[[1]]
+str(temperature)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  num [1:144, 1:73, 1:3, 1:473] -30.5 -30.5 -30.5 -30.5 -30.5 ...
+##  - attr(*, &amp;quot;dimnames&amp;quot;)=List of 4
+##   ..$ lon  : chr [1:144] &amp;quot;0&amp;quot; &amp;quot;2.5&amp;quot; &amp;quot;5&amp;quot; &amp;quot;7.5&amp;quot; ...
+##   ..$ lat  : chr [1:73] &amp;quot;90&amp;quot; &amp;quot;87.5&amp;quot; &amp;quot;85&amp;quot; &amp;quot;82.5&amp;quot; ...
+##   ..$ level: chr [1:3] &amp;quot;1000&amp;quot; &amp;quot;925&amp;quot; &amp;quot;850&amp;quot;
+##   ..$ time : chr [1:473] &amp;quot;1979-01-01&amp;quot; &amp;quot;1979-02-01&amp;quot; &amp;quot;1979-03-01&amp;quot; &amp;quot;1979-04-01&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This is very memory-efficient, but it doesn’t play well with a tidydata framework. Subsetting, filtering and operating on groups using arrays is rather awkward –not to mention that dimensions can only be characters! Furthermore, I had to transform it to a dataframe each time I wanted to plot it with ggplot2. What I needed was something more like this&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temperature &amp;lt;- metR::ReadNetCDF(file, subset = subset)
+str(temperature)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;data.table&amp;#39; and &amp;#39;data.frame&amp;#39;:   14916528 obs. of  5 variables:
+##  $ level: num  1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 ...
+##  $ lat  : num  90 90 90 90 90 90 90 90 90 90 ...
+##  $ lon  : num  0 2.5 5 7.5 10 12.5 15 17.5 20 22.5 ...
+##  $ air  : num  -30.5 -30.5 -30.5 -30.5 -30.5 ...
+##  $ time : POSIXct, format: &amp;quot;1979-01-01&amp;quot; &amp;quot;1979-01-01&amp;quot; ...
+##  - attr(*, &amp;quot;.internal.selfref&amp;quot;)=&amp;lt;externalptr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The problem is that this representation is much less memory-efficient and my aging laptop couldn’t handle it. While it would eventually read it, even the simplest operation would crash my R session. This was due to the fact that R loooves to &lt;a href=&#34;http://adv-r.had.co.nz/memory.html#modification&#34;&gt;copy on modify&lt;/a&gt; and this is deadly if you’re dealing with data that fits on your memory but just barely.&lt;/p&gt;
+&lt;p&gt;Enter data.table and its &lt;a href=&#34;https://cran.r-project.org/web/packages/data.table/vignettes/datatable-reference-semantics.html&#34;&gt;modify by reference&lt;/a&gt; functionality. Unlike regular data.frames or tibbles, data.table objects can be easily modified without copying the entire object! And this means that you can safely work with objects that take more than half your available RAM.&lt;/p&gt;
+&lt;p&gt;For this reason I often say that without data.table I wouldn’t have gotten my degree!&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;come-for-the-performance-stay-for-the-syntax&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Come for the performance, stay for the syntax&lt;/h1&gt;
+&lt;p&gt;But while my introduction to data.table was inspired by the need for memory optimisation, I quickly learned to love it’s minimalistic syntax.&lt;/p&gt;
+&lt;p&gt;The basic form of data.table syntax is a very elegant extension of the classic data.frame. This is great because if you already use data.frames, then there’s no need to learn about a whole nother family of functions to do what you already did. In fact, data.tables are mostly just smarter data.frames. For example, if I wanted to filter only the northern hemisphere on my temperature dataset, with a regular data.frame I would have to use&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temperature_df &amp;lt;- as.data.frame(temperature)
+head(temperature_df[temperature_df$lat &amp;gt;= 0, ])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   level lat  lon       air       time
+## 1  1000  90  0.0 -30.49999 1979-01-01
+## 2  1000  90  2.5 -30.49999 1979-01-01
+## 3  1000  90  5.0 -30.49999 1979-01-01
+## 4  1000  90  7.5 -30.49999 1979-01-01
+## 5  1000  90 10.0 -30.49999 1979-01-01
+## 6  1000  90 12.5 -30.49999 1979-01-01&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But who’s got the time to write all that? I can barely stay awake after typing &lt;code&gt;temperature_df&lt;/code&gt; so many times 😴! data.table is smart enough to realise that when I write “lat” inside my data, I’m talking about the column whose name is “lat” –what else could I mean? It’s also smart enough that if I omit that last comma, it knows that I want every column (good riddance, “undefined columns selected”!). So it all reduces to&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(temperature[lat &amp;gt;= 0])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##    level lat  lon       air       time
+## 1:  1000  90  0.0 -30.49999 1979-01-01
+## 2:  1000  90  2.5 -30.49999 1979-01-01
+## 3:  1000  90  5.0 -30.49999 1979-01-01
+## 4:  1000  90  7.5 -30.49999 1979-01-01
+## 5:  1000  90 10.0 -30.49999 1979-01-01
+## 6:  1000  90 12.5 -30.49999 1979-01-01&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Isn’t that gorgeous? But there’s even more. The second argument inside the brackets allows one to select columns, so if I wanted to get the mean temperature, I could write this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mean(temperature_df[, &amp;quot;air&amp;quot;])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 3.916081&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But with all those quotes I fear for the integrity of my “shift” and “two” keys. Also, what if I wanted to apply complex operation on multiple columns? I would be repeating &lt;code&gt;temperature_df&lt;/code&gt; like a broken record while drowning in a sea of quotation marks! Again, since data.table is smart enough to know that when I’m inside a data.table I’m usually operating on its columns, I can just write this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temperature[, mean(air)]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 3.916081&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Exquisite! The beautiful thing is that this works with &lt;strong&gt;any expresion&lt;/strong&gt;QQ, which means that, again, I can apply all my previous base R knowledge without having to learn a whole new set of functions or operations.&lt;/p&gt;
+&lt;p&gt;The last wonderful basic building block of data.table syntax is the &lt;code&gt;by&lt;/code&gt; argument. I often need to split the data in groups, apply some function and the join it all together. Using a normal data.frame this could be done artisanally with a for loop, or the more industrialised &lt;code&gt;by()&lt;/code&gt; function or &lt;code&gt;tapply()&lt;/code&gt; (maybe, I’ve never really understood how it works). But not only would I hurt my hand due to repetitive typing, but I would also fall prey to memory issues. With data.table, applying any function to each group of the data is a breeze:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(temperature[, mean(air), by = .(lat, level)])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##     lat level        V1
+## 1: 90.0  1000 -15.11903
+## 2: 87.5  1000 -15.18808
+## 3: 85.0  1000 -15.07319
+## 4: 82.5  1000 -14.25968
+## 5: 80.0  1000 -12.75084
+## 6: 77.5  1000 -11.06509&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;With just a slight change I can create a new column:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temperature[, mean_air := mean(air), by = .(lat, level)]
+head(temperature)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##    level lat  lon       air       time  mean_air
+## 1:  1000  90  0.0 -30.49999 1979-01-01 -15.11903
+## 2:  1000  90  2.5 -30.49999 1979-01-01 -15.11903
+## 3:  1000  90  5.0 -30.49999 1979-01-01 -15.11903
+## 4:  1000  90  7.5 -30.49999 1979-01-01 -15.11903
+## 5:  1000  90 10.0 -30.49999 1979-01-01 -15.11903
+## 6:  1000  90 12.5 -30.49999 1979-01-01 -15.11903&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here lays maybe the biggest departure from the classic data.frame. The &lt;code&gt;:=&lt;/code&gt; operator adds columns by reference, which means that there’s no need to assign the result to a new variable! That is, there’s no need to use &lt;code&gt;temperature &amp;lt;- temperature[, mean_air := mean(air), by = .(lat, level)]&lt;/code&gt;. If you remember all the stuff above about memory efficiency then you understand why it’s a very useful feature for me.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;this-is-not-a-pipe&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;This is not a pipe&lt;/h1&gt;
+&lt;p&gt;data.table has its own idiomatic way of chaining operation but I prefer to use pipes (&lt;code&gt;%&amp;gt;%&lt;/code&gt;). The trick is to realised that when using a pipe, the dot (&lt;code&gt;.&lt;/code&gt;) is a stand-in for the previous result. In practice this means that data.table operations can be chained thus:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(magrittr)
+library(ggplot2)
+temperature %&amp;gt;% 
+   .[level == 1000] %&amp;gt;% 
+   .[, mean(air), by = .(lat, lon)] %&amp;gt;% 
+   .[lat &amp;gt; 0] %&amp;gt;% 
+   ggplot(aes(lon, lat)) +
+   geom_raster(aes(fill = V1), interpolate = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2019-07-06-why-i-love-data-table.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;and-more&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;…and more!&lt;/h1&gt;
+&lt;p&gt;Of course this only scratches the surface of all the goodness of the data.table package. Inside the hood there are lots of optimisations to give it extra speed. It’s got special symbols that allow for more complex operations and optimised logical operators such as &lt;code&gt;%like%&lt;/code&gt; and &lt;code&gt;%between%&lt;/code&gt;. The &lt;code&gt;fread()&lt;/code&gt; and &lt;code&gt;fwrite()&lt;/code&gt; functions not only are insanely fast but also are packed with functionality. And so on…&lt;/p&gt;
+&lt;p&gt;So why I love data.table? I love that allows me to work with big and small datasets with the same elegant syntax and with great performance without even thinking about it. It is a wonderful package and you should give it a try!&lt;/p&gt;
+&lt;div id=&#34;now-i-love-data.table-too&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;“Now I love data.table too!”&lt;/h3&gt;
+&lt;p&gt;If my love for data.table rubbed on you even a little bit, then a good summary of the basic functionality is the &lt;a href=&#34;https://github.com/Rdatatable/data.table/wiki/Getting-started&#34;&gt;Getting Started&lt;/a&gt; set of articles. If you already know a the basics and want to take your skills to the next level, the &lt;a href=&#34;http://brooksandrew.github.io/simpleblog/articles/advanced-data-table/&#34;&gt;Advanced tips and tricks with data.table&lt;/a&gt;, is chock full of advanced tricks.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Using ecmwfr to measure global warming</title>
+      <link>https://eliocamp.github.io/codigo-r/en/2019/04/ecmwfr-global-warming/</link>
+      <pubDate>Fri, 19 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://eliocamp.github.io/codigo-r/en/2019/04/ecmwfr-global-warming/</guid>
+      <description>
+
+
+&lt;p&gt;For my research I needed to download gridded weather data from ERA-Interim, which is a big dataset generated by the &lt;a href=&#34;https://www.ecmwf.int/&#34;&gt;ECMWF&lt;/a&gt;. Getting long term data through their website is &lt;strong&gt;very&lt;/strong&gt; time consuming and requires &lt;strong&gt;a lot&lt;/strong&gt; of clicks. Thankfuly, I came accross the nifty &lt;a href=&#34;https://github.com/khufkens/ecmwfr&#34;&gt;ecmwfr&lt;/a&gt; R package that allowed me to do it with ease. One of the great things about open source is that users can also be collaborators, so I made a few suggestions and offered some code.&lt;/p&gt;
+&lt;p&gt;Now that a new version is on it’s way to CRAN, I wanted to show a quick example of what you can do with the package.&lt;/p&gt;
+&lt;p&gt;To download data from the ECMWF servers you need to have an account. So if you’re following at home, you’ll need create one and add the API key to the ecmwfr keyring. This is all done interactivelly with this command:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ecmwfr)
+
+wf_set_key(service = &amp;quot;webapi&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This will take you to the correct URL where you can get your key, and then sorts everything out to use it.&lt;/p&gt;
+&lt;p&gt;Now, in order to get data from the ECMWF servers I need to have a valid request. Unfortunatelly, since it hosts a huge number of different datasets with different data streams and time resolution, building a valid request from scratch is rather complicated. The easiest way to work with it is going to their &lt;a href=&#34;https://apps.ecmwf.int/datasets/&#34;&gt;to the website&lt;/a&gt; and use their point and click interface to create a basic request for the dataset of interest. In my case, I will use monthly data from &lt;a href=&#34;https://apps.ecmwf.int/datasets/data/interim-full-daily/levtype=sfc/&#34;&gt;ERA Interim&lt;/a&gt;.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;../../../post/2019-04-19-como-cambio-el-tiempo-desde-que-naci_files/webapi-erainterim.png&#34; alt=&#34;ERA Interim request&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;ERA Interim request&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;As you can see, there’s no way of retreiving every year in one request using the web interface. But a the bottom of the page there’s a link that says “View the MARS request”.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;../../../post/2019-04-19-como-cambio-el-tiempo-desde-que-naci_files/webapi-erainterim2.png&#34; alt=&#34;ERA Interim MARS&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;ERA Interim MARS&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;Here, I get a valid request that I can modify slightly. In R, I converted this template into a list using the “MARS to list” RStudio addin (but you can do it manually). I added &lt;code&gt;format  = &amp;quot;netcdf&amp;quot;&lt;/code&gt; at the end to get the data as a NetCDF file.&lt;/p&gt;
+&lt;p&gt;I then pass that list to the &lt;code&gt;wf_archetype()&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ERAI_monthly &amp;lt;- wf_archetype(
+   request = list(
+      class   = &amp;quot;ei&amp;quot;,
+      dataset = &amp;quot;interim&amp;quot;,
+      date    = &amp;quot;19790101/19790201/19790301/19790401/19790501/19790601/19790701/19790801/19790901/19791001/19791101/19791201&amp;quot;,
+      expver  = &amp;quot;1&amp;quot;,
+      grid    = &amp;quot;0.75/0.75&amp;quot;,
+      levtype = &amp;quot;sfc&amp;quot;,
+      param   = &amp;quot;167.128&amp;quot;,
+      stream  = &amp;quot;moda&amp;quot;,
+      type    = &amp;quot;an&amp;quot;,
+      target  = &amp;quot;output&amp;quot;,
+      format  = &amp;quot;netcdf&amp;quot;),
+   dynamic_fields = c(&amp;quot;date&amp;quot;, &amp;quot;grid&amp;quot;, &amp;quot;target&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now &lt;code&gt;ERAI_montly&lt;/code&gt; is a function with arguments “date”, “grid” and “target”. The reason I don’t just change the list willi nilli is that I want to be sure to always get a valid request pointing to the ERA Interim dataset. For this short example is probably overkill, but it’s usefull in a bigger project with multiple data requests.&lt;/p&gt;
+&lt;p&gt;As you can see, the MARS format for dates can be rather long to type, so I’ll create a custom function to make this easier:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;format_dates &amp;lt;- function(dates) {
+   dates &amp;lt;- as.Date(dates)
+   paste0(lubridate::year(dates),
+          formatC(lubridate::month(dates), width = 2, flag = &amp;quot;0&amp;quot;),
+          formatC(lubridate::day(dates), width = 2, flag = &amp;quot;0&amp;quot;),
+          collapse = &amp;quot;/&amp;quot;)
+}
+
+format_dates(c(&amp;quot;2018-01-01&amp;quot;, &amp;quot;2018-02-01&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;20180101/20180201&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now I’m ready to downlaod data! I was bown in august 1988, so I will be looking at how the month of august changed since that year. I’m also not terribly interested in local changes, so I’ll use a 3° by 3° resolution.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dates &amp;lt;- seq.Date(as.Date(&amp;quot;1988-08-01&amp;quot;), as.Date(&amp;quot;2018-08-01&amp;quot;), &amp;quot;1 year&amp;quot;)
+
+my_request &amp;lt;- ERAI_monthly(date = format_dates(dates), 
+                           grid = &amp;quot;3/3&amp;quot;,
+                           target = &amp;quot;august_monthly.nc&amp;quot;)
+str(my_request)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 11
+##  $ class  : chr &amp;quot;ei&amp;quot;
+##  $ dataset: chr &amp;quot;interim&amp;quot;
+##  $ date   : chr &amp;quot;19880801/19890801/19900801/19910801/19920801/19930801/19940801/19950801/19960801/19970801/19980801/19990801/200&amp;quot;| __truncated__
+##  $ expver : chr &amp;quot;1&amp;quot;
+##  $ grid   : chr &amp;quot;3/3&amp;quot;
+##  $ levtype: chr &amp;quot;sfc&amp;quot;
+##  $ param  : chr &amp;quot;167.128&amp;quot;
+##  $ stream : chr &amp;quot;moda&amp;quot;
+##  $ type   : chr &amp;quot;an&amp;quot;
+##  $ target : chr &amp;quot;august_monthly.nc&amp;quot;
+##  $ format : chr &amp;quot;netcdf&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And now, &lt;code&gt;wf_request()&lt;/code&gt; to download the data. This will take some. Not because I’m downloading a huge file (is not, about 455kb) but because the ECMWF has to process the request and collect the data. So if you’re following at home, you can go make some tea or, if you’re like me, mate. 🍵&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;wf_request(request = my_request,
+           user = &amp;quot;eliocampitelli@gmail.com&amp;quot;, 
+           transfer = TRUE,
+           path = &amp;quot;data&amp;quot;, 
+           verbose = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now that I have my data saved as “august_monthly.nc”, I’ll just need to load it and analyse it. I’ll be using my &lt;a href=&#34;https://eliocamp.github.io/metR/&#34;&gt;metR&lt;/a&gt; package for that.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(metR)
+library(ggplot2)
+library(data.table)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;august_temp &amp;lt;- ReadNetCDF(&amp;quot;data/august_monthly.nc&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;First a quick look at the data.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(august_temp)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;data.table&amp;#39; and &amp;#39;data.frame&amp;#39;:   226920 obs. of  4 variables:
+##  $ longitude: int  0 3 6 9 12 15 18 21 24 27 ...
+##  $ latitude : int  90 90 90 90 90 90 90 90 90 90 ...
+##  $ t2m      : num  273 273 273 273 273 ...
+##  $ time     : POSIXct, format: &amp;quot;1988-08-01&amp;quot; &amp;quot;1988-08-01&amp;quot; ...
+##  - attr(*, &amp;quot;.internal.selfref&amp;quot;)=&amp;lt;externalptr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It’s a data frame with a value of &lt;code&gt;t2m&lt;/code&gt; for each longitude, latitude and time. The temperature is in Kelvin. Let’s take a look at one field.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# world map
+world &amp;lt;- list(geom_path(data = map_data(&amp;quot;world2&amp;quot;), 
+                        aes(long, lat, group = group), 
+                        size = 0.2, color = &amp;quot;gray50&amp;quot;),
+              coord_quickmap(),
+              scale_x_longitude(),
+              scale_y_latitude())
+
+ggplot(august_temp[time == time[1]], aes(longitude, latitude)) +
+   geom_contour_fill(aes(z = t2m - 273.15)) +
+   world +
+   scale_fill_divergent(&amp;quot;2m temperature (°C)&amp;quot;) +
+   metR:::theme_field()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2019-04-19-como-cambio-el-tiempo-desde-que-naci.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The tropis are warmer than the poles, as it should be.&lt;/p&gt;
+&lt;p&gt;After getting to know the data, I’ll compute the linear trend of temperature at each gridpoint. I’ll use a &lt;strong&gt;very crude&lt;/strong&gt; method to get the statistical signficance of the trend.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;trends &amp;lt;- august_temp[, FitLm(year = year(time), t2m, se = TRUE), 
+                      by = .(longitude, latitude)] 
+trends[, p.value :=  pt(abs(estimate)/std.error, df, lower.tail = FALSE)]
+
+ggplot(trends[term == &amp;quot;year&amp;quot;], aes(longitude, latitude)) +
+   geom_contour_fill(aes(z = estimate*10), 
+                     breaks = AnchorBreaks(0, 0.25, exclude = 0)) +
+   stat_subset(aes(subset = p.value &amp;lt;= 0.01), 
+               geom = &amp;quot;point&amp;quot;, size = 0.1, alpha = 0.5) +
+   world +
+   scale_fill_divergent(&amp;quot;2m temperature \ntrend (°C/decade)&amp;quot;) +
+   metR:::theme_field() +
+   labs(subtitle = &amp;quot;August mean temperature change 1988-2018&amp;quot;, 
+        caption = &amp;quot;Data: ERA Interim&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2019-04-19-como-cambio-el-tiempo-desde-que-naci.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Not surprisingly, the trend is positive almost everywhere, although not everywhere statistically significant (using this &lt;strong&gt;very crude&lt;/strong&gt; method). Of note, there hasn’t been much increase in august mean temperature where I live.&lt;/p&gt;
+&lt;p&gt;I will construct a (&lt;strong&gt;crude&lt;/strong&gt;) global mean august temperature (“GMAT”) timeseries by averaging all gridpoint for each year (weighing by the cosine of latitude).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gmat &amp;lt;- august_temp[, .(t2m = weighted.mean(t2m, cos(latitude*pi/180))), 
+                   by = year(time)]
+
+ggplot(gmat, aes(year, t2m - 273.15)) +
+   geom_line() +
+   geom_smooth(method = &amp;quot;lm&amp;quot;) +
+   scale_y_continuous(&amp;quot;Global august 2m temperature (°C)&amp;quot;) +
+   hrbrthemes::theme_ipsum_rc()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2019-04-19-como-cambio-el-tiempo-desde-que-naci.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Again, not surprisingly, global temperature is going up. Let’s compute the rate of increase&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;trend &amp;lt;- lm(t2m ~ I(year/10), data = gmat)
+summary(trend)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Call:
+## lm(formula = t2m ~ I(year/10), data = gmat)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.28121 -0.05954 -0.01535  0.06890  0.28129 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&amp;gt;|t|)    
+## (Intercept) 255.78307    4.71318  54.270  &amp;lt; 2e-16 ***
+## I(year/10)    0.16756    0.02353   7.121 7.77e-08 ***
+## ---
+## Signif. codes:  0 &amp;#39;***&amp;#39; 0.001 &amp;#39;**&amp;#39; 0.01 &amp;#39;*&amp;#39; 0.05 &amp;#39;.&amp;#39; 0.1 &amp;#39; &amp;#39; 1
+## 
+## Residual standard error: 0.1172 on 29 degrees of freedom
+## Multiple R-squared:  0.6362, Adjusted R-squared:  0.6236 
+## F-statistic: 50.71 on 1 and 29 DF,  p-value: 7.772e-08&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The rate of 1.68 °C/decade is consistent with &lt;a href=&#34;https://www.ipcc.ch/site/assets/uploads/2018/02/AR5_SYR_FINAL_SPM.pdf&#34;&gt;estimates using better methods&lt;/a&gt;. 🔥&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Statistical metamerism</title>

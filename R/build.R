@@ -4,6 +4,7 @@ build_site <- function(local = FALSE, method = c("html", "custom"), run_hugo = T
    # on.exit(blogdown:::run_script("R/build.R", as.character(local)), add = TRUE)
    if (method == "custom") return()
    
+   
    files = blogdown:::list_rmds("content", TRUE)
    if (length(files)) {
       files = files[mapply(blogdown:::require_rebuild, blogdown:::output_file(files), 

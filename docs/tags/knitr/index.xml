@@ -8,7 +8,7 @@
     <language>es-es</language>
     <lastBuildDate>Thu, 31 May 2018 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/tags/knitr/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="/tags/knitr/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,7 +17,27 @@
       <pubDate>Thu, 31 May 2018 00:00:00 +0000</pubDate>
       
       <guid>/2018/05/notificaciones-autom%C3%A1ticas-al-terminar-knitr/</guid>
-      <description>start.time &amp;lt;- Sys.time() # Notification start.time &amp;lt;- unclass(Sys.time()) min.time &amp;lt;- 10 knit_doc &amp;lt;- knitr::knit_hooks$get(&amp;quot;document&amp;quot;) knitr::knit_hooks$set(document = function(x) { took &amp;lt;- unclass(Sys.time()) - start.time if (unclass(Sys.time()) - start.time &amp;gt;= min.time) { notify(&amp;quot;Done knitting!&amp;quot;, paste0(&amp;quot;Took &amp;quot;, round(took), &amp;quot; seconds&amp;quot;), time = 5) } knit_doc(x) }) notify &amp;lt;- function(title = &amp;quot;title&amp;quot;, text = NULL, time = 2) { time &amp;lt;- time*1000 system(paste0(&#39;notify-send &amp;quot;&#39;, title, &#39;&amp;quot; &amp;quot;&#39;, text, &#39;&amp;quot; -t &#39;, time, &#39; -a rstudio&#39;)) }  </description>
+      <description>&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;start.time &amp;lt;- Sys.time()
+# Notification
+start.time &amp;lt;- unclass(Sys.time())
+min.time &amp;lt;- 10
+knit_doc &amp;lt;- knitr::knit_hooks$get(&amp;quot;document&amp;quot;)
+knitr::knit_hooks$set(document = function(x) {
+   took &amp;lt;- unclass(Sys.time()) - start.time
+   if (unclass(Sys.time()) - start.time &amp;gt;= min.time) {
+      notify(&amp;quot;Done knitting!&amp;quot;, 
+             paste0(&amp;quot;Took &amp;quot;, round(took), &amp;quot; seconds&amp;quot;),
+             time = 5)
+   }  
+   knit_doc(x)
+})
+
+notify &amp;lt;- function(title = &amp;quot;title&amp;quot;, text = NULL, time = 2) {
+   time &amp;lt;- time*1000
+   system(paste0(&#39;notify-send &amp;quot;&#39;, title, &#39;&amp;quot; &amp;quot;&#39;, text, &#39;&amp;quot; -t &#39;, time, &#39; -a rstudio&#39;))
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
     </item>
     
   </channel>

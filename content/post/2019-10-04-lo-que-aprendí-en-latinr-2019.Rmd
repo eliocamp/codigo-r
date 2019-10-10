@@ -1,0 +1,69 @@
+---
+title: Lo que aprendí en LatinR 2019
+author: Elio Campitelli
+date: '2019-10-04'
+slug: lo-que-aprendí-en-latinr-2019
+categories:
+  - R
+tags: []
+draft: true
+---
+
+
+
+Este año viajé a Santiago de Chile para 
+
+# Workshops
+
+A la mañana del primer día asistí al workshop de Mine Çetinkaya-Rundel sobre enseñanza de R. Ejemplificó algunos principios básicos a la hora de diseñar clases. La idea de "dejales comer el pastel primero" creo que es la principal enseñanza. No empezar con las nimedades aburridas de la programación, sino con un pantallazo general que muestre todo el poder de R y, en particular, R Markdown. 
+
+Luego experimentamos en primera persona cómo usar RStudio Cloud para adminitrar un curso. Yo soy un poco reticente a depender de plataformas en "la nube" (que es el disco rígido de otro), pero aún así veo que hay muchísimo potencial. Es maravilloso poder abrir el explorador y poder empezar a correr R sin tener que preocuparse por instalar cosas en las computadoras de los estudiantes. Uno se libera de los dolores de cabeza de las librerías de sistema, las diferencias entre linux, windows y mac, y no requiere una laptop potente. 
+
+La noticia es que apenas una semana luego de hacer el workshop, mi novia yo yo aplicamos lo que aprendimos en una pequeña clase que dimos para una materia de la facultad. La clase fue un éxito rotundo (lo que no quiere decir que no haya cosas para mejorar). Los materiales están acá. 
+
+(foto!)
+
+# Charlas que me resultadon interesantes
+
+Juan Cruz Rodriguez mostró su trabajo con el paquete autokeras (**Auto-Keras: An R easily accessible deep learning library**). Es la primera vez que escuché hablar sobre auto machine learning. Resulta interesante y a la vez preocupante. Es más que conocido el abuso y mal uso que se hace de los algoritmos de machine learning y lo peligroso que es usar modelos ciegamente sin apreciar las suposiciones que acarrea tanto el modelo como los datos que se usaron para entrenarlo. Por otro lado, estoy seguro que va a ser muy útil para usar como "baseline" en los futuros desarrollos. ¿Si te pasaste semanas rompiéndote el bocho desarollando la arquitectura de una red neuronal que luego es peor que una entrenada "ciegamente"? Claro que todo esto lo úncio que hace es pasar la discusión a otro nivel de abstracción. Ahora hay cientos de parámetros y métodos de auto machine learning. ¿Para cuando el auto auto machine learning para optimizarlos?
+
+
+La presentación "**¿Quienes investigan sobre género?**" de Juan Pablo Sokil me pareció refrescante porque toca el tema inverso a lo que generalmente se habla. Mostró que las publicaciones en temáticas de género están dominadas por mujeres y que los pocos hombres que publican lo hacen en áreas que tocan el género de forma secundaria, principalmente en cuestiones de medicina. 
+
+Algo que me toca de cerca fue la presentación de Javier Fajardo "**GCM compareR: una aplicación web para evaluar escenarios de cambio climático**". Con su equipo armaron una aplicación web para comparar las salidas de los distintos miembros de los Modelos de Circulación Global. Yo justamente estoy empezando a usar los modelos climáticos del CMIP6 y me encuentro con esos problemas. Habiendo tantos modelos distintos, cada uno con varios miembros, ¿cómo elijo los mejores o el conjunto más variado? Su herramienta está pensada más para la biología que las meteorología, pero es posible que me sirva. 
+
+Francisco Zambrano explicó su trabajo que además de estar relacionado con mi área, es más munución para la guerra sobre deep learning. En "**Predicción de la sequía agrícola en Chile: regresión lineal vs deep learning**" mostró los resultados de aplicar ambas regresión lieal o deep learning en datos geoespaciales. La conclusión no es demasiado sorprendente: la rergesión fue tan buena (o mala) como el deep learning. Esto va en línea con otras investigaciones que ponen en duda la supremacía del "machine learning" sobre "métodos estadíscitos" clásicos (por ejemplo este y este). La moraleja es que antes de "meterle machine learning a todo", hay que reflexinaor bien sobre el tipo y la cantidad de datos que uno tiene.
+
+https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0194889
+https://www.sciencedirect.com/science/article/abs/pii/S0895435618310813
+
+Siguiendo con el tema de los datos geográficos, Antonio Vazquez Brust dio una clase de ruteo en "**Mapeando la Vulnerabilidad Sanitaria en Argentina con R**". Se pasaron con su trabajo que pusieron para crear un mapa de la distancia media a hospitales. Lo lindo fue que la charla de Antonio fue ultra didáctica, explicando paso a paso todo lo que hicieron; fue casi un tutorial! Resalto la importancia de OpenStreetMaps como alternativa abierta a Google Maps. Ya tengo ganas de hacer algo parecido pero usando la red de estaciones de bicicletas públicas de la Ciudad de Buenos Aires.
+
+
+Mi charla se tituló "**Si te gusta la estadística, bancate los metámeros**", basada en este artículo publicado en el blog (link). Si les interesa, la presentación está acá (link). 
+
+Paola corrales presentó el paquete rvad (que desarrollamos juntos). Es la implementación de un algoritmo para obtener perfiles verticales de viento a patir de datos de radares meteorológicos. Acá está la presentación(link).
+
+
+# Charlas plenarias
+
+R 4 All: Welcoming and inclusive practices for teaching R
+Para alguien que además de usar R, le gusta enseñar R, esta charla fue excelente. Mine dio una gran cantidad de principios básicos para mejorar el ambiente de una clase o taller. Como dije arriba, mi novia y yo tuvimos la oportunidad de aplicar algunos de ellos pocos días luego de volver a Buenos Aires. El resultado fue muy bueno, me parece. Además de que fue divertido y llevadero, recibimos buen feedback directo de los estudiantes. 
+
+
+Automatic Machine Learning with H2O
+Fue una buena oportunidad escuchar a Erin explicando cómo funciona H2O en general y e Auto Machine Learning en particular. No es algo que le vea aplicación directa en mi trabajo, pero está bueno tenerlo en mente. 
+
+
+The many backends of dplyr: Hadley mostró cómo funcionaban dos paquetes que extienden la funcionalidad de dplyr para otras clases de data.frames. El paquete dtplyr (lilnk) permite usar los verbos de dplyr para manipular data.tables y dbplyr (link) hace lo mismo con bases de datos. Yo soy un declarado fan de la sintaxis de data.table (link), pero entiendo que no sea para todos. 
+
+
+# Fuera de programa
+
+Como en toda conferencia, los eventos principales son las cnoversacionoes informales durante el coffee break, el almuerzo y las salidas nocturnas con cerveza. 
+
+
+
+Tuve la oportunidad de hablar con Hadley sobre algunos proyectos que tengo en mente. Entre otras cosas, hablamos sobre cómo tener documentación multilingüe. Hace rato que la comunidad reconoce la falta de recursos en idiomas distintos al inglés y existen varios proyectos para rellenar este bache. Están los esfuerzos de traducción de libros como R para ciencias de datos (link), lecciones de The Carpentries (link) y #DatosDeMiércoles (link). Pero algo que falta es traducir la documentación técnica de los diversos paquetes del ecosistema de R. ¿Cómo hacerlo? ¿Cómo implementarlo dentro de R? 
+
+
