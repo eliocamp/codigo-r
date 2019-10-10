@@ -17,7 +17,7 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="Hugo 0.54.0 with theme Tranquilpeak 0.4.3-BETA">
+    <meta name="generator" content="Hugo 0.52 with theme Tranquilpeak 0.4.3-BETA">
     <title>Código R</title>
     <meta name="author" content="Elio Campitelli">
     <meta name="keywords" content=", R">
@@ -211,6 +211,62 @@
                ">
         <section class="postShorten-group main-content-wrap">
           
+          
+            
+  
+    
+      
+        
+      
+    
+  
+
+
+  
+
+<article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+  <div class="postShorten-wrap">
+    
+    <div class="postShorten-header">
+      <h1 class="postShorten-title" itemprop="headline">
+        <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/">
+          Tu propio smooth en geom_smooth()
+        </a>
+      </h1>
+      
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2018-06-01T00:00:00Z">
+        
+  Junio 1, 2018
+
+      </time>
+    
+    
+  
+  
+    <span>en</span>
+    
+      <a class="category-link" href="../../categories/r">R</a>
+    
+  
+
+  </div>
+
+    </div>
+    <div class="postShorten-excerpt" itemprop="articleBody">
+      
+       Algo increíblemente satisfactorio de ggplot2 es la posibilidad de ajustar curvas a los datos de manera súper fácil con geom_smooth(). Para mi investigación estaba mirando la relación entre dos ángulos y me di cuenta que la recta ajustada por cuadrados mínimos no estaba funcionando para ilustrar la obvia estructura que había en los datos.
+library(ggplot2) df &lt;- readRDS(&quot;data/smooth_example.Rds&quot;) ggplot(df, aes(pc.angle, phase)) + geom_point() + geom_smooth(method = &quot;lm&quot;)  Se me ocurrió que un mejor modelo podría ser usando el estimador de Theil-Sen, que es la mediana de todas las pendientes entre dos puntos distintos y está implementado en el paquete mblm. 
+      <p>
+        <a href="https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/" class="postShorten-excerpt_link link">Seguir leyendo</a>
+        
+      </p>
+    </div>
+  </div>
+  
+</article>
+
           
             
   
@@ -548,62 +604,6 @@ library(data.table) library(ggplot2) data(volcano) volcano &lt;- as.
 </article>
 
           
-            
-  
-    
-      
-        
-      
-    
-  
-
-
-  
-
-<article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-  <div class="postShorten-wrap">
-    
-    <div class="postShorten-header">
-      <h1 class="postShorten-title" itemprop="headline">
-        <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/01/buen-ejemplo-reproducible-en-r/">
-          Cómo hacer un buen ejemplo reproducible en R
-        </a>
-      </h1>
-      
-  <div class="postShorten-meta post-meta">
-    
-      <time itemprop="datePublished" datetime="2018-01-06T00:00:00Z">
-        
-  Enero 6, 2018
-
-      </time>
-    
-    
-  
-  
-    <span>en</span>
-    
-      <a class="category-link" href="../../categories/r">R</a>
-    
-  
-
-  </div>
-
-    </div>
-    <div class="postShorten-excerpt" itemprop="articleBody">
-      
-       Es muy difícil dar ayuda si no se sabe cuál es el problema. Un buen ejemplo de lo que está mal que cualquiera pueda correr en sus computadoras es casi esencial para recibir ayuda.
-Un buen ejemplo reproducible (o reprex) es básicamente el feliz matrimonio entre un set de datos mínimo y un código mínimo que ilustre el problema y que cualquiera pueda copiar, pegar en un script y obtener exactamente los mismos resultados. 
-      <p>
-        <a href="https://eliocamp.github.io/codigo-r/2018/01/buen-ejemplo-reproducible-en-r/" class="postShorten-excerpt_link link">Seguir leyendo</a>
-        
-      </p>
-    </div>
-  </div>
-  
-</article>
-
-          
           
   <div class="pagination-bar">
     <ul class="pagination">
@@ -685,6 +685,24 @@ Un buen ejemplo reproducible (o reprex) es básicamente el feliz matrimonio entr
       <div class="no-result text-color-light text-center">no se encontraron artículos</div>
       <div class="results">
         
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2019/10/lo-que-aprend%C3%AD-en-latinr-2019/">
+                <h3 class="media-heading">Lo que aprendí en LatinR 2019</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Oct 10, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Hace unas semanas volví de Santiago de Chile luego de ir a Latinr 2019. Igual que el año pasado, fue una experiencia divertida. Estas son algunas de las cosas que me llamaron la atención.
+Workshops A la mañana del primer día asistí al workshop de Mine Çetinkaya-Rundel sobre enseñanza de R. Ejemplificó algunos principios básicos a la hora de diseñar clases. La idea de “dejales comer el pastel primero” creo que es la principal enseñanza.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
         
           <div class="media">
             
@@ -850,23 +868,6 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
             <hr>
           </div>
         
-          <div class="media">
-            
-            <div class="media-body">
-              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-generico-en-ggplot2/">
-                <h3 class="media-heading">Como hacer un stat genérico en ggplot2</h3>
-              </a>
-              <span class="media-meta">
-                <span class="media-date text-small">
-                  May 5, 2018
-                </span>
-              </span>
-              <div class="media-content hide-xs font-merryweather">Hace un tiempo que venía pensando que si bien ggplot2 es genial y tiene un montón de geoms y stats, le faltaba la opción de extenderlo a stats y geoms creados por el usuario. Luego, aprendí que ggplot2 tiene un excelente sistema para extenderlo y empecé a crear mis propios stats. Pero aún así, hacer un stat específico cada vez que uno quiere hacer un plot en particular es demasiado complicado.</div>
-            </div>
-            <div style="clear:both;"></div>
-            <hr>
-          </div>
-        
       </div>
     </div>
     <div class="modal-footer">
@@ -874,7 +875,7 @@ Lo primero que hago es leer la imagen. Este paso depende del formato (a menos qu
          data-message-zero="no se encontraron artículos"
          data-message-one="1 artículo encontrado"
          data-message-other="{n} artículos encontrados">
-         15 posts found
+         16 posts found
       </p>
     </div>
   </div>

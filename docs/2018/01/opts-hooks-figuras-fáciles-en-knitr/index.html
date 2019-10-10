@@ -21,7 +21,7 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="Hugo 0.54.0 with theme Tranquilpeak 0.4.3-BETA">
+    <meta name="generator" content="Hugo 0.52 with theme Tranquilpeak 0.4.3-BETA">
     <title>Cómo usar `opts_hooks` en knitr.</title>
     <meta name="author" content="Elio Campitelli">
     <meta name="keywords" content=", R">
@@ -543,6 +543,24 @@ Otra opción parecida son los <code>knitr_hooks</code>. Son similares a los <cod
           <div class="media">
             
             <div class="media-body">
+              <a class="link-unstyled" href="../../../2019/10/lo-que-aprend%C3%AD-en-latinr-2019/">
+                <h3 class="media-heading">Lo que aprendí en LatinR 2019</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Oct 10, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Hace unas semanas volví de Santiago de Chile luego de ir a Latinr 2019. Igual que el año pasado, fue una experiencia divertida. Estas son algunas de las cosas que me llamaron la atención.
+Workshops A la mañana del primer día asistí al workshop de Mine Çetinkaya-Rundel sobre enseñanza de R. Ejemplificó algunos principios básicos a la hora de diseñar clases. La idea de “dejales comer el pastel primero” creo que es la principal enseñanza.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
               <a class="link-unstyled" href="../../../2019/04/ecmwfr-calentamiento-global/">
                 <h3 class="media-heading">Midiendo el calentamiento global con ecmwfr</h3>
               </a>
@@ -704,23 +722,6 @@ library(ggplot2) df &lt;- readRDS(&quot;data/smooth_example.Rds&quot;) ggplot(df
             <hr>
           </div>
         
-          <div class="media">
-            
-            <div class="media-body">
-              <a class="link-unstyled" href="../../../2018/05/notificaciones-autom%C3%A1ticas-al-terminar-knitr/">
-                <h3 class="media-heading">Notificaciones automáticas al terminar knitr</h3>
-              </a>
-              <span class="media-meta">
-                <span class="media-date text-small">
-                  May 5, 2018
-                </span>
-              </span>
-              <div class="media-content hide-xs font-merryweather">start.time &lt;- Sys.time() # Notification start.time &lt;- unclass(Sys.time()) min.time &lt;- 10 knit_doc &lt;- knitr::knit_hooks$get(&quot;document&quot;) knitr::knit_hooks$set(document = function(x) { took &lt;- unclass(Sys.time()) - start.time if (unclass(Sys.time()) - start.time &gt;= min.time) { notify(&quot;Done knitting!&quot;, paste0(&quot;Took &quot;, round(took), &quot; seconds&quot;), time = 5) } knit_doc(x) }) notify &lt;- function(title = &quot;title&quot;, text = NULL, time = 2) { time &lt;- time*1000 system(paste0('notify-send &quot;', title, '&quot; &quot;', text, '&quot; -t ', time, ' -a rstudio')) }  </div>
-            </div>
-            <div style="clear:both;"></div>
-            <hr>
-          </div>
-        
       </div>
     </div>
     <div class="modal-footer">
@@ -728,7 +729,7 @@ library(ggplot2) df &lt;- readRDS(&quot;data/smooth_example.Rds&quot;) ggplot(df
          data-message-zero="no se encontraron artículos"
          data-message-one="1 artículo encontrado"
          data-message-other="{n} artículos encontrados">
-         19 posts found
+         20 posts found
       </p>
     </div>
   </div>

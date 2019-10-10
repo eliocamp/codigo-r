@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://eliocamp.github.io/codigo-r/2019/10/lo-que-aprend%C3%AD-en-latinr-2019/</loc>
+    <lastmod>2019-10-10T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://eliocamp.github.io/codigo-r/2019/04/ecmwfr-calentamiento-global/</loc>
     <lastmod>2019-04-19T00:00:00+00:00</lastmod>
     <xhtml:link
@@ -142,13 +147,13 @@
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
-                hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/archives/"
+                hreflang="es"
+                href="https://eliocamp.github.io/codigo-r/es/archives/"
                 />
     <xhtml:link
                 rel="alternate"
-                hreflang="es"
-                href="https://eliocamp.github.io/codigo-r/es/archives/"
+                hreflang="en"
+                href="https://eliocamp.github.io/codigo-r/en/archives/"
                 />
     <xhtml:link
                 rel="alternate"
@@ -162,13 +167,13 @@
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
-                hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/categories/"
+                hreflang="es"
+                href="https://eliocamp.github.io/codigo-r/es/categories/"
                 />
     <xhtml:link
                 rel="alternate"
-                hreflang="es"
-                href="https://eliocamp.github.io/codigo-r/es/categories/"
+                hreflang="en"
+                href="https://eliocamp.github.io/codigo-r/en/categories/"
                 />
     <xhtml:link
                 rel="alternate"
@@ -178,8 +183,14 @@
   </url>
   
   <url>
+    <loc>https://eliocamp.github.io/codigo-r/tags/congresos/</loc>
+    <lastmod>2019-10-10T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://eliocamp.github.io/codigo-r/</loc>
-    <lastmod>2019-04-19T00:00:00+00:00</lastmod>
+    <lastmod>2019-10-10T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -237,6 +248,12 @@
   </url>
   
   <url>
+    <loc>https://eliocamp.github.io/codigo-r/tags/latinr/</loc>
+    <lastmod>2019-10-10T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://eliocamp.github.io/codigo-r/tags/paquetes/</loc>
     <lastmod>2019-04-19T00:00:00+00:00</lastmod>
     <priority>0</priority>
@@ -254,7 +271,7 @@
   
   <url>
     <loc>https://eliocamp.github.io/codigo-r/post/</loc>
-    <lastmod>2019-04-19T00:00:00+00:00</lastmod>
+    <lastmod>2019-10-10T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -270,7 +287,7 @@
   
   <url>
     <loc>https://eliocamp.github.io/codigo-r/categories/r/</loc>
-    <lastmod>2019-04-19T00:00:00+00:00</lastmod>
+    <lastmod>2019-10-10T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -286,17 +303,17 @@
   
   <url>
     <loc>https://eliocamp.github.io/codigo-r/tags/</loc>
-    <lastmod>2019-04-19T00:00:00+00:00</lastmod>
+    <lastmod>2019-10-10T00:00:00+00:00</lastmod>
     <priority>0</priority>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/tags/"
-                />
     <xhtml:link
                 rel="alternate"
                 hreflang="es"
                 href="https://eliocamp.github.io/codigo-r/es/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://eliocamp.github.io/codigo-r/en/tags/"
                 />
     <xhtml:link
                 rel="alternate"
