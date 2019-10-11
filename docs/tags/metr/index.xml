@@ -19,7 +19,7 @@
       <guid>/2018/11/metr-esta-en-cran/</guid>
       <description>
 
-&lt;p&gt;&lt;img src=&#34;../../images/metR_hex.png&#34; height = &#34;150px&#34; align=&#34;right&#34;/&gt; Después de muchísimo desarrollo y no sé cuántos commits, al fin &lt;a href=&#34;https://eliocamp.github.io/metR/&#34;&gt;&lt;code&gt;metR&lt;/code&gt;&lt;/a&gt; está en CRAN &lt;code&gt;emo::ji(&amp;quot;tada&amp;quot;)&lt;/code&gt;!&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/metR_hex.png&#34; height = &#34;150px&#34; align=&#34;right&#34;/&gt; Después de muchísimo desarrollo y no sé cuántos commits, al fin &lt;a href=&#34;https://eliocamp.github.io/metR/&#34;&gt;&lt;code&gt;metR&lt;/code&gt;&lt;/a&gt; está &lt;a href=&#34;https://cran.r-project.org/package=metR&#34;&gt;en CRAN&lt;/a&gt; &lt;code&gt;emo::ji(&amp;quot;tada&amp;quot;)&lt;/code&gt;!&lt;/p&gt;
 
 &lt;p&gt;&lt;code&gt;metR&lt;/code&gt; empezó en julio de 2017 cuando estaba haciendo mi tesis de licenciatura en Ciencias de la Atmósfera y había ido creando pequeñas funciones para facilitar mi trabajo.&lt;/p&gt;
 
@@ -27,7 +27,7 @@
 
 &lt;h2 id=&#34;contornos-llenos-en-ggplot2&#34;&gt;Contornos llenos en &lt;code&gt;ggplot2&lt;/code&gt;&lt;/h2&gt;
 
-&lt;p&gt;Este es la función que me incentivó a crear el paquete allá hace más de 1 año. Esto se puede aprecier en el &lt;a href=&#34;https://github.com/eliocamp/metR/commit/046ca6758fcf6e4aacbdc2e92bdeb91327c2d8c9#diff-7347fe5a0f184f79ef064e92e3beb297&#34;&gt;primer commit&lt;/a&gt; que contenía sólo&lt;/p&gt;
+&lt;p&gt;El &lt;a href=&#34;https://github.com/eliocamp/metR/commit/046ca6758fcf6e4aacbdc2e92bdeb91327c2d8c9#diff-7347fe5a0f184f79ef064e92e3beb297&#34;&gt;primer commit&lt;/a&gt;, realizado hace más de un año básicamente sólo tenía esta función, pero es&lt;/p&gt;
 </description>
     </item>
     
