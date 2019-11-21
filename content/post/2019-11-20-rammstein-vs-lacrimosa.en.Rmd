@@ -26,7 +26,7 @@ For those not familiar with either band, this is the chorus from Rammstein's [So
 
 Now, the song does have some complex meaning and interesting uses of metaphor, but the sentence structure is painfully simple. Not only that, but since it repeats the numbers one through ten over and over again, I cannot shake the feeling that it's a song designed to help children learn the numbers. 
 
-On the other hand, here's a part of Lacrimosa's [Warum so Tief](https://www.youtube.com/watch?v=cSXaWvFFXuI).
+On the other hand, here's a part of Lacrimosa's [Warum so Tief](https://www.youtube.com/watch?v=cSXaWvFFXuI):
 
 > Warum so tief - und warum gerade jetzt?  
 > Warum vor ihr - warum diese Ironie?  
@@ -124,6 +124,8 @@ As expected, most songs by either band are in German and a non negligible part o
 
 Note that since song lyrics are in verse and don't have punctuation I had to make the bold choice of assuming that each verse is it's own sentence. 
 
+Another important limitation is that since these readability scores are based on prose, their validity is not garanteed in the case of poetry. 
+
 In any case, computing the readability score for only the German lyrics we get this 
 
 ```{r}
@@ -145,7 +147,11 @@ full_lyrics[which.max(SMOG)] %>%
    with(cat(lyric))
 ```
 
-Herzeleid is a short song (lyric-wise) and not terribly complicated. But it does feature some longer words. The same goes for the second most complex song -Zeig dich- which features almost exclusively two-word verses. So really I'm not terribly confident about this result. On the other end of the spectrum, though, it really makes sense. 
+Herzeleid is a short song (lyric-wise) and not terribly complicated. But it does feature some longer words. Ironically, these lyrics are actually based on a tradicional poem that can be found adorning several homes
+
+![Herzeleid poem](/post/2019-11-20-rammstein-vs-lacrimosa_files/herzeleid.png)
+
+SImilarly, the second most complex song -Zeig dich- features almost exclusively two-word verses. So really I'm not terribly confident about this result. On the other end of the spectrum, though, it really makes sense. 
 
 ```{r, show = "asis"}
 full_lyrics[which.min(SMOG)] %>% 

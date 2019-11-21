@@ -27,7 +27,7 @@ Drei, sie ist der hellste Stern von allen.<br />
 Vier, hier kommt die Sonne.</p>
 </blockquote>
 <p>Now, the song does have some complex meaning and interesting uses of metaphor, but the sentence structure is painfully simple. Not only that, but since it repeats the numbers one through ten over and over again, I cannot shake the feeling that it’s a song designed to help children learn the numbers.</p>
-<p>On the other hand, here’s a part of Lacrimosa’s <a href="https://www.youtube.com/watch?v=cSXaWvFFXuI">Warum so Tief</a>.</p>
+<p>On the other hand, here’s a part of Lacrimosa’s <a href="https://www.youtube.com/watch?v=cSXaWvFFXuI">Warum so Tief</a>:</p>
 <blockquote>
 <p>Warum so tief - und warum gerade jetzt?<br />
 Warum vor ihr - warum diese Ironie?<br />
@@ -162,6 +162,7 @@ full_lyrics %&gt;%
 </table>
 <p>As expected, most songs by either band are in German and a non negligible part of Lacrimosa’s are in English. The algorithm seems to be fooled by some lyrics, though. I inspected the individual cases. All songs marked as “scots” are actually in English. The songs allegedly in Catalan or Romanian are actually a instrumental songs which {genius} seems to have messed up. The one in “Portuguese” is actually Rammstein’s “Te quiero, Puta” which is actually in Spanish. Finally, Lacrimosa’s Vankina is really in Finnish.</p>
 <p>Note that since song lyrics are in verse and don’t have punctuation I had to make the bold choice of assuming that each verse is it’s own sentence.</p>
+<p>Another important limitation is that since these readability scores are based on prose, their validity is not garanteed in the case of poetry.</p>
 <p>In any case, computing the readability score for only the German lyrics we get this</p>
 <pre class="r"><code>full_lyrics[language == &quot;german&quot;,
             &quot;SMOG&quot; := quanteda::textstat_readability(lyric, measure = &quot;SMOG.de&quot;)$SMOG.de]
@@ -182,7 +183,12 @@ full_lyrics %&gt;%
 ## Einst werden sie wie Minuten euch scheinen.
 ## Herzeleid.
 ## Bewahret einander vor der Zweisamkeit</code></pre>
-<p>Herzeleid is a short song (lyric-wise) and not terribly complicated. But it does feature some longer words. The same goes for the second most complex song -Zeig dich- which features almost exclusively two-word verses. So really I’m not terribly confident about this result. On the other end of the spectrum, though, it really makes sense.</p>
+<p>Herzeleid is a short song (lyric-wise) and not terribly complicated. But it does feature some longer words. Ironically, these lyrics are actually based on a tradicional poem that can be found adorning several homes</p>
+<div class="figure">
+<img src="/post/2019-11-20-rammstein-vs-lacrimosa_files/herzeleid.png" alt="Herzeleid poem" />
+<p class="caption">Herzeleid poem</p>
+</div>
+<p>SImilarly, the second most complex song -Zeig dich- features almost exclusively two-word verses. So really I’m not terribly confident about this result. On the other end of the spectrum, though, it really makes sense.</p>
 <pre class="r"><code>full_lyrics[which.min(SMOG)] %&gt;% 
    with(cat(lyric))</code></pre>
 <pre><code>## Du, du hast, du hast mich.

@@ -1,0 +1,1037 @@
+
+
+  
+    
+  
+
+
+  
+
+
+
+
+  
+
+
+  
+
+<!DOCTYPE html>
+<html lang="es-es">
+  <head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hugo 0.52 with theme Tranquilpeak 0.4.3-BETA">
+    <title>Rammstein vs. Lacrimosa</title>
+    <meta name="author" content="Elio Campitelli">
+    <meta name="keywords" content=", R">
+
+    <link rel="icon" href="../../../favicon.png">
+    
+
+    
+    <meta name="description" content="Hace un tiempo una conocida twiteó que había tenido que comprarse un libro entero para aprender los géneros gramaticales del alemán. Entre las repuestas, había una persona que contaba que de adolescente creyó (erróneamente) que podría aprender alemán sólo escuchando Rammstein. Habeindo estudiado unos drei Jahre de alemán al mismo tiempo que escuchaba Rammstein y otras bandas en alemán, las letras de Rammstein siempre me parecieron extremadamente simples.">
+    <meta property="og:description" content="Hace un tiempo una conocida twiteó que había tenido que comprarse un libro entero para aprender los géneros gramaticales del alemán. Entre las repuestas, había una persona que contaba que de adolescente creyó (erróneamente) que podría aprender alemán sólo escuchando Rammstein. Habeindo estudiado unos drei Jahre de alemán al mismo tiempo que escuchaba Rammstein y otras bandas en alemán, las letras de Rammstein siempre me parecieron extremadamente simples.">
+    <meta property="og:type" content="blog">
+    <meta property="og:title" content="Rammstein vs. Lacrimosa">
+    <meta property="og:url" content="/2019/11/rammstein-vs-lacrimosa/">
+    <meta property="og:site_name" content="Código R">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Código R">
+    <meta name="twitter:description" content="Hace un tiempo una conocida twiteó que había tenido que comprarse un libro entero para aprender los géneros gramaticales del alemán. Entre las repuestas, había una persona que contaba que de adolescente creyó (erróneamente) que podría aprender alemán sólo escuchando Rammstein. Habeindo estudiado unos drei Jahre de alemán al mismo tiempo que escuchaba Rammstein y otras bandas en alemán, las letras de Rammstein siempre me parecieron extremadamente simples.">
+    
+      <meta name="twitter:creator" content="@d_olivaw">
+    
+    
+
+    
+    
+
+    
+      <meta property="og:image" content="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=640">
+    
+
+    
+    
+    
+
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="../../../css/style-jsjn0006wyhpyzivf6yceb31gvpjatbcs3qzjvlumobfnugccvobqwxnnaj8.min.css" />
+    
+    
+      
+        <link rel="stylesheet"  href="../../../css/custom.css">
+      
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="2">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="../../../">Código R</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="../../../#about">
+    
+    
+    
+      
+        <img class="header-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=90" alt="Foto de autor" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="2">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="../../../#about">
+          <img class="sidebar-profile-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=110" alt="Foto de autor" />
+        </a>
+        <h4 class="sidebar-profile-name">Elio Campitelli</h4>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Inicio</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">Categorías</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archivos</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">Acerca de</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/eliocamp">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://www.r-bloggers.com/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">R-Bloggers</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://twitter.com/d_olivaw">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="2"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Rammstein vs. Lacrimosa
+    </h1>
+  
+  
+
+    
+        In English: <a href="../../../en/2019/11/rammstein-vs-lacrimosa/">Rammstein vs. Lacrimosa</a>
+    
+
+
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2019-11-21T00:00:00Z">
+        
+  Noviembre 21, 2019
+
+      </time>
+    
+    
+  
+  
+    <span>en</span>
+    
+      <a class="category-link" href="../../../categories/r">R</a>
+    
+  
+
+  </div>
+
+</div>
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    });
+    </script>
+    <script type="text/javascript"
+      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+<script src="../../../rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="../../../rmarkdown-libs/pymjs/pym.v1.js"></script>
+<script src="../../../rmarkdown-libs/widgetframe-binding/widgetframe.js"></script>
+
+
+<p>Hace un tiempo una conocida twiteó que había tenido que comprarse un libro entero para aprender los géneros gramaticales del alemán. Entre las repuestas, había una persona que contaba que de adolescente creyó (erróneamente) que podría aprender alemán sólo escuchando Rammstein. Habeindo estudiado unos drei Jahre de alemán al mismo tiempo que escuchaba Rammstein y otras bandas en alemán, las letras de Rammstein siempre me parecieron extremadamente simples. Tan simples, de hecho, que sospecho que Till Lindemann trata de escribir de forma fácil pensando en los estudiantes principantes de alemán.</p>
+<p>Decidí explorar esta idea. Para eso descargué las letras de Rammstein y medí su complejidad. Como comparación usé letras de Lacrimsoa, otra banda germanoparlante de mi juventud.</p>
+<div id="un-poco-de-los-datos" class="section level2">
+<h2>Un poco de los datos</h2>
+<p>Para quienes no estén familiarizados con ambas bandas, este es el estribillo de <a href="https://www.youtube.com/watch?v=StZcUAPRRac">Sonne</a>, de Rammstein:</p>
+<blockquote>
+<p>Eins, hier kommt die Sonne.<br />
+Zwei, hier kommt die Sonne.<br />
+Drei, sie ist der hellste Stern von allen.<br />
+Vier, hier kommt die Sonne.</p>
+</blockquote>
+<p>Más allá de las sutilezas de significado y el uso de metáforas, la estructura sintáctica es recontra simple. Para colmo, como repite los números del uno al diez una y otra vez, casi que parece una canción diseñada para que los chicos aprendan a contar.</p>
+<p>Por otro lado, este es un recorte de <a href="https://www.youtube.com/watch?v=cSXaWvFFXuI">Warum so Tief</a>, de Lacrimosa:</p>
+<blockquote>
+<p>Warum so tief - und warum gerade jetzt?<br />
+Warum vor ihr - warum diese Ironie?<br />
+Warum so hart - und warum nicht einfach besiegt?<br />
+Muss ich denn wirklich für jede Begegnung<br />
+für immer und ewig mit all meiner Liebe bezahlen?</p>
+</blockquote>
+<blockquote>
+<p>Einmal ohne das eine und endgültige Gefühl - verloren zu sein<br />
+Nur einmal bei ihr - keine Tobsucht in Ketten<br />
+Doch ich kann es nicht ’mal bestreiten - dass ich euch liebe<br />
+Mutter Angst und Vater Schmerz</p>
+</blockquote>
+<p>Creo que el contraste se aprecia fácilmente. En particular, los últimos dos versos de la primera estrofa arman una oración sorprendentemente larga, especialmente para ser una canción.</p>
+<p>Estos dos ejemplos están clarmaente seleccionados para ilustrar mi idea. Vamos a cuantificar la cosa analizando todas las canciones de cada banda.</p>
+</div>
+<div id="consiguiendo-los-datos" class="section level2">
+<h2>Consiguiendo los datos</h2>
+<p>Quiero las letras correspondientes a los discos de estudio de ambas bandas. Podría automatizar esto scrappeando, por ejemplo, los <a href="https://es.wikipedia.org/wiki/Lacrimosa_(banda)">artículos de wikipedia</a> correspondientes, pero fue más fácil armar la lista a mano.</p>
+<pre class="r"><code>library(data.table)
+library(magrittr)
+library(ggplot2)
+
+theme_set(hrbrthemes::theme_ipsum_rc())</code></pre>
+<pre class="r"><code>lacrimosa &lt;- data.table(
+   album = c(&quot;Angst&quot;, &quot;Einsemkeit&quot;, &quot;Satura&quot;, &quot;Inferno&quot;, &quot;Stille&quot;, &quot;Elodia&quot;, &quot;Fassade&quot;, &quot;Echos&quot;, 
+             &quot;Lichtgestalt&quot;, &quot;Sehnsucht&quot;, &quot;Revolution&quot;, &quot;Hoffnung&quot;, &quot;Testimonium&quot;),
+   year = c(1991, 1992, 1993, 1995, 1997, 1999, 2001, 2003,
+            2005, 2009, 2012, 2015, 2017)
+)
+
+rammstein &lt;- data.table(
+   album = c(&quot;Herzeleid&quot;, &quot;Sehnsucht&quot;, &quot;Mutter&quot;, &quot;Reise Reise&quot;, &quot;Rosenrot&quot;, 
+             &quot;Liebe ist fur alle da&quot;,  &quot;Rammstein&quot;),
+   year = c(1995, 1997, 2001, 2004, 2005, 2009, 2019)
+)
+
+albums &lt;- rbindlist(list(Lacrimosa = lacrimosa, 
+                         Rammstein = rammstein), 
+                    idcol = &quot;artist&quot;)</code></pre>
+<p>Luego, usé el paquete <a href="https://github.com/JosiahParry/genius">genius</a> que descarga las letras de (sorpresa) <a href="https://genius.com/">Genius</a><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. Lo que hago es agregar la información de las letras al data frame anterior:</p>
+<pre class="r"><code>albums &lt;- albums %&gt;% 
+   genius::add_genius(artist, album) %&gt;% 
+   as.data.table() %&gt;% 
+   .[artist == &quot;Lacrimosa&quot; &amp; album == &quot;Sehnsucht&quot;, album := &quot;Sehnsucht (L)&quot;]  
+# (Las dos bandas tienen un album llamado Sehnsucht)</code></pre>
+<p>Ahora cada fila de <code>albums</code> es un verso de cada canción de cada artista.</p>
+<pre class="r"><code>DT::datatable(albums) %&gt;% 
+   widgetframe::frameWidget()</code></pre>
+<div id="htmlwidget-1" style="width:100%;height:480px;" class="widgetframe html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"url":"/post/2019-11-20-rammstein-vs-lacrimosa_files/figure-html//widgets/widget_unnamed-chunk-4.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="legibilidad-de-las-letras-de-rammstein" class="section level2">
+<h2>Legibilidad de las letras de Rammstein</h2>
+<p>Con estos datos voy a tratar de testear mi hipótesis. ¿Pero como? Lo que voy a hacer es calcular la <a href="https://legible.es/blog/grado-smog-sol/">legibilidad</a> de cada letra. Mi suposición es que las letras de Rammstein van a tener menor grado de legibilidad (es decir, son más simples) que las de Lacrimosa. Una lmitación es que las formulas de legibilidad están basadas en inglés. Este problema está muy presente siempre que se analizan textos que no sean en inglés. En este caso, googleé un poco y encontŕe que la fórmula <a href="https://en.wikipedia.org/wiki/SMOG">SMOG</a> tiene una variante adaptada al alemán que está implementada en el paquete <a href="https://quanteda.io/">quantea</a>.</p>
+<p>Relacionado con eso, no todas las canciones de estas bandas están en Alemán. La mayoría de los álbumes de Lacrimosa tienen al menos una canción en inglés (generalmente cantada por Anne Nurmi en vez de Tilo Wolff). Así que voy a tener que detectarlas y descartarlas en partes del análisis. De nuevo google me salvó, y encontré el paquete <a href="https://cran.r-project.org/web/packages/textcat/index.html">textcat</a>, que voy a considerar una caja negra porque ya sería demasiado.</p>
+<pre class="r"><code># Join all verses from each song
+full_lyrics &lt;- albums %&gt;% 
+   na.omit() %&gt;% 
+   .[, .(lyric = paste0(lyric, collapse = &quot;.\n&quot;) ), 
+     by = .(artist, album, year, track_title)]
+
+# Get the language
+full_lyrics[, language := textcat::textcat(lyric), 
+            by = .(track_title, artist, album)]
+
+# How many songs for each language?
+full_lyrics %&gt;% 
+   .[, .N, by = .(artist, language)] %&gt;% 
+   .[order(-N)] %&gt;% 
+   knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">artist</th>
+<th align="left">language</th>
+<th align="right">N</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Lacrimosa</td>
+<td align="left">german</td>
+<td align="right">81</td>
+</tr>
+<tr class="even">
+<td align="left">Rammstein</td>
+<td align="left">german</td>
+<td align="right">75</td>
+</tr>
+<tr class="odd">
+<td align="left">Lacrimosa</td>
+<td align="left">english</td>
+<td align="right">16</td>
+</tr>
+<tr class="even">
+<td align="left">Rammstein</td>
+<td align="left">scots</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">Lacrimosa</td>
+<td align="left">scots</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Lacrimosa</td>
+<td align="left">catalan</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Lacrimosa</td>
+<td align="left">romanian</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Lacrimosa</td>
+<td align="left">finnish</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Rammstein</td>
+<td align="left">english</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">Rammstein</td>
+<td align="left">portuguese</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+<p>Como era de esperarse, la gran mayoría de las canciones están en Alemán pero una parte improtante de las de Lacrimosa están en inglés. Algunas parecen mal clasificadas y tuve que mirarlas a mano. Las marcada como “scots” son canciones en inglés. Las que supuestamente están en catalán o romano son canciones instrumentales que el paquete genius no parece procesas correctamente. La que está en “portugués” es Te quiero, Puta de Rammstein que está, obviamente, en español. Finalmente, Lacrimosa efectivamente tiene una canción que está en finlandés.</p>
+<p>Cabe notar que como las canciones son poesía no tienen oraciones marcadas con punto. Tuve que asumir que cada verso es una oración.</p>
+<p>Otra limitación importante es que estas medidas de legibilidad están pensadas para prosa, no para poesía, por lo que su validez en este caso no está garantizada.</p>
+<p>Con esto, computo la legibiliad únicamente de las canciones en alemán.</p>
+<pre class="r"><code>full_lyrics[language == &quot;german&quot;, 
+            &quot;SMOG&quot; := quanteda::textstat_readability(lyric, measure = &quot;SMOG.de&quot;)$SMOG.de]
+
+full_lyrics %&gt;%  
+   .[language %in% &quot;german&quot;] %&gt;% 
+   ggplot(aes(SMOG)) +
+   geom_density(aes(color = artist)) +
+   geom_rug(aes(color = artist)) +
+   scale_color_brewer(&quot;Artist&quot;, palette = &quot;Set1&quot;)</code></pre>
+<p><img src="../../../post/2019-11-20-rammstein-vs-lacrimosa_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Mh.. 🤔. Hipótesis confirmada? Las letras de Rammstein definitivamente son más bien simplonas. Aunque ojo, ya que las tres canciones más complejas son de Rammstein. Esto es un poco engañoso, quizás. Esta es la canción más compleja:</p>
+<pre class="r"><code>full_lyrics[which.max(SMOG)] %&gt;% 
+   with(cat(lyric))</code></pre>
+<pre><code>## Bewahret einander vor Herzeleid.
+## Denn kurz ist die Zeit die ihr beisammen seid.
+## Denn wenn euch auch viele Jahre vereinen.
+## Einst werden sie wie Minuten euch scheinen.
+## Herzeleid.
+## Bewahret einander vor der Zweisamkeit</code></pre>
+<p>Herzeleid es bastante corta (en términos de letra) y no es tan terriblemente complicada. Pero sí tiene varias palabras largas. Irónicamente la letra proviene de un poema tradicional que puede encontrarse colgado en muchas casas.</p>
+<div class="figure">
+<img src="../../../post/2019-11-20-rammstein-vs-lacrimosa_files/herzeleid.png" alt="Poema Herzeleid" />
+<p class="caption">Poema Herzeleid</p>
+</div>
+<p>Algo similar para con la segunda canción más compleja (Zeig dich) que está compuesta casi exclusivamente por versos de dos palabras. Esto no me da demasiada confianza en estos resultados. Pero si vemos el otro extremo, todo tiene más sentido:</p>
+<pre class="r"><code>full_lyrics[which.min(SMOG)] %&gt;% 
+   with(cat(lyric))</code></pre>
+<pre><code>## Du, du hast, du hast mich.
+## Du, du hast, du hast mich.
+## Du, du hast, du hast mich.
+## Du, du hast, du hast mich.
+## Du, du hast, du hast mich, du hast mich.
+## Du hast mich gefragt, du hast mich gefragt.
+## Du hast mich gefragt und ich hab&#39; nichts gesagt.
+## Willst du bis der Tod euch scheidet.
+## Treu ihr sein für alle Tage?(Ja) Nein.
+## (Ja) Nein.
+## Willst du bis zum Tod, der scheide.
+## Sie lieben auch in schlechten Tagen?(Ja) Nein.
+## (Ja) Nein.
+## Du, du hast, du hast mich.
+## Du, du hast, du hast mich.
+## Du, du hast, du hast mich, du hast mich.
+## Du hast mich gefragt, du hast mich gefragt.
+## Du hast mich gefragt und ich hab&#39; nichts gesagt.
+## Willst du bis der Tod euch scheidet.
+## Treu ihr sein für alle Tage?(Ja) Nein.
+## (Ja) Nein.
+## Willst du bis zum Tod, der scheide.
+## Sie lieben auch in schlechten Tagen?(Ja) Nein.
+## (Ja) Nein.
+## Willst du bis der Tod euch scheidet.
+## Treu ihr sein(Ja) Nein.
+## (Ja) Nein</code></pre>
+<p>La canción más simple es Du hast. Completamente comprensible ya que es una canción bastate “boba”, al menos en lo que respecta a legibilidad. Tiene versos muy cortos, con palabras muy cortas y una estructura muy simple. Lo que el valor SMOG no captura es que que además es tremendamente repetitiva. Prácticamente tiene sólo 3 estrofas distintas!</p>
+<p>Esto resuena con mi exepriencia con ambas bandas. Rammstein sigue la estructura tradicional de canciones con estribillos, estrofas y puentes, mientras que Lacrimosa no tiene problema en usar letras más parecidas a la prosa, con poca repetición. Por ejemplo, <a href="https://www.youtube.com/watch?v=qdzI88X4YZk">Der Strasse der Zeit</a> directamente no tiene estribillo y contando la proporción de estrofas únicas se puede ver que sólo 7% de las líneas se repiten.</p>
+<pre class="r"><code>albums[track_title == &quot;Die Strasse der Zeit&quot;] %&gt;% 
+   .[, mean(duplicated(lyric))]</code></pre>
+<pre><code>## [1] 0.07017544</code></pre>
+<p>Y esto se puede extender a todas las canciones de la discografía de cada banda:</p>
+<pre class="r"><code>albums %&gt;% 
+   .[, .(repetition = mean(duplicated(lyric)), .N), by = .(track_title, artist)] %&gt;% 
+   ggplot(aes(repetition)) +
+   geom_density(aes(color = artist)) +
+   geom_rug(aes(color = artist)) +
+   scale_color_brewer(&quot;Artist&quot;, palette = &quot;Set1&quot;)</code></pre>
+<p><img src="../../../post/2019-11-20-rammstein-vs-lacrimosa_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>Guau! La diferencia es increíble. Mientras que Rammstein hace canciones con más del 30% de su estrofas repetidas, muy pocas canciones de Lacrimosa repiten más del 20% de sus líneas. Es más, hay una buena cantidad de canciones de Lacrimosa que no tienen absolutamente nada de repetición!</p>
+<p>Uniendo ambas medidas, aparece una distinción bastante clara.</p>
+<pre class="r"><code>full_lyrics %&gt;% 
+   .[language == &quot;german&quot;] %&gt;% 
+   .[, repetition := mean(duplicated(strsplit(lyric, &quot;.\n&quot;)[[1]])), 
+     by = .(track_title, artist)] %&gt;% 
+   ggplot(aes(repetition, SMOG)) +
+   geom_point(aes(color = artist)) +
+   geom_density_2d(aes(color = artist), adjust = 1.5, bins = 4) +
+   scale_color_brewer(&quot;Artist&quot;, palette = &quot;Set1&quot;)</code></pre>
+<p><img src="../../../post/2019-11-20-rammstein-vs-lacrimosa_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>Las canciones de Rammstein son generalmente más simples y tienen muchísima más repetición.</p>
+<p>No sólo repiten líneas a lo pavote, sino que los versos en las canciones de Rammstein muchas veces ni siquiera son oraciónes completas. Esto se puede inferir usando el <em>log odds ratio</em> entre ambos artistas para obtener pares de palabras característicamente “rammsteinianos” vs “lacrimosianos”.</p>
+<pre class="r"><code>full_lyrics %&gt;% 
+   .[language == &quot;german&quot;] %&gt;% 
+   .[, tidytext::unnest_tokens(.SD, word, lyric, token = &quot;ngrams&quot;, n = 2), 
+     by = .(track_title, artist)] %&gt;% 
+   .[, .N, by = .(word, artist)] %&gt;% 
+   .[!is.na(word)] %&gt;% 
+   tidylo::bind_log_odds(artist, word, N) %&gt;% 
+   .[order(-log_odds)] %&gt;% 
+   .[, .SD[1:10], by = artist] %&gt;% 
+   .[, word := tidytext::reorder_within(word, log_odds, artist)] %&gt;% 
+   ggplot(aes(word, log_odds)) +
+   geom_col() +
+   tidytext::scale_x_reordered() +
+   coord_flip() +
+   facet_wrap(~artist, scales = &quot;free&quot;) </code></pre>
+<p><img src="../../../post/2019-11-20-rammstein-vs-lacrimosa_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>Los pares de palabras que caracterizan a las letras de Lacrimosa son partes comunes de oraciones correctas, como “so wie” (“como”) o “das ist” (“eso es”). Las de Rammstein, en cambio, se distinguen por repetir palabras sin estructura sintáctica, como “bang bang”, “link zwo” (“izquierda dos”; el verso completo es “izquierda dos tres cuatro”) y “zwiter zwiter”.</p>
+</div>
+<div id="simpleza-falta-de-calidad" class="section level2">
+<h2>Simpleza ≠ falta de calidad</h2>
+<p>Me divertí un poco aprendiendo estas herramientas básicas para la manipulación de datos textuales, pero no hay nada revolucionario en la conclusión de que las letras de Rammstein son más imples y más “cancioneras” que las de Lacrimosa. No hace falta webscapping ni R, sólo es necesario poder escuchar música.</p>
+<p>Más importane, nada dice que letras más largas y más complicadas impliquen mejores canciones. Bajo cualqueir medida, Du hast es terriblemnete simple, pero se basa en un juego de palabras interesante y en romper las expectativas.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>También hay un paquete llamado <a href="https://github.com/ewenme/geniusr">geniusr</a> que usa la API oficial de Genius. Es preferible usar ese para uso más intensivo. Lo descubrí cuando ya había escrito casi todo el código, así que no lo cambié.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">ETIQUETADO EN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="../../../tags/text/">text</a>
+
+                  </div>
+                
+              
+            
+            
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2019/10/lo-que-aprend%C3%AD-en-latinr-2019/" data-tooltip="Lo que aprendí en LatinR 2019">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2019/11/rammstein-vs-lacrimosa/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2019/11/rammstein-vs-lacrimosa/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2019/11/rammstein-vs-lacrimosa/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+            
+              
+                <div id="disqus_thread">
+  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2019 Elio Campitelli. Todos los derechos reservados
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
+        
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2019/10/lo-que-aprend%C3%AD-en-latinr-2019/" data-tooltip="Lo que aprendí en LatinR 2019">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2019/11/rammstein-vs-lacrimosa/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2019/11/rammstein-vs-lacrimosa/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2019/11/rammstein-vs-lacrimosa/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2F2019%2F11%2Frammstein-vs-lacrimosa%2F">
+          <i class="fa fa-facebook-official"></i><span>Compartir en Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2F2019%2F11%2Frammstein-vs-lacrimosa%2F">
+          <i class="fa fa-twitter"></i><span>Compartir en Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2F2019%2F11%2Frammstein-vs-lacrimosa%2F">
+          <i class="fa fa-google-plus"></i><span>Compartir en Google&#43;</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=110" alt="Foto de autor" />
+    
+    <h4 id="about-card-name">Elio Campitelli</h4>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Atmospheric sciences graduate researcher at CONICET
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Argentina
+      </div>
+    
+  </div>
+</div>
+
+    <div id="algolia-search-modal" class="modal-container">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="close-button"><i class="fa fa-close"></i></span>
+      <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+        <span class="searchby-algolia-text text-color-light text-small">by</span>
+        <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+      </a>
+      <i class="search-icon fa fa-search"></i>
+      <form id="algolia-search-form">
+        <input type="text" id="algolia-search-input" name="search"
+          class="form-control input--large search-input" placeholder="Buscar" />
+      </form>
+    </div>
+    <div class="modal-body">
+      <div class="no-result text-color-light text-center">no se encontraron artículos</div>
+      <div class="results">
+        
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2019/11/rammstein-vs-lacrimosa/">
+                <h3 class="media-heading">Rammstein vs. Lacrimosa</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Nov 11, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Hace un tiempo una conocida twiteó que había tenido que comprarse un libro entero para aprender los géneros gramaticales del alemán. Entre las repuestas, había una persona que contaba que de adolescente creyó (erróneamente) que podría aprender alemán sólo escuchando Rammstein. Habeindo estudiado unos drei Jahre de alemán al mismo tiempo que escuchaba Rammstein y otras bandas en alemán, las letras de Rammstein siempre me parecieron extremadamente simples.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2019/10/lo-que-aprend%C3%AD-en-latinr-2019/">
+                <h3 class="media-heading">Lo que aprendí en LatinR 2019</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Oct 10, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Hace unas semanas volví de Santiago de Chile luego de ir a Latinr 2019. Igual que el año pasado, fue una experiencia divertida. Estas son algunas de las cosas que me llamaron la atención.
+Workshops A la mañana del primer día asistí al workshop de Mine Çetinkaya-Rundel sobre enseñanza de R. Ejemplificó algunos principios básicos a la hora de diseñar clases. La idea de “dejales comer el pastel primero” creo que es la principal enseñanza.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2019/04/ecmwfr-calentamiento-global/">
+                <h3 class="media-heading">Midiendo el calentamiento global con ecmwfr</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Apr 4, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Para mi investigación necesitaba bajar datos meteorológicos grillados del ERA-Interim, que es una base de datos generada por el ECMWF. Bajar los datos en su sitio web es muy incómido y requiere muchos clicks. Por suerte, me encontré con el paquete ecmwfr con el que pude bajar los datos directamente desde R y muy fácilmente. Una de las cosas geniales del código abierto, es que los usuarios pueden ser colaboradores, así que sugerí algunas cosas y aporté un poco de código.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2019/01/metamerismo-estad%C3%ADstico/">
+                <h3 class="media-heading">Metamerismo estadístico</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jan 1, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Resumen El paquete metamer implementa en R el algoritmo descripto por Matejka and Fitzmaurice (2017) para generar sets de datos distintos entre sí pero con estadísticos idénticos. Además, propongo el nombre “metámeros” para estos grupos de datos en analogía con el concepto proveniente de colorimetría.
+Metámeros en la visión Esto no es un prisma separando la luz blanca en las longitudes de onda que la componen. Es una imagen de un prisma separando la luz blanca en las longitudes de onda que la componen.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/11/metr-esta-en-cran/">
+                <h3 class="media-heading">metR 0.2.0 está en CRAN</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Nov 11, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Después de muchísimo desarrollo y no sé cuántos commits, al fin metR está en CRAN emo::ji(&quot;tada&quot;)!
+metR empezó en julio de 2017 cuando estaba haciendo mi tesis de licenciatura en Ciencias de la Atmósfera y había ido creando pequeñas funciones para facilitar mi trabajo.
+metR es un paquete que brinda herramientas para trabajar con datos de campos espaciales. Tanto su nombre como su aplicación directa están relacionados con las Ciencias de la Atmósfera porque esa es mi área de estudio, pero tiene muchas cosas que pueden servir a cualquiera.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/10/leyendo-informacion-incucai/">
+                <h3 class="media-heading">Leyendo información del INCUCAI</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Oct 10, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">El otro día el diario Clarín sacó una nota afirmando que el pasado agosto se había dado el récord histórico de transplantes de órganos y se lo adjudicaba a la &ldquo;Ley Justina&rdquo;, que establece que todos somos donantes presuntos a menos que se declare lo contrario en vida. Dado que esta ley se aprobó hace poco más de un mes y todavía no está reglamentada, es poco probable que este récord se deba al cambio legal.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/09/multiple-color-and-fill-scales-with-ggplot2/">
+                <h3 class="media-heading">Multiple color (and fill) scales with ggplot2</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Sep 9, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">(Versión en español)
+tl;dr: The functionality shown in this post is now on the ggnewscale package! 📦. You can find the original code in this gist.
+A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
+
+Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/09/multiples-escalas-colores-ggplot2/">
+                <h3 class="media-heading">Múltiples escalas de colores en ggplot2</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Sep 9, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">tl;dr: Esta funcionalidad está ahora en el paquete ggnewscale! 📦 En este gist está la versión origial del código.
+Un dolor importante para algunos usuarios de ggplot2 es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
+
+Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &ldquo;no se puede, pero esta es otra forma de graficar tus datos&rdquo;.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/08/periodic-data-ggplot2-ggperiodic/">
+                <h3 class="media-heading">Wrapping around ggplot2 with ggperiodic</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Aug 8, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">As an atmospheric scientists, a lot of my research consists on plotting and looking at global fields of atmospheric variables like pressure, temperature and the like. Since our planet is a sphere (well, almost), it is unbound and so longitude is a periodic dimension. That is, to the right of 180°E you go back to 180°W. But ggplot2 and other plotting systems, for the most part, assume linear dimensions.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/06/c%C3%B3mo-funcionan-las-componentes-prinipales/">
+                <h3 class="media-heading">Cómo funcionan las componentes prinipales</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jun 6, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather"></div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+      </div>
+    </div>
+    <div class="modal-footer">
+      <p class="results-count text-medium"
+         data-message-zero="no se encontraron artículos"
+         data-message-one="1 artículo encontrado"
+         data-message-other="{n} artículos encontrados">
+         21 posts found
+      </p>
+    </div>
+  </div>
+</div>
+    
+  
+    
+    <div id="cover" style="background-image:url('/images/cover2.jpg');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js" integrity="sha256-XrZQp+ZMfovqr6Hb2M6okHvSEYaB/+Xbx7toWmOOZUM=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-light.min.css" integrity="sha256-KacbO6Nou2geGJEUzQeKzKEdp/DENVGJKAd2v37moh0=" crossorigin="anonymous" />
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="../../../js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
+
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+      <script>
+        var disqus_config = function () {
+          this.page.url = '\/2019\/11\/rammstein-vs-lacrimosa\/';
+          
+            this.page.identifier = '\/2019\/11\/rammstein-vs-lacrimosa\/'
+          
+        };
+        (function() {
+          
+          
+          if (window.location.hostname == "localhost") {
+            return;
+          }
+          var d = document, s = d.createElement('script');
+          var disqus_shortname = 'codigo-r';
+          s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+      </script>
+    
+  
+
+
+
+    
+  </body>
+</html>
+
