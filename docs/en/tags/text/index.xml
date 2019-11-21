@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Text on Code R</title>
-    <link>/en/tags/text/</link>
+    <link>https://eliocamp.github.io/codigo-r/en/tags/text/</link>
     <description>Recent content in Text on Code R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
     <lastBuildDate>Thu, 21 Nov 2019 00:00:00 +0000</lastBuildDate>
     
-        <atom:link href="/en/tags/text/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://eliocamp.github.io/codigo-r/en/tags/text/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Rammstein vs. Lacrimosa</title>
-      <link>/en/2019/11/rammstein-vs-lacrimosa/</link>
+      <link>https://eliocamp.github.io/codigo-r/en/2019/11/rammstein-vs-lacrimosa/</link>
       <pubDate>Thu, 21 Nov 2019 00:00:00 +0000</pubDate>
       
-      <guid>/en/2019/11/rammstein-vs-lacrimosa/</guid>
+      <guid>https://eliocamp.github.io/codigo-r/en/2019/11/rammstein-vs-lacrimosa/</guid>
       <description>
 &lt;script src=&#34;../../../rmarkdown-libs/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
 &lt;script src=&#34;../../../rmarkdown-libs/pymjs/pym.v1.js&#34;&gt;&lt;/script&gt;

@@ -7,7 +7,6 @@ categories:
   - R
 tags:
   - text
-draft: yes
 ---
 
 Some time ago, someone I follow on twitter posted about having to buy a whole book with rules to tease out grammatical gender in German. Further down the replies, someone reminisced about trying (and failing) to learn German just by listening to Rammstein's lyrics. I studied about drei Jahre of German at the same time I started listening to Rammstein and other German-speaking bands and I've always found Rammstein's lyrics to be surprisingly simple. So simple, in fact, that I suspect that Till Lindemann intentionally dumbs down his writing to cater to the English speaking word and, in particular, to beginner-level German students 

@@ -6,10 +6,283 @@
     <description>Recent content on Code R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Sat, 06 Jul 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 21 Nov 2019 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://eliocamp.github.io/codigo-r/en/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Rammstein vs. Lacrimosa</title>
+      <link>https://eliocamp.github.io/codigo-r/en/2019/11/rammstein-vs-lacrimosa/</link>
+      <pubDate>Thu, 21 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://eliocamp.github.io/codigo-r/en/2019/11/rammstein-vs-lacrimosa/</guid>
+      <description>
+&lt;script src=&#34;../rmarkdown-libs/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;../rmarkdown-libs/pymjs/pym.v1.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;../rmarkdown-libs/widgetframe-binding/widgetframe.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;Some time ago, someone I follow on twitter posted about having to buy a whole book with rules to tease out grammatical gender in German. Further down the replies, someone reminisced about trying (and failing) to learn German just by listening to Rammstein’s lyrics. I studied about drei Jahre of German at the same time I started listening to Rammstein and other German-speaking bands and I’ve always found Rammstein’s lyrics to be surprisingly simple. So simple, in fact, that I suspect that Till Lindemann intentionally dumbs down his writing to cater to the English speaking word and, in particular, to beginner-level German students&lt;/p&gt;
+&lt;p&gt;I decided I wanted to see if this vague idea had any merit. So I downloaded Rammstein’s lyrics and measured it’s complexity. As a benchmark, I compared them with Lacrimosa’s lyrics, another German-speaking band from my youth.&lt;/p&gt;
+&lt;div id=&#34;a-taste-of-the-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;A taste of the data&lt;/h2&gt;
+&lt;p&gt;For those not familiar with either band, this is the chorus from Rammstein’s &lt;a href=&#34;https://www.youtube.com/watch?v=StZcUAPRRac&#34;&gt;Sonne&lt;/a&gt;:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Eins, hier kommt die Sonne.&lt;br /&gt;
+Zwei, hier kommt die Sonne.&lt;br /&gt;
+Drei, sie ist der hellste Stern von allen.&lt;br /&gt;
+Vier, hier kommt die Sonne.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Now, the song does have some complex meaning and interesting uses of metaphor, but the sentence structure is painfully simple. Not only that, but since it repeats the numbers one through ten over and over again, I cannot shake the feeling that it’s a song designed to help children learn the numbers.&lt;/p&gt;
+&lt;p&gt;On the other hand, here’s a part of Lacrimosa’s &lt;a href=&#34;https://www.youtube.com/watch?v=cSXaWvFFXuI&#34;&gt;Warum so Tief&lt;/a&gt;:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Warum so tief - und warum gerade jetzt?&lt;br /&gt;
+Warum vor ihr - warum diese Ironie?&lt;br /&gt;
+Warum so hart - und warum nicht einfach besiegt?&lt;br /&gt;
+Muss ich denn wirklich für jede Begegnung&lt;br /&gt;
+für immer und ewig mit all meiner Liebe bezahlen?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Einmal ohne das eine und endgültige Gefühl - verloren zu sein&lt;br /&gt;
+Nur einmal bei ihr - keine Tobsucht in Ketten&lt;br /&gt;
+Doch ich kann es nicht ’mal bestreiten - dass ich euch liebe&lt;br /&gt;
+Mutter Angst und Vater Schmerz&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;I believe the contrast is obvious. In particular, the last two verses of the first stanza make up a surprisingly long sentence, specially for a song.&lt;/p&gt;
+&lt;p&gt;These two examples were, of course, cherry-picked to make a point. So let’s try to quantify and analyse all songs from each band.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;getting-the-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Getting the data&lt;/h2&gt;
+&lt;p&gt;I want lyrics for every studio album by each band. I could try to automate this by scrapping, say, the respective &lt;a href=&#34;https://en.wikipedia.org/wiki/Lacrimosa_(band)&#34;&gt;wikipedia article&lt;/a&gt;, but it was easier to do it by hand.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(data.table)
+library(magrittr)
+library(ggplot2)
+
+theme_set(hrbrthemes::theme_ipsum_rc())&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;lacrimosa &amp;lt;- data.table(
+   album = c(&amp;quot;Angst&amp;quot;, &amp;quot;Einsemkeit&amp;quot;, &amp;quot;Satura&amp;quot;, &amp;quot;Inferno&amp;quot;, &amp;quot;Stille&amp;quot;, &amp;quot;Elodia&amp;quot;, &amp;quot;Fassade&amp;quot;, &amp;quot;Echos&amp;quot;, 
+             &amp;quot;Lichtgestalt&amp;quot;, &amp;quot;Sehnsucht&amp;quot;, &amp;quot;Revolution&amp;quot;, &amp;quot;Hoffnung&amp;quot;, &amp;quot;Testimonium&amp;quot;),
+   year = c(1991, 1992, 1993, 1995, 1997, 1999, 2001, 2003,
+            2005, 2009, 2012, 2015, 2017)
+)
+
+rammstein &amp;lt;- data.table(
+   album = c(&amp;quot;Herzeleid&amp;quot;, &amp;quot;Sehnsucht&amp;quot;, &amp;quot;Mutter&amp;quot;, &amp;quot;Reise Reise&amp;quot;, &amp;quot;Rosenrot&amp;quot;, 
+             &amp;quot;Liebe ist fur alle da&amp;quot;,  &amp;quot;Rammstein&amp;quot;),
+   year = c(1995, 1997, 2001, 2004, 2005, 2009, 2019)
+)
+
+albums &amp;lt;- rbindlist(list(Lacrimosa = lacrimosa, 
+                         Rammstein = rammstein), 
+                    idcol = &amp;quot;artist&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, there’s a neat &lt;a href=&#34;https://github.com/JosiahParry/genius&#34;&gt;genius&lt;/a&gt; package that can download lyrics from, you guessed it, the popular website &lt;a href=&#34;https://genius.com/&#34;&gt;Genius&lt;/a&gt;&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;. You can “enrich” a dataframe with all the lyrics for each album of each artist like so:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;albums &amp;lt;- albums %&amp;gt;% 
+   genius::add_genius(artist, album) %&amp;gt;% 
+   as.data.table() %&amp;gt;% 
+   .[artist == &amp;quot;Lacrimosa&amp;quot; &amp;amp; album == &amp;quot;Sehnsucht&amp;quot;, album := &amp;quot;Sehnsucht (L)&amp;quot;]  
+# (Both bands have an album named Sehnsucht)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now each row of &lt;code&gt;albums&lt;/code&gt; holds each verse of each song of each album of each artist.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;DT::datatable(albums) %&amp;gt;% 
+   widgetframe::frameWidget()&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;htmlwidget-1&#34; style=&#34;width:100%;height:480px;&#34; class=&#34;widgetframe html-widget&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-1&#34;&gt;{&#34;x&#34;:{&#34;url&#34;:&#34;/post/2019-11-20-rammstein-vs-lacrimosa.en_files/figure-html//widgets/widget_unnamed-chunk-4.html&#34;,&#34;options&#34;:{&#34;xdomain&#34;:&#34;*&#34;,&#34;allowfullscreen&#34;:false,&#34;lazyload&#34;:false}},&#34;evals&#34;:[],&#34;jsHooks&#34;:[]}&lt;/script&gt;
+&lt;/div&gt;
+&lt;div id=&#34;readability-of-rammsteins-lyrics&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Readability of Rammstein’s lyrics&lt;/h2&gt;
+&lt;p&gt;With these data I can begin to test my hypothesis. But how? I’ll score the &lt;a href=&#34;https://en.wikipedia.org/wiki/Readability&#34;&gt;readability&lt;/a&gt; of each song lyric. My hunch is that Rammstein’s lyrics will have a low score on readability (i.e. they are simpler) than Lacrimosa’s. The issue here is that, from what I can tell, most measures of readability are based on the English language. This is a huge problem for text analysis in any language other than English. In this case, a bit of quick googling lead me to the &lt;a href=&#34;https://en.wikipedia.org/wiki/SMOG&#34;&gt;SMOG&lt;/a&gt; readability score, which has a variant adapted to German implemented in the &lt;a href=&#34;https://quanteda.io/&#34;&gt;quantea&lt;/a&gt; package.&lt;/p&gt;
+&lt;p&gt;Related to this, that not all songs by these bands are in German. Most albums by Lacrimosa, for example, have at least one song in English (often voiced by Anne Nurmi instead of Tilo Wolff). So I’ll need to detect them and remove them from my analysis. Again, a bit of googling lead me to the &lt;a href=&#34;https://cran.r-project.org/web/packages/textcat/index.html&#34;&gt;textcat&lt;/a&gt; package, which I will consider a black box algorithm because at this point I’m done going through rabbit holes. 🐰&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Join all verses from each song
+full_lyrics &amp;lt;- albums %&amp;gt;% 
+   na.omit() %&amp;gt;% 
+   .[, .(lyric = paste0(lyric, collapse = &amp;quot;.\n&amp;quot;) ), 
+     by = .(artist, album, year, track_title)]
+
+# Get the language
+full_lyrics[, language := textcat::textcat(lyric), 
+            by = .(track_title, artist, album)]
+
+# How many songs for each language?
+full_lyrics %&amp;gt;% 
+   .[, .N, by = .(artist, language)] %&amp;gt;% 
+   .[order(-N)] %&amp;gt;% 
+   knitr::kable()&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;artist&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;language&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;N&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Lacrimosa&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;german&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;81&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Rammstein&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;german&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;75&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Lacrimosa&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;english&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;16&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Rammstein&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;scots&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Lacrimosa&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;scots&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Lacrimosa&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;catalan&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Lacrimosa&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;romanian&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Lacrimosa&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;finnish&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Rammstein&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;english&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Rammstein&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;portuguese&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;As expected, most songs by either band are in German and a non negligible part of Lacrimosa’s are in English. The algorithm seems to be fooled by some lyrics, though. I inspected the individual cases. All songs marked as “scots” are actually in English. The songs allegedly in Catalan or Romanian are actually a instrumental songs which {genius} seems to have messed up. The one in “Portuguese” is actually Rammstein’s “Te quiero, Puta” which is actually in Spanish. Finally, Lacrimosa’s Vankina is really in Finnish.&lt;/p&gt;
+&lt;p&gt;Note that since song lyrics are in verse and don’t have punctuation I had to make the bold choice of assuming that each verse is it’s own sentence.&lt;/p&gt;
+&lt;p&gt;Another important limitation is that since these readability scores are based on prose, their validity is not garanteed in the case of poetry.&lt;/p&gt;
+&lt;p&gt;In any case, computing the readability score for only the German lyrics we get this&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;full_lyrics[language == &amp;quot;german&amp;quot;,
+            &amp;quot;SMOG&amp;quot; := quanteda::textstat_readability(lyric, measure = &amp;quot;SMOG.de&amp;quot;)$SMOG.de]
+
+full_lyrics %&amp;gt;%  
+   .[language %in% &amp;quot;german&amp;quot;] %&amp;gt;% 
+   ggplot(aes(SMOG)) +
+   geom_density(aes(color = artist)) +
+   geom_rug(aes(color = artist)) +
+   scale_color_brewer(&amp;quot;Artist&amp;quot;, palette = &amp;quot;Set1&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../post/2019-11-20-rammstein-vs-lacrimosa.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;So…hypothesis confirmed? Rammstein’s lyrics are definitely on the simple side. That said, they do own the 3 most complex songs in the dataset. However, this might be a bit misleading. Let’s look at the most complex song.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;full_lyrics[which.max(SMOG)] %&amp;gt;% 
+   with(cat(lyric))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Bewahret einander vor Herzeleid.
+## Denn kurz ist die Zeit die ihr beisammen seid.
+## Denn wenn euch auch viele Jahre vereinen.
+## Einst werden sie wie Minuten euch scheinen.
+## Herzeleid.
+## Bewahret einander vor der Zweisamkeit&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Herzeleid is a short song (lyric-wise) and not terribly complicated. But it does feature some longer words. Ironically, these lyrics are actually based on a tradicional poem that can be found adorning several homes&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;../post/2019-11-20-rammstein-vs-lacrimosa_files/herzeleid.png&#34; alt=&#34;Herzeleid poem&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;Herzeleid poem&lt;/p&gt;
+&lt;/div&gt;
+&lt;p&gt;SImilarly, the second most complex song -Zeig dich- features almost exclusively two-word verses. So really I’m not terribly confident about this result. On the other end of the spectrum, though, it really makes sense.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;full_lyrics[which.min(SMOG)] %&amp;gt;% 
+   with(cat(lyric))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Du, du hast, du hast mich.
+## Du, du hast, du hast mich.
+## Du, du hast, du hast mich.
+## Du, du hast, du hast mich.
+## Du, du hast, du hast mich, du hast mich.
+## Du hast mich gefragt, du hast mich gefragt.
+## Du hast mich gefragt und ich hab&amp;#39; nichts gesagt.
+## Willst du bis der Tod euch scheidet.
+## Treu ihr sein für alle Tage?(Ja) Nein.
+## (Ja) Nein.
+## Willst du bis zum Tod, der scheide.
+## Sie lieben auch in schlechten Tagen?(Ja) Nein.
+## (Ja) Nein.
+## Du, du hast, du hast mich.
+## Du, du hast, du hast mich.
+## Du, du hast, du hast mich, du hast mich.
+## Du hast mich gefragt, du hast mich gefragt.
+## Du hast mich gefragt und ich hab&amp;#39; nichts gesagt.
+## Willst du bis der Tod euch scheidet.
+## Treu ihr sein für alle Tage?(Ja) Nein.
+## (Ja) Nein.
+## Willst du bis zum Tod, der scheide.
+## Sie lieben auch in schlechten Tagen?(Ja) Nein.
+## (Ja) Nein.
+## Willst du bis der Tod euch scheidet.
+## Treu ihr sein(Ja) Nein.
+## (Ja) Nein&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The simplest song of all is, no surprise, Du hast. It’s a rather ‘dumb’ song, at least in terms of readability. It’s got very short verses, very short words and very simple structure. What the SMOG score doesn’t capture, though, is that it’s also very repetitive. There are essentially only 3 distinct stanzas!&lt;/p&gt;
+&lt;p&gt;This observation again resonates with my experience with both bands. Rammstein adheres fully to the traditional song structure of verses, choruses and bridges while Lacrimosa is no stranger to more “prose-like” lyrics with little in the way of repetition. For example, &lt;a href=&#34;https://www.youtube.com/watch?v=qdzI88X4YZk&#34;&gt;Der Strasse der Zeit&lt;/a&gt; has no chorus at all and, thus, counting the proportion of unique verses in that song we see that only about 7% of the lines are duplicated.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;albums[track_title == &amp;quot;Die Strasse der Zeit&amp;quot;] %&amp;gt;% 
+   .[, mean(duplicated(lyric))]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.07017544&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Extending this counting method to both band’s respective discographies:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;albums %&amp;gt;% 
+   .[, .(repetition = mean(duplicated(lyric)), .N), by = .(track_title, artist)] %&amp;gt;% 
+   ggplot(aes(repetition)) +
+   geom_density(aes(color = artist)) +
+   geom_rug(aes(color = artist)) +
+   scale_color_brewer(&amp;quot;Artist&amp;quot;, palette = &amp;quot;Set1&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../post/2019-11-20-rammstein-vs-lacrimosa.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Woah! The difference here is outstanding! Unlike Rammstein, who happily write lyrics with 30% of repetition or higher, few of Lacrimosas’s songs repeat more than 20% of its verses. Indeed, a sizeable chunk of their songs feature no repetition at all!&lt;/p&gt;
+&lt;p&gt;Putting both measures together, we get a clear separation between both bands.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;full_lyrics %&amp;gt;% 
+   .[language == &amp;quot;german&amp;quot;] %&amp;gt;% 
+   .[, repetition := mean(duplicated(strsplit(lyric, &amp;quot;.\n&amp;quot;)[[1]])), 
+     by = .(track_title, artist)] %&amp;gt;% 
+   ggplot(aes(repetition, SMOG)) +
+   geom_point(aes(color = artist)) +
+   geom_density_2d(aes(color = artist), adjust = 1.5, bins = 4) +
+   scale_color_brewer(&amp;quot;Artist&amp;quot;, palette = &amp;quot;Set1&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../post/2019-11-20-rammstein-vs-lacrimosa.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Rammstein’s songs are generally simpler and feature a boatload more repetition.&lt;/p&gt;
+&lt;p&gt;Not only Rammstein repeats verses willy-nilly, but those verses are often not even full-fledged sentences. This can be inferred by using log odds ratios between both artists to distinguish very “rammstein-like” vs “lacrimosa-like” pairs of words:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;full_lyrics %&amp;gt;% 
+   .[language == &amp;quot;german&amp;quot;] %&amp;gt;% 
+   .[, tidytext::unnest_tokens(.SD, word, lyric, token = &amp;quot;ngrams&amp;quot;, n = 2), 
+     by = .(track_title, artist)] %&amp;gt;% 
+   .[, .N, by = .(word, artist)] %&amp;gt;% 
+   .[!is.na(word)] %&amp;gt;% 
+   tidylo::bind_log_odds(artist, word, N) %&amp;gt;% 
+   .[order(-log_odds)] %&amp;gt;% 
+   .[, .SD[1:10], by = artist] %&amp;gt;% 
+   .[, word := tidytext::reorder_within(word, log_odds, artist)] %&amp;gt;% 
+   ggplot(aes(word, log_odds)) +
+   geom_col() +
+   tidytext::scale_x_reordered() +
+   coord_flip() +
+   facet_wrap(~artist, scales = &amp;quot;free&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../post/2019-11-20-rammstein-vs-lacrimosa.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The pair of words that distinguish Lacrimsoa’s lyrics are common parts of syntactically correct sentences, such as “so wie” (“such as”) or “das ist” (“this is”). Rammstein lyrics, on the other hand, are distinguished by repeated pairs of words with no syntactic structure, such as “bang bang”, “link zwo” (“left two”; the complete verse is “left two three four”), and “zwiter zwiter”.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;simplicity-lack-of-quality&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Simplicity ≠ lack of quality&lt;/h2&gt;
+&lt;p&gt;I had some fun learning some crude and basic tools of text data manipulation, but there’s nothing earth-shattering about the conclusion that Rammstein’s lyrics are generally simpler and more “song-like” than Lacrimosa’s. You don’t need webscrapping or R, you just need the ability to listen to music.&lt;/p&gt;
+&lt;p&gt;What’s more important, no law states that longer, more complex lyrics equal better songs. Du Hast might be exceedingly simple by any measure, but it does feature some interesting word play and reversal of expectations.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;There is also the &lt;a href=&#34;https://github.com/ewenme/geniusr&#34;&gt;geniusr&lt;/a&gt; package which makes use of the official genius API and therefore should be preferred for more intensive use. However, I discovered after I’ve already written most of this code.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Why I love data.table</title>
