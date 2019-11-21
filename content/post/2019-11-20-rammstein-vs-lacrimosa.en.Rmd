@@ -1,0 +1,218 @@
+---
+title: Rammstein vs. Lacrimosa
+author: Elio Campitelli
+date: '2019-11-21'
+slug: rammstein-vs-lacrimosa
+categories:
+  - R
+tags:
+  - text
+draft: yes
+---
+
+Some time ago, someone I follow on twitter posted about having to buy a whole book with rules to tease out grammatical gender in German. Further down the replies, someone reminisced about trying (and failing) to learn German just by listening to Rammstein's lyrics. I studied about drei Jahre of German at the same time I started listening to Rammstein and other German-speaking bands and I've always found Rammstein's lyrics to be surprisingly simple. So simple, in fact, that I suspect that Till Lindemann intentionally dumbs down his writing to cater to the English speaking word and, in particular, to beginner-level German students 
+
+
+I decided I wanted to see if this vague idea had any merit. So I downloaded Rammstein's lyrics and measured it's complexity. As a benchmark, I compared them with Lacrimosa's lyrics, another German-speaking band from my youth. 
+
+## A taste of the data
+
+For those not familiar with either band, this is the chorus from Rammstein's [Sonne](https://www.youtube.com/watch?v=StZcUAPRRac):
+
+> Eins, hier kommt die Sonne.   
+> Zwei, hier kommt die Sonne.   
+> Drei, sie ist der hellste Stern von allen.   
+> Vier, hier kommt die Sonne.   
+
+Now, the song does have some complex meaning and interesting uses of metaphor, but the sentence structure is painfully simple. Not only that, but since it repeats the numbers one through ten over and over again, I cannot shake the feeling that it's a song designed to help children learn the numbers. 
+
+On the other hand, here's a part of Lacrimosa's [Warum so Tief](https://www.youtube.com/watch?v=cSXaWvFFXuI).
+
+> Warum so tief - und warum gerade jetzt?  
+> Warum vor ihr - warum diese Ironie?  
+> Warum so hart - und warum nicht einfach besiegt?  
+> Muss ich denn wirklich für jede Begegnung  
+> für immer und ewig mit all meiner Liebe bezahlen?   
+
+> Einmal ohne das eine und endgültige Gefühl - verloren zu sein  
+> Nur einmal bei ihr - keine Tobsucht in Ketten  
+> Doch ich kann es nicht 'mal bestreiten - dass ich euch liebe  
+> Mutter Angst und Vater Schmerz  
+
+I believe the contrast is obvious. In particular, the last two verses of the first stanza make up a surprisingly long sentence, specially for a song.
+
+These two examples were, of course, cherry-picked to make a point. So let's try to quantify and analyse all songs from each band. 
+
+
+## Getting the data
+
+I want lyrics for every studio album by each band. I could try to automate this by scrapping, say, the respective [wikipedia article](https://en.wikipedia.org/wiki/Lacrimosa_(band)), but it was easier to do it by hand. 
+
+```{r}
+library(data.table)
+library(magrittr)
+library(ggplot2)
+
+theme_set(hrbrthemes::theme_ipsum_rc())
+```
+
+```{r, cache = TRUE}
+lacrimosa <- data.table(
+   album = c("Angst", "Einsemkeit", "Satura", "Inferno", "Stille", "Elodia", "Fassade", "Echos", 
+             "Lichtgestalt", "Sehnsucht", "Revolution", "Hoffnung", "Testimonium"),
+   year = c(1991, 1992, 1993, 1995, 1997, 1999, 2001, 2003,
+            2005, 2009, 2012, 2015, 2017)
+)
+
+rammstein <- data.table(
+   album = c("Herzeleid", "Sehnsucht", "Mutter", "Reise Reise", "Rosenrot", 
+             "Liebe ist fur alle da",  "Rammstein"),
+   year = c(1995, 1997, 2001, 2004, 2005, 2009, 2019)
+)
+
+albums <- rbindlist(list(Lacrimosa = lacrimosa, 
+                         Rammstein = rammstein), 
+                    idcol = "artist")
+```
+
+
+Now, there's a neat [genius](https://github.com/JosiahParry/genius) package that can download lyrics from, you guessed it, the popular website [Genius](https://genius.com/)[^genius]. You can "enrich" a dataframe with all the lyrics for each album of each artist like so:
+
+[^genius]: There is also the [geniusr](https://github.com/ewenme/geniusr) package which makes use of the official genius API and therefore should be preferred for more intensive use. However, I discovered after I've already written most of this code. 
+
+```{r, cache = TRUE, message=FALSE,  warning=FALSE}
+albums <- albums %>% 
+   genius::add_genius(artist, album) %>% 
+   as.data.table() %>% 
+   .[artist == "Lacrimosa" & album == "Sehnsucht", album := "Sehnsucht (L)"]  
+# (Both bands have an album named Sehnsucht)
+```
+
+Now each row of `albums` holds each verse of each song of each album of each artist. 
+
+```{r}
+DT::datatable(albums) %>% 
+   widgetframe::frameWidget()
+```
+
+## Readability of Rammstein's lyrics
+
+With these data I can begin to test my hypothesis. But how? I'll score the [readability](https://en.wikipedia.org/wiki/Readability) of each song lyric. My hunch is that Rammstein's lyrics will have a low score on readability (i.e. they are simpler) than Lacrimosa's. The issue here is that, from what I can tell, most measures of readability are based on the English language. This is a huge problem for text analysis in any language other than English. In this case, a bit of quick googling lead me to the [SMOG](https://en.wikipedia.org/wiki/SMOG) readability score, which has a variant adapted to German implemented in the [quantea](https://quanteda.io/) package. 
+
+Related to this, that not all songs by these bands are in German. Most albums by Lacrimosa, for example, have at least one song in English (often voiced by Anne Nurmi instead of Tilo Wolff). So I'll need to detect them and remove them from my analysis. Again, a bit of googling lead me to the [textcat](https://cran.r-project.org/web/packages/textcat/index.html) package, which I will consider a black box algorithm because at this point I'm done going through rabbit holes. `r emo::ji("rabbit")` 
+
+
+```{r}
+# Join all verses from each song
+full_lyrics <- albums %>% 
+   na.omit() %>% 
+   .[, .(lyric = paste0(lyric, collapse = ".\n") ), 
+     by = .(artist, album, year, track_title)]
+
+# Get the language
+full_lyrics[, language := textcat::textcat(lyric), 
+            by = .(track_title, artist, album)]
+
+# How many songs for each language?
+full_lyrics %>% 
+   .[, .N, by = .(artist, language)] %>% 
+   .[order(-N)] %>% 
+   knitr::kable()
+```
+
+As expected, most songs by either band are in German and a non negligible part of Lacrimosa's are in English. The algorithm seems to be fooled by some lyrics, though. I inspected the individual cases. All songs marked as "scots" are actually in English. The songs allegedly in Catalan or Romanian are actually a instrumental songs which {genius} seems to have messed up. The one in "Portuguese" is actually Rammstein's "Te quiero, Puta" which is actually in Spanish. Finally, Lacrimosa's Vankina is really in Finnish. 
+
+Note that since song lyrics are in verse and don't have punctuation I had to make the bold choice of assuming that each verse is it's own sentence. 
+
+In any case, computing the readability score for only the German lyrics we get this 
+
+```{r}
+full_lyrics[language == "german",
+            "SMOG" := quanteda::textstat_readability(lyric, measure = "SMOG.de")$SMOG.de]
+
+full_lyrics %>%  
+   .[language %in% "german"] %>% 
+   ggplot(aes(SMOG)) +
+   geom_density(aes(color = artist)) +
+   geom_rug(aes(color = artist)) +
+   scale_color_brewer("Artist", palette = "Set1")
+```
+
+So...hypothesis confirmed? Rammstein's lyrics are definitely on the simple side. That said, they do own the 3 most complex songs in the dataset. However, this might be a bit misleading. Let's look at the most complex song.
+
+```{r, show = "asis"}
+full_lyrics[which.max(SMOG)] %>% 
+   with(cat(lyric))
+```
+
+Herzeleid is a short song (lyric-wise) and not terribly complicated. But it does feature some longer words. The same goes for the second most complex song -Zeig dich- which features almost exclusively two-word verses. So really I'm not terribly confident about this result. On the other end of the spectrum, though, it really makes sense. 
+
+```{r, show = "asis"}
+full_lyrics[which.min(SMOG)] %>% 
+   with(cat(lyric))
+```
+
+The simplest song of all is, no surprise, Du hast. It's a rather 'dumb' song, at least in terms of readability. It's got very short verses, very short words and very simple structure. What the SMOG score doesn't capture, though, is that it's also very repetitive. There are essentially only 3 distinct stanzas!
+
+This observation again resonates with my experience with both bands. Rammstein adheres fully to the traditional song structure of verses, choruses and bridges while Lacrimosa is no stranger to more "prose-like" lyrics with little in the way of repetition. For example, [Der Strasse der Zeit](https://www.youtube.com/watch?v=qdzI88X4YZk) has no chorus at all and, thus, counting the proportion of unique verses in that song we see that only about 7% of the lines are duplicated. 
+
+```{r}
+albums[track_title == "Die Strasse der Zeit"] %>% 
+   .[, mean(duplicated(lyric))]
+```
+
+Extending this counting method to both band's respective discographies:
+
+```{r}
+albums %>% 
+   .[, .(repetition = mean(duplicated(lyric)), .N), by = .(track_title, artist)] %>% 
+   ggplot(aes(repetition)) +
+   geom_density(aes(color = artist)) +
+   geom_rug(aes(color = artist)) +
+   scale_color_brewer("Artist", palette = "Set1")
+```
+
+Woah! The difference here is outstanding! Unlike Rammstein, who happily write lyrics with 30% of repetition or higher, few of Lacrimosas's songs repeat more than 20% of its verses. Indeed, a sizeable chunk of their songs feature no repetition at all!
+
+Putting both measures together, we get a clear separation between both bands. 
+
+```{r}
+full_lyrics %>% 
+   .[language == "german"] %>% 
+   .[, repetition := mean(duplicated(strsplit(lyric, ".\n")[[1]])), 
+     by = .(track_title, artist)] %>% 
+   ggplot(aes(repetition, SMOG)) +
+   geom_point(aes(color = artist)) +
+   geom_density_2d(aes(color = artist), adjust = 1.5, bins = 4) +
+   scale_color_brewer("Artist", palette = "Set1")
+```
+
+Rammstein's songs are generally simpler and feature a boatload more repetition. 
+
+Not only Rammstein repeats verses willy-nilly, but those verses are often not even full-fledged sentences. This can be inferred by using log odds ratios between both artists to distinguish very "rammstein-like" vs "lacrimosa-like" pairs of words:
+
+```{r}
+full_lyrics %>% 
+   .[language == "german"] %>% 
+   .[, tidytext::unnest_tokens(.SD, word, lyric, token = "ngrams", n = 2), 
+     by = .(track_title, artist)] %>% 
+   .[, .N, by = .(word, artist)] %>% 
+   .[!is.na(word)] %>% 
+   tidylo::bind_log_odds(artist, word, N) %>% 
+   .[order(-log_odds)] %>% 
+   .[, .SD[1:10], by = artist] %>% 
+   .[, word := tidytext::reorder_within(word, log_odds, artist)] %>% 
+   ggplot(aes(word, log_odds)) +
+   geom_col() +
+   tidytext::scale_x_reordered() +
+   coord_flip() +
+   facet_wrap(~artist, scales = "free") 
+```
+
+The pair of words that distinguish Lacrimsoa's lyrics are common parts of syntactically correct sentences, such as "so wie" ("such as") or "das ist" ("this is"). Rammstein lyrics, on the other hand, are distinguished by repeated pairs of words with no syntactic structure, such as "bang bang", "link zwo" ("left two"; the complete verse is "left two three four"), and "zwiter zwiter". 
+
+## Simplicity ≠ lack of quality
+
+I had some fun learning some crude and basic tools of text data manipulation, but there's nothing earth-shattering about the conclusion that Rammstein's lyrics are generally simpler and more "song-like" than Lacrimosa's. You don't need webscrapping or R, you just need the ability to listen to music. 
+
+What's more important, no law states that longer, more complex lyrics equal better songs. Du Hast might be exceedingly simple by any measure, but it does feature some interesting word play and reversal of expectations. 
