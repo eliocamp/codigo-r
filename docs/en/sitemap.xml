@@ -177,6 +177,16 @@
     <loc>https://eliocamp.github.io/codigo-r/en/tags/data.table/</loc>
     <lastmod>2019-07-06T00:00:00+00:00</lastmod>
     <priority>0</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-es"
+                href="https://eliocamp.github.io/codigo-r/tags/data.table/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://eliocamp.github.io/codigo-r/en/tags/data.table/"
+                />
   </url>
   
   <url>

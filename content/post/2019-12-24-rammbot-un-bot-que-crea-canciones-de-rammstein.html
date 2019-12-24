@@ -1,0 +1,341 @@
+---
+title: "Obligué a un bot a escuchar más de 1000 horas de Rammstein y le pedí que escribiera una canción propia."
+author: Elio Campitelli
+date: '2019-12-24'
+slug: rammbot-un-bot-que-crea-canciones-de-rammstein
+categories:
+  - R
+tags:
+  - data.table
+  - texto
+keywords:
+  - tech
+---
+
+
+
+<p>Cuando le conté a una amiga que <a href="/2019/11/rammstein-vs-lacrimosa/">había analizado las letras de Rammstein y Lacrimosa</a>, me tiró la idea de usar un modelo para crear letras de las bandas. Me pareció una idea divertida, así que acá tienen el futuro de la música:</p>
+<pre class="r"><code>library(data.table)
+library(magrittr)</code></pre>
+<p>Igual que hice antes, bajo las letras de losdiscos de estudio de cada artista. Guardo las cosas en un archivo para no tener que bajar los datos cada vez que corro esto. Además de bajar las letras, uso textcat para determinar el idioma de las letras (no todas estásn en alemán).</p>
+<pre class="r"><code>lacrimosa &lt;- data.table(
+  album = c(&quot;Angst&quot;, &quot;Einsemkeit&quot;, &quot;Satura&quot;, &quot;Inferno&quot;, &quot;Stille&quot;, &quot;Elodia&quot;, &quot;Fassade&quot;, &quot;Echos&quot;, 
+            &quot;Lichtgestalt&quot;, &quot;Sehnsucht&quot;, &quot;Revolution&quot;, &quot;Hoffnung&quot;, &quot;Testimonium&quot;),
+  year = c(1991, 1992, 1993, 1995, 1997, 1999, 2001, 2003,
+           2005, 2009, 2012, 2015, 2017)
+)
+
+rammstein &lt;- data.table(
+  album = c(&quot;Herzeleid&quot;, &quot;Sehnsucht&quot;, &quot;Mutter&quot;, &quot;Reise Reise&quot;, &quot;Rosenrot&quot;, 
+            &quot;Liebe ist fur alle da&quot;,  &quot;Rammstein&quot;),
+  year = c(1995, 1997, 2001, 2004, 2005, 2009, 2019)
+)
+
+albums &lt;- rbindlist(list(Lacrimosa = lacrimosa, 
+                         Rammstein = rammstein), 
+                    idcol = &quot;artist&quot;)
+cache &lt;- here::here(&quot;content&quot;, &quot;post&quot;, &quot;data&quot;, &quot;letras.Rds&quot;)
+
+if (file.exists(cache)) {
+  lyrics &lt;- readRDS(cache)
+} else {
+  lyrics &lt;-  albums %&gt;% 
+    genius::add_genius(artist, album) %&gt;% 
+    as.data.table() %&gt;% 
+    .[artist == &quot;Lacrimosa&quot; &amp; album == &quot;Sehnsucht&quot;, album := &quot;Sehnsucht (L)&quot;]  %&gt;% 
+    .[, lang := textcat::textcat(paste0(lyric, collapse = &quot;\n&quot;)), by = .(track_title, artist)] %&gt;% 
+    na.omit()
+}</code></pre>
+<p>Ahora a los bifes. El bot lo voy a hacer como una cadena de Markov. Lo que signfica es que toma una palabra y luego elije la siguiente al azar usando la probabilidad condicional de cada palabra. Es decir, ¿cuál es la probabilidad de que a esta palabra le siga esta otra? Como ejemplo, voy a trabajar con las letras de Rammstein (y que estén en alemán) y a partir de eso voy a armar una función generalizable.</p>
+<pre class="r"><code>corpus &lt;- lyrics[lang == &quot;german&quot; &amp; artist == &quot;Rammstein&quot;]</code></pre>
+<p>Para delimitar las estrofas voy a usar puntuación. Entonces voy a primero detectar qué líneas terminan con un punto, signo de pregunta o exlamación y agregar un punto a las que NO terminan con puntuación.</p>
+<pre class="r"><code>corpus &lt;- corpus %&gt;% 
+  .[, has_punct := grepl(&quot;^[\\w\\s]+[?.!]$&quot;, lyric, perl = TRUE)] %&gt;% 
+  .[has_punct == FALSE, lyric := paste0(lyric, &quot;.&quot;)]</code></pre>
+<p>Luego, con la magia de tidytext separo las palabras (sin eliminar la puntuación), creo una columna que es la palabra siguiente y luego calculo, para cada par de palabras, la probabilida de que a una palabra le siga la otra.</p>
+<pre class="r"><code>freq &lt;- corpus %&gt;% 
+  tidytext::unnest_tokens(word, lyric, strip_punct = FALSE) %&gt;% 
+  as.data.table()  %&gt;% 
+  .[, next_word := shift(word, type = &quot;lead&quot;)] %&gt;% 
+  na.omit() %&gt;% 
+  .[, n_word := .N, by = .(word)] %&gt;%        # número de veces que aparece la palabra (para normalizar)
+  .[, .(n_next_word = .N, n_word = n_word[1]), by = .(word, next_word)] %&gt;% 
+  .[, prob := n_next_word/n_word] %&gt;%                
+  .[n_word &gt; 5] %&gt;%                          # me quedo con las palabras que aparecen más de 5 veces
+  .[order(-prob)]
+
+head(freq)</code></pre>
+<pre><code>##         word next_word n_next_word n_word prob
+## 1: verderben         .          10     10    1
+## 2:      boot         .           6      6    1
+## 3:   riechst        so          14     14    1
+## 4: hinterher         .           7      7    1
+## 5:     sache       und           6      6    1
+## 6:      jede     nacht           7      7    1</code></pre>
+<p>Ahora, armo una función que a partir de una palabra, selecciona la siguiente:</p>
+<pre class="r"><code>next_word &lt;- function(prev_word) {
+  if (prev_word %in% freq$word) {
+    next_word &lt;- freq[word == prev_word] %&gt;% 
+      .[, sample(next_word, size = 1, prob = prob)]   # Samplea 1 palabra sigiente usando la probabilidad calculada arriba
+  } else {
+    # Si la palabra no aparece...
+    next_word &lt;- freq %&gt;% 
+      .[, sample(word, 1)]        # Elegir cualquiera aleatoriametne pero según su frecuencia. 
+  }
+  
+  return(next_word)
+}</code></pre>
+<p>Por ejemplo,</p>
+<pre class="r"><code>next_word(&quot;ich&quot;)</code></pre>
+<pre><code>## [1] &quot;bin&quot;</code></pre>
+<p>Ahora, sobre esa funcion, armo otra que a partir de una palabra inicial va agregando palabras hasta encontrarse con un signo de puntuación (que indica que se termina el verso). Además, le agrego un truco recursivo por si la cadena de palabras se hace demasiado larga.</p>
+<pre class="r"><code>verse &lt;- function(first_word = NULL, n_max = 20) {
+  if (is.null(first_word)) {
+    first_word &lt;- first_words[, sample(word, size = 1, prob = N)]
+  }
+  
+  verse &lt;- tolower(first_word)
+  word_candidate &lt;- verse
+  
+  end_verse &lt;- FALSE
+  n &lt;- 1
+  while(end_verse == FALSE &amp;&amp; n &lt; n_max) {
+    word_candidate &lt;- next_word(word_candidate)
+    
+    if (n == 1) {
+      verse &lt;- R.utils::capitalize(verse)
+    }
+    
+    end_verse &lt;- grepl(&quot;[?.!]$&quot;, word_candidate, perl = TRUE)
+    punctuation &lt;- grepl(&quot;[[:punct:]]&quot;, word_candidate)
+    
+    if (punctuation) {
+      verse &lt;- paste0(verse, word_candidate)
+    } else {
+      verse &lt;- paste0(verse, &quot; &quot;, word_candidate)
+    }
+    n &lt;- n + 1
+  }
+  
+  # Si no llegó a un final, volvé a tratar. 
+  if (n == n_max) {
+    verse &lt;- verse(first_word = first_word, n_max = n_max)
+  }
+  verse
+}</code></pre>
+<p>Por ejemplo:</p>
+<pre class="r"><code>verse(&quot;ich&quot;)</code></pre>
+<pre><code>## Registered S3 method overwritten by &#39;R.oo&#39;:
+##   method        from       
+##   throw.default R.methodsS3</code></pre>
+<pre><code>## [1] &quot;Ich nirgendwo schreien.&quot;</code></pre>
+<p>¿Qué palabra puedo usar para empezar? En principio podría usar cualquiera que aparezca en el corpus, pero para hacer las cosas un poco más fáciles voy a seleccionar especialmente palabras iniciales. Me voy a agarrar una lista de “primeras palabras” y computar también su frecuencia.</p>
+<pre class="r"><code>first_words &lt;- corpus %&gt;% 
+  copy() %&gt;% 
+  .[, id := 1:.N] %&gt;% 
+  .[, tidytext::unnest_tokens(.SD, word, lyric, strip_punct = FALSE), by = id] %&gt;% 
+  .[, .SD[1], by = id] %&gt;% 
+  .[, .N, by = word]
+
+head(first_words)</code></pre>
+<pre><code>##         word  N
+## 1:     wollt  4
+## 2:       ihr 13
+## 3: rammstein 25
+## 4:      doch 46
+## 5:       sex 11
+## 6:     liebe 14</code></pre>
+<pre class="r"><code>set.seed(43543) # para reproducibilidad
+verse(first_words[, sample(word, 1, prob = N)])</code></pre>
+<pre><code>## [1] &quot;Wir sind nicht.&quot;</code></pre>
+<p>“No somos”. Mh… profundo.</p>
+<p>En fin. Ahora a empaquetar todo eso en una sola función que crea un bot a partir de un corpus. La mayoría del código es el mismo de arriba. La función que devuelve toma una semilla (opcional) y un número de versos para generar una estrofa.</p>
+<pre class="r"><code>make_lyric_bot &lt;- function(corpus) {
+  corpus &lt;- as.data.table(na.omit(corpus))
+  
+  first_words &lt;- corpus %&gt;% 
+    .[, id := 1:.N] %&gt;% 
+    .[, tidytext::unnest_tokens(.SD, word, lyric, strip_punct = FALSE), by = id] %&gt;% 
+    .[, .SD[1], by = id] %&gt;% 
+    .[, .N, by = word]
+  
+  freq &lt;- corpus %&gt;% 
+    copy() %&gt;% 
+    .[, has_punct := grepl(&quot;^[\\w\\s]+[?.!]$&quot;, lyric, perl = TRUE)] %&gt;% 
+    .[has_punct == FALSE, lyric := paste0(lyric, &quot;.&quot;)] %&gt;% 
+    tidytext::unnest_tokens(word, lyric, strip_punct = FALSE) %&gt;% 
+    as.data.table()  %&gt;% 
+    .[, next_word := shift(word, type = &quot;lead&quot;)] %&gt;% 
+    na.omit() %&gt;% 
+    .[, n_word := .N, by = .(word)] %&gt;%               # número de veces que aparece la palabra (para normalizar)
+    .[, .(n_next_word = .N, n_word = n_word[1]), by = .(word, next_word)] %&gt;% 
+    .[, prob := n_next_word/n_word] %&gt;%                
+    .[n_word &gt; 5] %&gt;%                                    # me quedo con las palabras que aparecen más de 5 veces
+    .[order(-prob)]
+  
+  
+  next_word &lt;- function(prev_word) {
+    if (prev_word %in% freq$word) {
+      next_word &lt;- freq[word == prev_word] %&gt;% 
+        .[, sample(next_word, size = 1, prob = prob)]     # Samplea 1 palabra sigiente usando la probabilidad calculada arriba
+    } else {
+      # Si la palabra no aparece...
+      next_word &lt;- freq %&gt;% 
+        .[, sample(word, 1)]          # Elegir cualquiera aleatoriametne pero según su frecuencia. 
+    }
+    
+    return(next_word)
+  }
+  
+  verse &lt;- function(first_word = NULL, n_max = 20) {
+    if (is.null(first_word)) {
+      first_word &lt;- first_words[, sample(word, size = 1, prob = N)]
+    }
+    
+    verse &lt;- tolower(first_word)
+    word_candidate &lt;- verse
+    
+    end_verse &lt;- FALSE
+    n &lt;- 1
+    while(end_verse == FALSE &amp;&amp; n &lt; n_max) {
+      word_candidate &lt;- next_word(word_candidate)
+      
+      if (n == 1) {
+        verse &lt;- R.utils::capitalize(verse)
+      }
+      
+      end_verse &lt;- grepl(&quot;[?.!]$&quot;, word_candidate, perl = TRUE)
+      punctuation &lt;- grepl(&quot;[[:punct:]]&quot;, word_candidate)
+      
+      if (punctuation) {
+        verse &lt;- paste0(verse, word_candidate)
+      } else {
+        verse &lt;- paste0(verse, &quot; &quot;, word_candidate)
+      }
+      n &lt;- n + 1
+    }
+    
+    # Si no llegó a un final, volvé a tratar. 
+    if (n == n_max) {
+      verse &lt;- verse(first_word = first_word, n_max = n_max)
+    }
+    verse
+  }
+  
+  function(seed = NULL, n = 4) {
+    if (inherits(seed, &quot;lyric&quot;)) {
+      seed &lt;-  attr(seed, &quot;seed&quot;)
+      assign(&quot;.Random.seed&quot;, seed, globalenv())
+      res &lt;- vapply(seq_len(n), function(x) verse(), &quot;a&quot;)
+    } else if (is.null(seed)) {
+      seed &lt;- get(&quot;.Random.seed&quot;, globalenv(), mode = &quot;integer&quot;, inherits = FALSE)   
+      # set.seed(seed)
+      res &lt;- vapply(seq_len(n), function(x) verse(), &quot;a&quot;)
+    } else {
+      res &lt;- withr::with_seed(seed, vapply(seq_len(n), function(x) verse(), &quot;a&quot;))      
+    }
+    
+    attr(res, &quot;seed&quot;) &lt;- seed
+    class(res) &lt;- c(&quot;lyric&quot;, class(res))
+    return(res)
+  }
+}
+
+print.lyric &lt;- function(x, ...) {
+  x &lt;- paste(paste0(&quot;&gt; &quot;, x), collapse = &quot;   \n&quot;)
+  cat(x)
+}</code></pre>
+<pre class="r"><code>lacribot &lt;- make_lyric_bot(lyrics[lang == &quot;german&quot; &amp; artist == &quot;Lacrimosa&quot;])
+rammbot &lt;- make_lyric_bot(lyrics[lang == &quot;german&quot; &amp; artist == &quot;Rammstein&quot;])</code></pre>
+<p>Ahora estas funciones generan estrofas pseudo-lacrimosa y pseudo-rammstein:</p>
+<pre class="r"><code>rammbot(seed = 12345, n = 4)</code></pre>
+<blockquote>
+<p>Nur die ecke immer.<br />
+Wir halten das bin alleine.<br />
+Die asche.<br />
+Mein teil– nein.</p>
+</blockquote>
+<p>Estas oraciones no aprobarían una prueba de Alemán 1, pero si damos un poco de licencia poética, imaginación y agregando un poco de puntuación se podría traducir a:</p>
+<blockquote>
+<p>Sólo la esquina, siempre.<br />
+Creemos que estamos solos.<br />
+Las cenizas.<br />
+Mi parte - no.</p>
+</blockquote>
+<p>Un detalle curioso es que en alemán todos los sustantivos van en mayúsculas pero en el procesamiento de los datos se las quité. Habría que cambiar el tokenizador para que no pase todo a mínúsculas, pero bueno, ya está.</p>
+<p>Otra copada:</p>
+<pre class="r"><code>rammbot(seed = 3123)</code></pre>
+<blockquote>
+<p>Und keiner der sonne.<br />
+Oh weh, mutter.<br />
+Wie ein spiel begann zu gehen.<br />
+Eifersucht.</p>
+</blockquote>
+<blockquote>
+<p>Y nadie del Sol.<br />
+Oh dolor, madre.<br />
+Como un juego, empezó a irse.<br />
+Celos.</p>
+</blockquote>
+<p>¿Y qué dice Lacribot?</p>
+<pre class="r"><code>lacribot(seed = 47665, n = 5)</code></pre>
+<blockquote>
+<p>Dir.<br />
+Millionen uns beide augen brennen eine kluft mit schweren licht, ich reiße a dream has.<br />
+Niemand erlebt mensch zu ihr- nichts.<br />
+Ich sie nie sah die dich.<br />
+Und im wind ich dich.</p>
+</blockquote>
+<p>Ups, se me infiltró un poco de inglés.</p>
+<blockquote>
+<p>A tí.<br />
+Millones de nosotros, ambos ojos queman una brecha con luz pesada, yo rompo un sueño.<br />
+Nadie experimenta humanamente a ella- nada.<br />
+Yo, ella, nunca te vi.<br />
+Y en el viento yo a tí.</p>
+</blockquote>
+<pre class="r"><code>lacribot(seed = 6)</code></pre>
+<blockquote>
+<p>Keine stillen.<br />
+Nur diesen schmerz zerquetschte lebens.<br />
+Und vielleicht nicht mehr.<br />
+Ihn.</p>
+</blockquote>
+<blockquote>
+<p>No amamantar.<br />
+Sólo esta vida aplastada por el dolor.<br />
+Y quizás no más.<br />
+A él.</p>
+</blockquote>
+<p>No sé si estas funciones podrán ganar un premio, pero probablemente escriban mejor poesía que yo.</p>
+<p>Para cerrar, vamos a armar una canción de Rammstein.</p>
+<pre class="r"><code>set.seed(23543)
+intro &lt;- rammbot(n = 3)
+pre_estribillo &lt;- rammbot(n = 1)
+estribillo &lt;- rammbot()
+estrofa1 &lt;- rammbot()
+estrofa2 &lt;- rammbot()</code></pre>
+<p>Y así de fácil, les presento el nuevo hit de Rammstein, que voy a titular “Und Frei”.</p>
+<blockquote>
+<p>
+</p>
+<p>
+Feuer liebt mich ganz auf die kreatur.<br />Tut es wird nass fallen.<br />Asche zu lebzeit in amerika).<br />
+</p>
+<p>
+Schwuler.<br />Ich die musik.<br />Ohne dich).<br />Verheißung sag ihr bleibt nicht dass ich hab’ das röslein ihn lesen там и тут.<br />
+</p>
+<p>
+Laben brauch keine lust vom degen.<br />
+</p>
+<p>
+Und frei!<br />Ich werde immer wenn ich nehme in schlechten i can, was nicht sein.<br />Recht wortlos auch den kleinen so kalt, du mir.<br />Asche.<br />
+</p>
+<p>
+Die liebe ist für ein.<br />Du hast, benzin.<br />Zwei, du sehen?<br />Verlogen euch scheidet von der tiefe brunnen mehr ach scheine.<br />
+</p>
+<p>
+Und frei!<br />Ich werde immer wenn ich nehme in schlechten i can, was nicht sein.<br />Recht wortlos auch den kleinen so kalt, du mir.<br />Asche.<br />
+</p>
+</blockquote>
+<p>¿Alguien quiere musicalizarlo?</p>

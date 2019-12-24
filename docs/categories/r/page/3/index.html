@@ -17,7 +17,7 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="Hugo 0.52 with theme Tranquilpeak 0.4.3-BETA">
+    <meta name="generator" content="Hugo 0.54.0 with theme Tranquilpeak 0.4.3-BETA">
     <title>R</title>
     <meta name="author" content="Elio Campitelli">
     <meta name="keywords" content=", R">
@@ -214,6 +214,63 @@
         
           <section class="postShorten-group main-content-wrap">
             
+            
+              
+  
+    
+      
+        
+      
+    
+  
+
+
+  
+
+<article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+  <div class="postShorten-wrap">
+    
+    <div class="postShorten-header">
+      <h1 class="postShorten-title" itemprop="headline">
+        <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/02/how-to-make-shaded-relief-in-r/">
+          How to make a shaded relief in R
+        </a>
+      </h1>
+      
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2018-02-04T00:00:00Z">
+        
+  Febrero 4, 2018
+
+      </time>
+    
+    
+  
+  
+    <span>en</span>
+    
+      <a class="category-link" href="../../../../categories/r">R</a>
+    
+  
+
+  </div>
+
+    </div>
+    <div class="postShorten-excerpt" itemprop="articleBody">
+      
+       Spanish version of this post
+While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
+What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun. 
+      <p>
+        <a href="https://eliocamp.github.io/codigo-r/2018/02/how-to-make-shaded-relief-in-r/" class="postShorten-excerpt_link link">Seguir leyendo</a>
+        
+      </p>
+    </div>
+  </div>
+  
+</article>
+
             
               
   
@@ -463,6 +520,24 @@ En la práctica lo que se hace es la función de probabilidad acumulada a partir
           <div class="media">
             
             <div class="media-body">
+              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2019/12/rammbot-un-bot-que-crea-canciones-de-rammstein/">
+                <h3 class="media-heading">Obligué a un bot a escuchar más de 1000 horas de Rammstein y le pedí que escribiera una canción propia.</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Dec 12, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Cuando le conté a una amiga que había analizado las letras de Rammstein y Lacrimosa, me tiró la idea de usar un modelo para crear letras de las bandas. Me pareció una idea divertida, así que acá tienen el futuro de la música:
+library(data.table) library(magrittr) Igual que hice antes, bajo las letras de losdiscos de estudio de cada artista. Guardo las cosas en un archivo para no tener que bajar los datos cada vez que corro esto.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
               <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2019/11/rammstein-vs-lacrimosa/">
                 <h3 class="media-heading">Rammstein vs. Lacrimosa</h3>
               </a>
@@ -623,23 +698,6 @@ library(ggplot2) df &lt;- readRDS(&quot;data/smooth_example.Rds&quot;) ggplot(df
             <hr>
           </div>
         
-          <div class="media">
-            
-            <div class="media-body">
-              <a class="link-unstyled" href="https://eliocamp.github.io/codigo-r/2018/05/presentacion-powerpoint-rmarkdown/">
-                <h3 class="media-heading">Hacer una presentación de PowerPoint a partir de rmarkdown</h3>
-              </a>
-              <span class="media-meta">
-                <span class="media-date text-small">
-                  May 5, 2018
-                </span>
-              </span>
-              <div class="media-content hide-xs font-merryweather">La interfaz entre usuarios de knitr/markdown y word/powerpoint no deja de ser áspera ya que es difícil cambiar el workflow propio para acomodar el de otras personas. En particular, es muy común tener que colaborar con personas que se sienten mucho más cómodas trabajando con presentaciones en PowerPoint que en las creadas con beamer o ioslides. Una forma de reducir la fricción sería la de generar un ppt automáticamente a partir de una archivo de markdown.</div>
-            </div>
-            <div style="clear:both;"></div>
-            <hr>
-          </div>
-        
       </div>
     </div>
     <div class="modal-footer">
@@ -647,7 +705,7 @@ library(ggplot2) df &lt;- readRDS(&quot;data/smooth_example.Rds&quot;) ggplot(df
          data-message-zero="no se encontraron artículos"
          data-message-one="1 artículo encontrado"
          data-message-other="{n} artículos encontrados">
-         17 posts found
+         18 posts found
       </p>
     </div>
   </div>
