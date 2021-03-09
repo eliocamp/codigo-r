@@ -1,22 +1,21 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Ejemplos on Código R</title>
-    <link>https://eliocamp.github.io/codigo-r/tags/ejemplos/</link>
-    <description>Recent content in Ejemplos on Código R</description>
+    <title>ejemplos on Código R</title>
+    <link>/tags/ejemplos/</link>
+    <description>Recent content in ejemplos on Código R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
     <lastBuildDate>Fri, 19 Apr 2019 00:00:00 +0000</lastBuildDate>
     
-        <atom:link href="https://eliocamp.github.io/codigo-r/tags/ejemplos/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="/tags/ejemplos/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Midiendo el calentamiento global con ecmwfr</title>
-      <link>https://eliocamp.github.io/codigo-r/2019/04/ecmwfr-calentamiento-global/</link>
+      <link>/2019/04/ecmwfr-calentamiento-global/</link>
       <pubDate>Fri, 19 Apr 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/2019/04/ecmwfr-calentamiento-global/</guid>
+      <guid>/2019/04/ecmwfr-calentamiento-global/</guid>
       <description>
 
 

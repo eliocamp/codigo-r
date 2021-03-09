@@ -1,22 +1,21 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Estadística on Código R</title>
-    <link>https://eliocamp.github.io/codigo-r/categories/estad%C3%ADstica/</link>
-    <description>Recent content in Estadística on Código R</description>
+    <title>estadística on Código R</title>
+    <link>/categories/estad%C3%ADstica/</link>
+    <description>Recent content in estadística on Código R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
     <lastBuildDate>Thu, 03 Jan 2019 00:00:00 +0000</lastBuildDate>
     
-        <atom:link href="https://eliocamp.github.io/codigo-r/categories/estad%C3%ADstica/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="/categories/estad%C3%ADstica/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Metamerismo estadístico</title>
-      <link>https://eliocamp.github.io/codigo-r/2019/01/metamerismo-estad%C3%ADstico/</link>
+      <link>/2019/01/metamerismo-estad%C3%ADstico/</link>
       <pubDate>Thu, 03 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/2019/01/metamerismo-estad%C3%ADstico/</guid>
+      <guid>/2019/01/metamerismo-estad%C3%ADstico/</guid>
       <description>
 
 

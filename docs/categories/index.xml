@@ -1,30 +1,30 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on Código R</title>
-    <link>https://eliocamp.github.io/codigo-r/categories/</link>
+    <link>/categories/</link>
     <description>Recent content in Categories on Código R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
+    <lastBuildDate>Tue, 09 Mar 2021 00:00:00 +0000</lastBuildDate>
     
-        <atom:link href="https://eliocamp.github.io/codigo-r/categories/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Estadística</title>
-      <link>https://eliocamp.github.io/codigo-r/categories/estad%C3%ADstica/</link>
-      <pubDate>Thu, 03 Jan 2019 00:00:00 +0000</pubDate>
+      <title>R</title>
+      <link>/categories/r/</link>
+      <pubDate>Tue, 09 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/categories/estad%C3%ADstica/</guid>
+      <guid>/categories/r/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>R</title>
-      <link>https://eliocamp.github.io/codigo-r/categories/r/</link>
-      <pubDate>Tue, 24 Dec 2019 00:00:00 +0000</pubDate>
+      <title>estadística</title>
+      <link>/categories/estad%C3%ADstica/</link>
+      <pubDate>Thu, 03 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/categories/r/</guid>
+      <guid>/categories/estad%C3%ADstica/</guid>
       <description></description>
     </item>
     

@@ -3,309 +3,310 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/2019/11/rammstein-vs-lacrimosa/</loc>
+    <loc>/en/categories/</loc>
+    <lastmod>2019-11-21T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-es"
+                href="/categories/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es"
+                href="/es/categories/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/categories/"
+                />
+  </url>
+  
+  <url>
+    <loc>/en/</loc>
+    <lastmod>2019-11-21T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-es"
+                href="/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es"
+                href="/es/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/"
+                />
+  </url>
+  
+  <url>
+    <loc>/en/post/</loc>
+    <lastmod>2019-11-21T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-es"
+                href="/post/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/post/"
+                />
+  </url>
+  
+  <url>
+    <loc>/en/categories/r/</loc>
+    <lastmod>2019-11-21T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-es"
+                href="/categories/r/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/categories/r/"
+                />
+  </url>
+  
+  <url>
+    <loc>/en/2019/11/rammstein-vs-lacrimosa/</loc>
     <lastmod>2019-11-21T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/2019/11/rammstein-vs-lacrimosa/"
+                href="/2019/11/rammstein-vs-lacrimosa/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/2019/11/rammstein-vs-lacrimosa/"
+                href="/en/2019/11/rammstein-vs-lacrimosa/"
                 />
   </url>
   
   <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/2019/07/why-i-love-data-table/</loc>
+    <loc>/en/tags/</loc>
+    <lastmod>2019-11-21T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-es"
+                href="/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es"
+                href="/es/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/tags/"
+                />
+  </url>
+  
+  <url>
+    <loc>/en/tags/text/</loc>
+    <lastmod>2019-11-21T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/en/2019/07/why-i-love-data-table/</loc>
     <lastmod>2019-07-06T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/2019/04/ecmwfr-global-warming/</loc>
+    <loc>/en/tags/data.table/</loc>
+    <lastmod>2019-07-06T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-es"
+                href="/tags/data.table/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/tags/data.table/"
+                />
+  </url>
+  
+  <url>
+    <loc>/en/tags/packages/</loc>
+    <lastmod>2019-07-06T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/en/2019/04/ecmwfr-global-warming/</loc>
     <lastmod>2019-04-19T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/2019/04/ecmwfr-calentamiento-global/"
+                href="/2019/04/ecmwfr-calentamiento-global/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/2019/04/ecmwfr-global-warming/"
+                href="/en/2019/04/ecmwfr-global-warming/"
                 />
   </url>
   
   <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/2019/01/statistical-metamerism/</loc>
+    <loc>/en/tags/ejemplos/</loc>
+    <lastmod>2019-04-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-es"
+                href="/tags/ejemplos/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/tags/ejemplos/"
+                />
+  </url>
+  
+  <url>
+    <loc>/en/tags/paquetes/</loc>
+    <lastmod>2019-04-19T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-es"
+                href="/tags/paquetes/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/tags/paquetes/"
+                />
+  </url>
+  
+  <url>
+    <loc>/en/2019/01/statistical-metamerism/</loc>
     <lastmod>2019-01-03T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/2019/01/metamerismo-estad%C3%ADstico/"
+                href="/2019/01/metamerismo-estad%C3%ADstico/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/2019/01/statistical-metamerism/"
+                href="/en/2019/01/statistical-metamerism/"
                 />
   </url>
   
   <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/2018/09/multiple-color-fill-scales-ggplot2/</loc>
+    <loc>/en/categories/statistics/</loc>
+    <lastmod>2019-01-03T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/en/2018/09/multiple-color-fill-scales-ggplot2/</loc>
     <lastmod>2018-09-18T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/2018/09/multiples-escalas-colores-ggplot2/"
+                href="/2018/09/multiples-escalas-colores-ggplot2/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/2018/09/multiple-color-fill-scales-ggplot2/"
+                href="/en/2018/09/multiple-color-fill-scales-ggplot2/"
                 />
   </url>
   
   <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/2018/08/periodic-data-ggplot2-ggperiodic/</loc>
+    <loc>/en/tags/ggplot2/</loc>
+    <lastmod>2018-09-18T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-es"
+                href="/tags/ggplot2/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/tags/ggplot2/"
+                />
+  </url>
+  
+  <url>
+    <loc>/en/2018/08/periodic-data-ggplot2-ggperiodic/</loc>
     <lastmod>2018-08-21T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/2018/08/periodic-data-ggplot2-ggperiodic/"
+                href="/2018/08/periodic-data-ggplot2-ggperiodic/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/2018/08/periodic-data-ggplot2-ggperiodic/"
+                href="/en/2018/08/periodic-data-ggplot2-ggperiodic/"
                 />
   </url>
   
   <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/2018/05/how-to-make-a-generic-stat-in-ggplot2/</loc>
+    <loc>/en/2018/05/how-to-make-a-generic-stat-in-ggplot2/</loc>
     <lastmod>2018-05-16T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-generico-en-ggplot2/"
+                href="/2018/05/como-hacer-un-stat-generico-en-ggplot2/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/2018/05/how-to-make-a-generic-stat-in-ggplot2/"
+                href="/en/2018/05/how-to-make-a-generic-stat-in-ggplot2/"
                 />
   </url>
   
   <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/2018/02/how-to-make-shaded-relief-in-r/</loc>
+    <loc>/en/2018/02/how-to-make-shaded-relief-in-r/</loc>
     <lastmod>2018-02-04T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/2018/01/como-hacer-efecto-de-relieve-en-r/"
+                href="/2018/01/como-hacer-efecto-de-relieve-en-r/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/2018/02/how-to-make-shaded-relief-in-r/"
+                href="/en/2018/02/how-to-make-shaded-relief-in-r/"
                 />
   </url>
   
   <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/archives/</loc>
-    <priority>0</priority>
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/archives/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="es"
-                href="https://eliocamp.github.io/codigo-r/es/archives/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/archives/"
-                />
-  </url>
-  
-  <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/categories/</loc>
-    <priority>0</priority>
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/categories/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="es"
-                href="https://eliocamp.github.io/codigo-r/es/categories/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/categories/"
-                />
-  </url>
-  
-  <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/</loc>
-    <lastmod>2019-11-21T00:00:00+00:00</lastmod>
+    <loc>/en/archives/</loc>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
                 hreflang="es"
-                href="https://eliocamp.github.io/codigo-r/es/"
+                href="/es/archives/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/"
+                href="/archives/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/"
+                href="/en/archives/"
                 />
-  </url>
-  
-  <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/tags/data.table/</loc>
-    <lastmod>2019-07-06T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/tags/data.table/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/tags/data.table/"
-                />
-  </url>
-  
-  <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/tags/ejemplos/</loc>
-    <lastmod>2019-04-19T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/tags/ejemplos/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/tags/ejemplos/"
-                />
-  </url>
-  
-  <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/tags/ggplot2/</loc>
-    <lastmod>2018-09-18T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/tags/ggplot2/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/tags/ggplot2/"
-                />
-  </url>
-  
-  <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/tags/packages/</loc>
-    <lastmod>2019-07-06T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/tags/paquetes/</loc>
-    <lastmod>2019-04-19T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/tags/paquetes/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/tags/paquetes/"
-                />
-  </url>
-  
-  <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/post/</loc>
-    <lastmod>2019-11-21T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/post/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/post/"
-                />
-  </url>
-  
-  <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/categories/r/</loc>
-    <lastmod>2019-11-21T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/categories/r/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/categories/r/"
-                />
-  </url>
-  
-  <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/categories/statistics/</loc>
-    <lastmod>2019-01-03T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/tags/</loc>
-    <lastmod>2019-07-06T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="es"
-                href="https://eliocamp.github.io/codigo-r/es/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/tags/"
-                />
-  </url>
-  
-  <url>
-    <loc>https://eliocamp.github.io/codigo-r/en/tags/text/</loc>
-    <lastmod>2019-11-21T00:00:00+00:00</lastmod>
-    <priority>0</priority>
   </url>
   
 </urlset>

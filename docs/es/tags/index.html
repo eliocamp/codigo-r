@@ -17,14 +17,14 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="Hugo 0.54.0 with theme Tranquilpeak 0.4.3-BETA">
+    <meta name="generator" content="Hugo 0.56.3 with theme Tranquilpeak 0.4.3-BETA">
     <title>Tags</title>
     <meta name="author" content="Elio Campitelli">
     <meta name="keywords" content=", R">
 
     <link rel="icon" href="../../favicon.png">
     
-      <link rel="alternate" type="application/rss+xml" title="RSS" href="https://eliocamp.github.io/codigo-r/es/tags/index.xml">
+      <link rel="alternate" type="application/rss+xml" title="RSS" href="../../es/tags/index.xml">
     
 
     
@@ -65,7 +65,7 @@
     
     
       
-        <link rel="stylesheet"  href="https://eliocamp.github.io/codigo-r/css/custom.css">
+        <link rel="stylesheet"  href="../../css/custom.css">
       
     
 
@@ -80,7 +80,7 @@
       <header id="header" data-behavior="2">
   <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
   <div class="header-title">
-    <a class="header-title-link" href="../../es/"></a>
+    <a class="header-title-link" href="../../es"></a>
   </div>
   
     
@@ -112,7 +112,7 @@
       
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="../../es/">
+      <a class="sidebar-button-link " href="../../es">
     
       <i class="sidebar-button-icon fa fa-lg fa-home"></i>
       
@@ -156,7 +156,7 @@
       
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="https://github.com/eliocamp" target="_blank" rel="noopener">
+      <a class="sidebar-button-link " href="https://github.com/eliocamp">
     
       <i class="sidebar-button-icon fa fa-lg fa-github"></i>
       
@@ -166,7 +166,7 @@
 
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="https://www.r-bloggers.com/" target="_blank" rel="noopener">
+      <a class="sidebar-button-link " href="https://www.r-bloggers.com/">
     
       <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
       
@@ -176,7 +176,7 @@
 
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="http://twitter.com/d_olivaw" target="_blank" rel="noopener">
+      <a class="sidebar-button-link " href="http://twitter.com/d_olivaw">
     
       <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
       
@@ -209,21 +209,31 @@
         class="
                hasCoverMetaIn
                ">
-        <section class="postShorten-group main-content-wrap">
-          
-          
-          
 
-        </section>
+        <div id="tags-archives" class="main-content-wrap">
+          <form id="filter-form" action="#">
+            <input name="tag" type="text" class="form-control input--xlarge" placeholder="Buscar etiqueta" autofocus="autofocus">
+          </form>
+          <h4 class="archive-result text-color-base text-xlarge"
+              data-message-zero="no se encontraron etiquetas"
+              data-message-one="1 etiqueta encontrada"
+              data-message-other="{n} etiquetas encontradas"></h4>
+
+            <section>
+              
+            </section>
+            <section class="boxes">
+              
+           </section>
+         </div>
         <footer id="footer" class="main-content-wrap">
   <span class="copyrights">
-    &copy; 2019 Elio Campitelli. Todos los derechos reservados
+    &copy; 2021 Elio Campitelli. Todos los derechos reservados
   </span>
 </footer>
 
       </div>
     </div>
-    
     <div id="about">
   <div id="about-card">
     <div id="about-btn-close">
@@ -251,45 +261,15 @@
   </div>
 </div>
 
-    <div id="algolia-search-modal" class="modal-container">
-  <div class="modal">
-    <div class="modal-header">
-      <span class="close-button"><i class="fa fa-close"></i></span>
-      <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
-        <span class="searchby-algolia-text text-color-light text-small">by</span>
-        <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
-      </a>
-      <i class="search-icon fa fa-search"></i>
-      <form id="algolia-search-form">
-        <input type="text" id="algolia-search-input" name="search"
-          class="form-control input--large search-input" placeholder="Buscar" />
-      </form>
-    </div>
-    <div class="modal-body">
-      <div class="no-result text-color-light text-center">no se encontraron artículos</div>
-      <div class="results">
-        
-        
-      </div>
-    </div>
-    <div class="modal-footer">
-      <p class="results-count text-medium"
-         data-message-zero="no se encontraron artículos"
-         data-message-one="1 artículo encontrado"
-         data-message-other="{n} artículos encontrados">
-         0 posts found
-      </p>
-    </div>
-  </div>
-</div>
     
   
     
-    <div id="cover" style="background-image:url('https://eliocamp.github.io/codigo-r/images/cover2.jpg');"></div>
+    <div id="cover" style="background-image:url('/images/cover2.jpg');"></div>
   
 
 
-    
+  </body>
+  
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
@@ -319,7 +299,4 @@ $(document).ready(function() {
 
 
 
-    
-  </body>
 </html>
-

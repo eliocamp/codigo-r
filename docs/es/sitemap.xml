@@ -3,82 +3,82 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://eliocamp.github.io/codigo-r/es/</loc>
+    <loc>/es/</loc>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
-                hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/"
+                hreflang="es-es"
+                href="/"
                 />
     <xhtml:link
                 rel="alternate"
-                hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/"
+                hreflang="en"
+                href="/en/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="es"
-                href="https://eliocamp.github.io/codigo-r/es/"
+                href="/es/"
                 />
   </url>
   
   <url>
-    <loc>https://eliocamp.github.io/codigo-r/es/archives/</loc>
+    <loc>/es/archives/</loc>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/archives/"
+                href="/en/archives/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/archives/"
+                href="/archives/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="es"
-                href="https://eliocamp.github.io/codigo-r/es/archives/"
+                href="/es/archives/"
                 />
   </url>
   
   <url>
-    <loc>https://eliocamp.github.io/codigo-r/es/categories/</loc>
+    <loc>/es/categories/</loc>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
-                hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/categories/"
+                hreflang="es-es"
+                href="/categories/"
                 />
     <xhtml:link
                 rel="alternate"
-                hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/categories/"
+                hreflang="en"
+                href="/en/categories/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="es"
-                href="https://eliocamp.github.io/codigo-r/es/categories/"
+                href="/es/categories/"
                 />
   </url>
   
   <url>
-    <loc>https://eliocamp.github.io/codigo-r/es/tags/</loc>
+    <loc>/es/tags/</loc>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
-                hreflang="en"
-                href="https://eliocamp.github.io/codigo-r/en/tags/"
+                hreflang="es-es"
+                href="/tags/"
                 />
     <xhtml:link
                 rel="alternate"
-                hreflang="es-es"
-                href="https://eliocamp.github.io/codigo-r/tags/"
+                hreflang="en"
+                href="/en/tags/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="es"
-                href="https://eliocamp.github.io/codigo-r/es/tags/"
+                href="/es/tags/"
                 />
   </url>
   

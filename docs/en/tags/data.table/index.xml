@@ -1,22 +1,21 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Data.table on Code R</title>
-    <link>https://eliocamp.github.io/codigo-r/en/tags/data.table/</link>
-    <description>Recent content in Data.table on Code R</description>
+    <title>data.table on Code R</title>
+    <link>/en/tags/data.table/</link>
+    <description>Recent content in data.table on Code R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
     <lastBuildDate>Sat, 06 Jul 2019 00:00:00 +0000</lastBuildDate>
     
-        <atom:link href="https://eliocamp.github.io/codigo-r/en/tags/data.table/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="/en/tags/data.table/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Why I love data.table</title>
-      <link>https://eliocamp.github.io/codigo-r/en/2019/07/why-i-love-data-table/</link>
+      <link>/en/2019/07/why-i-love-data-table/</link>
       <pubDate>Sat, 06 Jul 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/en/2019/07/why-i-love-data-table/</guid>
+      <guid>/en/2019/07/why-i-love-data-table/</guid>
       <description>
 
 

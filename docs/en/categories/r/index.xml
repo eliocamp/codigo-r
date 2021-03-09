@@ -1,22 +1,21 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>R on Code R</title>
-    <link>https://eliocamp.github.io/codigo-r/en/categories/r/</link>
+    <link>/en/categories/r/</link>
     <description>Recent content in R on Code R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
     <lastBuildDate>Thu, 21 Nov 2019 00:00:00 +0000</lastBuildDate>
     
-        <atom:link href="https://eliocamp.github.io/codigo-r/en/categories/r/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="/en/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Rammstein vs. Lacrimosa</title>
-      <link>https://eliocamp.github.io/codigo-r/en/2019/11/rammstein-vs-lacrimosa/</link>
+      <link>/en/2019/11/rammstein-vs-lacrimosa/</link>
       <pubDate>Thu, 21 Nov 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/en/2019/11/rammstein-vs-lacrimosa/</guid>
+      <guid>/en/2019/11/rammstein-vs-lacrimosa/</guid>
       <description>
 &lt;script src=&#34;../../../rmarkdown-libs/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
 &lt;script src=&#34;../../../rmarkdown-libs/pymjs/pym.v1.js&#34;&gt;&lt;/script&gt;
@@ -286,10 +285,10 @@ full_lyrics %&amp;gt;%
     
     <item>
       <title>Why I love data.table</title>
-      <link>https://eliocamp.github.io/codigo-r/en/2019/07/why-i-love-data-table/</link>
+      <link>/en/2019/07/why-i-love-data-table/</link>
       <pubDate>Sat, 06 Jul 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/en/2019/07/why-i-love-data-table/</guid>
+      <guid>/en/2019/07/why-i-love-data-table/</guid>
       <description>
 
 
@@ -403,10 +402,10 @@ temperature %&amp;gt;%
     
     <item>
       <title>Using ecmwfr to measure global warming</title>
-      <link>https://eliocamp.github.io/codigo-r/en/2019/04/ecmwfr-global-warming/</link>
+      <link>/en/2019/04/ecmwfr-global-warming/</link>
       <pubDate>Fri, 19 Apr 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/en/2019/04/ecmwfr-global-warming/</guid>
+      <guid>/en/2019/04/ecmwfr-global-warming/</guid>
       <description>
 
 
@@ -563,10 +562,10 @@ summary(trend)&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Statistical metamerism</title>
-      <link>https://eliocamp.github.io/codigo-r/en/2019/01/statistical-metamerism/</link>
+      <link>/en/2019/01/statistical-metamerism/</link>
       <pubDate>Thu, 03 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/en/2019/01/statistical-metamerism/</guid>
+      <guid>/en/2019/01/statistical-metamerism/</guid>
       <description>
 
 
@@ -946,10 +945,10 @@ Fig. 6: Datasaurus metamorphisis.
     
     <item>
       <title>Multiple color (and fill) scales with ggplot2</title>
-      <link>https://eliocamp.github.io/codigo-r/en/2018/09/multiple-color-fill-scales-ggplot2/</link>
+      <link>/en/2018/09/multiple-color-fill-scales-ggplot2/</link>
       <pubDate>Tue, 18 Sep 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/en/2018/09/multiple-color-fill-scales-ggplot2/</guid>
+      <guid>/en/2018/09/multiple-color-fill-scales-ggplot2/</guid>
       <description>
 
 &lt;p&gt;tl;dr: The functionality shown in this post is now on the &lt;a href=&#34;https://github.com/eliocamp/ggnewscale&#34;&gt;&lt;code&gt;ggnewscale&lt;/code&gt;&lt;/a&gt; package! 📦. You can find the original code &lt;a href=&#34;https://gist.github.com/eliocamp/eabafab2825779b88905954d84c82b32&#34;&gt;in this gist&lt;/a&gt;.&lt;/p&gt;
@@ -1053,10 +1052,10 @@ ggplot(atmos, aes(lon, lat)) +
     
     <item>
       <title>Wrapping around ggplot2 with ggperiodic</title>
-      <link>https://eliocamp.github.io/codigo-r/en/2018/08/periodic-data-ggplot2-ggperiodic/</link>
+      <link>/en/2018/08/periodic-data-ggplot2-ggperiodic/</link>
       <pubDate>Tue, 21 Aug 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/en/2018/08/periodic-data-ggplot2-ggperiodic/</guid>
+      <guid>/en/2018/08/periodic-data-ggplot2-ggperiodic/</guid>
       <description>
 
 &lt;p&gt;As an atmospheric scientists, a lot of my research consists on plotting and looking at global fields of atmospheric variables like pressure, temperature and the like. Since our planet is a sphere (well, &lt;a href=&#34;https://chem.tufts.edu/answersinscience/relativityofwrong.htm&#34;&gt;almost&lt;/a&gt;), it is unbound and so longitude is a &lt;em&gt;periodic&lt;/em&gt; dimension. That is, to the right of 180°E you go back to 180°W. But ggplot2 and other plotting systems, for the most part, assume linear dimensions.&lt;/p&gt;
@@ -1175,10 +1174,10 @@ head(data)
     
     <item>
       <title>How to make a generic stat in ggplot2</title>
-      <link>https://eliocamp.github.io/codigo-r/en/2018/05/how-to-make-a-generic-stat-in-ggplot2/</link>
+      <link>/en/2018/05/how-to-make-a-generic-stat-in-ggplot2/</link>
       <pubDate>Wed, 16 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/en/2018/05/how-to-make-a-generic-stat-in-ggplot2/</guid>
+      <guid>/en/2018/05/how-to-make-a-generic-stat-in-ggplot2/</guid>
       <description>&lt;p&gt;For a while now I&amp;rsquo;ve been thinking that, yes, &lt;code&gt;ggplot2&lt;/code&gt; is awesome and offers a lot of &lt;code&gt;geoms&lt;/code&gt; and &lt;code&gt;stats&lt;/code&gt;, but it would be great if it could be extended with new user-generated &lt;code&gt;geoms&lt;/code&gt; and &lt;code&gt;stats&lt;/code&gt;. Then I learnt that &lt;code&gt;ggplot2&lt;/code&gt; actually has a pretty great extension system so I could create my own geoms I needed for my work or &lt;a href=&#34;https://twitter.com/d_olivaw/status/993669229810503680&#34;&gt;just for fun&lt;/a&gt;. But still, creating a geom from scratch is an involved process that doesn&amp;rsquo;t lend itself to simple transformations.&lt;/p&gt;
 
 &lt;p&gt;Finally, I thought of a possible solution: create a &lt;em&gt;generic&lt;/em&gt; &lt;code&gt;stat&lt;/code&gt; &amp;ndash;a tabula rasa, if you will&amp;ndash; that can work on the data with any function. Natively &lt;code&gt;ggplot2&lt;/code&gt; offers &lt;code&gt;stat_summary()&lt;/code&gt;, but it&amp;rsquo;s only meant to be used with, well, summary statistics. What I wanted was something completely generic and this is my first try.&lt;/p&gt;
@@ -1328,10 +1327,10 @@ ggplot(df, aes(x, y)) +
     
     <item>
       <title>How to make a shaded relief in R</title>
-      <link>https://eliocamp.github.io/codigo-r/en/2018/02/how-to-make-shaded-relief-in-r/</link>
+      <link>/en/2018/02/how-to-make-shaded-relief-in-r/</link>
       <pubDate>Sun, 04 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/en/2018/02/how-to-make-shaded-relief-in-r/</guid>
+      <guid>/en/2018/02/how-to-make-shaded-relief-in-r/</guid>
       <description>&lt;p&gt;While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&#34;../../../images/shading.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;

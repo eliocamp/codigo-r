@@ -1,22 +1,21 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Ggplot2 on Código R</title>
-    <link>https://eliocamp.github.io/codigo-r/tags/ggplot2/</link>
-    <description>Recent content in Ggplot2 on Código R</description>
+    <title>ggplot2 on Código R</title>
+    <link>/tags/ggplot2/</link>
+    <description>Recent content in ggplot2 on Código R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
     <lastBuildDate>Tue, 18 Sep 2018 00:00:00 +0000</lastBuildDate>
     
-        <atom:link href="https://eliocamp.github.io/codigo-r/tags/ggplot2/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="/tags/ggplot2/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Multiple color (and fill) scales with ggplot2</title>
-      <link>https://eliocamp.github.io/codigo-r/2018/09/multiple-color-and-fill-scales-with-ggplot2/</link>
+      <link>/2018/09/multiple-color-and-fill-scales-with-ggplot2/</link>
       <pubDate>Tue, 18 Sep 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/2018/09/multiple-color-and-fill-scales-with-ggplot2/</guid>
+      <guid>/2018/09/multiple-color-and-fill-scales-with-ggplot2/</guid>
       <description>
 
 &lt;p&gt;(&lt;a href=&#34;https://eliocamp.github.io/codigo-r/2018/09/multiples-escalas-colores-ggplot2/&#34;&gt;Versión en español&lt;/a&gt;)&lt;/p&gt;
@@ -122,10 +121,10 @@ ggplot(atmos, aes(lon, lat)) +
     
     <item>
       <title>Múltiples escalas de colores en ggplot2</title>
-      <link>https://eliocamp.github.io/codigo-r/2018/09/multiples-escalas-colores-ggplot2/</link>
+      <link>/2018/09/multiples-escalas-colores-ggplot2/</link>
       <pubDate>Mon, 17 Sep 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/2018/09/multiples-escalas-colores-ggplot2/</guid>
+      <guid>/2018/09/multiples-escalas-colores-ggplot2/</guid>
       <description>
 
 &lt;p&gt;tl;dr: Esta funcionalidad está ahora en el paquete &lt;a href=&#34;https://github.com/eliocamp/ggnewscale&#34;&gt;&lt;code&gt;ggnewscale&lt;/code&gt;&lt;/a&gt;! 📦
@@ -230,10 +229,10 @@ ggplot(atmos, aes(lon, lat)) +
     
     <item>
       <title>Wrapping around ggplot2 with ggperiodic</title>
-      <link>https://eliocamp.github.io/codigo-r/2018/08/periodic-data-ggplot2-ggperiodic/</link>
+      <link>/2018/08/periodic-data-ggplot2-ggperiodic/</link>
       <pubDate>Tue, 21 Aug 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/2018/08/periodic-data-ggplot2-ggperiodic/</guid>
+      <guid>/2018/08/periodic-data-ggplot2-ggperiodic/</guid>
       <description>
 
 &lt;p&gt;As an atmospheric scientists, a lot of my research consists on plotting and looking at global fields of atmospheric variables like pressure, temperature and the like. Since our planet is a sphere (well, &lt;a href=&#34;https://chem.tufts.edu/answersinscience/relativityofwrong.htm&#34;&gt;almost&lt;/a&gt;), it is unbound and so longitude is a &lt;em&gt;periodic&lt;/em&gt; dimension. That is, to the right of 180°E you go back to 180°W. But ggplot2 and other plotting systems, for the most part, assume linear dimensions.&lt;/p&gt;
@@ -352,10 +351,10 @@ head(data)
     
     <item>
       <title>Tu propio smooth en geom_smooth()</title>
-      <link>https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/</link>
+      <link>/2018/06/tu-propio-geom-smooth/</link>
       <pubDate>Fri, 01 Jun 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/2018/06/tu-propio-geom-smooth/</guid>
+      <guid>/2018/06/tu-propio-geom-smooth/</guid>
       <description>&lt;p&gt;Algo increíblemente satisfactorio de ggplot2 es la posibilidad de ajustar curvas a los datos de manera súper fácil con &lt;code&gt;geom_smooth()&lt;/code&gt;. Para mi investigación estaba mirando la relación entre dos ángulos y me di cuenta que la recta ajustada por cuadrados mínimos no estaba funcionando para ilustrar la obvia estructura que había en los datos.&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;library(ggplot2)
@@ -484,10 +483,10 @@ ggplot(df, aes(x, y)) +
     
     <item>
       <title>Arte reproducible del Subte de Buenos Aires</title>
-      <link>https://eliocamp.github.io/codigo-r/2018/05/arte-reproducible-del-subte-de-buenos-aires/</link>
+      <link>/2018/05/arte-reproducible-del-subte-de-buenos-aires/</link>
       <pubDate>Sun, 20 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/2018/05/arte-reproducible-del-subte-de-buenos-aires/</guid>
+      <guid>/2018/05/arte-reproducible-del-subte-de-buenos-aires/</guid>
       <description>&lt;p&gt;El sábado pasado estábamos en el subte con mi novia y pasamos por la estación Ángel Gallardo de la Línea B y notamos que tenía &lt;a href=&#34;http://www.buenosaires.gob.ar/noticias/arte-urbano-en-la-estacion-angel-gallardo&#34;&gt;unas ilustraciones&lt;/a&gt; en las paredes hechas a partir de líneas de distinto grosor.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&#34;../../images/subte.jpg&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
@@ -613,10 +612,10 @@ ggplot(subset(im, y %in% seq(1, ys, by = scale - 1)), aes(x)) +
     
     <item>
       <title>Como hacer un stat genérico en ggplot2</title>
-      <link>https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-generico-en-ggplot2/</link>
+      <link>/2018/05/como-hacer-un-stat-generico-en-ggplot2/</link>
       <pubDate>Wed, 16 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/2018/05/como-hacer-un-stat-generico-en-ggplot2/</guid>
+      <guid>/2018/05/como-hacer-un-stat-generico-en-ggplot2/</guid>
       <description>&lt;p&gt;Hace un tiempo que venía pensando que si bien &lt;code&gt;ggplot2&lt;/code&gt; es genial y tiene un montón de geoms y stats, le faltaba la opción de extenderlo a stats y geoms creados por el usuario. Luego, aprendí que &lt;code&gt;ggplot2&lt;/code&gt; tiene un excelente sistema para extenderlo y empecé a crear mis propios stats. Pero aún así, hacer un &lt;code&gt;stat&lt;/code&gt; específico cada vez que uno quiere hacer un plot en particular es demasiado complicado.&lt;/p&gt;
 
 &lt;p&gt;Entonces se me ocurrió una posible solución. Hacer un &lt;code&gt;stat&lt;/code&gt; &lt;em&gt;genérico&lt;/em&gt;; una tabula rasa que acepte una función creada por el usuario. Nativamente &lt;code&gt;ggplot2&lt;/code&gt; viene con &lt;code&gt;stat_summary()&lt;/code&gt; que hace algo similar, pero sólo acepta funciones que (como su nombre lo indica) sumaricen los datos de alguna manera. Lo que yo quería era algo totalmente genérico y este es mi primer intento.&lt;/p&gt;
@@ -766,10 +765,10 @@ ggplot(df, aes(x, y)) +
     
     <item>
       <title>How to make a generic stat in ggplot2</title>
-      <link>https://eliocamp.github.io/codigo-r/2018/05/how-to-make-a-generic-stat-in-ggplot2/</link>
+      <link>/2018/05/how-to-make-a-generic-stat-in-ggplot2/</link>
       <pubDate>Wed, 16 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/2018/05/how-to-make-a-generic-stat-in-ggplot2/</guid>
+      <guid>/2018/05/how-to-make-a-generic-stat-in-ggplot2/</guid>
       <description>&lt;p&gt;For a while now I&amp;rsquo;ve been thinking that, yes, &lt;code&gt;ggplot2&lt;/code&gt; is awesome and offers a lot of &lt;code&gt;geoms&lt;/code&gt; and &lt;code&gt;stats&lt;/code&gt;, but it would be great if it could be extended with new user-generated &lt;code&gt;geoms&lt;/code&gt; and &lt;code&gt;stats&lt;/code&gt;. Then I learnt that &lt;code&gt;ggplot2&lt;/code&gt; actually has a pretty great extension system so I could create my own geoms I needed for my work or &lt;a href=&#34;https://twitter.com/d_olivaw/status/993669229810503680&#34;&gt;just for fun&lt;/a&gt;. But still, creating a geom from scratch is an involved process that doesn&amp;rsquo;t lend itself to simple transformations.&lt;/p&gt;
 
 &lt;p&gt;Finally, I thought of a possible solution: create a &lt;em&gt;generic&lt;/em&gt; &lt;code&gt;stat&lt;/code&gt; &amp;ndash;a tabula rasa, if you will&amp;ndash; that can work on the data with any function. Natively &lt;code&gt;ggplot2&lt;/code&gt; offers &lt;code&gt;stat_summary()&lt;/code&gt;, but it&amp;rsquo;s only meant to be used with, well, summary statistics. What I wanted was something completely generic and this is my first try.&lt;/p&gt;

@@ -1,22 +1,21 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Latinr on Código R</title>
-    <link>https://eliocamp.github.io/codigo-r/tags/latinr/</link>
-    <description>Recent content in Latinr on Código R</description>
+    <title>latinr on Código R</title>
+    <link>/tags/latinr/</link>
+    <description>Recent content in latinr on Código R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
     <lastBuildDate>Thu, 10 Oct 2019 00:00:00 +0000</lastBuildDate>
     
-        <atom:link href="https://eliocamp.github.io/codigo-r/tags/latinr/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="/tags/latinr/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Lo que aprendí en LatinR 2019</title>
-      <link>https://eliocamp.github.io/codigo-r/2019/10/lo-que-aprend%C3%AD-en-latinr-2019/</link>
+      <link>/2019/10/lo-que-aprend%C3%AD-en-latinr-2019/</link>
       <pubDate>Thu, 10 Oct 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/2019/10/lo-que-aprend%C3%AD-en-latinr-2019/</guid>
+      <guid>/2019/10/lo-que-aprend%C3%AD-en-latinr-2019/</guid>
       <description>
 
 

@@ -1,0 +1,1162 @@
+
+
+  
+    
+  
+
+
+  
+
+
+
+
+  
+
+
+  
+
+<!DOCTYPE html>
+<html lang="es-es">
+  <head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hugo 0.56.3 with theme Tranquilpeak 0.4.3-BETA">
+    <title>Analizando ratings de Star Trek en IMDB</title>
+    <meta name="author" content="Elio Campitelli">
+    <meta name="keywords" content="tech, R">
+
+    <link rel="icon" href="../../../favicon.png">
+    
+
+    
+    <meta name="description" content="Con mi novia estamos viendo Star Trek: The New Generation. La primera temporada es bastante mala, pero luego remonta. Me dio curiosidad si los ratings mostraban eso. Entonces empecé a bajar los ratings de cada capítulo en IMDB. En el medio, me encontré que IMDB provee ratings promedio por demografía, así que decidí también bajar eso.
+Y ya que estamos, bajé también los ratings de las otras series de Star Trek.">
+    <meta property="og:description" content="Con mi novia estamos viendo Star Trek: The New Generation. La primera temporada es bastante mala, pero luego remonta. Me dio curiosidad si los ratings mostraban eso. Entonces empecé a bajar los ratings de cada capítulo en IMDB. En el medio, me encontré que IMDB provee ratings promedio por demografía, así que decidí también bajar eso.
+Y ya que estamos, bajé también los ratings de las otras series de Star Trek.">
+    <meta property="og:type" content="blog">
+    <meta property="og:title" content="Analizando ratings de Star Trek en IMDB">
+    <meta property="og:url" content="/2021/03/star-trek-rakings/">
+    <meta property="og:site_name" content="Código R">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Código R">
+    <meta name="twitter:description" content="Con mi novia estamos viendo Star Trek: The New Generation. La primera temporada es bastante mala, pero luego remonta. Me dio curiosidad si los ratings mostraban eso. Entonces empecé a bajar los ratings de cada capítulo en IMDB. En el medio, me encontré que IMDB provee ratings promedio por demografía, así que decidí también bajar eso.
+Y ya que estamos, bajé también los ratings de las otras series de Star Trek.">
+    
+      <meta name="twitter:creator" content="@d_olivaw">
+    
+    
+
+    
+    
+
+    
+      <meta property="og:image" content="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=640">
+    
+
+    
+    
+    
+
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="../../../css/style-jsjn0006wyhpyzivf6yceb31gvpjatbcs3qzjvlumobfnugccvobqwxnnaj8.min.css" />
+    
+    
+      
+        <link rel="stylesheet"  href="../../../css/custom.css">
+      
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="2">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="../../../">Código R</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="../../../#about">
+    
+    
+    
+      
+        <img class="header-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=90" alt="Foto de autor" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="2">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="../../../#about">
+          <img class="sidebar-profile-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=110" alt="Foto de autor" />
+        </a>
+        <h4 class="sidebar-profile-name">Elio Campitelli</h4>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Inicio</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">Categorías</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archivos</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">Acerca de</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/eliocamp">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://www.r-bloggers.com/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">R-Bloggers</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://twitter.com/d_olivaw">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="2"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Analizando ratings de Star Trek en IMDB
+    </h1>
+  
+  
+
+
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2021-03-09T00:00:00Z">
+        
+  Marzo 9, 2021
+
+      </time>
+    
+    
+  
+  
+    <span>en</span>
+    
+      <a class="category-link" href="../../../categories/r">R</a>
+    
+  
+
+  </div>
+
+</div>
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    });
+    </script>
+    <script type="text/javascript"
+      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+<script src="../../../rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>Con mi novia estamos viendo Star Trek: The New Generation. La primera temporada es bastante mala, pero luego remonta. Me dio curiosidad si los ratings mostraban eso. Entonces empecé a bajar los ratings de cada capítulo en IMDB. En el medio, me encontré que IMDB provee ratings promedio por demografía, así que decidí también bajar eso.</p>
+<p>Y ya que estamos, bajé también los ratings de las otras series de Star Trek.</p>
+<div id="scrapeando-o-escrapeando-los-datos" class="section level2">
+<h2>Scrapeando (¿o escrapeando?) los datos</h2>
+<p>Primero, cargo las librerías. data.table para el análisis de datos, magrittr para cadenitas, rvest para scrapear y ggplot2 para visualizar los resultados. ggsci es una librería con muchas escalas de colores para ggplot2 y la cargo para usar la única escala que es razonable usar en un post como este: <code>scale_color_startrek()</code>.</p>
+<pre class="r"><code>library(data.table)
+library(rvest)
+library(magrittr)
+library(ggplot2)
+library(ggsci)
+
+theme_set(theme_minimal(14) + 
+             theme(panel.grid = element_blank()))</code></pre>
+<p>Luego funciones para scrapear ratings. Cada serie tiene <a href="https://www.imdb.com/title/tt0060028/">una página</a> donde se listan las temporadas. <code>get_series()</code> detecta esos links y scrapea cada temporada con <code>get_season()</code><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
+<pre class="r"><code>get_series_ &lt;- function(id) {
+   home_url &lt;- paste0(&quot;https://www.imdb.com/title/&quot;, id)
+   message(&quot;Series: &quot;, id)
+   seasons &lt;- html_session(home_url) %&gt;% 
+      html_nodes(&quot;#title-episode-widget div:nth-child(4) a&quot;) %&gt;% 
+      html_text() %&gt;% 
+      rev()
+   
+   data &lt;- lapply(seasons, function(x) get_season(id, x))
+   
+   rbindlist(data)
+}
+
+get_series &lt;- memoise::memoise(get_series_, 
+                               cache = memoise::cache_filesystem(&quot;data/star_trek/&quot;))</code></pre>
+<p>La <a href="https://www.imdb.com/title/tt0060028/episodes?season=1">página de cada temporada</a> tiene una tabla con los capítulos y el rating medio de cada uno. Como también quiero los ratings en detalle, la función busca los links de cada capítulo y le scrapea los detalles con <code>get_details_episode()</code> .</p>
+<pre class="r"><code>get_season_ &lt;- function(id, season) {
+   message(&quot;Season: &quot;, season)
+   url &lt;- paste0(&quot;https://www.imdb.com/title/&quot;, id, &quot;/episodes?season=&quot;, season)
+   
+   session &lt;- rvest::html_session(url)
+   
+   titles &lt;- rvest::html_nodes(session, &quot;#episodes_content strong a&quot;) %&gt;% 
+      html_attr(&quot;title&quot;) %&gt;% 
+      na.omit()
+   
+   stars &lt;- rvest::html_nodes(session, &quot;.ipl-rating-star.small .ipl-rating-star__rating&quot;) %&gt;% 
+      html_text()
+   
+   if (length(stars) == 0) {
+      return(NULL)
+   }
+   dates &lt;- rvest::html_nodes(session, &quot;.airdate&quot;) %&gt;% 
+      html_text() %&gt;% 
+      lubridate::dmy()
+   
+   links &lt;- html_nodes(session, &quot;#episodes_content strong a&quot;) %&gt;% 
+      html_attr(&quot;href&quot;) 
+   
+   links &lt;- links[links != &quot;#void&quot;]
+   
+   ids &lt;- strsplit(links, &quot;/&quot;) %&gt;% 
+      vapply(function(x) x[3], character(1))
+   
+   rating_details &lt;- lapply(ids, get_details_episode)
+   
+   data &lt;- data.table::data.table(date = dates, 
+                                  number = seq_along(titles),
+                                  title = titles,
+                                  rating = as.numeric(stars), 
+                                  season = season,
+                                  details = rating_details
+   )
+}
+
+get_season &lt;- memoise::memoise(get_season_, 
+                               cache = memoise::cache_filesystem(&quot;data/star_trek/&quot;))</code></pre>
+<p>Finalmente, <code>get_details_episode()</code> entra a <a href="https://www.imdb.com/title/tt0059753/ratings">la página de ratings de un episodio</a> y scrapea la distribución de ratings, el rating promedio por género y la cantidad de ratings por género.</p>
+<pre class="r"><code>get_details_episode &lt;- function(id) {
+   url &lt;- paste0(&quot;https://www.imdb.com/title/&quot;, id, &quot;/ratings&quot;)
+   
+   session &lt;- html_session(url) 
+   
+   ratings &lt;- session %&gt;% 
+      html_nodes(&quot;td:nth-child(3) .leftAligned&quot;) %&gt;% 
+      html_text() %&gt;% 
+      trimws() %&gt;% 
+      gsub(&quot;,&quot;, &quot;&quot;, .) %&gt;% 
+      as.numeric()
+   
+   ratings_gender &lt;- session %&gt;% 
+      html_nodes(&quot;table:nth-child(11) .ratingTable:nth-child(2) .bigcell&quot;) %&gt;% 
+      html_text() %&gt;% 
+      as.numeric()
+   
+   number_gender &lt;- session %&gt;% 
+      html_nodes(&quot;table:nth-child(11) .ratingTable:nth-child(2) a&quot;) %&gt;% 
+      html_text() %&gt;% 
+      trimws() %&gt;% 
+      gsub(&quot;,&quot;, &quot;&quot;, .) %&gt;% 
+      as.numeric()
+   
+   data.table::data.table(gender = list(data.table::data.table(gender = c(&quot;All&quot;, &quot;Males&quot;, &quot;Females&quot;),
+                                                               rating = ratings_gender,
+                                                               N = number_gender)),
+                          ratings = list(data.table::data.table(rating = 10:1,
+                                                                N = ratings))
+   )
+   
+}</code></pre>
+<p>Finalmente, manualmente busqué los ids las distintas versiones de Star Trek.</p>
+<pre class="r"><code>star_treks &lt;- c(tos        = &quot;tt0060028&quot;,
+                tng        = &quot;tt0092455&quot;,
+                ds9        = &quot;tt0106145&quot;,
+                voyager    = &quot;tt0112178&quot;,
+                enterprise = &quot;tt0244365&quot;,
+                discovery  = &quot;tt5171438&quot;
+)
+
+labs_st &lt;- setNames(
+   c(&quot;The Original Series&quot;, 
+     &quot;The Next Generation&quot;,
+     &quot;Deep Space 9&quot;,
+     &quot;Voyager&quot;, 
+     &quot;Enterprise&quot;,
+     &quot;Discovery&quot;),
+   names(star_treks))</code></pre>
+<p>Y a cada una le aplico <code>get_series()</code> y combino todo fila a fila con <code>data.table::rbindlist()</code>.</p>
+<pre class="r"><code>data &lt;- lapply(star_treks, get_series) %&gt;% 
+   rbindlist(idcol = &quot;version&quot;) %&gt;% 
+   .[, episode := 1:.N, by = version] %&gt;%
+   .[, version := factor(version, levels = names(star_treks), ordered = TRUE)]</code></pre>
+<p>Esta es la pinta de los datos:</p>
+<pre class="r"><code>head(data)</code></pre>
+<pre><code>##    version       date number                        title rating season
+## 1:     tos 1988-11-27      1                     The Cage    7.7      1
+## 2:     tos 1966-09-08      2                 The Man Trap    7.3      1
+## 3:     tos 1966-09-15      3                    Charlie X    7.1      1
+## 4:     tos 1966-09-22      4 Where No Man Has Gone Before    7.8      1
+## 5:     tos 1966-09-29      5               The Naked Time    7.9      1
+## 6:     tos 1966-10-06      6             The Enemy Within    7.7      1
+##              details episode
+## 1: &lt;data.table[1x2]&gt;       1
+## 2: &lt;data.table[1x2]&gt;       2
+## 3: &lt;data.table[1x2]&gt;       3
+## 4: &lt;data.table[1x2]&gt;       4
+## 5: &lt;data.table[1x2]&gt;       5
+## 6: &lt;data.table[1x2]&gt;       6</code></pre>
+<p>Cada fila es un episodio, que tiene la versión de Star Trek a la que pertenece, la fecha de emisión, y otros datos. Hasta ahí simple. Se complica un poco en la columna <code>details</code>.</p>
+<pre class="r"><code>data[1, ]$details[[1]]</code></pre>
+<pre><code>##               gender            ratings
+## 1: &lt;data.table[3x3]&gt; &lt;data.table[10x2]&gt;</code></pre>
+<p>Cada fila contiene una lista que contiene dos tablas, “gender” y “ratings”. La tabla “gender” tiene el rating promedio y el número de valoraciones para cada género.</p>
+<pre class="r"><code>data[1, ]$details[[1]]$gender[[1]]</code></pre>
+<pre><code>##     gender rating    N
+## 1:     All    7.7 5344
+## 2:   Males    7.7 3390
+## 3: Females    7.7  470</code></pre>
+<p>La tabla “ratings” tiene el número de valoraciones para cada rating numérico.</p>
+<pre class="r"><code>data[1, ]$details[[1]]$ratings[[1]]</code></pre>
+<pre><code>##     rating    N
+##  1:     10  991
+##  2:      9  644
+##  3:      8 1447
+##  4:      7 1271
+##  5:      6  577
+##  6:      5  220
+##  7:      4   73
+##  8:      3   40
+##  9:      2   32
+## 10:      1   49</code></pre>
+<p>Este formato de <a href="https://rstudio.com/resources/rstudioconf-2020/list-columns-in-data-table-reducing-the-cognitive-computational-burden-of-complex-data/">tablas anidadas</a> es complicado al principio, pero es bastante natural para ciertos datos.</p>
+</div>
+<div id="analizando-los-datos" class="section level2">
+<h2>Analizando los datos</h2>
+<p>Ahora que tengo todos los datos, lo primero que me interesa es la pregunta original. ¿Cómo evolucionó la recepción de The Next Generation a lo largo de las temporadas?</p>
+<pre class="r"><code>data[version == &quot;tng&quot;] %&gt;% 
+   ggplot(aes(episode, rating)) +
+   geom_line(aes(color = season, group = 1)) +
+   geom_line(data = function(x) copy(x)[, rating := mean(rating), by = season],
+             aes(color = season), size = 1) +
+   scale_color_startrek(guide = &quot;none&quot;)</code></pre>
+<p><img src="../../../post/2021-03-01-star-trek-ratings_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>(Notar el truquito en el segundo <code>geom_line()</code>. El argumento <code>data</code> de los geoms puede ser una función que se aplica al dataframe con el dato global. En este caso, reemplazo a rating por el rating medio por cada temporada.)</p>
+<p>El efecto está bastante claro. Las primeras dos temporadas fueron bastante mediocres y recién para la tercera, el programa mejora. Y la calidad se mantiene más o menos estable hasta una pequeña recaída en la última temporada. Mientras escribo esto, mi novia y yo estamos por la mitad de la 5ta temporada, así que no puedo emitir opinión sobre esa última temporada.</p>
+<p>Muy notable es el lo mal recibido que fue el último capítulo de la segunda temporada. Y con buena razón. Es un capítulo <a href="https://en.wikipedia.org/wiki/Shades_of_Gray_(Star_Trek:_The_Next_Generation)">hecho con clips de otros capítulos</a>, porque los productores se quedaron sin plata y tuvieron que hacer el capítulo bien barato y rápido. Es increíble que los fans hayan decidido seguir viendo la serie luego de un final de temporada tan abismal.</p>
+<p>¿Cómo se compara TNG con las demás versiones de Star Trek?</p>
+<pre class="r"><code>data %&gt;% 
+   ggplot(aes(episode, rating)) +
+   geom_line(aes(color = season, group = 1)) +
+   geom_line(data = function(x) copy(x)[, rating := mean(rating), by = .(version, season)],
+             aes(color = season), size = 1) +
+   scale_color_startrek(guide = &quot;none&quot;) +
+   facet_wrap(~version, scales = &quot;free_x&quot;, labeller = labeller(version = labs_st))</code></pre>
+<p><img src="../../../post/2021-03-01-star-trek-ratings_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>Parece que es algo común que Star Trek mejore con el tiempo. Además de The Next Generation, Deep Space 9, Voyager y y Enterprise también alcanzaron su mejor momento luego de las primeras temporadas. The Original Series y Discovery son las dos excepciones. En ambas series, la recepción popular bajó mucho en la tercera temporada.</p>
+<p>¿La caída de Discovery es igual a la de The Original Series? Vi la tercera temporada de Discovery y no me pareció particularmente peor que las anteriores. Y vivir en este siglo no sólo significa que los capítulos lentísimos de TOS me resultaron un bodrio, sino que viví la reacción popular de Discovery y sé que fue víctima de la polarización extrema que domina estos tiempos. Sintomático de esto es la enorme diferencia entre la recepción de la crítica y los votos de la audiencia. En Rotten Tomatoes, la tercera temporada de Discovery es la mejor ranqueada, <a href="https://www.rottentomatoes.com/tv/star_trek_discovery/s03">con un 90%</a>, a pesar de que los votos de la audiencia le da 46%. Lo mismo se ve en <a href="https://www.metacritic.com/tv/star-trek-discovery">Metacritic</a>: el promedio de la crítica –7.3– es mucho mayor que el de les usuaries –3.8.</p>
+<p>En particular, se da mucho que cuando ciertas películas o series ofenden a alguna subcultura en particular, aparecen miles de trolls poniendo 1 estrella en masa. Esto se ve claramente ploteando la proporción de 1s y 10s en cada episodio.</p>
+<pre class="r"><code>data[, details[[1]]$ratings[[1]], by = .(version, season, episode, number)] %&gt;% 
+   .[, .(one_star = N[rating == 1]/sum(N),
+         ten_star = N[rating == 10]/sum(N)), by = .(episode, version)] %&gt;% 
+   melt(id.vars = c(&quot;episode&quot;, &quot;version&quot;)) %&gt;% 
+   ggplot(aes(episode, value)) +
+   geom_line(aes(color = variable)) +
+   scale_color_startrek(name = &quot;Rating %&quot;, labels = c(one_star = &quot;One Star&quot;, 
+                                                      ten_star = &quot;Ten Stars&quot;)) +
+   facet_wrap(~version, scales = &quot;free_x&quot;, labeller = labeller(version = labs_st))</code></pre>
+<p><img src="../../../post/2021-03-01-star-trek-ratings_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Salvo excepciones, ningún capítulo tiene una cantidad apreciable de unos en las series viejas. Discovery, en cambio, tiene un ~10% de malos votos, que incluso superan a los votos de 10 estrellas en últimos capítulos.</p>
+<p>Un dato interesante que tiene IMDB es la división por género. La ciencia ficción es un género bastante dominado por los hombres, ¿se ve reflejado esto en la cantidad de ratings?</p>
+<pre class="r"><code>data %&gt;% 
+   .[, details[[1]]$gender[[1]] , by = .(version, season, episode, number)] %&gt;% 
+   .[gender != &quot;All&quot;] %&gt;%
+   .[, .(n = sum(N)), by = .(episode, version, gender)] %&gt;% 
+   ggplot(aes(episode, n)) +
+   geom_line(aes(color = gender)) + 
+   scale_color_startrek() +
+   scale_y_log10() +
+   facet_wrap(~version, scales = &quot;free_x&quot;, labeller = labeller(version = labs_st))</code></pre>
+<p><img src="../../../post/2021-03-01-star-trek-ratings_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>Sí! definitivamente. Tuve que usar una escala logarítmica para que se distinguieran las líneas con la cantidad de calificaciones de mujeres.</p>
+<p>Es interesante cómo en todas las versiones, y para ambos géneros, se ve una tendencia de descenso en la cantidad de ratings a medida que avanza la serie. Me imagino que es un efecto de supervivencia. Muchas personas empezarán a mirar cada versión desde el principio y luego se aburrirán y dejarán de verla. Entonces es natural que haya más gente en general dispuesta a calificar los primeros capítulos.</p>
+<p>En cuanto a la distribución de género, la cantidad de calificaciones en cada episodio parece ser más o menos constante, con la obvia excepción de cuatro capítulos de Enterprise que tienen casi tantas calificaciones de mujeres como de hombres.</p>
+<p>Estos son los 10 capítulos con mayor proporción de calificaciones femeninas:</p>
+<pre class="r"><code>data %&gt;% 
+   .[, details[[1]]$gender[[1]] , by = .(version, season, episode, number)] %&gt;% 
+   .[gender != &quot;All&quot;] %&gt;%
+   .[, .(n = sum(N)), by = .(episode, version, gender)] %&gt;% 
+   dcast(episode + version ~ gender, value.var = &quot;n&quot;) %&gt;% 
+   .[, ratio := Females/Males] %&gt;% 
+   
+   data[., on = .NATURAL] %&gt;% 
+   .[order(-ratio)] %&gt;%
+   .[1:10] %&gt;% 
+   .[, .(version, season, number, title, rating, ratio = scales::percent(ratio, accuracy = 0.1))] %&gt;% 
+   knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">version</th>
+<th align="left">season</th>
+<th align="right">number</th>
+<th align="left">title</th>
+<th align="right">rating</th>
+<th align="left">ratio</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">enterprise</td>
+<td align="left">4</td>
+<td align="right">3</td>
+<td align="left">Home</td>
+<td align="right">8.1</td>
+<td align="left">83.5%</td>
+</tr>
+<tr class="even">
+<td align="left">enterprise</td>
+<td align="left">2</td>
+<td align="right">1</td>
+<td align="left">Shockwave, Part II</td>
+<td align="right">8.4</td>
+<td align="left">68.3%</td>
+</tr>
+<tr class="odd">
+<td align="left">enterprise</td>
+<td align="left">2</td>
+<td align="right">23</td>
+<td align="left">Regeneration</td>
+<td align="right">8.6</td>
+<td align="left">64.7%</td>
+</tr>
+<tr class="even">
+<td align="left">enterprise</td>
+<td align="left">1</td>
+<td align="right">1</td>
+<td align="left">Broken Bow</td>
+<td align="right">7.9</td>
+<td align="left">51.6%</td>
+</tr>
+<tr class="odd">
+<td align="left">tos</td>
+<td align="left">2</td>
+<td align="right">15</td>
+<td align="left">The Trouble with Tribbles</td>
+<td align="right">8.9</td>
+<td align="left">18.9%</td>
+</tr>
+<tr class="even">
+<td align="left">voyager</td>
+<td align="left">4</td>
+<td align="right">17</td>
+<td align="left">Retrospect</td>
+<td align="right">6.8</td>
+<td align="left">17.7%</td>
+</tr>
+<tr class="odd">
+<td align="left">voyager</td>
+<td align="left">2</td>
+<td align="right">25</td>
+<td align="left">Resolutions</td>
+<td align="right">7.4</td>
+<td align="left">16.8%</td>
+</tr>
+<tr class="even">
+<td align="left">voyager</td>
+<td align="left">3</td>
+<td align="right">16</td>
+<td align="left">Blood Fever</td>
+<td align="right">7.3</td>
+<td align="left">16.5%</td>
+</tr>
+<tr class="odd">
+<td align="left">tos</td>
+<td align="left">3</td>
+<td align="right">19</td>
+<td align="left">Requiem for Methuselah</td>
+<td align="right">7.4</td>
+<td align="left">16.5%</td>
+</tr>
+<tr class="even">
+<td align="left">tos</td>
+<td align="left">2</td>
+<td align="right">10</td>
+<td align="left">Journey to Babel</td>
+<td align="right">8.6</td>
+<td align="left">16.3%</td>
+</tr>
+</tbody>
+</table>
+<p>Nunca vi Enterprise ni conozco de qué van esos 4 capítulos aparentemente tan populares entre las mujeres, así que no sabría decir por qué tienen (relativamente) tantas calificaciones femeninas.</p>
+<p>Es difícil comparar la proporción de calificaciones de hombres y de mujeres en la figura anterior, así que mejor plotear directamente el porcentaje de calificaciones femeninas por capítulo.</p>
+<pre class="r"><code>data %&gt;% 
+   .[, details[[1]]$gender[[1]] , by = .(version, season, episode, number)] %&gt;% 
+   .[gender != &quot;All&quot;] %&gt;%
+   .[, .(n = sum(N)), by = .(episode, version, gender)] %&gt;% 
+   dcast(episode + version ~ gender, value.var = &quot;n&quot;) %&gt;% 
+   .[, run := scales::rescale(episode, to = c(0, 1)), by = version] %&gt;% 
+   ggplot(aes(run, Females/Males)) +
+   geom_line(aes(color = version)) +
+   scale_y_log10() +
+   scale_color_startrek( labels = labs_st) +
+   coord_cartesian(ylim = c(NA, 0.2)) </code></pre>
+<p><img src="../../../post/2021-03-01-star-trek-ratings_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>Además de los picos de Enterprise, lo más notorio es la brutal caída en la proporción de votos femeninos en la tercera temporada de Discovery, ¿qué pasó ahí? Mi hipótesis es que la horda de trolls que fue a calificar con 1 estrella por alguna ofensa percibida eran en su mayoría hombres.</p>
+<p>En general, dejando de lado esos episodios anómalos de Enterprise, The Original Series es la serie más votada por mujeres casi empatada con Voyager. Las diferencias, de todas formas, no son grandes y en la medida de que estos números sean representativos del público de Star Trek en general (importante suposición), la audiencia de esta serie es más de 80% hombres.</p>
+<p>Esto en cuanto a la cantidad, ¿hay diferencias en las calificaciones promedio entre hombres y mujeres?</p>
+<pre class="r"><code>data %&gt;% 
+   .[, details[[1]]$gender[[1]] , by = .(version, season, episode, number)] %&gt;% 
+   .[gender != &quot;All&quot;] %&gt;%
+   ggplot(aes(episode, rating)) +
+   geom_line(aes(color = gender))  +
+   scale_color_startrek() + 
+   facet_wrap(~version, scales = &quot;free_x&quot;, labeller = labeller(version = labs_st))</code></pre>
+<p><img src="../../../post/2021-03-01-star-trek-ratings_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>Hay, pero poca. En general, las mujeres tienden a puntuar de forma más positiva que los hombres. Esto quizás tiene que ver con que, siendo Star Trek una serie dirigida principalmente hacia los hombres, las mujeres que ven la serie y encima se toman el trabajo de ir a IMDB a calificarla, son un grupo más autoseleccionado. Los capítulos con gran proporción de calificaciones femeninas en Enterprise no parecen que hayan recibido particularmente mejor calificación por parte de las mujeres.</p>
+<p>Eso sí, Discovery sobresale de nuevo. La diferencia parece más pronunciada al principio de la serie, y terriblemente obvia hacia el final. Las mujeres calificaron, en promedio, los capítulos de la tercera temporada de Discovery con el mismo valor que las temporadas anteriores. El gran cambio se dio en las calificaciones masculinas. Esto es consistente con mi teoría de la mayoría masculina en el grupo ofendido por Discovery.</p>
+<p>Para finalmente cuantificar el “efecto troll”, voy a usar que tanto la cantidad como la calificación media de las mujeres se mantuvo más o menos constante. Asumiendo entonces que esta subpoblación mantuvo su comportamiento a lo largo de las temporadas, voy a ajustar un modelo lineal que predice la cantidad de valoraciones de hombres a partir de la cantidad de valoraciones de mujeres. Luego, al comparar la cantidad de calificaciones reales con la predicción, se puede tener una idea del número de calificaciones “extra”.</p>
+<pre class="r"><code>discovery_ratings &lt;- data %&gt;% 
+   .[, details[[1]]$gender[[1]] , by = .(version, season, episode, number)] %&gt;% 
+   # .[gender != &quot;All&quot;] %&gt;%
+   .[, .(n = sum(N)), by = .(episode, version, season, gender)] %&gt;% 
+   .[version == &quot;discovery&quot;] %&gt;%
+   dcast(version + episode + season ~ gender, value.var = &quot;n&quot;) 
+
+model &lt;- discovery_ratings %&gt;% 
+   .[episode &lt;= 20] %&gt;% 
+   lm(Males ~ Females-1, data = .)
+
+discovery_ratings[, predicted := predict(model, newdata = discovery_ratings)]
+
+extra &lt;- discovery_ratings %&gt;% 
+   .[, .(Males = sum(Males),
+         Females = sum(Females),
+         predicted = sum(predicted)), by = .(version, season)]
+
+discovery_ratings %&gt;% 
+   ggplot(aes(Females, Males)) +
+   
+   geom_segment(data = ~.x[season == 3], aes(xend = Females, yend = predicted)) +
+   geom_point(aes(color = season)) +
+   # geom_line(aes(color = season, y = predicted)) +
+   
+   geom_smooth(method = &quot;lm&quot;, formula = y ~ x-1, data = ~.x[episode &lt; 20], fullrange = TRUE)</code></pre>
+<p><img src="../../../post/2021-03-01-star-trek-ratings_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p>Esos puntos azules que están por encima de la recta representan las calificaciones extra por parte de hombres en la tercera temporada. En total son 5138 calificaciones, o un 25% de las calificaciones totales hechas por hombres.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Notar que uso <code>memoise</code> para guardar los resultados en cache. Esto sirve para no molestar tanto a IMDB y hacer las cosas más rápido durante el desarrollo y testeo de la función.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">ETIQUETADO EN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="../../../tags/webscraping/">webscraping</a>
+
+                  </div>
+                
+              
+            
+            
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2019/12/rammbot-un-bot-que-crea-canciones-de-rammstein/" data-tooltip="Obligué a un bot a escuchar más de 1000 horas de Rammstein y le pedí que escribiera una canción propia.">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2021/03/star-trek-rakings/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2021/03/star-trek-rakings/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2021/03/star-trek-rakings/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+            
+              
+                <div id="disqus_thread">
+  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2021 Elio Campitelli. Todos los derechos reservados
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
+        
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2019/12/rammbot-un-bot-que-crea-canciones-de-rammstein/" data-tooltip="Obligué a un bot a escuchar más de 1000 horas de Rammstein y le pedí que escribiera una canción propia.">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2021/03/star-trek-rakings/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2021/03/star-trek-rakings/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2021/03/star-trek-rakings/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2F2021%2F03%2Fstar-trek-rakings%2F">
+          <i class="fa fa-facebook-official"></i><span>Compartir en Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2F2021%2F03%2Fstar-trek-rakings%2F">
+          <i class="fa fa-twitter"></i><span>Compartir en Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2F2021%2F03%2Fstar-trek-rakings%2F">
+          <i class="fa fa-google-plus"></i><span>Compartir en Google&#43;</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=110" alt="Foto de autor" />
+    
+    <h4 id="about-card-name">Elio Campitelli</h4>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Atmospheric sciences graduate researcher at CONICET
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Argentina
+      </div>
+    
+  </div>
+</div>
+
+    <div id="algolia-search-modal" class="modal-container">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="close-button"><i class="fa fa-close"></i></span>
+      <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+        <span class="searchby-algolia-text text-color-light text-small">by</span>
+        <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+      </a>
+      <i class="search-icon fa fa-search"></i>
+      <form id="algolia-search-form">
+        <input type="text" id="algolia-search-input" name="search"
+          class="form-control input--large search-input" placeholder="Buscar" />
+      </form>
+    </div>
+    <div class="modal-body">
+      <div class="no-result text-color-light text-center">no se encontraron artículos</div>
+      <div class="results">
+        
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2021/03/star-trek-rakings/">
+                <h3 class="media-heading">Analizando ratings de Star Trek en IMDB</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Mar 3, 2021
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Con mi novia estamos viendo Star Trek: The New Generation. La primera temporada es bastante mala, pero luego remonta. Me dio curiosidad si los ratings mostraban eso. Entonces empecé a bajar los ratings de cada capítulo en IMDB. En el medio, me encontré que IMDB provee ratings promedio por demografía, así que decidí también bajar eso.
+Y ya que estamos, bajé también los ratings de las otras series de Star Trek.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2019/12/rammbot-un-bot-que-crea-canciones-de-rammstein/">
+                <h3 class="media-heading">Obligué a un bot a escuchar más de 1000 horas de Rammstein y le pedí que escribiera una canción propia.</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Dec 12, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Cuando le conté a una amiga que había analizado las letras de Rammstein y Lacrimosa, me tiró la idea de usar un modelo para crear letras de las bandas. Me pareció una idea divertida, así que acá tienen el futuro de la música:
+library(data.table) library(magrittr) Igual que hice antes, bajo las letras de losdiscos de estudio de cada artista. Guardo las cosas en un archivo para no tener que bajar los datos cada vez que corro esto.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2019/11/rammstein-vs-lacrimosa/">
+                <h3 class="media-heading">Rammstein vs. Lacrimosa</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Nov 11, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Hace un tiempo una conocida twiteó que había tenido que comprarse un libro entero para aprender los géneros gramaticales del alemán. Entre las repuestas, había una persona que contaba que de adolescente creyó (erróneamente) que podría aprender alemán sólo escuchando Rammstein. Habeindo estudiado unos drei Jahre de alemán al mismo tiempo que escuchaba Rammstein y otras bandas en alemán, las letras de Rammstein siempre me parecieron extremadamente simples.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2019/10/lo-que-aprend%C3%AD-en-latinr-2019/">
+                <h3 class="media-heading">Lo que aprendí en LatinR 2019</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Oct 10, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Hace unas semanas volví de Santiago de Chile luego de ir a Latinr 2019. Igual que el año pasado, fue una experiencia divertida. Estas son algunas de las cosas que me llamaron la atención.
+Workshops A la mañana del primer día asistí al workshop de Mine Çetinkaya-Rundel sobre enseñanza de R. Ejemplificó algunos principios básicos a la hora de diseñar clases. La idea de “dejales comer el pastel primero” creo que es la principal enseñanza.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2019/04/ecmwfr-calentamiento-global/">
+                <h3 class="media-heading">Midiendo el calentamiento global con ecmwfr</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Apr 4, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Para mi investigación necesitaba bajar datos meteorológicos grillados del ERA-Interim, que es una base de datos generada por el ECMWF. Bajar los datos en su sitio web es muy incómido y requiere muchos clicks. Por suerte, me encontré con el paquete ecmwfr con el que pude bajar los datos directamente desde R y muy fácilmente. Una de las cosas geniales del código abierto, es que los usuarios pueden ser colaboradores, así que sugerí algunas cosas y aporté un poco de código.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2019/01/metamerismo-estad%C3%ADstico/">
+                <h3 class="media-heading">Metamerismo estadístico</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jan 1, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">El paquete <a href="https://github.com/eliocamp/metamer">metamer</a> implementa en R el algoritmo descripto por Matejka y Fitzmaurice (2017) para generar sets de datos distintos entre sí pero con estadísticos idénticos. Además, propongo el nombre &ldquo;metámeros&rdquo; para estos grupos de datos en analogía con el concepto proveniente de colorimetría.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/10/leyendo-informacion-incucai/">
+                <h3 class="media-heading">Leyendo información del INCUCAI</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Oct 10, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">El otro día el diario Clarín sacó una nota afirmando que el pasado agosto se había dado el récord histórico de transplantes de órganos y se lo adjudicaba a la &ldquo;Ley Justina&rdquo;, que establece que todos somos donantes presuntos a menos que se declare lo contrario en vida. Dado que esta ley se aprobó hace poco más de un mes y todavía no está reglamentada, es poco probable que este récord se deba al cambio legal.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/09/multiple-color-and-fill-scales-with-ggplot2/">
+                <h3 class="media-heading">Multiple color (and fill) scales with ggplot2</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Sep 9, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">(Versión en español)
+tl;dr: The functionality shown in this post is now on the ggnewscale package! 📦. You can find the original code in this gist.
+A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
+
+Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/09/multiples-escalas-colores-ggplot2/">
+                <h3 class="media-heading">Múltiples escalas de colores en ggplot2</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Sep 9, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">tl;dr: Esta funcionalidad está ahora en el paquete ggnewscale! 📦 En este gist está la versión origial del código.
+Un dolor importante para algunos usuarios de ggplot2 es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
+
+Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &ldquo;no se puede, pero esta es otra forma de graficar tus datos&rdquo;.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/08/periodic-data-ggplot2-ggperiodic/">
+                <h3 class="media-heading">Wrapping around ggplot2 with ggperiodic</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Aug 8, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">As an atmospheric scientists, a lot of my research consists on plotting and looking at global fields of atmospheric variables like pressure, temperature and the like. Since our planet is a sphere (well, almost), it is unbound and so longitude is a periodic dimension. That is, to the right of 180°E you go back to 180°W. But ggplot2 and other plotting systems, for the most part, assume linear dimensions.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+      </div>
+    </div>
+    <div class="modal-footer">
+      <p class="results-count text-medium"
+         data-message-zero="no se encontraron artículos"
+         data-message-one="1 artículo encontrado"
+         data-message-other="{n} artículos encontrados">
+         19 posts found
+      </p>
+    </div>
+  </div>
+</div>
+    
+  
+    
+    <div id="cover" style="background-image:url('/images/cover2.jpg');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js" integrity="sha256-XrZQp+ZMfovqr6Hb2M6okHvSEYaB/+Xbx7toWmOOZUM=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-light.min.css" integrity="sha256-KacbO6Nou2geGJEUzQeKzKEdp/DENVGJKAd2v37moh0=" crossorigin="anonymous" />
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="../../../js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
+
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+      <script>
+        var disqus_config = function () {
+          this.page.url = '\/2021\/03\/star-trek-rakings\/';
+          
+            this.page.identifier = '\/2021\/03\/star-trek-rakings\/'
+          
+        };
+        (function() {
+          
+          
+          if (window.location.hostname == "localhost") {
+            return;
+          }
+          var d = document, s = d.createElement('script');
+          var disqus_shortname = 'codigo-r';
+          s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+      </script>
+    
+  
+
+
+
+    
+  </body>
+</html>
+

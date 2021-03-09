@@ -1,13 +1,12 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Archives on Code R</title>
-    <link>https://eliocamp.github.io/codigo-r/en/archives/</link>
+    <link>/en/archives/</link>
     <description>Recent content in Archives on Code R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
     
-        <atom:link href="https://eliocamp.github.io/codigo-r/en/archives/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="/en/archives/index.xml" rel="self" type="application/rss+xml" />
     
     
   </channel>

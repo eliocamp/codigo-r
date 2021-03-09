@@ -1,22 +1,21 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Paquetes on Code R</title>
-    <link>https://eliocamp.github.io/codigo-r/en/tags/paquetes/</link>
-    <description>Recent content in Paquetes on Code R</description>
+    <title>paquetes on Code R</title>
+    <link>/en/tags/paquetes/</link>
+    <description>Recent content in paquetes on Code R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
     <lastBuildDate>Fri, 19 Apr 2019 00:00:00 +0000</lastBuildDate>
     
-        <atom:link href="https://eliocamp.github.io/codigo-r/en/tags/paquetes/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="/en/tags/paquetes/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Using ecmwfr to measure global warming</title>
-      <link>https://eliocamp.github.io/codigo-r/en/2019/04/ecmwfr-global-warming/</link>
+      <link>/en/2019/04/ecmwfr-global-warming/</link>
       <pubDate>Fri, 19 Apr 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://eliocamp.github.io/codigo-r/en/2019/04/ecmwfr-global-warming/</guid>
+      <guid>/en/2019/04/ecmwfr-global-warming/</guid>
       <description>
 
 
