@@ -15,4 +15,4 @@ LaTeX: pdfLaTeX
 BuildType: Custom
 CustomScriptPath: R/build.R
 
-SpellingDictionary: es_ES
+SpellingDictionary: en_GB

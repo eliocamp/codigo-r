@@ -20,7 +20,7 @@
 &lt;script src=&#34;../rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
-&lt;p&gt;Con mi novia estamos viendo Star Trek: The New Generation. La primera temporada es bastante mala, pero luego remonta. Me dio curiosidad si los ratings mostraban eso. Entonces empecé a bajar los ratings de cada capítulo en IMDB. En el medio, me encontré que IMDB provee ratings promedio por demografía, así que decidí también bajar eso.&lt;/p&gt;
+&lt;p&gt;Con mi novia estamos viendo Star Trek: The Next Generation. La primera temporada es bastante mala, pero luego remonta. Me dio curiosidad si los ratings mostraban eso. Entonces empecé a bajar los ratings de cada capítulo en IMDB. En el medio, me encontré que IMDB provee ratings promedio por demografía, así que decidí también bajar eso.&lt;/p&gt;
 &lt;p&gt;Y ya que estamos, bajé también los ratings de las otras series de Star Trek.&lt;/p&gt;
 &lt;div id=&#34;scrapeando-o-escrapeando-los-datos&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Scrapeando (¿o escrapeando?) los datos&lt;/h2&gt;

@@ -4,7 +4,7 @@
   
   <url>
     <loc>/en/categories/</loc>
-    <lastmod>2019-11-21T00:00:00+00:00</lastmod>
+    <lastmod>2021-03-09T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -25,7 +25,7 @@
   
   <url>
     <loc>/en/</loc>
-    <lastmod>2019-11-21T00:00:00+00:00</lastmod>
+    <lastmod>2021-03-09T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -46,7 +46,7 @@
   
   <url>
     <loc>/en/post/</loc>
-    <lastmod>2019-11-21T00:00:00+00:00</lastmod>
+    <lastmod>2021-03-09T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -62,7 +62,7 @@
   
   <url>
     <loc>/en/categories/r/</loc>
-    <lastmod>2019-11-21T00:00:00+00:00</lastmod>
+    <lastmod>2021-03-09T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -77,23 +77,23 @@
   </url>
   
   <url>
-    <loc>/en/2019/11/rammstein-vs-lacrimosa/</loc>
-    <lastmod>2019-11-21T00:00:00+00:00</lastmod>
+    <loc>/en/2021/03/star-trek-rakings/</loc>
+    <lastmod>2021-03-09T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="es-es"
-                href="/2019/11/rammstein-vs-lacrimosa/"
+                href="/2021/03/star-trek-rakings/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="/en/2019/11/rammstein-vs-lacrimosa/"
+                href="/en/2021/03/star-trek-rakings/"
                 />
   </url>
   
   <url>
     <loc>/en/tags/</loc>
-    <lastmod>2019-11-21T00:00:00+00:00</lastmod>
+    <lastmod>2021-03-09T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -109,6 +109,37 @@
                 rel="alternate"
                 hreflang="en"
                 href="/en/tags/"
+                />
+  </url>
+  
+  <url>
+    <loc>/en/tags/webscraping/</loc>
+    <lastmod>2021-03-09T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-es"
+                href="/tags/webscraping/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/tags/webscraping/"
+                />
+  </url>
+  
+  <url>
+    <loc>/en/2019/11/rammstein-vs-lacrimosa/</loc>
+    <lastmod>2019-11-21T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-es"
+                href="/2019/11/rammstein-vs-lacrimosa/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/2019/11/rammstein-vs-lacrimosa/"
                 />
   </url>
   

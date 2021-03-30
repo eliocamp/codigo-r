@@ -5,10 +5,411 @@
     <description>Recent content in R on Code R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Thu, 21 Nov 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 09 Mar 2021 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/en/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Star Trek ratings on IMDB</title>
+      <link>/en/2021/03/star-trek-rakings/</link>
+      <pubDate>Tue, 09 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/en/2021/03/star-trek-rakings/</guid>
+      <description>
+&lt;script src=&#34;../../../rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;My girlfriend and I are watching Star Trek: The Next Generation (TNG). The first season it’s pretty lame, but it gets better further down the line. That piqued my curiosity – is that impression shared by the rest of The Internets? So I decided to download the rating of every TNG episode from IDMB. I quickly realised that IMDB provides much more than just mean reating, it also has the full rating histogram and also demographic breakdowns. So I decided to get those as well.&lt;/p&gt;
+&lt;p&gt;And since I was at it, why not loot also at all the Star Trek series?&lt;/p&gt;
+&lt;div id=&#34;scraping-the-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Scraping the data&lt;/h2&gt;
+&lt;p&gt;First, load the packages. data.table for data analysis, magrittr for cute chains, rvest to scrape and ggplot2 for visualising. ggsci is a package with many colour scales; I use it here becasue &lt;code&gt;ggsci::scale_colour_trek()&lt;/code&gt; is the only logical choice of colour scales in this context.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(data.table)
+library(rvest)
+library(magrittr)
+library(ggplot2)
+library(ggsci)
+
+theme_set(theme_minimal(14) + 
+             theme(panel.grid = element_blank()))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then, fucntions to scrape ratings. Each series has &lt;a href=&#34;https://www.imdb.com/title/tt0060028/&#34;&gt;a webpage&lt;/a&gt; with a list of seasons. &lt;code&gt;get_series()&lt;/code&gt; detects those links and scrapes each season with &lt;code&gt;get_season()&lt;/code&gt;&lt;a href=&#34;#fn1&#34; class=&#34;footnote-ref&#34; id=&#34;fnref1&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_series_ &amp;lt;- function(id) {
+   home_url &amp;lt;- paste0(&amp;quot;https://www.imdb.com/title/&amp;quot;, id)
+   message(&amp;quot;Series: &amp;quot;, id)
+   seasons &amp;lt;- html_session(home_url) %&amp;gt;% 
+      html_nodes(&amp;quot;#title-episode-widget div:nth-child(4) a&amp;quot;) %&amp;gt;% 
+      html_text() %&amp;gt;% 
+      rev()
+   
+   data &amp;lt;- lapply(seasons, function(x) get_season(id, x))
+   
+   rbindlist(data)
+}
+
+get_series &amp;lt;- memoise::memoise(get_series_, 
+                               cache = memoise::cache_filesystem(&amp;quot;data/star_trek/&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.imdb.com/title/tt0060028/episodes?season=1&#34;&gt;Each season’s webpage&lt;/a&gt; has a table with every episode with its mean rating. Since I also want the detailed breakdown, the function captures the link of each episode and scrapes the detailes with &lt;code&gt;get_details_episode()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_season_ &amp;lt;- function(id, season) {
+   message(&amp;quot;Season: &amp;quot;, season)
+   url &amp;lt;- paste0(&amp;quot;https://www.imdb.com/title/&amp;quot;, id, &amp;quot;/episodes?season=&amp;quot;, season)
+   
+   session &amp;lt;- rvest::html_session(url)
+   
+   titles &amp;lt;- rvest::html_nodes(session, &amp;quot;#episodes_content strong a&amp;quot;) %&amp;gt;% 
+      html_attr(&amp;quot;title&amp;quot;) %&amp;gt;% 
+      na.omit()
+   
+   stars &amp;lt;- rvest::html_nodes(session, &amp;quot;.ipl-rating-star.small .ipl-rating-star__rating&amp;quot;) %&amp;gt;% 
+      html_text()
+   
+   if (length(stars) == 0) {
+      return(NULL)
+   }
+   dates &amp;lt;- rvest::html_nodes(session, &amp;quot;.airdate&amp;quot;) %&amp;gt;% 
+      html_text() %&amp;gt;% 
+      lubridate::dmy()
+   
+   links &amp;lt;- html_nodes(session, &amp;quot;#episodes_content strong a&amp;quot;) %&amp;gt;% 
+      html_attr(&amp;quot;href&amp;quot;) 
+   
+   links &amp;lt;- links[links != &amp;quot;#void&amp;quot;]
+   
+   ids &amp;lt;- strsplit(links, &amp;quot;/&amp;quot;) %&amp;gt;% 
+      vapply(function(x) x[3], character(1))
+   
+   rating_details &amp;lt;- lapply(ids, get_details_episode)
+   
+   data &amp;lt;- data.table::data.table(date = dates, 
+                                  number = seq_along(titles),
+                                  title = titles,
+                                  rating = as.numeric(stars), 
+                                  season = season,
+                                  details = rating_details
+   )
+}
+
+get_season &amp;lt;- memoise::memoise(get_season_, 
+                               cache = memoise::cache_filesystem(&amp;quot;data/star_trek/&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally, &lt;code&gt;get_details_episode()&lt;/code&gt; goes into &lt;a href=&#34;https://www.imdb.com/title/tt0059753/ratings&#34;&gt;each episode’s ratings&lt;/a&gt; and scrapes the rating distribution, the mean rating by gender and the number of ratings by gender.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;get_details_episode &amp;lt;- function(id) {
+   url &amp;lt;- paste0(&amp;quot;https://www.imdb.com/title/&amp;quot;, id, &amp;quot;/ratings&amp;quot;)
+   
+   session &amp;lt;- html_session(url) 
+   
+   ratings &amp;lt;- session %&amp;gt;% 
+      html_nodes(&amp;quot;td:nth-child(3) .leftAligned&amp;quot;) %&amp;gt;% 
+      html_text() %&amp;gt;% 
+      trimws() %&amp;gt;% 
+      gsub(&amp;quot;,&amp;quot;, &amp;quot;&amp;quot;, .) %&amp;gt;% 
+      as.numeric()
+   
+   ratings_gender &amp;lt;- session %&amp;gt;% 
+      html_nodes(&amp;quot;table:nth-child(11) .ratingTable:nth-child(2) .bigcell&amp;quot;) %&amp;gt;% 
+      html_text() %&amp;gt;% 
+      as.numeric()
+   
+   number_gender &amp;lt;- session %&amp;gt;% 
+      html_nodes(&amp;quot;table:nth-child(11) .ratingTable:nth-child(2) a&amp;quot;) %&amp;gt;% 
+      html_text() %&amp;gt;% 
+      trimws() %&amp;gt;% 
+      gsub(&amp;quot;,&amp;quot;, &amp;quot;&amp;quot;, .) %&amp;gt;% 
+      as.numeric()
+   
+   data.table::data.table(gender = list(data.table::data.table(gender = c(&amp;quot;All&amp;quot;, &amp;quot;Males&amp;quot;, &amp;quot;Females&amp;quot;),
+                                                               rating = ratings_gender,
+                                                               N = number_gender)),
+                          ratings = list(data.table::data.table(rating = 10:1,
+                                                                N = ratings))
+   )
+   
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The final step is manually searching the id of each series of Star Trek.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;star_treks &amp;lt;- c(tos        = &amp;quot;tt0060028&amp;quot;,
+                tng        = &amp;quot;tt0092455&amp;quot;,
+                ds9        = &amp;quot;tt0106145&amp;quot;,
+                voyager    = &amp;quot;tt0112178&amp;quot;,
+                enterprise = &amp;quot;tt0244365&amp;quot;,
+                discovery  = &amp;quot;tt5171438&amp;quot;
+)
+
+labs_st &amp;lt;- setNames(
+   c(&amp;quot;The Original Series&amp;quot;, 
+     &amp;quot;The Next Generation&amp;quot;,
+     &amp;quot;Deep Space 9&amp;quot;,
+     &amp;quot;Voyager&amp;quot;, 
+     &amp;quot;Enterprise&amp;quot;,
+     &amp;quot;Discovery&amp;quot;),
+   names(star_treks))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I apply &lt;code&gt;get_series()&lt;/code&gt; to each one and combine the results row-wise with &lt;code&gt;data.table::rbindlist()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- lapply(star_treks, get_series) %&amp;gt;% 
+   rbindlist(idcol = &amp;quot;version&amp;quot;) %&amp;gt;% 
+   .[, episode := 1:.N, by = version] %&amp;gt;%
+   .[, version := factor(version, levels = names(star_treks), ordered = TRUE)]&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here’s what the data looks like:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;head(data)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##    version       date number                        title rating season
+## 1:     tos 1988-11-27      1                     The Cage    7.7      1
+## 2:     tos 1966-09-08      2                 The Man Trap    7.3      1
+## 3:     tos 1966-09-15      3                    Charlie X    7.1      1
+## 4:     tos 1966-09-22      4 Where No Man Has Gone Before    7.8      1
+## 5:     tos 1966-09-29      5               The Naked Time    7.9      1
+## 6:     tos 1966-10-06      6             The Enemy Within    7.7      1
+##              details episode
+## 1: &amp;lt;data.table[1x2]&amp;gt;       1
+## 2: &amp;lt;data.table[1x2]&amp;gt;       2
+## 3: &amp;lt;data.table[1x2]&amp;gt;       3
+## 4: &amp;lt;data.table[1x2]&amp;gt;       4
+## 5: &amp;lt;data.table[1x2]&amp;gt;       5
+## 6: &amp;lt;data.table[1x2]&amp;gt;       6&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Each row is an episode, which has the version of Star Trek that it belongs to, the emission date and other data. So far so good. It gets a bit more tricky with the column &lt;code&gt;details.&lt;/code&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data[1, ]$details[[1]]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##               gender            ratings
+## 1: &amp;lt;data.table[3x3]&amp;gt; &amp;lt;data.table[10x2]&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Each row contains a list that itself contains two tables, “gender” and “ratings”. The “gender” table has the mean rating and number of ratings by gender.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data[1, ]$details[[1]]$gender[[1]]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##     gender rating    N
+## 1:     All    7.7 5344
+## 2:   Males    7.7 3390
+## 3: Females    7.7  470&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The “ratings” table contains the number of ratings for each numeric rating.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data[1, ]$details[[1]]$ratings[[1]]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##     rating    N
+##  1:     10  991
+##  2:      9  644
+##  3:      8 1447
+##  4:      7 1271
+##  5:      6  577
+##  6:      5  220
+##  7:      4   73
+##  8:      3   40
+##  9:      2   32
+## 10:      1   49&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This &lt;a href=&#34;https://rstudio.com/resources/rstudioconf-2020/list-columns-in-data-table-reducing-the-cognitive-computational-burden-of-complex-data/&#34;&gt;nested table&lt;/a&gt; format is a bit complicated at first, but it’s pretty much the natural choice for these sort of data.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;analysing-the-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Analysing the data&lt;/h2&gt;
+&lt;p&gt;Now that I have all these data, the first thing I want to answer is the original question. How did the public perception of The Next Generation changed for each season?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data[version == &amp;quot;tng&amp;quot;] %&amp;gt;% 
+   ggplot(aes(episode, rating)) +
+   geom_line(aes(color = season, group = 1)) +
+   geom_line(data = function(x) copy(x)[, rating := mean(rating), by = season],
+             aes(color = season), size = 1) +
+   scale_color_startrek(guide = &amp;quot;none&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2021-03-01-star-trek-ratings.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;(Did you catch the small trick in the second &lt;code&gt;geom_line()&lt;/code&gt; call? If the &lt;code&gt;data&lt;/code&gt;argument inside geoms is a function, then the data plotted by the geom will be the result of applying that function to the “global” dataframe defined in the &lt;code&gt;ggplot()&lt;/code&gt; call. In this case, it replaces each episode’s rating which the mean rating of the corresponding season).&lt;/p&gt;
+&lt;p&gt;The effect is pretty clear. The first two seasons rated rather mediocrely and the show achieved it’s glory only after the third season. After that, the show’s reception is more or less stable, with a slight setback in the seventh and final season. As I translate this from &lt;a href=&#34;../../../2021/03/star-trek-rakings/&#34;&gt;the Spanish version&lt;/a&gt;, we are on the beginning of the last season and I can confirm that seasons 3 through 6 where quite solid.&lt;/p&gt;
+&lt;p&gt;The last episode of the second season jumps out from the screen due to its dreadful reception. And with good reason. For cost-saving reasons, the show producers decided to end the second season with a dreadful clipshow! It’s amazing that the show went on after such terrible season finale.&lt;/p&gt;
+&lt;p&gt;How does TNG’s ratings compare with the rest of the Star Trek catalogue?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
+   ggplot(aes(episode, rating)) +
+   geom_line(aes(color = season, group = 1)) +
+   geom_line(data = function(x) copy(x)[, rating := mean(rating), by = .(version, season)],
+             aes(color = season), size = 1) +
+   scale_color_startrek(guide = &amp;quot;none&amp;quot;) +
+   facet_wrap(~version, scales = &amp;quot;free_x&amp;quot;, labeller = labeller(version = labs_st))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2021-03-01-star-trek-ratings.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;It seems like Star Trek, like fine wine, commonly gets better with time. Besides TNG, Deep Space 9, Voyager and Enterprise, they all reached their potential only after a few relatively rocky seasons. The Original Series and Discovery are the exceptions. Both series have only three seasons, and in both series, the third season was the worst rated.&lt;/p&gt;
+&lt;p&gt;But, are the fall of Discovery the same as the fall of The Original Series? I’ve seen Discovery’s third season and I didn’t think it was that much worse than the other two. Also, because I live in this century, not only makes me run away screaming from the slow episodes of The Original Series, but also allowed me to experience the popular reaction to Discovery. I know it fell victim of the extreme polarisation that characterises our era.&lt;/p&gt;
+&lt;p&gt;A clear symptom of this polarisation is the huge difference between critic reception and audience scores. In Rotten Tomatoes, Discovery’s third season is actually the best rated of the three, with &lt;a href=&#34;https://www.rottentomatoes.com/tv/star_trek_discovery/s03&#34;&gt;a 90% positive score&lt;/a&gt;, even though the audience score is a low 46%. Same goes for &lt;a href=&#34;https://www.metacritic.com/tv/star-trek-discovery&#34;&gt;Metacritic&lt;/a&gt;: the critic mean score – 7.3 – is much higher than the user score – 3.8.&lt;/p&gt;
+&lt;p&gt;This is commonly seen when a movie or show offends some subgroup’s sensibilities. Suddenly, you get thousands of trolls rating 1 star en masse. This can be clearly seen by plotting the proportion of 1s and 10s for each episode.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data[, details[[1]]$ratings[[1]], by = .(version, season, episode, number)] %&amp;gt;% 
+   .[, .(one_star = N[rating == 1]/sum(N),
+         ten_star = N[rating == 10]/sum(N)), by = .(episode, version)] %&amp;gt;% 
+   melt(id.vars = c(&amp;quot;episode&amp;quot;, &amp;quot;version&amp;quot;)) %&amp;gt;% 
+   ggplot(aes(episode, value)) +
+   geom_line(aes(color = variable)) +
+   scale_color_startrek(name = &amp;quot;Rating %&amp;quot;, labels = c(one_star = &amp;quot;One Star&amp;quot;, 
+                                                      ten_star = &amp;quot;Ten Stars&amp;quot;)) +
+   facet_wrap(~version, scales = &amp;quot;free_x&amp;quot;, labeller = labeller(version = labs_st))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2021-03-01-star-trek-ratings.en_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Save some exceptions, no episode of the old shows has an appreciable proportion of ones. Discovery, on the other hand, consistently has a ~10% of low ratings. In the last episodes, they even outnumber the tens.&lt;/p&gt;
+&lt;p&gt;An interesting piece of data in the IMDB website is the breakdown by gender. Sci-fi sadly tends to be a genre dominated by the male gender. Is that reflected in the amount of user ratings?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
+   .[, details[[1]]$gender[[1]] , by = .(version, season, episode, number)] %&amp;gt;% 
+   .[gender != &amp;quot;All&amp;quot;] %&amp;gt;%
+   .[, .(n = sum(N)), by = .(episode, version, gender)] %&amp;gt;% 
+   ggplot(aes(episode, n)) +
+   geom_line(aes(color = gender)) + 
+   scale_color_startrek() +
+   scale_y_log10() +
+   facet_wrap(~version, scales = &amp;quot;free_x&amp;quot;, labeller = labeller(version = labs_st))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2021-03-01-star-trek-ratings.en_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Most definitely! There are so few ratings by women that I had to use a logarithmic scale; otherwise the red line would’ve been almost indistinguishable from zero.&lt;/p&gt;
+&lt;p&gt;Interestingly, for every Star Trek and for both genders reported by IMDB there’s a clear tendency of fewer ratings as the episodes progress. I’d wager this is a survivorship effect. Many people begin watching each show from the first episode and register their rating and eventually they get bored and give up. It’s therefore natural that there’s simply more people who watched and are willing to rate the first episodes than the later ones.&lt;/p&gt;
+&lt;p&gt;With respect to the gender distribution, the ratio of ratings seems to be more or less stable, with the obvious exception of four episodes from Enterprise which have almost as many female as male ratings.&lt;/p&gt;
+&lt;p&gt;These are the 10 episodes with the greatest proportion of female ratings:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
+   .[, details[[1]]$gender[[1]] , by = .(version, season, episode, number)] %&amp;gt;% 
+   .[gender != &amp;quot;All&amp;quot;] %&amp;gt;%
+   .[, .(n = sum(N)), by = .(episode, version, gender)] %&amp;gt;% 
+   dcast(episode + version ~ gender, value.var = &amp;quot;n&amp;quot;) %&amp;gt;% 
+   .[, ratio := Females/Males] %&amp;gt;% 
+   
+   data[., on = .NATURAL] %&amp;gt;% 
+   .[order(-ratio)] %&amp;gt;%
+   .[1:10] %&amp;gt;% 
+   .[, .(version, season, number, title, rating, ratio = scales::percent(ratio, accuracy = 0.1))] %&amp;gt;% 
+   knitr::kable()&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;version&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;season&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;number&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;title&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;rating&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;ratio&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;enterprise&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Home&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;8.1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;83.5%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;enterprise&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Shockwave, Part II&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;8.4&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;68.3%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;enterprise&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;23&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Regeneration&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;8.6&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;64.7%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;enterprise&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;1&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Broken Bow&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.9&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;51.6%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tos&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;15&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;The Trouble with Tribbles&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;8.9&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;18.9%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;voyager&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;4&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;17&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Retrospect&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;6.8&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;17.7%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;voyager&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;25&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Resolutions&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.4&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;16.8%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;voyager&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;16&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Blood Fever&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;16.5%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tos&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;3&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;19&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Requiem for Methuselah&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;7.4&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;16.5%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tos&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;2&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;10&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Journey to Babel&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;8.6&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;16.3%&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;I’ve never seen Enterprise so I have absolutely no idea if there’s anything special about those four episodes which seem to be uncharacteristically popular with women.&lt;/p&gt;
+&lt;p&gt;Still, it’s not easy to compare the ratio of ratings by men and women in the previous figure, so it’s better to just plot that variable.¡&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
+   .[, details[[1]]$gender[[1]] , by = .(version, season, episode, number)] %&amp;gt;% 
+   .[gender != &amp;quot;All&amp;quot;] %&amp;gt;%
+   .[, .(n = sum(N)), by = .(episode, version, gender)] %&amp;gt;% 
+   dcast(episode + version ~ gender, value.var = &amp;quot;n&amp;quot;) %&amp;gt;% 
+   .[, run := scales::rescale(episode, to = c(0, 1)), by = version] %&amp;gt;% 
+   ggplot(aes(run, Females/Males)) +
+   geom_line(aes(color = version)) +
+   scale_y_log10() +
+   scale_color_startrek( labels = labs_st) +
+   coord_cartesian(ylim = c(NA, 0.2)) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2021-03-01-star-trek-ratings.en_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Beside those Enterprise peaks, what’s more salient is the brutal drop in the proportion of female ratings towards the last season of Discovery. What happened there? My hypothesis is that men where overrepresented in the the troll horde that attacked Discovery.&lt;/p&gt;
+&lt;p&gt;Setting aside those four episodes of Enterprise, The Original Series and Voyager are neck to neck as the shows with the greatest overall proportion of female ratings. The differences are not huge, though, and to the extent that IDMB ratings are representative of the overall Star Trek audience, about 80% of the viewers are male.&lt;/p&gt;
+&lt;p&gt;So men rate more episode than women, is there a difference in the mean score?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data %&amp;gt;% 
+   .[, details[[1]]$gender[[1]] , by = .(version, season, episode, number)] %&amp;gt;% 
+   .[gender != &amp;quot;All&amp;quot;] %&amp;gt;%
+   ggplot(aes(episode, rating)) +
+   geom_line(aes(color = gender))  +
+   scale_color_startrek() + 
+   facet_wrap(~version, scales = &amp;quot;free_x&amp;quot;, labeller = labeller(version = labs_st))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2021-03-01-star-trek-ratings.en_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Yes, but not much. In general, women tend to score episodes with higher ratings. This might be a selection bias effect. Start Trek is a show generally marketed towards men, so the few women who watch the series and take the time to go to IMDB to rate it are a self selected group who might like the show more than the average viewer. Strangely to me, women don’t seem to score particularly high those episodes of Enterprise particularly popular with women.&lt;/p&gt;
+&lt;p&gt;Discovery is, again, a clear outlier. The mean score difference between genders reported by IMDB is a bit higher at the start of the series and it widens dramatically in its final season. Women scores tended to be reactively constant, but men appear to not have liked that season at all. This is consistent with my “male trolls” hypothesis.&lt;/p&gt;
+&lt;p&gt;To somehow quantify this “troll effect”, I’ll use the fact that women’s ratings remained constant both in amount and mean score. Assuming then that this subpopulation of users behaved the same during the whole run of the show, I’ll use it as a predictor to predict the amount of ratings by men. This will serve as a first approximation of the number of “extra” ratings.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;discovery_ratings &amp;lt;- data %&amp;gt;% 
+   .[, details[[1]]$gender[[1]] , by = .(version, season, episode, number)] %&amp;gt;% 
+   # .[gender != &amp;quot;All&amp;quot;] %&amp;gt;%
+   .[, .(n = sum(N)), by = .(episode, version, season, gender)] %&amp;gt;% 
+   .[version == &amp;quot;discovery&amp;quot;] %&amp;gt;%
+   dcast(version + episode + season ~ gender, value.var = &amp;quot;n&amp;quot;) 
+
+model &amp;lt;- discovery_ratings %&amp;gt;% 
+   .[episode &amp;lt;= 20] %&amp;gt;% 
+   lm(Males ~ Females-1, data = .)
+
+discovery_ratings[, predicted := predict(model, newdata = discovery_ratings)]
+
+extra &amp;lt;- discovery_ratings %&amp;gt;% 
+   .[, .(Males = sum(Males),
+         Females = sum(Females),
+         predicted = sum(predicted)), by = .(version, season)]
+
+discovery_ratings %&amp;gt;% 
+   ggplot(aes(Females, Males)) +
+   
+   geom_segment(data = ~.x[season == 3], aes(xend = Females, yend = predicted)) +
+   geom_point(aes(color = season)) +
+   # geom_line(aes(color = season, y = predicted)) +
+   
+   geom_smooth(method = &amp;quot;lm&amp;quot;, formula = y ~ x-1, data = ~.x[episode &amp;lt; 20], fullrange = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2021-03-01-star-trek-ratings.en_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Those blue dots above the line represent the extra ratings by men during the third season. In total they sum to 5138 ratings, which translate to about 25% of all male ratings.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+&lt;hr /&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn1&#34;&gt;&lt;p&gt;Note that I use &lt;code&gt;memomise&lt;/code&gt; to cache the results. This is great to speed up the iterative development of these functions and also to annoy IMDB a little less.&lt;a href=&#34;#fnref1&#34; class=&#34;footnote-back&#34;&gt;↩︎&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Rammstein vs. Lacrimosa</title>

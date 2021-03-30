@@ -5,6 +5,16 @@
   <url>
     <loc>/2021/03/star-trek-rakings/</loc>
     <lastmod>2021-03-09T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/2021/03/star-trek-rakings/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-es"
+                href="/2021/03/star-trek-rakings/"
+                />
   </url>
   
   <url>
@@ -106,6 +116,16 @@
     <loc>/tags/webscraping/</loc>
     <lastmod>2021-03-09T00:00:00+00:00</lastmod>
     <priority>0</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/tags/webscraping/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-es"
+                href="/tags/webscraping/"
+                />
   </url>
   
   <url>
