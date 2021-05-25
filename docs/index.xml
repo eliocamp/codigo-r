@@ -38,9 +38,8 @@ mtcars %&amp;gt;%
 ## 2     6  19.7
 ## 3     8  15.1&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Ese &lt;code&gt;%&amp;gt;%&lt;/code&gt; es el operador que permite encadenar una función tras otra sin necesidad de asignar variables a pasos intermedios.
-Técnicamente lo que hace es evaluar la expresión de la derecha (o, más usualmente, la de abajo) usando como primer argumento, la expresión d la izquierda (arriba).
-El paquete dplyr depende del paquete magrittr para hacer esa magia.
-Y muchos otros paquetes también importan la pipa de magrittr.&lt;/p&gt;
+Técnicamente lo que hace es evaluar la expresión de la derecha (o, más usualmente, la de abajo) usando como primer argumento la expresión de la izquierda (arriba).
+El paquete dplyr depende del paquete &lt;a href=&#34;https://magrittr.tidyverse.org/&#34;&gt;magrittr&lt;/a&gt; para hacer esa magia y muchos otros paquetes también importan la pipa de magrittr.&lt;/p&gt;
 &lt;p&gt;Con la versión 4.1.0, ahora es posible escribir&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mtcars |&amp;gt;
    group_by(cyl) |&amp;gt;
@@ -64,7 +63,7 @@ Esto es porque magrittr hace un montón de cosas detrás de escena, mientras que
 En otras palabras,&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x %&amp;gt;%
    mean()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;no es literalmente equivalente a &lt;code&gt;mean(x)&lt;/code&gt;; hay todo un inverso de procesamiento adentro de esos tres caracteres.
+&lt;p&gt;no es literalmente equivalente a &lt;code&gt;mean(x)&lt;/code&gt;; hay un montón de procesamiento detrás de esos tres caracteres.
 Mientas que&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x |&amp;gt; 
    mean()&lt;/code&gt;&lt;/pre&gt;
@@ -85,7 +84,7 @@ El ejemplo canónico es el modelo lineal:&lt;/p&gt;
 ## Coefficients:
 ## (Intercept)         disp  
 ##    29.59985     -0.04122&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Como el primer argumento de &lt;code&gt;lm()&lt;/code&gt; no es los datos, hay que usar &lt;code&gt;data = .&lt;/code&gt; para decirle a magrittr que &lt;code&gt;datos&lt;/code&gt; no tiene que ser el primer argumento de &lt;code&gt;lm()&lt;/code&gt;.
+&lt;p&gt;Como el primer argumento de &lt;code&gt;lm()&lt;/code&gt; no son los datos, hay que usar &lt;code&gt;data = .&lt;/code&gt; para decirle a magrittr que &lt;code&gt;mtcars&lt;/code&gt; no tiene que ser el primer argumento de &lt;code&gt;lm()&lt;/code&gt;.
 La pipa nativa por ahora &lt;strong&gt;no tiene placeholder&lt;/strong&gt;.
 La forma para solucionar eso es creando una función anónima:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mtcars |&amp;gt; 
@@ -98,7 +97,7 @@ La forma para solucionar eso es creando una función anónima:&lt;/p&gt;
 ## (Intercept)          cyl  
 ##      37.885       -2.876&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Esto es bastante feito, por lo que la propuesta de R es usar otro truco de R 4.1.0: la nueva sintaxis para crear funciones.
-Desde R 4.1.0 estas dos expresiones son equivalentes:&lt;/p&gt;
+A partir de R 4.1.0 estas dos expresiones son equivalentes:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;function(x) x + 1 
 \(x) x + 1&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;La nueva sintaxis del monigote saludando ( &lt;code&gt;\(x)&lt;/code&gt;) esencialmente ahorra caracteres a la hora de crear funciones.
@@ -148,7 +147,7 @@ También hay algunas limitaciones, como que la nueva pipa no acepta “símbolos
 &lt;pre&gt;&lt;code&gt;## Error: function &amp;#39;[&amp;#39; not supported in RHS call of a pipe&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Ah, aparece la limitación de esos símbolos especiales.
 ¿Y ahora?&lt;/p&gt;
-&lt;p&gt;El truco es que R se fija en el nombre de la función, así que lo único que hay que hacer es renombrar la función &lt;code&gt;[&lt;/code&gt; (amo que en R todo sea una función).
+&lt;p&gt;El truco es que R sólo se fija en el nombre de la función, así que lo único que hay que hacer es renombrar la función &lt;code&gt;[&lt;/code&gt; (amo que en R todo sea una función).
 Por ejemplo, este código es perfectamente funcional:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;.d &amp;lt;- `[` 
 
@@ -164,10 +163,10 @@ mtcars |&amp;gt;
 &lt;h2&gt;Larga vida a magrittr&lt;/h2&gt;
 &lt;p&gt;Entonces, ¿tengo que desechar a &lt;code&gt;%&amp;gt;%&lt;/code&gt; y amar a &lt;code&gt;|&amp;gt;&lt;/code&gt;?
 Y… no necesariamente.&lt;/p&gt;
-&lt;p&gt;R 4.1.0 salió hace un par de semanas y es muy probable que la mayor parte de la gente no hay actualizado ni tenga planes de actualizar pronto.
+&lt;p&gt;R 4.1.0 salió hace un par de semanas y es muy probable que la mayor parte de la gente no haya actualizado ni tenga planes de actualizar pronto.
 En ambientes corporativos o en servidores, muchas personas que usan R probablemente ni siquiera tengan control sobre la versión que tienen y quienes lo administran sean bastante reticentes de actualizar.
 Código “en producción” corriendo en versiones específicas de R en pos de estabilidad y reproducibilidad probablemente tarden años en actualizarse, si es que se actualizan.&lt;/p&gt;
-&lt;p&gt;Por todo esto, si bien el reino de magrittr ya tiene los días contados, todavía está lejos de terminar.&lt;/p&gt;
+&lt;p&gt;Por todo esto, si bien el reinado de magrittr ya tiene los días contados, todavía está lejos de terminar.&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>

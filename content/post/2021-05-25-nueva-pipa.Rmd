@@ -30,9 +30,8 @@ mtcars %>%
 ```
 
 Ese `%>%` es el operador que permite encadenar una función tras otra sin necesidad de asignar variables a pasos intermedios.
-Técnicamente lo que hace es evaluar la expresión de la derecha (o, más usualmente, la de abajo) usando como primer argumento, la expresión d la izquierda (arriba).
-El paquete dplyr depende del paquete magrittr para hacer esa magia.
-Y muchos otros paquetes también importan la pipa de magrittr.
+Técnicamente lo que hace es evaluar la expresión de la derecha (o, más usualmente, la de abajo) usando como primer argumento la expresión de la izquierda (arriba).
+El paquete dplyr depende del paquete [magrittr](https://magrittr.tidyverse.org/) para hacer esa magia y muchos otros paquetes también importan la pipa de magrittr.
 
 Con la versión 4.1.0, ahora es posible escribir
 
@@ -62,7 +61,7 @@ x %>%
    mean()
 ```
 
-no es literalmente equivalente a `mean(x)`; hay todo un inverso de procesamiento adentro de esos tres caracteres.
+no es literalmente equivalente a `mean(x)`; hay un montón de procesamiento detrás de esos tres caracteres.
 Mientas que
 
 ```{r, eval = FALSE}
@@ -86,7 +85,7 @@ mtcars %>%
    lm(mpg ~ disp, data = .)
 ```
 
-Como el primer argumento de `lm()` no es los datos, hay que usar `data = .` para decirle a magrittr que `datos` no tiene que ser el primer argumento de `lm()`.
+Como el primer argumento de `lm()` no son los datos, hay que usar `data = .` para decirle a magrittr que `mtcars` no tiene que ser el primer argumento de `lm()`.
 La pipa nativa por ahora **no tiene placeholder**.
 La forma para solucionar eso es creando una función anónima:
 
@@ -96,7 +95,7 @@ mtcars |>
 ```
 
 Esto es bastante feito, por lo que la propuesta de R es usar otro truco de R 4.1.0: la nueva sintaxis para crear funciones.
-Desde R 4.1.0 estas dos expresiones son equivalentes:
+A partir de R 4.1.0 estas dos expresiones son equivalentes:
 
 ```{r, eval = FALSE}
 function(x) x + 1 
@@ -150,7 +149,7 @@ mtcars |>
 Ah, aparece la limitación de esos símbolos especiales.
 ¿Y ahora?
 
-El truco es que R se fija en el nombre de la función, así que lo único que hay que hacer es renombrar la función `[` (amo que en R todo sea una función).
+El truco es que R sólo se fija en el nombre de la función, así que lo único que hay que hacer es renombrar la función `[` (amo que en R todo sea una función).
 Por ejemplo, este código es perfectamente funcional:
 
 ```{r}
@@ -167,8 +166,8 @@ Lo cual no es tan malo.
 Entonces, ¿tengo que desechar a `%>%` y amar a `|>`?
 Y... no necesariamente.
 
-R 4.1.0 salió hace un par de semanas y es muy probable que la mayor parte de la gente no hay actualizado ni tenga planes de actualizar pronto.
+R 4.1.0 salió hace un par de semanas y es muy probable que la mayor parte de la gente no haya actualizado ni tenga planes de actualizar pronto.
 En ambientes corporativos o en servidores, muchas personas que usan R probablemente ni siquiera tengan control sobre la versión que tienen y quienes lo administran sean bastante reticentes de actualizar.
 Código "en producción" corriendo en versiones específicas de R en pos de estabilidad y reproducibilidad probablemente tarden años en actualizarse, si es que se actualizan.
 
-Por todo esto, si bien el reino de magrittr ya tiene los días contados, todavía está lejos de terminar.
+Por todo esto, si bien el reinado de magrittr ya tiene los días contados, todavía está lejos de terminar.

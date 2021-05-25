@@ -30,9 +30,8 @@ mtcars %&gt;%
 ## 2     6  19.7
 ## 3     8  15.1</code></pre>
 <p>Ese <code>%&gt;%</code> es el operador que permite encadenar una función tras otra sin necesidad de asignar variables a pasos intermedios.
-Técnicamente lo que hace es evaluar la expresión de la derecha (o, más usualmente, la de abajo) usando como primer argumento, la expresión d la izquierda (arriba).
-El paquete dplyr depende del paquete magrittr para hacer esa magia.
-Y muchos otros paquetes también importan la pipa de magrittr.</p>
+Técnicamente lo que hace es evaluar la expresión de la derecha (o, más usualmente, la de abajo) usando como primer argumento la expresión de la izquierda (arriba).
+El paquete dplyr depende del paquete <a href="https://magrittr.tidyverse.org/">magrittr</a> para hacer esa magia y muchos otros paquetes también importan la pipa de magrittr.</p>
 <p>Con la versión 4.1.0, ahora es posible escribir</p>
 <pre class="r"><code>mtcars |&gt;
    group_by(cyl) |&gt;
@@ -56,7 +55,7 @@ Esto es porque magrittr hace un montón de cosas detrás de escena, mientras que
 En otras palabras,</p>
 <pre class="r"><code>x %&gt;%
    mean()</code></pre>
-<p>no es literalmente equivalente a <code>mean(x)</code>; hay todo un inverso de procesamiento adentro de esos tres caracteres.
+<p>no es literalmente equivalente a <code>mean(x)</code>; hay un montón de procesamiento detrás de esos tres caracteres.
 Mientas que</p>
 <pre class="r"><code>x |&gt; 
    mean()</code></pre>
@@ -77,7 +76,7 @@ El ejemplo canónico es el modelo lineal:</p>
 ## Coefficients:
 ## (Intercept)         disp  
 ##    29.59985     -0.04122</code></pre>
-<p>Como el primer argumento de <code>lm()</code> no es los datos, hay que usar <code>data = .</code> para decirle a magrittr que <code>datos</code> no tiene que ser el primer argumento de <code>lm()</code>.
+<p>Como el primer argumento de <code>lm()</code> no son los datos, hay que usar <code>data = .</code> para decirle a magrittr que <code>mtcars</code> no tiene que ser el primer argumento de <code>lm()</code>.
 La pipa nativa por ahora <strong>no tiene placeholder</strong>.
 La forma para solucionar eso es creando una función anónima:</p>
 <pre class="r"><code>mtcars |&gt; 
@@ -90,7 +89,7 @@ La forma para solucionar eso es creando una función anónima:</p>
 ## (Intercept)          cyl  
 ##      37.885       -2.876</code></pre>
 <p>Esto es bastante feito, por lo que la propuesta de R es usar otro truco de R 4.1.0: la nueva sintaxis para crear funciones.
-Desde R 4.1.0 estas dos expresiones son equivalentes:</p>
+A partir de R 4.1.0 estas dos expresiones son equivalentes:</p>
 <pre class="r"><code>function(x) x + 1 
 \(x) x + 1</code></pre>
 <p>La nueva sintaxis del monigote saludando ( <code>\(x)</code>) esencialmente ahorra caracteres a la hora de crear funciones.
@@ -140,7 +139,7 @@ También hay algunas limitaciones, como que la nueva pipa no acepta “símbolos
 <pre><code>## Error: function &#39;[&#39; not supported in RHS call of a pipe</code></pre>
 <p>Ah, aparece la limitación de esos símbolos especiales.
 ¿Y ahora?</p>
-<p>El truco es que R se fija en el nombre de la función, así que lo único que hay que hacer es renombrar la función <code>[</code> (amo que en R todo sea una función).
+<p>El truco es que R sólo se fija en el nombre de la función, así que lo único que hay que hacer es renombrar la función <code>[</code> (amo que en R todo sea una función).
 Por ejemplo, este código es perfectamente funcional:</p>
 <pre class="r"><code>.d &lt;- `[` 
 
@@ -156,8 +155,8 @@ mtcars |&gt;
 <h2>Larga vida a magrittr</h2>
 <p>Entonces, ¿tengo que desechar a <code>%&gt;%</code> y amar a <code>|&gt;</code>?
 Y… no necesariamente.</p>
-<p>R 4.1.0 salió hace un par de semanas y es muy probable que la mayor parte de la gente no hay actualizado ni tenga planes de actualizar pronto.
+<p>R 4.1.0 salió hace un par de semanas y es muy probable que la mayor parte de la gente no haya actualizado ni tenga planes de actualizar pronto.
 En ambientes corporativos o en servidores, muchas personas que usan R probablemente ni siquiera tengan control sobre la versión que tienen y quienes lo administran sean bastante reticentes de actualizar.
 Código “en producción” corriendo en versiones específicas de R en pos de estabilidad y reproducibilidad probablemente tarden años en actualizarse, si es que se actualizan.</p>
-<p>Por todo esto, si bien el reino de magrittr ya tiene los días contados, todavía está lejos de terminar.</p>
+<p>Por todo esto, si bien el reinado de magrittr ya tiene los días contados, todavía está lejos de terminar.</p>
 </div>
