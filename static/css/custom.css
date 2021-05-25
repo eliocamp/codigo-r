@@ -1,3 +1,7 @@
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+
+
 img[src$='#center']
 {
     display: block;
@@ -5,4 +9,13 @@ img[src$='#center']
                             whatever floats your boat, but keep the
                             horizontal 'auto' for this to work */
     /* whatever else styles you fancy here */
+}
+
+
+
+code, pre>code {
+   font-family: 'Fira Code', monospace !important;
+   text-rendering: optimizeLegibility !important;
+     -webkit-font-feature-settings: "liga" on, "calt" on !important;
+
 }
