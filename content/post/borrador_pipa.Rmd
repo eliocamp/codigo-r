@@ -1,0 +1,155 @@
+---
+title: La nueva pipa
+author: Elio Campitelli
+date: '2021-05-25'
+slug: r-pipa-nativa
+categories:
+  - R
+
+keywords:
+  - tech
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+Este post quizás llega un poco tarde pero hace poco salió la versión 4.1.0 de R. 
+Y si la versión 4.0.0 hizo noticia con el revolucionario cambio de ˋstringAsFactors = Falseˋ, 
+la gran novedad de esta siguiente versión es la implementación de una "pipa" nativa. 
+
+La "pipa" (traducción no muy buena de "pipe" en inglés) es una de las principales distinciones del 
+código que usa tidyvers / dplyr. Seguro que alguna vez usaste o viste algo como
+
+ˋˋˋr 
+library(dplyr)
+mtcars %>%
+   group_by(cyl) %>%
+   summarise(city = mean(city)) 
+ˋˋˋ
+
+Ese ˋ%>%ˋ es el operador que permite encadenar una función tras otra sin neceisdad
+de asignar variables a pasos intermedios. Técnicamente lo que hace es evaluar la expresión 
+de la derecha (o, más usualmente, la de abajo) usando como primer argumento, la expresión d
+la izquierda (arriba). El paquete dplyr depende del paquete magrittr para hacer esa magia. 
+Y muchos otros paquetes también importan la pipa de magrittr.  
+
+Con la versión 4.1.0, ahora es posible escribir 
+
+ˋˋˋr 
+mtcars |>
+   group_by(cyl) |> 
+   summarise(city = mean(city)) 
+ˋˋˋ
+
+y obtener el mismo resultado. 
+
+¿Cuál es la diferencia, aparte de un caracter menos? (No que la cantidad de caracteres
+importe mucho si uno usa el atajo de RStudio Ctrl + Shitf + M.)
+
+La principal, para mí, es que se puede usar la pipa sin depender del paquete magrittr. 
+Quizás esto no sea algo que te quite el sueño, pero como regla general siempre está bueno 
+que tus análisis dependan de la menor cantidad de paquetes distintos, de manera que haya
+menos posibilidades de que alguno cambie algo importante y se rompa todo. 
+
+Para quienes usan dplyr (o quienes van por lo fácil y empiezan con ˋlibrary(tidyverse)ˋ)
+usar ˋ|>ˋ o ˋ%>%ˋ probablemente sea indistinto. Pero hay todo un multiverso por fuera del 
+tidyverso. Yo, por ejemplo, prefiero data.table a dplyr y mi sintaxis preferida combina data.table 
+con magrittr. Con este cambio, ya no necesito empezar cada script con ˋlibrary(magrittr)ˋ 
+(aunque ver la sección siguiente). 
+
+Pará quienes tienen una (¿insana?) obsesión con la velocidad y la eficiencia,
+ˋ|>ˋ parecer ser más rápida que ˋ%>%ˋ. Esto es porque magrittr hace un montón de cosas,
+detrás de escena, mientras que la pipa nativa es solo una transformación de sintaxis. 
+En otras palabras, 
+
+ˋˋˋr
+x %>% mean()
+ˋˋˋ
+
+no es literalmente equivalente a ˋmean(x)ˋ; hay todo un inverso de procesamiento adentro
+de esos tres caracteres. Mientas que 
+
+ˋˋˋr
+x |> mean()
+ˋˋˋ
+
+Es interpretado por R exactamente como ˋmean(x)ˋ. Es decir, hay cero "overhead" por usar 
+ˋ|>ˋ.
+
+Pero la realidad es que salvo casos especiales, la diferencia es despreciable. En cualquier 
+análisis de datos que valga la pena, el overhead de usar magrittr es minúsculo en comparación
+con el tiempo que toma hacer el resto de los cómputos. Mi consejo es no prestarle demasiada
+atención a diferencias del orden del microsegundo. 
+
+Lo que sí hay que prestarle atención es a las diferencias sutiles (o no tanto) entre
+ambas pipas. La más jodida de todas es que la pipa de magrittr tiene una forma de 
+usar un "placeholder" para cuando uno no quiere que el resultado de la parte izquierda
+vaya al *primer* argumento de la expresión de la derecha. El ejemplo canónico es el modelo
+lineal:
+
+ˋˋˋr
+datos %>%
+  lm(y ˜ x, data = .)
+ˋˋˋ
+
+Como el primer argumento de ˋlm()ˋ no es los datos, hay que usar ˋdata = .ˋ para decirle
+a magrittr que ˋdatosˋ no tiene que ser el primer argumento de ˋlm()ˋ. La pipa nativa por ahora 
+**no tiene placeholder**. La forma para solucionar eso es creando una función anónima:
+
+ˋˋˋr
+datos |>
+  function(x) lm(y ˜x, data = x)
+ˋˋˋ
+
+Esto es bastante feito, por lo que la propuesta de R es usar otro truco de R 4.1.0: la nueva 
+sintaxis para crear funciones. Desde R 4.1.0 estas dos expresiones son equivalentes:
+
+ˋˋˋr
+function(x) x + 1
+\(x) x + 1
+ˋˋˋ
+
+La nueva sintaxis del monigote saludando ( ˋ\(x)ˋ) esencialmente ahorra caracteres a la hora
+de crear funciones. Por lo que combinando esto con la pipa nativa, se puede hacer
+
+ˋˋˋr
+datos |> 
+   \(d) lm(y ˜ x, data = x)
+ˋˋˋ
+
+que es marginalmente más legible, aunque aún todavía bastante feo. 
+
+Lo cual me lleva a mi amada sintaxis de data.table + magrittr:
+
+ˋˋˋr
+mtcars %>% 
+  .[, .(cty = mean(city)), by = cyl]
+ˋˋˋ
+
+Dado que el punto que está al principio de la primera línea no es nada menos que 
+el placeholder de magrittr y que la nueva pipa no tiene placeholder, está más que 
+claro que esta sintaxis no va a funcionar simplemente cambiando ˋ%>%ˋ por ˋ|>ˋ. 
+También hay algunas limitaciones, como que la nueva pipa no acepta "símbolos especiales"
+como "[", "+" o "\*" en la expresión derecha. 
+
+En resumen, la sintaxis con data.table se debe cambiar por algo como esto:
+
+ˋˋˋr
+.d <- ˋ[ˋ
+mtcars |>
+  .d(, .(city = mean(city)), by = cyl)
+ˋˋˋ
+
+Lo cual no es tan malo. 
+
+Entonces, ¿tengo que desechar a ˋ%>%ˋ y amar a ˋ|>ˋ? Y... no. R 4.1.0 salío hace un par de semanas
+y es muy probable que la mayor parte de la gente no hay actualizado ni tenga planes de 
+actualizar pronto. En ambientes corporativos o en servidores, muchas personas que 
+usan R probablemente ni siquiera tengan control sobre la versión que tienen y quienes 
+lo administran sean bastante reticentes de actualizar. Código "en producción" corriendo
+en versiones específicas de R en pos de estabilidad y reproducibilidad probablemente tarden
+años en actualizarse, si es que se actualizan. 
+
+Por todo esto, si bien el reino de magrittr ya tiene los días contados, todavía está lejos
+de terminar. 
