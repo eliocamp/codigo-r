@@ -284,7 +284,7 @@ mtcars %&gt;%
 ## 1     4  26.7
 ## 2     6  19.7
 ## 3     8  15.1</code></pre>
-<p>Ese <code>%&gt;%</code> es el operador que permite encadenar una función tras otra sin neceisdad de asignar variables a pasos intermedios.
+<p>Ese <code>%&gt;%</code> es el operador que permite encadenar una función tras otra sin necesidad de asignar variables a pasos intermedios.
 Técnicamente lo que hace es evaluar la expresión de la derecha (o, más usualmente, la de abajo) usando como primer argumento, la expresión d la izquierda (arriba).
 El paquete dplyr depende del paquete magrittr para hacer esa magia.
 Y muchos otros paquetes también importan la pipa de magrittr.</p>
@@ -299,14 +299,14 @@ Y muchos otros paquetes también importan la pipa de magrittr.</p>
 ## 2     6  19.7
 ## 3     8  15.1</code></pre>
 <p>¿Cuál es la diferencia, aparte de un caracter menos?
-(No que la cantidad de caracteres importe mucho si uno usa el atajo de RStudio Ctrl + Shitf + M. Y con la nueva versión de RStudio <a href="https://web.archive.org/web/20210525152348/https://www.rstudio.com/products/rstudio/download/preview/">que ahora está en preview</a>, se puede elegir cuál usar.)</p>
+(No que la cantidad de caracteres importe mucho si uno usa el atajo de RStudio Ctrl + Shift + M. Y con la nueva versión de RStudio <a href="https://web.archive.org/web/20210525152348/https://www.rstudio.com/products/rstudio/download/preview/">que ahora está en preview</a>, se puede elegir cuál usar.)</p>
 <p>La principal, para mí, es que se puede usar la pipa sin depender del paquete magrittr.
 Quizás esto no sea algo que te quite el sueño, pero como regla general siempre está bueno que tus análisis dependan de la menor cantidad de paquetes distintos, de manera que haya menos posibilidades de que alguno cambie algo importante y se rompa todo.</p>
 <p>Para quienes usan dplyr (o quienes van por lo fácil y empiezan con <code>library(tidyverse)</code>) usar <code>|&gt;</code> o <code>%&gt;%</code> probablemente sea indistinto.
 Pero hay todo un multiverso por fuera del tidyverso.
 Yo, por ejemplo, prefiero data.table a dplyr y mi sintaxis preferida combina data.table con magrittr.
-Con este cambio, ya no necesito empezar cada script con <code>library(magrittr)</code> (aunque ver [la siguiente seccion]).</p>
-<p>Pará quienes tienen una (¿insana?) obsesión con la velocidad y la eficiencia, <code>|&gt;</code> <a href="https://michaelbarrowman.co.uk/post/the-new-base-pipe/">parecer ser más rápida</a> que <code>%&gt;%</code>.
+Con este cambio, ya no necesito empezar cada script con <code>library(magrittr)</code> (aunque ver [la siguiente sección]).</p>
+<p>Para quienes tienen una (¿insana?) obsesión con la velocidad y la eficiencia, <code>|&gt;</code> <a href="https://michaelbarrowman.co.uk/post/the-new-base-pipe/">parecer ser más rápida</a> que <code>%&gt;%</code>.
 Esto es porque magrittr hace un montón de cosas detrás de escena, mientras que la pipa nativa es solo una transformación de sintaxis.
 En otras palabras,</p>
 <pre class="r"><code>x %&gt;%
@@ -362,6 +362,7 @@ Por lo que combinando esto con la pipa nativa, se puede hacer</p>
 <p>que es marginalmente más legible, aunque aún todavía bastante feo.
 La sintaxis alternativa, que creo que por ahora está en veremos, es esta:</p>
 <pre class="r"><code>Sys.setenv(`_R_USE_PIPEBIND_` = TRUE) 
+
 mtcars |&gt; 
    . =&gt; lm(mpg ~ disp, data = .)</code></pre>
 <pre><code>## 
@@ -410,7 +411,7 @@ mtcars |&gt;
 <h2>Larga vida a magrittr</h2>
 <p>Entonces, ¿tengo que desechar a <code>%&gt;%</code> y amar a <code>|&gt;</code>?
 Y… no necesariamente.</p>
-<p>R 4.1.0 salío hace un par de semanas y es muy probable que la mayor parte de la gente no hay actualizado ni tenga planes de actualizar pronto.
+<p>R 4.1.0 salió hace un par de semanas y es muy probable que la mayor parte de la gente no hay actualizado ni tenga planes de actualizar pronto.
 En ambientes corporativos o en servidores, muchas personas que usan R probablemente ni siquiera tengan control sobre la versión que tienen y quienes lo administran sean bastante reticentes de actualizar.
 Código “en producción” corriendo en versiones específicas de R en pos de estabilidad y reproducibilidad probablemente tarden años en actualizarse, si es que se actualizan.</p>
 <p>Por todo esto, si bien el reino de magrittr ya tiene los días contados, todavía está lejos de terminar.</p>
