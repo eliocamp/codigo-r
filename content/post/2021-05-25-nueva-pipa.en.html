@@ -1,0 +1,163 @@
+---
+title: The new R pipe
+author: Elio Campitelli
+date: '2021-05-25'
+slug: r-pipa-nativa
+categories:
+  - R
+keywords:
+  - tech
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>R 4.1.0 is out!
+And if version 4.0.0 made history with the revolutionary change of <code>stringAsFactors = FALSE</code>, the big splashing news in this next version is the implementation of a native pipe.</p>
+<div id="the-new-pipe" class="section level2">
+<h2>The new pipe</h2>
+<p>The “pipe” is one of the most distinctive qualities of tidyverse/dplyr code.
+I’m sure you’ve used or seen something like this:</p>
+<pre class="r"><code>library(dplyr) 
+
+mtcars %&gt;%
+   group_by(cyl) %&gt;% 
+   summarise(mpg = mean(mpg)) </code></pre>
+<pre><code>## # A tibble: 3 x 2
+##     cyl   mpg
+##   &lt;dbl&gt; &lt;dbl&gt;
+## 1     4  26.7
+## 2     6  19.7
+## 3     8  15.1</code></pre>
+<p>That <code>%&gt;%</code> is the operator that allows you to chain one function after another without the need to assign intermediate variables or deeply-nested parenthesis.
+Technically what it’s doing under the hood is evaluating the expression on the right-hand side fo the pipe (or, more usually, on the next line) using the expression on the left (or same line) as the first argument.
+The dplyr package depends on the <a href="https://magrittr.tidyverse.org/">magrittr</a> package to do all that magic, and many other packages also import the magrittr pipe.</p>
+<p>With version 4.1.0, it’s now possible to write</p>
+<pre class="r"><code>mtcars |&gt;
+   group_by(cyl) |&gt;
+   summarise(mpg = mean(mpg))</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##     cyl   mpg
+##   &lt;dbl&gt; &lt;dbl&gt;
+## 1     4  26.7
+## 2     6  19.7
+## 3     8  15.1</code></pre>
+<p>What is the difference, other than one less character?
+(Not that the number of characters matters much if one uses the RStudio shortcut Ctrl + Shift + M. And with the new version of RStudio <a href="https://web.archive.org/web/20210525152348/https://www.rstudio.com/products/rstudio/download/preview/">which is now in preview</a>, one can choose which to use).</p>
+<p>The main difference, for me, is that now you can use the pipe without relying on the magrittr package.
+Maybe this isn’t something you’ll lose sleep over, but as a rule of thumb it’s always desirable for your analysis to depend on as few different packages as possible.
+The more dependencies, the higher the probability of some update changing something important that destroys everything you built.</p>
+<p>For those who use dplyr (or those maniacs that start their scripts with <code>library(tidyverse)</code>), <code>|&gt;</code> and <code>%&gt;%</code> are probably interchangeable.
+But there’s a whole multiverse outside the tidyverse.
+I, for example, prefer data.table to dplyr and my preferred syntax combines data.table with magrittr.
+With this change, I no longer need to start each script with <code>library(magrittr)</code> (although see <a href="#what-about-data.table">the next section</a>).</p>
+<p>For those who have an (probably unhealthy?) obsession with speed and efficiency, <code>|&gt;</code> <a href="https://michaelbarrowman.co.uk/post/the-new-base-pipe/">appears to be faster</a> than <code>%&gt;%</code>.
+This is because magrittr does a lot of stuff behind the scenes, while the native pipe is just a syntax transformation.
+In other words,</p>
+<pre class="r"><code>x %&gt;%
+   mean()</code></pre>
+<p>is not literally equivalent to <code>mean(x)</code>; there is a lot of processing behind those three characters.
+While</p>
+<pre class="r"><code>x |&gt; 
+   mean()</code></pre>
+<p>is interpreted by R <strong>exactly</strong> as <code>mean(x)</code>.
+That is, there is zero overhead for using <code>|&gt;</code>.</p>
+<p>But the reality is that except in very special cases, the difference is negligible.
+In any worthwhile data analysis, the overhead of using magrittr is minuscule compared to the time it takes to do (and write!) the rest of the computations.
+My advice is not to get bogged down into chasing microsecond-level differences.</p>
+<p>What you do need to pay attention to are the subtle (or not so subtle) differences between the two pipes.
+Perhaps the single most important difference is that the magrittr has a placeholder element for when one doesn’t want the left hand side result to go to the <em>first</em> argument of the right hand expression.
+The canonical example is the linear model:</p>
+<pre class="r"><code>mtcars %&gt;% 
+   lm(mpg ~ disp, data = .)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ disp, data = .)
+## 
+## Coefficients:
+## (Intercept)         disp  
+##    29.59985     -0.04122</code></pre>
+<p>Since the first argument of <code>lm()</code> is not the data, you have to use <code>data = .</code> to tell magrittr that <code>mtcars</code> does not have to be the first argument of <code>lm()</code>.
+The native pipe currently <strong>doesn’t have a placeholder</strong>.
+The way to fix that is to create an anonymous function:</p>
+<pre class="r"><code>mtcars |&gt; 
+   (function(x) lm(mpg ~ cyl, data = x))()</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ cyl, data = x)
+## 
+## Coefficients:
+## (Intercept)          cyl  
+##      37.885       -2.876</code></pre>
+<p>This is quite ugly, so R’s answer is to use another trick from R 4.1.0: the new function-creation syntax.
+As of R 4.1.0 these two expressions are equivalent:</p>
+<pre class="r"><code>function(x) x + 1 
+\(x) x + 1</code></pre>
+<p>The new “waving-person” syntax ( <code>\(x)</code>) essentially saves characters when creating functions.
+So by combining this with the native pipe, you can do</p>
+<pre class="r"><code>mtcars |&gt; 
+   (\(x) lm(mpg ~ disp, data = x))() </code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ disp, data = x)
+## 
+## Coefficients:
+## (Intercept)         disp  
+##    29.59985     -0.04122</code></pre>
+<p>which is marginally more readable, though still quite ugly.
+The alternative syntax, which I think for now is a bit experimental, is this:</p>
+<pre class="r"><code>Sys.setenv(`_R_USE_PIPEBIND_` = TRUE) 
+
+mtcars |&gt; 
+   . =&gt; lm(mpg ~ disp, data = .)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ disp, data = mtcars)
+## 
+## Coefficients:
+## (Intercept)         disp  
+##    29.59985     -0.04122</code></pre>
+<p>(Where the first line is indispensable and strongly signals that this code is not ready or prime time.)</p>
+<p>So you first set the placeholder symbol (in this case <code>.</code>) and after the <code>=&gt;</code>, you can write the same code that you would use in the magrittr pipe.
+In short, for cases where the <code>.</code> placeholder <code>.</code> is used, the replacement for <code>%&gt;%</code> would be <code>|&gt; . =&gt;</code>.
+(Although, again, I understand that this syntax is neither definitive nor officially supported yet).</p>
+</div>
+<div id="what-about-data.table" class="section level2">
+<h2>What about data.table?</h2>
+<p>Which brings me to my beloved data.table + magrittr syntax:</p>
+<pre class="r"><code>mtcars &lt;- data.table::as.data.table(mtcars)
+mtcars %&gt;% 
+   .[, .(mpg = mean(mpg)), by = cyl]</code></pre>
+<pre><code>##    cyl      mpg
+## 1:   6 19.74286
+## 2:   4 26.66364
+## 3:   8 15.10000</code></pre>
+<p>Given that the dot at the beginning of the first line is nothing less than magrittr’s placeholder, and that the new pipe has no placeholder, you might correctly guess that this syntax is not going to translate to the native pipe by simply changing <code>%&gt;%</code> to <code>|&gt;</code>.
+There are also some limitations, such as that the new pipe does not accept “special symbols” like <code>[</code>, <code>+</code> or <code>*</code> in the right expression.</p>
+<p>Remembering the <code>=&gt;</code> syntax thiny, you would think that the proper translation would be to add <code>|&gt; . =&gt;</code> but, alas, this is not the case:</p>
+<pre class="r"><code>mtcars |&gt; 
+   . =&gt; .[, .(mpg = mean(mpg)), by = cyl]</code></pre>
+<pre><code>## Error: function &#39;[&#39; not supported in RHS call of a pipe</code></pre>
+<p>Ah, the limitation of those special symbols appears.
+Where do we go from here?</p>
+<p>The trick is that R only looks at the function name, so all you have to do is rename the <code>[</code> function (I love that everything in R is a function).
+For example, this code is perfectly cromulent:</p>
+<pre class="r"><code>.d &lt;- `[` 
+
+mtcars |&gt; 
+   .d(, .(mpg = mean(mpg)), by = cyl) </code></pre>
+<pre><code>##    cyl      mpg
+## 1:   6 19.74286
+## 2:   4 26.66364
+## 3:   8 15.10000</code></pre>
+<p>Which is not so bad.</p>
+</div>
+<div id="long-live-magrittr" class="section level2">
+<h2>Long live magrittr</h2>
+<p>So, do I have to dump <code>%&gt;%</code> and love <code>|&gt;%</code>?
+Well… not necessarily.</p>
+<p>R 4.1.0 came out just a couple of weeks ago and it’s highly likely that most people haven’t upgraded and have no plans to upgrade anytime soon.
+In corporate or server environments, many R users probably don’t even have control over which version they install and administrators are probably rather reticent to upgrade.
+“Production-grade code” running on specific versions of R for stability and reproducibility will probably take years to upgrade, if they even upgrade at all.</p>
+<p>For all these reasons, while the magrittr’s days are indeed numbered, this number is still quite big.</p>
+</div>

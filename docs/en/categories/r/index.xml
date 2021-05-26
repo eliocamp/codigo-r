@@ -5,10 +5,172 @@
     <description>Recent content in R on Code R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Tue, 09 Mar 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 25 May 2021 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/en/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>The new R pipe</title>
+      <link>/en/2021/05/r-pipa-nativa/</link>
+      <pubDate>Tue, 25 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/en/2021/05/r-pipa-nativa/</guid>
+      <description>
+&lt;script src=&#34;../../../rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;R 4.1.0 is out!
+And if version 4.0.0 made history with the revolutionary change of &lt;code&gt;stringAsFactors = FALSE&lt;/code&gt;, the big splashing news in this next version is the implementation of a native pipe.&lt;/p&gt;
+&lt;div id=&#34;the-new-pipe&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The new pipe&lt;/h2&gt;
+&lt;p&gt;The “pipe” is one of the most distinctive qualities of tidyverse/dplyr code.
+I’m sure you’ve used or seen something like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(dplyr) 
+
+mtcars %&amp;gt;%
+   group_by(cyl) %&amp;gt;% 
+   summarise(mpg = mean(mpg)) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 3 x 2
+##     cyl   mpg
+##   &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+## 1     4  26.7
+## 2     6  19.7
+## 3     8  15.1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;That &lt;code&gt;%&amp;gt;%&lt;/code&gt; is the operator that allows you to chain one function after another without the need to assign intermediate variables or deeply-nested parenthesis.
+Technically what it’s doing under the hood is evaluating the expression on the right-hand side fo the pipe (or, more usually, on the next line) using the expression on the left (or same line) as the first argument.
+The dplyr package depends on the &lt;a href=&#34;https://magrittr.tidyverse.org/&#34;&gt;magrittr&lt;/a&gt; package to do all that magic, and many other packages also import the magrittr pipe.&lt;/p&gt;
+&lt;p&gt;With version 4.1.0, it’s now possible to write&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mtcars |&amp;gt;
+   group_by(cyl) |&amp;gt;
+   summarise(mpg = mean(mpg))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 3 x 2
+##     cyl   mpg
+##   &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+## 1     4  26.7
+## 2     6  19.7
+## 3     8  15.1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What is the difference, other than one less character?
+(Not that the number of characters matters much if one uses the RStudio shortcut Ctrl + Shift + M. And with the new version of RStudio &lt;a href=&#34;https://web.archive.org/web/20210525152348/https://www.rstudio.com/products/rstudio/download/preview/&#34;&gt;which is now in preview&lt;/a&gt;, one can choose which to use).&lt;/p&gt;
+&lt;p&gt;The main difference, for me, is that now you can use the pipe without relying on the magrittr package.
+Maybe this isn’t something you’ll lose sleep over, but as a rule of thumb it’s always desirable for your analysis to depend on as few different packages as possible.
+The more dependencies, the higher the probability of some update changing something important that destroys everything you built.&lt;/p&gt;
+&lt;p&gt;For those who use dplyr (or those maniacs that start their scripts with &lt;code&gt;library(tidyverse)&lt;/code&gt;), &lt;code&gt;|&amp;gt;&lt;/code&gt; and &lt;code&gt;%&amp;gt;%&lt;/code&gt; are probably interchangeable.
+But there’s a whole multiverse outside the tidyverse.
+I, for example, prefer data.table to dplyr and my preferred syntax combines data.table with magrittr.
+With this change, I no longer need to start each script with &lt;code&gt;library(magrittr)&lt;/code&gt; (although see &lt;a href=&#34;#what-about-data.table&#34;&gt;the next section&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;For those who have an (probably unhealthy?) obsession with speed and efficiency, &lt;code&gt;|&amp;gt;&lt;/code&gt; &lt;a href=&#34;https://michaelbarrowman.co.uk/post/the-new-base-pipe/&#34;&gt;appears to be faster&lt;/a&gt; than &lt;code&gt;%&amp;gt;%&lt;/code&gt;.
+This is because magrittr does a lot of stuff behind the scenes, while the native pipe is just a syntax transformation.
+In other words,&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x %&amp;gt;%
+   mean()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;is not literally equivalent to &lt;code&gt;mean(x)&lt;/code&gt;; there is a lot of processing behind those three characters.
+While&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;x |&amp;gt; 
+   mean()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;is interpreted by R &lt;strong&gt;exactly&lt;/strong&gt; as &lt;code&gt;mean(x)&lt;/code&gt;.
+That is, there is zero overhead for using &lt;code&gt;|&amp;gt;&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;But the reality is that except in very special cases, the difference is negligible.
+In any worthwhile data analysis, the overhead of using magrittr is minuscule compared to the time it takes to do (and write!) the rest of the computations.
+My advice is not to get bogged down into chasing microsecond-level differences.&lt;/p&gt;
+&lt;p&gt;What you do need to pay attention to are the subtle (or not so subtle) differences between the two pipes.
+Perhaps the single most important difference is that the magrittr has a placeholder element for when one doesn’t want the left hand side result to go to the &lt;em&gt;first&lt;/em&gt; argument of the right hand expression.
+The canonical example is the linear model:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mtcars %&amp;gt;% 
+   lm(mpg ~ disp, data = .)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Call:
+## lm(formula = mpg ~ disp, data = .)
+## 
+## Coefficients:
+## (Intercept)         disp  
+##    29.59985     -0.04122&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Since the first argument of &lt;code&gt;lm()&lt;/code&gt; is not the data, you have to use &lt;code&gt;data = .&lt;/code&gt; to tell magrittr that &lt;code&gt;mtcars&lt;/code&gt; does not have to be the first argument of &lt;code&gt;lm()&lt;/code&gt;.
+The native pipe currently &lt;strong&gt;doesn’t have a placeholder&lt;/strong&gt;.
+The way to fix that is to create an anonymous function:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mtcars |&amp;gt; 
+   (function(x) lm(mpg ~ cyl, data = x))()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Call:
+## lm(formula = mpg ~ cyl, data = x)
+## 
+## Coefficients:
+## (Intercept)          cyl  
+##      37.885       -2.876&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This is quite ugly, so R’s answer is to use another trick from R 4.1.0: the new function-creation syntax.
+As of R 4.1.0 these two expressions are equivalent:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;function(x) x + 1 
+\(x) x + 1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The new “waving-person” syntax ( &lt;code&gt;\(x)&lt;/code&gt;) essentially saves characters when creating functions.
+So by combining this with the native pipe, you can do&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mtcars |&amp;gt; 
+   (\(x) lm(mpg ~ disp, data = x))() &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Call:
+## lm(formula = mpg ~ disp, data = x)
+## 
+## Coefficients:
+## (Intercept)         disp  
+##    29.59985     -0.04122&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;which is marginally more readable, though still quite ugly.
+The alternative syntax, which I think for now is a bit experimental, is this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Sys.setenv(`_R_USE_PIPEBIND_` = TRUE) 
+
+mtcars |&amp;gt; 
+   . =&amp;gt; lm(mpg ~ disp, data = .)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Call:
+## lm(formula = mpg ~ disp, data = mtcars)
+## 
+## Coefficients:
+## (Intercept)         disp  
+##    29.59985     -0.04122&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;(Where the first line is indispensable and strongly signals that this code is not ready or prime time.)&lt;/p&gt;
+&lt;p&gt;So you first set the placeholder symbol (in this case &lt;code&gt;.&lt;/code&gt;) and after the &lt;code&gt;=&amp;gt;&lt;/code&gt;, you can write the same code that you would use in the magrittr pipe.
+In short, for cases where the &lt;code&gt;.&lt;/code&gt; placeholder &lt;code&gt;.&lt;/code&gt; is used, the replacement for &lt;code&gt;%&amp;gt;%&lt;/code&gt; would be &lt;code&gt;|&amp;gt; . =&amp;gt;&lt;/code&gt;.
+(Although, again, I understand that this syntax is neither definitive nor officially supported yet).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;what-about-data.table&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;What about data.table?&lt;/h2&gt;
+&lt;p&gt;Which brings me to my beloved data.table + magrittr syntax:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mtcars &amp;lt;- data.table::as.data.table(mtcars)
+mtcars %&amp;gt;% 
+   .[, .(mpg = mean(mpg)), by = cyl]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##    cyl      mpg
+## 1:   6 19.74286
+## 2:   4 26.66364
+## 3:   8 15.10000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Given that the dot at the beginning of the first line is nothing less than magrittr’s placeholder, and that the new pipe has no placeholder, you might correctly guess that this syntax is not going to translate to the native pipe by simply changing &lt;code&gt;%&amp;gt;%&lt;/code&gt; to &lt;code&gt;|&amp;gt;&lt;/code&gt;.
+There are also some limitations, such as that the new pipe does not accept “special symbols” like &lt;code&gt;[&lt;/code&gt;, &lt;code&gt;+&lt;/code&gt; or &lt;code&gt;*&lt;/code&gt; in the right expression.&lt;/p&gt;
+&lt;p&gt;Remembering the &lt;code&gt;=&amp;gt;&lt;/code&gt; syntax thiny, you would think that the proper translation would be to add &lt;code&gt;|&amp;gt; . =&amp;gt;&lt;/code&gt; but, alas, this is not the case:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mtcars |&amp;gt; 
+   . =&amp;gt; .[, .(mpg = mean(mpg)), by = cyl]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Error: function &amp;#39;[&amp;#39; not supported in RHS call of a pipe&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Ah, the limitation of those special symbols appears.
+Where do we go from here?&lt;/p&gt;
+&lt;p&gt;The trick is that R only looks at the function name, so all you have to do is rename the &lt;code&gt;[&lt;/code&gt; function (I love that everything in R is a function).
+For example, this code is perfectly cromulent:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;.d &amp;lt;- `[` 
+
+mtcars |&amp;gt; 
+   .d(, .(mpg = mean(mpg)), by = cyl) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##    cyl      mpg
+## 1:   6 19.74286
+## 2:   4 26.66364
+## 3:   8 15.10000&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Which is not so bad.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;long-live-magrittr&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Long live magrittr&lt;/h2&gt;
+&lt;p&gt;So, do I have to dump &lt;code&gt;%&amp;gt;%&lt;/code&gt; and love &lt;code&gt;|&amp;gt;%&lt;/code&gt;?
+Well… not necessarily.&lt;/p&gt;
+&lt;p&gt;R 4.1.0 came out just a couple of weeks ago and it’s highly likely that most people haven’t upgraded and have no plans to upgrade anytime soon.
+In corporate or server environments, many R users probably don’t even have control over which version they install and administrators are probably rather reticent to upgrade.
+“Production-grade code” running on specific versions of R for stability and reproducibility will probably take years to upgrade, if they even upgrade at all.&lt;/p&gt;
+&lt;p&gt;For all these reasons, while the magrittr’s days are indeed numbered, this number is still quite big.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Star Trek ratings on IMDB</title>
