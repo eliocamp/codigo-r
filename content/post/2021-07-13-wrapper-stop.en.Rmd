@@ -1,0 +1,139 @@
+---
+title: Make error messages your own
+author: Elio Campitelli
+date: '2021-07-13'
+slug: wrapper-stop
+categories:
+  - R
+keywords:
+  - pakages
+  - programming
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+
+The `stop()` function allows you to terminate the execution of a function if there is a fatal problem.
+
+For example, imagine this code that calculates the square root of a number but only if the input number is positive.
+
+```{r}
+real_root <- function(x) {
+   if (x < 0) {
+      stop("'x' cannot be negative.")   
+   } 
+   sqrt(x)
+}
+```
+
+````{r, error = TRUE}
+real_root(2)
+real_root(-2)
+```
+
+If x is negative, the function throws an error.
+Now let's imagine that this function is part of a package and that the author wants all error messages to always be in upper case.
+And instead of making sure that everything is capitalised, they prefer to use the `toupper()` function:
+
+```{r}
+toupper("lowercase")
+```
+
+Then they decide to write the `STOP()` function, which is a loud version of `stop()`:
+
+```{r}
+STOP <- function(message) {
+   stop(toupper(message))
+}
+```
+
+And now they create `REAL_ROOT()` that uses that loud stop.
+
+```{r}
+REAL_ROOT <- function(x) {
+   if (x < 0) {
+      STOP("'x' cannot be negative.")   
+   } 
+   sqrt(x)
+}
+```
+
+````{r, error=TRUE}
+REAL_ROOT(2)
+REAL_ROOT(-2)
+```
+
+It seems to work fine, but there is a slight issue. 
+Before, the error was coming from inside `real_root()`, so the error message gave the user a clue as to where the problem layed (`Error in real_root(-2) :...`).
+With this new setup, since the error technically occurs inside `STOP()`, the error message becomes useless.
+Worse, it confuses the user!
+
+One solution is to directly hide the call:
+
+```{r}
+STOP <- function(message) {
+   stop(toupper(message), call. = FALSE)
+}
+```
+
+````{r, error = TRUE}
+REAL_ROOT(-2)
+```
+
+Now the message isn't that useful, but at least it's not actively confusing
+
+But it would be nice to be able to somehow capture the previous call to be part of the error message.
+That is, make the `STOP()` function "know" which other expression called it and use that as text for the error message.
+And that can be done with the `sys.call()` function.
+
+The `sys.call()` function captures the code that called a function, but has an argument that allows you to go "backwards" in the expression tree.
+
+```{r}
+outer_function <- function(x) {
+   inner_function(x)
+}
+
+inner_function <- function(x) {
+   sys.call(x)
+}
+```
+
+`outer_function()` calls `inner_function()` with the code `inner_function(x)`.
+Since `x` is 0, `inner_function()` executes `sys.call(0)`, which returns the last call, which is `inner_function(x).`
+
+```{r}
+outer_function(0)
+```
+
+But with the argument `x` set to -1, `inner_function()` executes `sys.call(-1)`, which returns the penultimate call: `outer_function(-1).`
+
+```{r}
+outer_function(-1)
+```
+
+The other piece is the `simpleError()` function, which can generate an error object that is then correctly interpreted by `stop()`.
+
+````{r, error = TRUE}
+message <- "this is an error"
+error <- simpleError(toupper(message))
+stop(error)
+```
+
+Putting the two pieces together, you get:
+
+```{r}
+STOP <- function(message) {
+   error <- simpleError(toupper(message), call = sys.call(-1))
+   stop(error)
+}
+```
+
+And now `REAL_ROOT()` spits out an error as as useful as it is loud
+
+````{r, error = TRUE}
+REAL_ROOT(-2)
+```
+
+

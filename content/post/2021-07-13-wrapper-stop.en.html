@@ -1,0 +1,89 @@
+---
+title: Make error messages your own
+author: Elio Campitelli
+date: '2021-07-13'
+slug: wrapper-stop
+categories:
+  - R
+keywords:
+  - pakages
+  - programming
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>The <code>stop()</code> function allows you to terminate the execution of a function if there is a fatal problem.</p>
+<p>For example, imagine this code that calculates the square root of a number but only if the input number is positive.</p>
+<pre class="r"><code>real_root &lt;- function(x) {
+   if (x &lt; 0) {
+      stop(&quot;&#39;x&#39; cannot be negative.&quot;)   
+   } 
+   sqrt(x)
+}</code></pre>
+<pre class="r"><code>real_root(2)</code></pre>
+<pre><code>## [1] 1.414214</code></pre>
+<pre class="r"><code>real_root(-2)</code></pre>
+<pre><code>## Error in real_root(-2): &#39;x&#39; cannot be negative.</code></pre>
+<p>If x is negative, the function throws an error.
+Now let’s imagine that this function is part of a package and that the author wants all error messages to always be in upper case.
+And instead of making sure that everything is capitalised, they prefer to use the <code>toupper()</code> function:</p>
+<pre class="r"><code>toupper(&quot;lowercase&quot;)</code></pre>
+<pre><code>## [1] &quot;LOWERCASE&quot;</code></pre>
+<p>Then they decide to write the <code>STOP()</code> function, which is a loud version of <code>stop()</code>:</p>
+<pre class="r"><code>STOP &lt;- function(message) {
+   stop(toupper(message))
+}</code></pre>
+<p>And now they create <code>REAL_ROOT()</code> that uses that loud stop.</p>
+<pre class="r"><code>REAL_ROOT &lt;- function(x) {
+   if (x &lt; 0) {
+      STOP(&quot;&#39;x&#39; cannot be negative.&quot;)   
+   } 
+   sqrt(x)
+}</code></pre>
+<pre class="r"><code>REAL_ROOT(2)</code></pre>
+<pre><code>## [1] 1.414214</code></pre>
+<pre class="r"><code>REAL_ROOT(-2)</code></pre>
+<pre><code>## Error in STOP(&quot;&#39;x&#39; cannot be negative.&quot;): &#39;X&#39; CANNOT BE NEGATIVE.</code></pre>
+<p>It seems to work fine, but there is a slight issue.
+Before, the error was coming from inside <code>real_root()</code>, so the error message gave the user a clue as to where the problem layed (<code>Error in real_root(-2) :...</code>).
+With this new setup, since the error technically occurs inside <code>STOP()</code>, the error message becomes useless.
+Worse, it confuses the user!</p>
+<p>One solution is to directly hide the call:</p>
+<pre class="r"><code>STOP &lt;- function(message) {
+   stop(toupper(message), call. = FALSE)
+}</code></pre>
+<pre class="r"><code>REAL_ROOT(-2)</code></pre>
+<pre><code>## Error: &#39;X&#39; CANNOT BE NEGATIVE.</code></pre>
+<p>Now the message isn’t that useful, but at least it’s not actively confusing</p>
+<p>But it would be nice to be able to somehow capture the previous call to be part of the error message.
+That is, make the <code>STOP()</code> function “know” which other expression called it and use that as text for the error message.
+And that can be done with the <code>sys.call()</code> function.</p>
+<p>The <code>sys.call()</code> function captures the code that called a function, but has an argument that allows you to go “backwards” in the expression tree.</p>
+<pre class="r"><code>outer_function &lt;- function(x) {
+   inner_function(x)
+}
+
+inner_function &lt;- function(x) {
+   sys.call(x)
+}</code></pre>
+<p><code>outer_function()</code> calls <code>inner_function()</code> with the code <code>inner_function(x)</code>.
+Since <code>x</code> is 0, <code>inner_function()</code> executes <code>sys.call(0)</code>, which returns the last call, which is <code>inner_function(x).</code></p>
+<pre class="r"><code>outer_function(0)</code></pre>
+<pre><code>## inner_function(x)</code></pre>
+<p>But with the argument <code>x</code> set to -1, <code>inner_function()</code> executes <code>sys.call(-1)</code>, which returns the penultimate call: <code>outer_function(-1).</code></p>
+<pre class="r"><code>outer_function(-1)</code></pre>
+<pre><code>## outer_function(-1)</code></pre>
+<p>The other piece is the <code>simpleError()</code> function, which can generate an error object that is then correctly interpreted by <code>stop()</code>.</p>
+<pre class="r"><code>message &lt;- &quot;this is an error&quot;
+error &lt;- simpleError(toupper(message))
+stop(error)</code></pre>
+<pre><code>## Error: THIS IS AN ERROR</code></pre>
+<p>Putting the two pieces together, you get:</p>
+<pre class="r"><code>STOP &lt;- function(message) {
+   error &lt;- simpleError(toupper(message), call = sys.call(-1))
+   stop(error)
+}</code></pre>
+<p>And now <code>REAL_ROOT()</code> spits out an error as as useful as it is loud</p>
+<pre class="r"><code>REAL_ROOT(-2)</code></pre>
+<pre><code>## Error in REAL_ROOT(-2): &#39;X&#39; CANNOT BE NEGATIVE.</code></pre>

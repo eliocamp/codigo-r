@@ -1,5 +1,9 @@
 
 
+  
+    
+  
+
 
   
 
@@ -18,25 +22,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Hugo 0.56.3 with theme Tranquilpeak 0.4.3-BETA">
-    <title>data.table</title>
+    <title>Make error messages your own</title>
     <meta name="author" content="Elio Campitelli">
-    <meta name="keywords" content=", R">
+    <meta name="keywords" content="pakages, programming, R">
 
-    <link rel="icon" href="../../../favicon.png">
-    
-      <link rel="alternate" type="application/rss+xml" title="RSS" href="../../../en/tags/data.table/index.xml">
+    <link rel="icon" href="../../../../favicon.png">
     
 
     
-    <meta name="description" content="Blog about the R language">
-    <meta property="og:description" content="Blog about the R language">
+    <meta name="description" content="The stop() function allows you to terminate the execution of a function if there is a fatal problem.
+For example, imagine this code that calculates the square root of a number but only if the input number is positive.
+real_root &lt;- function(x) { if (x &lt; 0) { stop(&quot;&#39;x&#39; cannot be negative.&quot;) } sqrt(x) } real_root(2) ## [1] 1.414214 real_root(-2) ## Error in real_root(-2): &#39;x&#39; cannot be negative. If x is negative, the function throws an error.">
+    <meta property="og:description" content="The stop() function allows you to terminate the execution of a function if there is a fatal problem.
+For example, imagine this code that calculates the square root of a number but only if the input number is positive.
+real_root &lt;- function(x) { if (x &lt; 0) { stop(&quot;&#39;x&#39; cannot be negative.&quot;) } sqrt(x) } real_root(2) ## [1] 1.414214 real_root(-2) ## Error in real_root(-2): &#39;x&#39; cannot be negative. If x is negative, the function throws an error.">
     <meta property="og:type" content="blog">
-    <meta property="og:title" content="data.table">
-    <meta property="og:url" content="/en/tags/data.table/">
+    <meta property="og:title" content="Make error messages your own">
+    <meta property="og:url" content="/en/2021/07/wrapper-stop/">
     <meta property="og:site_name" content="Code R">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Code R">
-    <meta name="twitter:description" content="Blog about the R language">
+    <meta name="twitter:description" content="The stop() function allows you to terminate the execution of a function if there is a fatal problem.
+For example, imagine this code that calculates the square root of a number but only if the input number is positive.
+real_root &lt;- function(x) { if (x &lt; 0) { stop(&quot;&#39;x&#39; cannot be negative.&quot;) } sqrt(x) } real_root(2) ## [1] 1.414214 real_root(-2) ## Error in real_root(-2): &#39;x&#39; cannot be negative. If x is negative, the function throws an error.">
     
       <meta name="twitter:creator" content="@d_olivaw">
     
@@ -61,11 +69,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
     
     
-    <link rel="stylesheet" href="../../../css/style-jsjn0006wyhpyzivf6yceb31gvpjatbcs3qzjvlumobfnugccvobqwxnnaj8.min.css" />
+    <link rel="stylesheet" href="../../../../css/style-jsjn0006wyhpyzivf6yceb31gvpjatbcs3qzjvlumobfnugccvobqwxnnaj8.min.css" />
     
     
       
-        <link rel="stylesheet"  href="../../../css/custom.css">
+        <link rel="stylesheet"  href="../../../../css/custom.css">
       
     
 
@@ -80,12 +88,12 @@
       <header id="header" data-behavior="2">
   <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
   <div class="header-title">
-    <a class="header-title-link" href="../../../en">Code R</a>
+    <a class="header-title-link" href="../../../../en">Code R</a>
   </div>
   
     
       <a class="header-right-picture "
-         href="../../../#about">
+         href="../../../../#about">
     
     
     
@@ -101,7 +109,7 @@
   <div class="sidebar-container">
     
       <div class="sidebar-profile">
-        <a href="../../../#about">
+        <a href="../../../../#about">
           <img class="sidebar-profile-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=110" alt="Author&#39;s picture" />
         </a>
         <h4 class="sidebar-profile-name">Elio Campitelli</h4>
@@ -112,7 +120,7 @@
       
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="../../../en">
+      <a class="sidebar-button-link " href="../../../../en">
     
       <i class="sidebar-button-icon fa fa-lg fa-home"></i>
       
@@ -122,7 +130,7 @@
 
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="../../../en/categories">
+      <a class="sidebar-button-link " href="../../../../en/categories">
     
       <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
       
@@ -132,7 +140,7 @@
 
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="../../../en/archives">
+      <a class="sidebar-button-link " href="../../../../en/archives">
     
       <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
       
@@ -142,7 +150,7 @@
 
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="../../../en/#about">
+      <a class="sidebar-button-link " href="../../../../en/#about">
     
       <i class="sidebar-button-icon fa fa-lg fa-question"></i>
       
@@ -190,7 +198,7 @@
       
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="../../../en/index.xml">
+      <a class="sidebar-button-link " href="../../../../en/index.xml">
     
       <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
       
@@ -204,48 +212,37 @@
 </nav>
 
       
-        
 
-      
       <div id="main" data-behavior="2"
         class="
                hasCoverMetaIn
                ">
-        
-          <section class="postShorten-group main-content-wrap">
-            
-            
-              
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
   
-    
-      
-        
-      
-    
+    <h1 class="post-title" itemprop="headline">
+      Make error messages your own
+    </h1>
   
+  
+
+    
+        En español: <a href="../../../../2021/07/wrapper-stop/">Cómo maniuplar mensajes de error</a>
+    
 
 
   
-
-<article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-  <div class="postShorten-wrap">
-    
-    <div class="postShorten-header">
-      <h1 class="postShorten-title" itemprop="headline">
-        <a class="link-unstyled" href="../../../en/2019/07/why-i-love-data-table/">
-          Why I love data.table
-        </a>
-      </h1>
-      
   <div class="postShorten-meta post-meta">
     
-      <time itemprop="datePublished" datetime="2019-07-06T00:00:00Z">
+      <time itemprop="datePublished" datetime="2021-07-13T00:00:00Z">
         
   
   
   
   
-    July 6, 2019
+    July 13, 2021
   
 
       </time>
@@ -255,31 +252,193 @@
   
     <span>in</span>
     
-      <a class="category-link" href="../../../en/categories/r">R</a>
+      <a class="category-link" href="../../../../en/categories/r">R</a>
     
   
 
   </div>
 
-    </div>
-    <div class="postShorten-excerpt" itemprop="articleBody">
+</div>
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    });
+    </script>
+    <script type="text/javascript"
+      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+<script src="../../../../rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>The <code>stop()</code> function allows you to terminate the execution of a function if there is a fatal problem.</p>
+<p>For example, imagine this code that calculates the square root of a number but only if the input number is positive.</p>
+<pre class="r"><code>real_root &lt;- function(x) {
+   if (x &lt; 0) {
+      stop(&quot;&#39;x&#39; cannot be negative.&quot;)   
+   } 
+   sqrt(x)
+}</code></pre>
+<pre class="r"><code>real_root(2)</code></pre>
+<pre><code>## [1] 1.414214</code></pre>
+<pre class="r"><code>real_root(-2)</code></pre>
+<pre><code>## Error in real_root(-2): &#39;x&#39; cannot be negative.</code></pre>
+<p>If x is negative, the function throws an error.
+Now let’s imagine that this function is part of a package and that the author wants all error messages to always be in upper case.
+And instead of making sure that everything is capitalised, they prefer to use the <code>toupper()</code> function:</p>
+<pre class="r"><code>toupper(&quot;lowercase&quot;)</code></pre>
+<pre><code>## [1] &quot;LOWERCASE&quot;</code></pre>
+<p>Then they decide to write the <code>STOP()</code> function, which is a loud version of <code>stop()</code>:</p>
+<pre class="r"><code>STOP &lt;- function(message) {
+   stop(toupper(message))
+}</code></pre>
+<p>And now they create <code>REAL_ROOT()</code> that uses that loud stop.</p>
+<pre class="r"><code>REAL_ROOT &lt;- function(x) {
+   if (x &lt; 0) {
+      STOP(&quot;&#39;x&#39; cannot be negative.&quot;)   
+   } 
+   sqrt(x)
+}</code></pre>
+<pre class="r"><code>REAL_ROOT(2)</code></pre>
+<pre><code>## [1] 1.414214</code></pre>
+<pre class="r"><code>REAL_ROOT(-2)</code></pre>
+<pre><code>## Error in STOP(&quot;&#39;x&#39; cannot be negative.&quot;): &#39;X&#39; CANNOT BE NEGATIVE.</code></pre>
+<p>It seems to work fine, but there is a slight issue.
+Before, the error was coming from inside <code>real_root()</code>, so the error message gave the user a clue as to where the problem layed (<code>Error in real_root(-2) :...</code>).
+With this new setup, since the error technically occurs inside <code>STOP()</code>, the error message becomes useless.
+Worse, it confuses the user!</p>
+<p>One solution is to directly hide the call:</p>
+<pre class="r"><code>STOP &lt;- function(message) {
+   stop(toupper(message), call. = FALSE)
+}</code></pre>
+<pre class="r"><code>REAL_ROOT(-2)</code></pre>
+<pre><code>## Error: &#39;X&#39; CANNOT BE NEGATIVE.</code></pre>
+<p>Now the message isn’t that useful, but at least it’s not actively confusing</p>
+<p>But it would be nice to be able to somehow capture the previous call to be part of the error message.
+That is, make the <code>STOP()</code> function “know” which other expression called it and use that as text for the error message.
+And that can be done with the <code>sys.call()</code> function.</p>
+<p>The <code>sys.call()</code> function captures the code that called a function, but has an argument that allows you to go “backwards” in the expression tree.</p>
+<pre class="r"><code>outer_function &lt;- function(x) {
+   inner_function(x)
+}
+
+inner_function &lt;- function(x) {
+   sys.call(x)
+}</code></pre>
+<p><code>outer_function()</code> calls <code>inner_function()</code> with the code <code>inner_function(x)</code>.
+Since <code>x</code> is 0, <code>inner_function()</code> executes <code>sys.call(0)</code>, which returns the last call, which is <code>inner_function(x).</code></p>
+<pre class="r"><code>outer_function(0)</code></pre>
+<pre><code>## inner_function(x)</code></pre>
+<p>But with the argument <code>x</code> set to -1, <code>inner_function()</code> executes <code>sys.call(-1)</code>, which returns the penultimate call: <code>outer_function(-1).</code></p>
+<pre class="r"><code>outer_function(-1)</code></pre>
+<pre><code>## outer_function(-1)</code></pre>
+<p>The other piece is the <code>simpleError()</code> function, which can generate an error object that is then correctly interpreted by <code>stop()</code>.</p>
+<pre class="r"><code>message &lt;- &quot;this is an error&quot;
+error &lt;- simpleError(toupper(message))
+stop(error)</code></pre>
+<pre><code>## Error: THIS IS AN ERROR</code></pre>
+<p>Putting the two pieces together, you get:</p>
+<pre class="r"><code>STOP &lt;- function(message) {
+   error &lt;- simpleError(toupper(message), call = sys.call(-1))
+   stop(error)
+}</code></pre>
+<p>And now <code>REAL_ROOT()</code> spits out an error as as useful as it is loud</p>
+<pre class="r"><code>REAL_ROOT(-2)</code></pre>
+<pre><code>## Error in REAL_ROOT(-2): &#39;X&#39; CANNOT BE NEGATIVE.</code></pre>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+            
+            
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../en/2021/05/r-pipa-nativa/" data-tooltip="The new R pipe">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
       
-       I’ve been an R user for a few years now and the data.table package has been my staple package for most of it. In this post I wanted to talk about why almost every script and RMarkdown report I write start with:
-library(data.table) My memory issues I started working on my licenciate thesis (the argentinian equivalent to a Masters Degree) around mid 2016. I had been using R for school work and fun for some time and knew that I wanted to perform all my analysis in R and write my thesis in RMarkdown. 
-      <p>
-        <a href="../../../en/2019/07/why-i-love-data-table/" class="postShorten-excerpt_link link">Continue reading</a>
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
         
-      </p>
-    </div>
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/en/2021/07/wrapper-stop/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/en/2021/07/wrapper-stop/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/en/2021/07/wrapper-stop/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
   </div>
-  
-</article>
+
 
             
+              
+                <div id="disqus_thread">
+  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+              
             
-
-          </section>
-        
+          </div>
+        </article>
         <footer id="footer" class="main-content-wrap">
   <span class="copyrights">
     &copy; 2021 Elio Campitelli. All Rights Reserved
@@ -287,6 +446,102 @@ library(data.table) My memory issues I started working on my licenciate thesis (
 </footer>
 
       </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
+        
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../en/2021/05/r-pipa-nativa/" data-tooltip="The new R pipe">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/en/2021/07/wrapper-stop/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/en/2021/07/wrapper-stop/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/en/2021/07/wrapper-stop/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2Fen%2F2021%2F07%2Fwrapper-stop%2F">
+          <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2Fen%2F2021%2F07%2Fwrapper-stop%2F">
+          <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2Fen%2F2021%2F07%2Fwrapper-stop%2F">
+          <i class="fa fa-google-plus"></i><span>Share on Google&#43;</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
     </div>
     
     <div id="about">
@@ -338,7 +593,7 @@ library(data.table) My memory issues I started working on my licenciate thesis (
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2021/07/wrapper-stop/">
+              <a class="link-unstyled" href="../../../../en/2021/07/wrapper-stop/">
                 <h3 class="media-heading">Make error messages your own</h3>
               </a>
               <span class="media-meta">
@@ -357,7 +612,7 @@ real_root &lt;- function(x) { if (x &lt; 0) { stop(&quot;&#39;x&#39; cannot be n
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2021/05/r-pipa-nativa/">
+              <a class="link-unstyled" href="../../../../en/2021/05/r-pipa-nativa/">
                 <h3 class="media-heading">The new R pipe</h3>
               </a>
               <span class="media-meta">
@@ -376,7 +631,7 @@ library(dplyr) mtcars %&gt;% group_by(cyl) %&gt;% summarise(mpg = mean(mpg))  ##
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2021/03/star-trek-rakings/">
+              <a class="link-unstyled" href="../../../../en/2021/03/star-trek-rakings/">
                 <h3 class="media-heading">Star Trek ratings on IMDB</h3>
               </a>
               <span class="media-meta">
@@ -393,7 +648,7 @@ library(dplyr) mtcars %&gt;% group_by(cyl) %&gt;% summarise(mpg = mean(mpg))  ##
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2019/11/rammstein-vs-lacrimosa/">
+              <a class="link-unstyled" href="../../../../en/2019/11/rammstein-vs-lacrimosa/">
                 <h3 class="media-heading">Rammstein vs. Lacrimosa</h3>
               </a>
               <span class="media-meta">
@@ -410,7 +665,7 @@ library(dplyr) mtcars %&gt;% group_by(cyl) %&gt;% summarise(mpg = mean(mpg))  ##
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2019/07/why-i-love-data-table/">
+              <a class="link-unstyled" href="../../../../en/2019/07/why-i-love-data-table/">
                 <h3 class="media-heading">Why I love data.table</h3>
               </a>
               <span class="media-meta">
@@ -428,7 +683,7 @@ library(data.table) My memory issues I started working on my licenciate thesis (
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2019/04/ecmwfr-global-warming/">
+              <a class="link-unstyled" href="../../../../en/2019/04/ecmwfr-global-warming/">
                 <h3 class="media-heading">Using ecmwfr to measure global warming</h3>
               </a>
               <span class="media-meta">
@@ -445,7 +700,7 @@ library(data.table) My memory issues I started working on my licenciate thesis (
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2019/01/statistical-metamerism/">
+              <a class="link-unstyled" href="../../../../en/2019/01/statistical-metamerism/">
                 <h3 class="media-heading">Statistical metamerism</h3>
               </a>
               <span class="media-meta">
@@ -462,7 +717,7 @@ library(data.table) My memory issues I started working on my licenciate thesis (
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2018/09/multiple-color-fill-scales-ggplot2/">
+              <a class="link-unstyled" href="../../../../en/2018/09/multiple-color-fill-scales-ggplot2/">
                 <h3 class="media-heading">Multiple color (and fill) scales with ggplot2</h3>
               </a>
               <span class="media-meta">
@@ -482,7 +737,7 @@ Unfortunately, this deluge of questions is met with a shortage of conclusive ans
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2018/08/periodic-data-ggplot2-ggperiodic/">
+              <a class="link-unstyled" href="../../../../en/2018/08/periodic-data-ggplot2-ggperiodic/">
                 <h3 class="media-heading">Wrapping around ggplot2 with ggperiodic</h3>
               </a>
               <span class="media-meta">
@@ -499,7 +754,7 @@ Unfortunately, this deluge of questions is met with a shortage of conclusive ans
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2018/05/how-to-make-a-generic-stat-in-ggplot2/">
+              <a class="link-unstyled" href="../../../../en/2018/05/how-to-make-a-generic-stat-in-ggplot2/">
                 <h3 class="media-heading">How to make a generic stat in ggplot2</h3>
               </a>
               <span class="media-meta">
@@ -543,7 +798,7 @@ Unfortunately, this deluge of questions is met with a shortage of conclusive ans
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
 
 
-<script src="../../../js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
+<script src="../../../../js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
 
 
 
@@ -559,6 +814,32 @@ $(document).ready(function() {
 });
 </script>
 
+
+  
+    
+      <script>
+        var disqus_config = function () {
+          this.page.url = '\/en\/2021\/07\/wrapper-stop\/';
+          
+            this.page.identifier = '\/en\/2021\/07\/wrapper-stop\/'
+          
+        };
+        (function() {
+          
+          
+          if (window.location.hostname == "localhost") {
+            return;
+          }
+          var d = document, s = d.createElement('script');
+          var disqus_shortname = 'codigo-r';
+          s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+      </script>
+    
+  
 
 
 

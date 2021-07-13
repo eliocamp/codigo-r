@@ -337,6 +337,25 @@
           <div class="media">
             
             <div class="media-body">
+              <a class="link-unstyled" href="../../../en/2021/07/wrapper-stop/">
+                <h3 class="media-heading">Make error messages your own</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jul 7, 2021
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">The stop() function allows you to terminate the execution of a function if there is a fatal problem.
+For example, imagine this code that calculates the square root of a number but only if the input number is positive.
+real_root &lt;- function(x) { if (x &lt; 0) { stop(&quot;&#39;x&#39; cannot be negative.&quot;) } sqrt(x) } real_root(2) ## [1] 1.414214 real_root(-2) ## Error in real_root(-2): &#39;x&#39; cannot be negative. If x is negative, the function throws an error.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
               <a class="link-unstyled" href="../../../en/2021/05/r-pipa-nativa/">
                 <h3 class="media-heading">The new R pipe</h3>
               </a>
@@ -493,24 +512,6 @@ Unfortunately, this deluge of questions is met with a shortage of conclusive ans
             <hr>
           </div>
         
-          <div class="media">
-            
-            <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2018/02/how-to-make-shaded-relief-in-r/">
-                <h3 class="media-heading">How to make a shaded relief in R</h3>
-              </a>
-              <span class="media-meta">
-                <span class="media-date text-small">
-                  Feb 2, 2018
-                </span>
-              </span>
-              <div class="media-content hide-xs font-merryweather">While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
-What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun.</div>
-            </div>
-            <div style="clear:both;"></div>
-            <hr>
-          </div>
-        
       </div>
     </div>
     <div class="modal-footer">
@@ -518,7 +519,7 @@ What I accidentally discovered is that one way of approximating this look is by 
          data-message-zero="no post found"
          data-message-one="1 post found"
          data-message-other="{n} posts found">
-         10 posts found
+         11 posts found
       </p>
     </div>
   </div>

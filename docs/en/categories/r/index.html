@@ -232,6 +232,68 @@
     
     <div class="postShorten-header">
       <h1 class="postShorten-title" itemprop="headline">
+        <a class="link-unstyled" href="../../../en/2021/07/wrapper-stop/">
+          Make error messages your own
+        </a>
+      </h1>
+      
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2021-07-13T00:00:00Z">
+        
+  
+  
+  
+  
+    July 13, 2021
+  
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="../../../en/categories/r">R</a>
+    
+  
+
+  </div>
+
+    </div>
+    <div class="postShorten-excerpt" itemprop="articleBody">
+      
+       The stop() function allows you to terminate the execution of a function if there is a fatal problem.
+For example, imagine this code that calculates the square root of a number but only if the input number is positive.
+real_root &lt;- function(x) { if (x &lt; 0) { stop(&quot;&#39;x&#39; cannot be negative.&quot;) } sqrt(x) } real_root(2) ## [1] 1.414214 real_root(-2) ## Error in real_root(-2): &#39;x&#39; cannot be negative. If x is negative, the function throws an error. 
+      <p>
+        <a href="../../../en/2021/07/wrapper-stop/" class="postShorten-excerpt_link link">Continue reading</a>
+        
+      </p>
+    </div>
+  </div>
+  
+</article>
+
+            
+              
+  
+    
+      
+        
+      
+    
+  
+
+
+  
+
+<article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+  <div class="postShorten-wrap">
+    
+    <div class="postShorten-header">
+      <h1 class="postShorten-title" itemprop="headline">
         <a class="link-unstyled" href="../../../en/2021/05/r-pipa-nativa/">
           The new R pipe
         </a>
@@ -580,69 +642,6 @@ library(data.table) My memory issues I started working on my licenciate thesis (
 </article>
 
             
-              
-  
-    
-      
-        
-      
-    
-  
-
-
-  
-
-<article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-  <div class="postShorten-wrap">
-    
-    <div class="postShorten-header">
-      <h1 class="postShorten-title" itemprop="headline">
-        <a class="link-unstyled" href="../../../en/2018/09/multiple-color-fill-scales-ggplot2/">
-          Multiple color (and fill) scales with ggplot2
-        </a>
-      </h1>
-      
-  <div class="postShorten-meta post-meta">
-    
-      <time itemprop="datePublished" datetime="2018-09-18T00:00:00Z">
-        
-  
-  
-  
-  
-    September 18, 2018
-  
-
-      </time>
-    
-    
-  
-  
-    <span>in</span>
-    
-      <a class="category-link" href="../../../en/categories/r">R</a>
-    
-  
-
-  </div>
-
-    </div>
-    <div class="postShorten-excerpt" itemprop="articleBody">
-      
-       tl;dr: The functionality shown in this post is now on the ggnewscale package! 📦. You can find the original code in this gist.
-A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
-
-Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;. 
-      <p>
-        <a href="../../../en/2018/09/multiple-color-fill-scales-ggplot2/" class="postShorten-excerpt_link link">Continue reading</a>
-        
-      </p>
-    </div>
-  </div>
-  
-</article>
-
-            
             
   <div class="pagination-bar">
     <ul class="pagination">
@@ -718,6 +717,25 @@ Unfortunately, this deluge of questions is met with a shortage of conclusive ans
       <div class="no-result text-color-light text-center">no post found</div>
       <div class="results">
         
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../en/2021/07/wrapper-stop/">
+                <h3 class="media-heading">Make error messages your own</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jul 7, 2021
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">The stop() function allows you to terminate the execution of a function if there is a fatal problem.
+For example, imagine this code that calculates the square root of a number but only if the input number is positive.
+real_root &lt;- function(x) { if (x &lt; 0) { stop(&quot;&#39;x&#39; cannot be negative.&quot;) } sqrt(x) } real_root(2) ## [1] 1.414214 real_root(-2) ## Error in real_root(-2): &#39;x&#39; cannot be negative. If x is negative, the function throws an error.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
         
           <div class="media">
             
@@ -878,24 +896,6 @@ Unfortunately, this deluge of questions is met with a shortage of conclusive ans
             <hr>
           </div>
         
-          <div class="media">
-            
-            <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2018/02/how-to-make-shaded-relief-in-r/">
-                <h3 class="media-heading">How to make a shaded relief in R</h3>
-              </a>
-              <span class="media-meta">
-                <span class="media-date text-small">
-                  Feb 2, 2018
-                </span>
-              </span>
-              <div class="media-content hide-xs font-merryweather">While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
-What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun.</div>
-            </div>
-            <div style="clear:both;"></div>
-            <hr>
-          </div>
-        
       </div>
     </div>
     <div class="modal-footer">
@@ -903,7 +903,7 @@ What I accidentally discovered is that one way of approximating this look is by 
          data-message-zero="no post found"
          data-message-one="1 post found"
          data-message-other="{n} posts found">
-         10 posts found
+         11 posts found
       </p>
     </div>
   </div>
