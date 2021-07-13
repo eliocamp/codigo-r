@@ -5,10 +5,97 @@
     <description>Recent content on Código R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Tue, 25 May 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 13 Jul 2021 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Cómo maniuplar mensajes de error</title>
+      <link>/2021/07/wrapper-stop/</link>
+      <pubDate>Tue, 13 Jul 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/2021/07/wrapper-stop/</guid>
+      <description>
+&lt;script src=&#34;./rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;La función &lt;code&gt;stop()&lt;/code&gt; permite terminar la ejecución de una función si hay algún problema mortal.&lt;/p&gt;
+&lt;p&gt;Por ejemplo, imaginemos este código que calcula la raziz cuadrada de un número pero sólo si el número de entrada es positivo.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;raiz_real &amp;lt;- function(x) {
+   if (x &amp;lt; 0) {
+      stop(&amp;quot;&amp;#39;x&amp;#39; no puede ser negativo.&amp;quot;)   
+   } 
+   sqrt(x)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;raiz_real(2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 1.414214&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;raiz_real(-2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Error in raiz_real(-2): &amp;#39;x&amp;#39; no puede ser negativo.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Si x es negativo, la función tira un error.
+Ahora imaginemos que esta función es parte de un paquete y le autor quiere que todos los mensajes de error estén siempre en mayúscula.
+Y en vez de asegurarse de escribir todo en mayúscula prefiere usar la función &lt;code&gt;toupper()&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;toupper(&amp;quot;minúscula&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;MINÚSCULA&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Entonces decide escribir la función &lt;code&gt;STOP()&lt;/code&gt; que es una versión gritona de &lt;code&gt;stop()&lt;/code&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;STOP &amp;lt;- function(mensaje) {
+   stop(toupper(mensaje))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Y ahora redefine la función &lt;code&gt;RAIZ_REAL()&lt;/code&gt; para usar esa función&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;RAIZ_REAL &amp;lt;- function(x) {
+   if (x &amp;lt; 0) {
+      STOP(&amp;quot;&amp;#39;x&amp;#39; no puede ser negativo.&amp;quot;)   
+   } 
+   sqrt(x)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;RAIZ_REAL(2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 1.414214&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;RAIZ_REAL(-2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Error in STOP(&amp;quot;&amp;#39;x&amp;#39; no puede ser negativo.&amp;quot;): &amp;#39;X&amp;#39; NO PUEDE SER NEGATIVO.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Parece que anda bien, pero hay un problema.
+Antes, el error saltaba dentro de &lt;code&gt;raiz_real()&lt;/code&gt;, por lo que el mensaje de error daba una pista de dónde estaba el fallo (&lt;code&gt;Error in raiz_real(-2) :...&lt;/code&gt;).
+Con este nuevo setup, como el error técnicamente ocurre dentro de &lt;code&gt;STOP()&lt;/code&gt;, el mensaje de error pierde utilidad.
+Peor aún, confunde al usuario!&lt;/p&gt;
+&lt;p&gt;Una solución es directamente esconder la llamada:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;STOP &amp;lt;- function(mensaje) {
+   stop(toupper(mensaje), call. = FALSE)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;RAIZ_REAL(-2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Error: &amp;#39;X&amp;#39; NO PUEDE SER NEGATIVO.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Ahora el mensaje no es tan útil, pero tampoco es activamente confuso.&lt;/p&gt;
+&lt;p&gt;Estaría bueno poder de alguna manera capturar la llamada anterior para que sea parte del mensaje de error.
+Es decir, hacer que la función &lt;code&gt;STOP()&lt;/code&gt; “sepa” qué otra expresión la llamó y use eso como texto.
+Y eso se puede hacer con la función &lt;code&gt;sys.call()&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;La función &lt;code&gt;sys.call()&lt;/code&gt; captura el código que llamó a una función, pero tiene un argumento que permite ir “para atrás” en el árbol de expresiones.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;funcion_exterior &amp;lt;- function(x) {
+   funcion_interior(x)
+}
+
+funcion_interior &amp;lt;- function(x) {
+   sys.call(x)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;funcion_exterior()&lt;/code&gt; llama a &lt;code&gt;funcion_interior()&lt;/code&gt; con el código &lt;code&gt;funcion_interior(x)&lt;/code&gt;.
+Como &lt;code&gt;x&lt;/code&gt; es 0, &lt;code&gt;funcion_interior()&lt;/code&gt; ejecuta &lt;code&gt;sys.call(0)&lt;/code&gt;, que devuelve la última llamada, que es &lt;code&gt;funcion_interior(x).&lt;/code&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;funcion_exterior(0)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## funcion_interior(x)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Pero con el argumento &lt;code&gt;x&lt;/code&gt; igual a -1, &lt;code&gt;funcion_interior()&lt;/code&gt; ejecuta &lt;code&gt;sys.call(-1)&lt;/code&gt;, que devuelve la penúltima llamada: &lt;code&gt;funcion_exterior(-1).&lt;/code&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;funcion_exterior(-1)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## funcion_exterior(-1)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El otro elemento es la función &lt;code&gt;simpleError()&lt;/code&gt;, que sirve para generar un objeto de error que luego es interpretado correctamente por &lt;code&gt;stop()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mensaje &amp;lt;- &amp;quot;esto es un error&amp;quot;
+error &amp;lt;- simpleError(toupper(mensaje))
+stop(error)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Error: ESTO ES UN ERROR&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Juntando ambas piezas, queda:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;STOP &amp;lt;- function(mensaje) {
+   error &amp;lt;- simpleError(toupper(mensaje), call = sys.call(-1))
+   stop(error)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Y ahora &lt;code&gt;RAIZ_REAL()&lt;/code&gt; escupe un error tan útil como gritón&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;RAIZ_REAL(-2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Error in RAIZ_REAL(-2): &amp;#39;X&amp;#39; NO PUEDE SER NEGATIVO.&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>La nueva pipa</title>

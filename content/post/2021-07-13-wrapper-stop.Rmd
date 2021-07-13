@@ -1,0 +1,136 @@
+---
+title: Cómo maniuplar mensajes de error
+author: Elio Campitelli
+date: '2021-07-13'
+slug: wrapper-stop
+categories:
+  - R
+keywords:
+  - paquetes
+  - programación
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+La función `stop()` permite terminar la ejecución de una función si hay algún problema mortal.
+
+Por ejemplo, imaginemos este código que calcula la raziz cuadrada de un número pero sólo si el número de entrada es positivo.
+
+```{r}
+raiz_real <- function(x) {
+   if (x < 0) {
+      stop("'x' no puede ser negativo.")   
+   } 
+   sqrt(x)
+}
+```
+
+```{r, error = TRUE}
+raiz_real(2)
+raiz_real(-2)
+```
+
+Si x es negativo, la función tira un error.
+Ahora imaginemos que esta función es parte de un paquete y le autor quiere que todos los mensajes de error estén siempre en mayúscula.
+Y en vez de asegurarse de escribir todo en mayúscula prefiere usar la función `toupper()`:
+
+```{r}
+toupper("minúscula")
+```
+
+Entonces decide escribir la función `STOP()` que es una versión gritona de `stop()`
+
+```{r}
+STOP <- function(mensaje) {
+   stop(toupper(mensaje))
+}
+```
+
+Y ahora redefine la función `RAIZ_REAL()` para usar esa función
+
+```{r}
+RAIZ_REAL <- function(x) {
+   if (x < 0) {
+      STOP("'x' no puede ser negativo.")   
+   } 
+   sqrt(x)
+}
+```
+
+```{r, error=TRUE}
+RAIZ_REAL(2)
+RAIZ_REAL(-2)
+```
+
+Parece que anda bien, pero hay un problema.
+Antes, el error saltaba dentro de `raiz_real()`, por lo que el mensaje de error daba una pista de dónde estaba el fallo (`Error in raiz_real(-2) :...`).
+Con este nuevo setup, como el error técnicamente ocurre dentro de `STOP()`, el mensaje de error pierde utilidad.
+Peor aún, confunde al usuario!
+
+Una solución es directamente esconder la llamada:
+
+```{r}
+STOP <- function(mensaje) {
+   stop(toupper(mensaje), call. = FALSE)
+}
+```
+
+```{r, error = TRUE}
+RAIZ_REAL(-2)
+```
+
+Ahora el mensaje no es tan útil, pero tampoco es activamente confuso.
+
+Estaría bueno poder de alguna manera capturar la llamada anterior para que sea parte del mensaje de error.
+Es decir, hacer que la función `STOP()` "sepa" qué otra expresión la llamó y use eso como texto.
+Y eso se puede hacer con la función `sys.call()`.
+
+La función `sys.call()` captura el código que llamó a una función, pero tiene un argumento que permite ir "para atrás" en el árbol de expresiones.
+
+```{r}
+funcion_exterior <- function(x) {
+   funcion_interior(x)
+}
+
+funcion_interior <- function(x) {
+   sys.call(x)
+}
+```
+
+`funcion_exterior()` llama a `funcion_interior()` con el código `funcion_interior(x)`.
+Como `x` es 0, `funcion_interior()` ejecuta `sys.call(0)`, que devuelve la última llamada, que es `funcion_interior(x).`
+
+```{r}
+funcion_exterior(0)
+```
+
+Pero con el argumento `x` igual a -1, `funcion_interior()` ejecuta `sys.call(-1)`, que devuelve la penúltima llamada: `funcion_exterior(-1).`
+
+```{r}
+funcion_exterior(-1)
+```
+
+El otro elemento es la función `simpleError()`, que sirve para generar un objeto de error que luego es interpretado correctamente por `stop()`.
+
+```{r, error = TRUE}
+mensaje <- "esto es un error"
+error <- simpleError(toupper(mensaje))
+stop(error)
+```
+
+Juntando ambas piezas, queda:
+
+```{r}
+STOP <- function(mensaje) {
+   error <- simpleError(toupper(mensaje), call = sys.call(-1))
+   stop(error)
+}
+```
+
+Y ahora `RAIZ_REAL()` escupe un error tan útil como gritón
+
+```{r, error = TRUE}
+RAIZ_REAL(-2)
+```

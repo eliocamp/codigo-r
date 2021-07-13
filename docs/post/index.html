@@ -229,6 +229,63 @@
     
     <div class="postShorten-header">
       <h1 class="postShorten-title" itemprop="headline">
+        <a class="link-unstyled" href="../2021/07/wrapper-stop/">
+          Cómo maniuplar mensajes de error
+        </a>
+      </h1>
+      
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2021-07-13T00:00:00Z">
+        
+  Julio 13, 2021
+
+      </time>
+    
+    
+  
+  
+    <span>en</span>
+    
+      <a class="category-link" href="../categories/r">R</a>
+    
+  
+
+  </div>
+
+    </div>
+    <div class="postShorten-excerpt" itemprop="articleBody">
+      
+       La función stop() permite terminar la ejecución de una función si hay algún problema mortal.
+Por ejemplo, imaginemos este código que calcula la raziz cuadrada de un número pero sólo si el número de entrada es positivo.
+raiz_real &lt;- function(x) { if (x &lt; 0) { stop(&quot;&#39;x&#39; no puede ser negativo.&quot;) } sqrt(x) } raiz_real(2) ## [1] 1.414214 raiz_real(-2) ## Error in raiz_real(-2): &#39;x&#39; no puede ser negativo. Si x es negativo, la función tira un error. 
+      <p>
+        <a href="../2021/07/wrapper-stop/" class="postShorten-excerpt_link link">Seguir leyendo</a>
+        
+      </p>
+    </div>
+  </div>
+  
+</article>
+
+          
+            
+  
+    
+      
+        
+      
+    
+  
+
+
+  
+
+<article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+  <div class="postShorten-wrap">
+    
+    <div class="postShorten-header">
+      <h1 class="postShorten-title" itemprop="headline">
         <a class="link-unstyled" href="../2021/05/r-pipa-nativa/">
           La nueva pipa
         </a>
@@ -546,63 +603,6 @@ Workshops A la mañana del primer día asistí al workshop de Mine Çetinkaya-Ru
 </article>
 
           
-            
-  
-    
-      
-        
-      
-    
-  
-
-
-  
-
-<article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-  <div class="postShorten-wrap">
-    
-    <div class="postShorten-header">
-      <h1 class="postShorten-title" itemprop="headline">
-        <a class="link-unstyled" href="../2019/01/metamerismo-estad%C3%ADstico/">
-          Metamerismo estadístico
-        </a>
-      </h1>
-      
-  <div class="postShorten-meta post-meta">
-    
-      <time itemprop="datePublished" datetime="2019-01-03T00:00:00Z">
-        
-  Enero 3, 2019
-
-      </time>
-    
-    
-  
-  
-    <span>en</span>
-    
-      <a class="category-link" href="../categories/r">R</a>, 
-    
-      <a class="category-link" href="../categories/estad%c3%adstica">estadística</a>
-    
-  
-
-  </div>
-
-    </div>
-    <div class="postShorten-excerpt" itemprop="articleBody">
-      
-       El paquete <a href="https://github.com/eliocamp/metamer">metamer</a> implementa en R el algoritmo descripto por Matejka y Fitzmaurice (2017) para generar sets de datos distintos entre sí pero con estadísticos idénticos. Además, propongo el nombre &ldquo;metámeros&rdquo; para estos grupos de datos en analogía con el concepto proveniente de colorimetría. 
-      <p>
-        <a href="../2019/01/metamerismo-estad%C3%ADstico/" class="postShorten-excerpt_link link">Seguir leyendo</a>
-        
-      </p>
-    </div>
-  </div>
-  
-</article>
-
-          
           
   <div class="pagination-bar">
     <ul class="pagination">
@@ -677,6 +677,25 @@ Workshops A la mañana del primer día asistí al workshop de Mine Çetinkaya-Ru
       <div class="no-result text-color-light text-center">no se encontraron artículos</div>
       <div class="results">
         
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../2021/07/wrapper-stop/">
+                <h3 class="media-heading">Cómo maniuplar mensajes de error</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jul 7, 2021
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">La función stop() permite terminar la ejecución de una función si hay algún problema mortal.
+Por ejemplo, imaginemos este código que calcula la raziz cuadrada de un número pero sólo si el número de entrada es positivo.
+raiz_real &lt;- function(x) { if (x &lt; 0) { stop(&quot;&#39;x&#39; no puede ser negativo.&quot;) } sqrt(x) } raiz_real(2) ## [1] 1.414214 raiz_real(-2) ## Error in raiz_real(-2): &#39;x&#39; no puede ser negativo. Si x es negativo, la función tira un error.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
         
           <div class="media">
             
@@ -839,26 +858,6 @@ Unfortunately, this deluge of questions is met with a shortage of conclusive ans
             <hr>
           </div>
         
-          <div class="media">
-            
-            <div class="media-body">
-              <a class="link-unstyled" href="../2018/09/multiples-escalas-colores-ggplot2/">
-                <h3 class="media-heading">Múltiples escalas de colores en ggplot2</h3>
-              </a>
-              <span class="media-meta">
-                <span class="media-date text-small">
-                  Sep 9, 2018
-                </span>
-              </span>
-              <div class="media-content hide-xs font-merryweather">tl;dr: Esta funcionalidad está ahora en el paquete ggnewscale! 📦 En este gist está la versión origial del código.
-Un dolor importante para algunos usuarios de ggplot2 es la imposibilidad de usar más de una escala para cada tipo de parámetro estético. Una búsqueda en StackOverflow da como resultado múltiples preguntas:
-
-Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría son del tipo &ldquo;no se puede, pero esta es otra forma de graficar tus datos&rdquo;.</div>
-            </div>
-            <div style="clear:both;"></div>
-            <hr>
-          </div>
-        
       </div>
     </div>
     <div class="modal-footer">
@@ -866,7 +865,7 @@ Pero ninguna respuesta tiene una solución realmente satisfactoria; la mayoría 
          data-message-zero="no se encontraron artículos"
          data-message-one="1 artículo encontrado"
          data-message-other="{n} artículos encontrados">
-         20 posts found
+         21 posts found
       </p>
     </div>
   </div>

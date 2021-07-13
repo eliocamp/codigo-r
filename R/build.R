@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 build_site <- function(local = FALSE, method = c("html", "custom"), run_hugo = TRUE) {
    if (missing(method)) method = getOption("blogdown.method", method)
    method = match.arg(method)
@@ -11,8 +13,7 @@ build_site <- function(local = FALSE, method = c("html", "custom"), run_hugo = T
                            files)]
    }
    blogdown:::build_rmds(files)
-   if (run_hugo) 
-      on.exit(blogdown::hugo_build(local), add = TRUE)
+   if (run_hugo) on.exit(blogdown::hugo_build(local), add = TRUE)
    invisible()
 }
 

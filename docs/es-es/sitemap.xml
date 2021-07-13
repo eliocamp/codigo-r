@@ -4,7 +4,7 @@
   
   <url>
     <loc>/categories/</loc>
-    <lastmod>2021-05-25T00:00:00+00:00</lastmod>
+    <lastmod>2021-07-13T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -25,7 +25,7 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2021-05-25T00:00:00+00:00</lastmod>
+    <lastmod>2021-07-13T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -45,23 +45,13 @@
   </url>
   
   <url>
-    <loc>/2021/05/r-pipa-nativa/</loc>
-    <lastmod>2021-05-25T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="/en/2021/05/r-pipa-nativa/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-es"
-                href="/2021/05/r-pipa-nativa/"
-                />
+    <loc>/2021/07/wrapper-stop/</loc>
+    <lastmod>2021-07-13T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>/post/</loc>
-    <lastmod>2021-05-25T00:00:00+00:00</lastmod>
+    <lastmod>2021-07-13T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -77,7 +67,7 @@
   
   <url>
     <loc>/categories/r/</loc>
-    <lastmod>2021-05-25T00:00:00+00:00</lastmod>
+    <lastmod>2021-07-13T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -88,6 +78,21 @@
                 rel="alternate"
                 hreflang="es-es"
                 href="/categories/r/"
+                />
+  </url>
+  
+  <url>
+    <loc>/2021/05/r-pipa-nativa/</loc>
+    <lastmod>2021-05-25T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/2021/05/r-pipa-nativa/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-es"
+                href="/2021/05/r-pipa-nativa/"
                 />
   </url>
   
