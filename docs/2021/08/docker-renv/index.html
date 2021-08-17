@@ -1,0 +1,869 @@
+
+
+  
+    
+  
+
+
+  
+
+
+
+
+  
+
+
+  
+
+<!DOCTYPE html>
+<html lang="es-es">
+  <head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Hugo 0.56.3 with theme Tranquilpeak 0.4.3-BETA">
+    <title>Setting up a transparent reproducible R environment with Docker &#43; renv</title>
+    <meta name="author" content="Elio Campitelli">
+    <meta name="keywords" content="development, packages, reproducible research, R">
+
+    <link rel="icon" href="../../../favicon.png">
+    
+
+    
+    <meta name="description" content="Fir my PhD I’m currently writing a paper using rmarkdown. Since I care about reproducibility, I’m using renv to register the versions of the R packages I use and create a local library that doesn’t affect the rest of my system. With that, anyone who wants to reproduce my work could download all the code, run renv::restore() and have an R environment very similar to the one I use.">
+    <meta property="og:description" content="Fir my PhD I’m currently writing a paper using rmarkdown. Since I care about reproducibility, I’m using renv to register the versions of the R packages I use and create a local library that doesn’t affect the rest of my system. With that, anyone who wants to reproduce my work could download all the code, run renv::restore() and have an R environment very similar to the one I use.">
+    <meta property="og:type" content="blog">
+    <meta property="og:title" content="Setting up a transparent reproducible R environment with Docker &#43; renv">
+    <meta property="og:url" content="/2021/08/docker-renv/">
+    <meta property="og:site_name" content="Código R">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Código R">
+    <meta name="twitter:description" content="Fir my PhD I’m currently writing a paper using rmarkdown. Since I care about reproducibility, I’m using renv to register the versions of the R packages I use and create a local library that doesn’t affect the rest of my system. With that, anyone who wants to reproduce my work could download all the code, run renv::restore() and have an R environment very similar to the one I use.">
+    
+      <meta name="twitter:creator" content="@d_olivaw">
+    
+    
+
+    
+    
+
+    
+      <meta property="og:image" content="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=640">
+    
+
+    
+    
+    
+
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="../../../css/style-jsjn0006wyhpyzivf6yceb31gvpjatbcs3qzjvlumobfnugccvobqwxnnaj8.min.css" />
+    
+    
+      
+        <link rel="stylesheet"  href="../../../css/custom.css">
+      
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="2">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="../../../">Código R</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="../../../#about">
+    
+    
+    
+      
+        <img class="header-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=90" alt="Foto de autor" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="2">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="../../../#about">
+          <img class="sidebar-profile-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=110" alt="Foto de autor" />
+        </a>
+        <h4 class="sidebar-profile-name">Elio Campitelli</h4>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Inicio</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../categories">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">Categorías</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../archives">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">Archivos</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">Acerca de</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/eliocamp">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://www.r-bloggers.com/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">R-Bloggers</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://twitter.com/d_olivaw">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="../../../index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="2"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Setting up a transparent reproducible R environment with Docker &#43; renv
+    </h1>
+  
+  
+
+    
+        In English: <a href="../../../en/2021/08/docker-renv/">Setting up a transparent reproducible R environment with Docker &#43; renv</a>
+    
+
+
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2021-08-17T00:00:00Z">
+        
+  Agosto 17, 2021
+
+      </time>
+    
+    
+  
+  
+    <span>en</span>
+    
+      <a class="category-link" href="../../../categories/r">R</a>
+    
+  
+
+  </div>
+
+</div>
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    });
+    </script>
+    <script type="text/javascript"
+      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+<script src="../../../rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>Fir my PhD I’m currently writing a paper using rmarkdown.
+Since I care about reproducibility, I’m using renv to register the versions of the R packages I use and create a local library that doesn’t affect the rest of my system.
+With that, anyone who wants to reproduce my work could download all the code, run <code>renv::restore()</code> and have an R environment very similar to the one I use.</p>
+<p>But while renv is nice, it doesn’t solve the problem, because system dependencies and even the R version itself can change.
+Another issue is that downloading and installing all the R packages can take a while.
+Like an hour.
+This is not a deal-breaker, but I’d like to do better.</p>
+<p>Thanks to <a href="https://rweekly.fireside.fm/52">a recent episode of the R Weekly Highlights podcast</a>, which pointed me to <a href="https://rweekly.fireside.fm/52">this post</a> by Rahul Sangole on how to set up a reproducible environment with Docker, I have now a better alternative that not only is more reproducible, but it’s potentially much more user-friendly.</p>
+<p>The core idea: Docker runs basically like a virtual machine inside your machine; you can control which R version you use and which packages are installed.
+You can also host a docker image on Docker Hub, so that anyone can download it and spin it up on their computer within minutes.</p>
+<p>So I could create a docker image, do all the system dependencies and R package dependencies setup that can take an hour or more, and then publish that.
+If someone wants to reproduce my work, they can just get the image, run it, and they are ready.
+And not only that, but I could also add all the necessary data that also takes hours to download!</p>
+<p>But there’s a <a href="https://youtu.be/KHMW8fV2NXo?t=1690">trade-off here between reproducibility and transparency/reusability</a>.
+I could run everything inside the docker image and be completely reproducible.
+But then the only way to access the code would be to download and run a heavy virtual machine using a partiular technology that some people might not be used to or even have access to (for example, if they can’t install software on their work computers).</p>
+<p>Since I want to be a little more on the transparent side of the spectrum, I want to host the code outside the container in a way that is accessible for anyone and use docker as an easier alternative.
+Here’s what I’ve come up with.</p>
+<p>At the heart of the docker image is the Dockerfile, a plain-text file with a series of commands that are then executed inside the image.
+Here’s the Dockerfile I came up with and I’ll explain how it works step by step:</p>
+<pre><code># get the base image, the rocker/verse has R, RStudio and pandoc
+FROM rocker/rstudio:4.1.1
+
+# required
+MAINTAINER Elio Campitelli &lt;elio.campitelli@cima.fcen.uba.ar&gt;
+
+# Get and install system dependencies
+RUN R -e &quot;install.packages(&#39;remotes&#39;)&quot; \
+ &amp;&amp; R -e &quot;remotes::install_github(&#39;r-hub/sysreqs&#39;)&quot;
+
+WORKDIR /home/rstudio/shceof
+COPY DESCRIPTION DESCRIPTION
+RUN sudo apt update \
+ &amp;&amp; R -e &quot;system(sysreqs::sysreq_commands(&#39;DESCRIPTION&#39;, &#39;linux-x86_64-ubuntu-gcc&#39;))&quot; \
+ &amp;&amp; apt install -y libmagick++-dev
+
+# Get and install R packages to local library
+COPY renv.lock renv.lock
+COPY renv/activate.R renv/activate.R
+COPY .Rprofile .Rprofile
+RUN chown -R rstudio . \
+ &amp;&amp; sudo -u rstudio R -e &#39;renv::restore()&#39;
+
+# Copy data to image
+COPY analysis/data analysis/data</code></pre>
+<p>The first line specifies the base image to use:</p>
+<pre><code># get the base image, the rocker/verse has R, RStudio and pandoc
+FROM rocker/rstudio:4.1.1</code></pre>
+<p>In this case, I use rocker/rstudio, which comes with R and RStudio pre-installed.
+I also fixed the R version to 4.1.1 because is the same I’m using to work locally.</p>
+<p>The next step is to make sure all the necessary system dependencies are installed.
+For that, I use the sysreqs package, which can take a DESCRIPTION file and build the command that installs all the dependencies.
+Of course, first you need to install it, which first requires the remotes package, because sysreqs is not on CRAN (yeah, it’s quite a ride).</p>
+<pre><code># Get and install system dependencies
+RUN R -e &quot;install.packages(&#39;remotes&#39;)&quot; \
+  &amp;&amp; R -e &quot;remotes::install_github(&#39;r-hub/sysreqs&#39;)&quot;</code></pre>
+<p>Notice that each line starts with <code>RUN</code> followed by a command that could be run on the command-line.
+For instance, <code>R -e "install.packages('remotes')"</code> executes <code>install.packages('remotes')</code> on an R session.</p>
+<p>Then, I use the <code>COPY</code> command to grab the DESCRIPTION file form my local computer and put it in a file called DESCRIPTION in the docker container.
+Where exactly?
+In the working directory, that I previously set up with <code>WORKDIR</code>.</p>
+<pre><code>WORKDIR /home/rstudio/shceof
+COPY DESCRIPTION DESCRIPTION</code></pre>
+<p>Finally use that DESCRIPTION file to install all the dependencies.
+For this project I also had to install libmagick++-dev, winch for some reason was necessary but not being installed.</p>
+<pre><code>RUN sudo apt update \
+ &amp;&amp; R -e &quot;system(sysreqs::sysreq_commands(&#39;DESCRIPTION&#39;, &#39;linux-x86_64-ubuntu-gcc&#39;))&quot; \
+ &amp;&amp; apt install -y libmagick++-dev</code></pre>
+<p>And now that the image has all the required system dependencies, it’s time to install the R packages.
+Since I use renv, the list of packages, along with their versions and their sources are listed on the renv.lock file, so I need to grab that.
+I also need the activate.R file in the renv folder, which is a nice little script that autoinstalls the correct version of the renv package.</p>
+<pre><code># Get and install R packages to local library
+COPY renv.lock renv.lock
+COPY renv/activate.R renv/activate.R
+COPY .Rprofile .Rprofile
+RUN chown -R rstudio . \
+ &amp;&amp; sudo -u rstudio R -e &#39;renv::restore()&#39;</code></pre>
+<p>At this point, notice that I also had to change the owner of the files to the rstudio user and also restore the packages as the rstudio user.</p>
+<p>At this point, everything is done.
+The docker image has an R installation with the correct packages and the correct system dependencies installed.
+This last step is optional, I copy the data folder from my local computer to the image.</p>
+<pre><code># Copy data to image
+COPY analysis/data analysis/data</code></pre>
+<p>In my project, these are about 3gb worth of data that are publicly available but are somewhat painful to get.
+One needs to create an account in the <a href="https://cds.climate.copernicus.eu/cdsapp#!/home">Climate Data Store website</a> and then set up the credentials as environmental variables.
+Then, the process of requesting and downloading the data can take a couple of hours.</p>
+<p>With this Dockerfile done, all it’s left is to build the thing with</p>
+<pre class="bash"><code>docker build . -t name/project</code></pre>
+<p>Now that the image is built and in my machine, it’s time to publish it for anyone to download.
+You need to go to <a href="https://hub.docker.com/">dockerhub</a>, create an account and then log in locally with</p>
+<pre class="bash"><code>docker login</code></pre>
+<p>Finally, just push the image with</p>
+<pre class="bash"><code>docker push name/project</code></pre>
+<p>Since all the code is actually hosted outside the container, whoever wants to reproduce it will first have to clone the GitHub repository.
+Then, from the root of the repository, they’d run this:</p>
+<pre class="bash"><code>docker run --rm -p 8787:8787 -e DISABLE_AUTH=true -v $(pwd):/home/rstudio/shceof -v /home/rstudio/shceof/renv -v /home/rstudio/shceof/analysis/data eliocamp/shceof</code></pre>
+<p>This will download the image if necessary and then run it.
+And then you go to localhost:8787 on any browser and be greeted with an RStudio session with all the things:</p>
+<p><img src="../../../images/docker-rstudio.png" alt= "Screenshot of a browser session with RStudio runnign inside."/></p>
+<p>The argument <code>-v $(pwd):/home/rstudio/shceof</code> mounts the current working directory (the root of the repository) to /home/rstudio/shceof on the container.
+But there’s the detail that /home/rstudio/shceof/renv and /home/rstudio/shceof/analysis/data were set up at build time.
+To make sure that these are not replaced by the versions in the repository (which would be almost empty and completely useless), I added this to the command:</p>
+<pre class="bash"><code>-v /home/rstudio/shceof/renv -v /home/rstudio/shceof/analysis/data</code></pre>
+<p><a href="https://stackoverflow.com/questions/29181032/add-a-volume-to-docker-but-exclude-a-sub-folder">For some reason</a> this functionally excludes these folders from the mount operation and the container then uses it’s own version of the folders.</p>
+<p>I think that this setup stands in a nice place in the reproducibility – transparency spectrum.
+Using renv to manage the R dependencies makes it possible for all the code to be available publicly, including a more or less straightforward path to (approximately) replicate the computational environment.
+And docker stands as a complementary and potentially faster entry-point that doesn’t hide all of that behind another layer of abstraction.</p>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+            
+            
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2021/07/wrapper-stop/" data-tooltip="Cómo maniuplar mensajes de error">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2021/08/docker-renv/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2021/08/docker-renv/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2021/08/docker-renv/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+            
+              
+                <div id="disqus_thread">
+  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2021 Elio Campitelli. Todos los derechos reservados
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
+        
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2021/07/wrapper-stop/" data-tooltip="Cómo maniuplar mensajes de error">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2021/08/docker-renv/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2021/08/docker-renv/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2021/08/docker-renv/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2F2021%2F08%2Fdocker-renv%2F">
+          <i class="fa fa-facebook-official"></i><span>Compartir en Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2F2021%2F08%2Fdocker-renv%2F">
+          <i class="fa fa-twitter"></i><span>Compartir en Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2F2021%2F08%2Fdocker-renv%2F">
+          <i class="fa fa-google-plus"></i><span>Compartir en Google&#43;</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=110" alt="Foto de autor" />
+    
+    <h4 id="about-card-name">Elio Campitelli</h4>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Atmospheric sciences graduate researcher at CONICET
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Argentina
+      </div>
+    
+  </div>
+</div>
+
+    <div id="algolia-search-modal" class="modal-container">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="close-button"><i class="fa fa-close"></i></span>
+      <a href="https://algolia.com" target="_blank" rel="noopener" class="searchby-algolia text-color-light link-unstyled">
+        <span class="searchby-algolia-text text-color-light text-small">by</span>
+        <img class="searchby-algolia-logo" src="https://www.algolia.com/static_assets/images/press/downloads/algolia-light.svg">
+      </a>
+      <i class="search-icon fa fa-search"></i>
+      <form id="algolia-search-form">
+        <input type="text" id="algolia-search-input" name="search"
+          class="form-control input--large search-input" placeholder="Buscar" />
+      </form>
+    </div>
+    <div class="modal-body">
+      <div class="no-result text-color-light text-center">no se encontraron artículos</div>
+      <div class="results">
+        
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2021/08/docker-renv/">
+                <h3 class="media-heading">Setting up a transparent reproducible R environment with Docker &#43; renv</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Aug 8, 2021
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Fir my PhD I’m currently writing a paper using rmarkdown. Since I care about reproducibility, I’m using renv to register the versions of the R packages I use and create a local library that doesn’t affect the rest of my system. With that, anyone who wants to reproduce my work could download all the code, run renv::restore() and have an R environment very similar to the one I use.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2021/07/wrapper-stop/">
+                <h3 class="media-heading">Cómo maniuplar mensajes de error</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jul 7, 2021
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">La función stop() permite terminar la ejecución de una función si hay algún problema mortal.
+Por ejemplo, imaginemos este código que calcula la raziz cuadrada de un número pero sólo si el número de entrada es positivo.
+raiz_real &lt;- function(x) { if (x &lt; 0) { stop(&quot;&#39;x&#39; no puede ser negativo.&quot;) } sqrt(x) } raiz_real(2) ## [1] 1.414214 raiz_real(-2) ## Error in raiz_real(-2): &#39;x&#39; no puede ser negativo. Si x es negativo, la función tira un error.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2021/05/r-pipa-nativa/">
+                <h3 class="media-heading">La nueva pipa</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  May 5, 2021
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Este post quizás llega un poco tarde pero hace poco salió la versión 4.1.0 de R. Y si la versión 4.0.0 hizo noticia con el revolucionario cambio de stringAsFactors = FALSE, la gran novedad de esta siguiente versión es la implementación de una “pipa” nativa.
+La nueva pipa La “pipa” (traducción no muy buena de “pipe” en inglés) es una de las principales distinciones del código que usa tidyverse / dplyr.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2021/03/star-trek-rakings/">
+                <h3 class="media-heading">Analizando ratings de Star Trek en IMDB</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Mar 3, 2021
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Con mi novia estamos viendo Star Trek: The Next Generation. La primera temporada es bastante mala, pero luego remonta. Me dio curiosidad si los ratings mostraban eso. Entonces empecé a bajar los ratings de cada capítulo en IMDB. En el medio, me encontré que IMDB provee ratings promedio por demografía, así que decidí también bajar eso.
+Y ya que estamos, bajé también los ratings de las otras series de Star Trek.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2019/12/rammbot-un-bot-que-crea-canciones-de-rammstein/">
+                <h3 class="media-heading">Obligué a un bot a escuchar más de 1000 horas de Rammstein y le pedí que escribiera una canción propia.</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Dec 12, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Cuando le conté a una amiga que había analizado las letras de Rammstein y Lacrimosa, me tiró la idea de usar un modelo para crear letras de las bandas. Me pareció una idea divertida, así que acá tienen el futuro de la música:
+library(data.table) library(magrittr) Igual que hice antes, bajo las letras de losdiscos de estudio de cada artista. Guardo las cosas en un archivo para no tener que bajar los datos cada vez que corro esto.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2019/11/rammstein-vs-lacrimosa/">
+                <h3 class="media-heading">Rammstein vs. Lacrimosa</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Nov 11, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Hace un tiempo una conocida twiteó que había tenido que comprarse un libro entero para aprender los géneros gramaticales del alemán. Entre las repuestas, había una persona que contaba que de adolescente creyó (erróneamente) que podría aprender alemán sólo escuchando Rammstein. Habeindo estudiado unos drei Jahre de alemán al mismo tiempo que escuchaba Rammstein y otras bandas en alemán, las letras de Rammstein siempre me parecieron extremadamente simples.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2019/10/lo-que-aprend%C3%AD-en-latinr-2019/">
+                <h3 class="media-heading">Lo que aprendí en LatinR 2019</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Oct 10, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Hace unas semanas volví de Santiago de Chile luego de ir a Latinr 2019. Igual que el año pasado, fue una experiencia divertida. Estas son algunas de las cosas que me llamaron la atención.
+Workshops A la mañana del primer día asistí al workshop de Mine Çetinkaya-Rundel sobre enseñanza de R. Ejemplificó algunos principios básicos a la hora de diseñar clases. La idea de “dejales comer el pastel primero” creo que es la principal enseñanza.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2019/04/ecmwfr-calentamiento-global/">
+                <h3 class="media-heading">Midiendo el calentamiento global con ecmwfr</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Apr 4, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Para mi investigación necesitaba bajar datos meteorológicos grillados del ERA-Interim, que es una base de datos generada por el ECMWF. Bajar los datos en su sitio web es muy incómido y requiere muchos clicks. Por suerte, me encontré con el paquete ecmwfr con el que pude bajar los datos directamente desde R y muy fácilmente. Una de las cosas geniales del código abierto, es que los usuarios pueden ser colaboradores, así que sugerí algunas cosas y aporté un poco de código.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2019/01/metamerismo-estad%C3%ADstico/">
+                <h3 class="media-heading">Metamerismo estadístico</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jan 1, 2019
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">El paquete <a href="https://github.com/eliocamp/metamer">metamer</a> implementa en R el algoritmo descripto por Matejka y Fitzmaurice (2017) para generar sets de datos distintos entre sí pero con estadísticos idénticos. Además, propongo el nombre &ldquo;metámeros&rdquo; para estos grupos de datos en analogía con el concepto proveniente de colorimetría.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../2018/10/leyendo-informacion-incucai/">
+                <h3 class="media-heading">Leyendo información del INCUCAI</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Oct 10, 2018
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">El otro día el diario Clarín sacó una nota afirmando que el pasado agosto se había dado el récord histórico de transplantes de órganos y se lo adjudicaba a la &ldquo;Ley Justina&rdquo;, que establece que todos somos donantes presuntos a menos que se declare lo contrario en vida. Dado que esta ley se aprobó hace poco más de un mes y todavía no está reglamentada, es poco probable que este récord se deba al cambio legal.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+      </div>
+    </div>
+    <div class="modal-footer">
+      <p class="results-count text-medium"
+         data-message-zero="no se encontraron artículos"
+         data-message-one="1 artículo encontrado"
+         data-message-other="{n} artículos encontrados">
+         22 posts found
+      </p>
+    </div>
+  </div>
+</div>
+    
+  
+    
+    <div id="cover" style="background-image:url('/images/cover2.jpg');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js" integrity="sha256-XrZQp+ZMfovqr6Hb2M6okHvSEYaB/+Xbx7toWmOOZUM=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/solarized-light.min.css" integrity="sha256-KacbO6Nou2geGJEUzQeKzKEdp/DENVGJKAd2v37moh0=" crossorigin="anonymous" />
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="../../../js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
+
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+      <script>
+        var disqus_config = function () {
+          this.page.url = '\/2021\/08\/docker-renv\/';
+          
+            this.page.identifier = '\/2021\/08\/docker-renv\/'
+          
+        };
+        (function() {
+          
+          
+          if (window.location.hostname == "localhost") {
+            return;
+          }
+          var d = document, s = d.createElement('script');
+          var disqus_shortname = 'codigo-r';
+          s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+      </script>
+    
+  
+
+
+
+    
+  </body>
+</html>
+

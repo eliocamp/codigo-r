@@ -1,0 +1,124 @@
+---
+title: Setting up a transparent reproducible R environment with Docker + renv
+author: Elio Campitelli
+date: '2021-08-17'
+slug: docker-renv
+categories:
+  - R
+keywords:
+  - development
+  - packages
+  - reproducible research
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>For my PhD I’m currently <a href="https://github.com/eliocamp/shceof">writing a paper using rmarkdown</a>.
+Since I care about reproducibility, I’m using <a href="https://rstudio.github.io/renv/index.html">renv</a> to register the versions of the R packages I use and to manage a local library that doesn’t affect the rest of my system.
+With that, anyone who wants to reproduce my work could download all the code, run <code>renv::restore()</code> and have an R environment very similar to the one I use.</p>
+<p>But while renv is nice, it doesn’t solve the whole problem, because system dependencies and even the R version itself can change.
+Another issue is that downloading and installing all the R packages can take a while.
+Like an hour or more.
+This is not a deal-breaker, but I’d like to do better.
+People trying to reproduce work are few and far between, so it’s important to make their lives as easy as possible.</p>
+<p>Thanks to <a href="https://rweekly.fireside.fm/52">a recent episode of the R Weekly Highlights podcast</a>, which pointed me to <a href="https://rweekly.fireside.fm/52">this post</a> by Rahul Sangole on how to set up a reproducible environment with Docker, I have now a better alternative that not only is more reproducible, but it’s potentially much more user-friendly.</p>
+<p>The core idea: <a href="https://docs.docker.com/get-started/overview/">Docker</a> runs basically like a virtual machine inside your computer; you can control which R version you use and which packages are installed.
+You can also host a docker image on <a href="https://hub.docker.com/">Docker Hub</a>, so that anyone can download it and spin it up on their computer within minutes.</p>
+<p>So I could create a docker image, do all the system dependencies and R package dependencies setup that can take an hour or more, and then publish that.
+If someone wants to reproduce my work, they can just get the image, run it, and they are ready.
+And not only that, but I could also add all the necessary data that also takes hours to download!</p>
+<p>But there’s a <a href="https://youtu.be/KHMW8fV2NXo?t=1690">trade-off here between reproducibility and transparency/reusability</a>.
+I could run everything inside the docker image and be completely reproducible.
+But then the only way to access the code would be to download and run a heavy virtual machine using a particular technology that some people might not be used to or even have access to (for example, if they can’t install software on their work computers).</p>
+<p>Since I want to be a little more on the transparent side of the spectrum, I want to host the code outside the container in a way that is accessible for anyone and use docker as an easier alternative.
+Here’s what I’ve come up with.</p>
+<div id="my-docker-renv-github-solution" class="section level2">
+<h2>My Docker + renv + GitHub solution</h2>
+<p>At the heart of the docker image is the Dockerfile, a plain-text file with a series of commands that are then executed inside the image.
+Here’s the Dockerfile I built.
+I’ll explain how it works step by step:</p>
+<pre class="dockerfile"><code># get the base image, the rocker/verse has R, RStudio and pandoc
+FROM rocker/rstudio:4.1.1
+
+# Get and install system dependencies
+RUN R -e &quot;install.packages(&#39;remotes&#39;)&quot; \
+ &amp;&amp; R -e &quot;remotes::install_github(&#39;r-hub/sysreqs&#39;)&quot;
+
+WORKDIR /home/rstudio/shceof
+COPY DESCRIPTION DESCRIPTION
+RUN sudo apt update \
+ &amp;&amp; R -e &quot;system(sysreqs::sysreq_commands(&#39;DESCRIPTION&#39;, &#39;linux-x86_64-ubuntu-gcc&#39;))&quot; \
+ &amp;&amp; apt install -y libmagick++-dev
+
+# Get and install R packages to local library
+COPY renv.lock renv.lock
+COPY renv/activate.R renv/activate.R
+COPY .Rprofile .Rprofile
+RUN chown -R rstudio . \
+ &amp;&amp; sudo -u rstudio R -e &#39;renv::restore()&#39;
+
+# Copy data to image
+COPY analysis/data analysis/data</code></pre>
+<p>The first line specifies the base image to use:</p>
+<pre class="dockerfile"><code># get the base image, the rocker/verse has R, RStudio and pandoc
+FROM rocker/rstudio:4.1.1</code></pre>
+<p>In this case, I use <a href="https://hub.docker.com/r/rocker/rstudio">rocker/rstudio</a>, which comes with R and RStudio pre-installed.
+I also fixed the R version to 4.1.1 because is the same I’m using to work locally.</p>
+<p>The next step is to make sure all the necessary system dependencies are installed.
+For that, I use the <a href="https://github.com/r-hub/sysreqs">sysreqs</a> package, which can take a DESCRIPTION file and build the command that installs all the dependencies.
+Of course, first you need to install it, which first requires the <a href="https://remotes.r-lib.org/">remotes</a> package, because sysreqs is not on CRAN (yeah, it’s quite a ride).</p>
+<pre class="dockerfile"><code># Get and install system dependencies
+RUN R -e &quot;install.packages(&#39;remotes&#39;)&quot; \
+  &amp;&amp; R -e &quot;remotes::install_github(&#39;r-hub/sysreqs&#39;)&quot;</code></pre>
+<p>Notice that each line starts with <code>RUN</code> followed by a command that could be run on the command-line.
+For instance, <code>R -e "install.packages('remotes')"</code> executes <code>install.packages('remotes')</code> on an R session.</p>
+<p>Then, I use the <code>COPY</code> command to grab the DESCRIPTION file form my local computer and put it in a file called DESCRIPTION in the docker container.
+Where exactly?
+In the working directory, that I previously set up with <code>WORKDIR</code>.</p>
+<pre class="dockerfile"><code>WORKDIR /home/rstudio/shceof
+COPY DESCRIPTION DESCRIPTION</code></pre>
+<p>Finally use that DESCRIPTION file to install all the dependencies.
+For this project I also had to install libmagick++-dev, winch for some reason was necessary but not being installed.</p>
+<pre class="dockerfile"><code>RUN sudo apt update \
+ &amp;&amp; R -e &quot;system(sysreqs::sysreq_commands(&#39;DESCRIPTION&#39;, &#39;linux-x86_64-ubuntu-gcc&#39;))&quot; \
+ &amp;&amp; apt install -y libmagick++-dev</code></pre>
+<p>And now that the image has all the required system dependencies, it’s time to install the R packages.
+Since I use renv, the list of packages, along with their versions and their sources are listed on the renv.lock file, so I need to grab that.
+I also need the activate.R file in the renv folder, which is a nice little script that autoinstalls the correct version of the renv package.</p>
+<pre class="dockerfile"><code># Get and install R packages to local library
+COPY renv.lock renv.lock
+COPY renv/activate.R renv/activate.R
+COPY .Rprofile .Rprofile
+RUN chown -R rstudio . \
+ &amp;&amp; sudo -u rstudio R -e &#39;renv::restore()&#39;</code></pre>
+<p>Notice that I also had to change the owner of the files to the rstudio user and also restore the packages as the rstudio user.</p>
+<p>At this point, the docker image has an R installation with the correct packages and the correct system dependencies installed.
+As a last, optional step, I copy the data folder from my local computer to the image.</p>
+<pre class="dockerfile"><code># Copy data to image
+COPY analysis/data analysis/data</code></pre>
+<p>In my project, these are about 3 gb worth of data that are publicly available but are somewhat painful to get.
+One needs to create an account in the <a href="https://cds.climate.copernicus.eu/cdsapp#!/home">Climate Data Store website</a> and then set up the credentials as environmental variables.
+Then, the process of requesting and downloading the data can take a couple of hours.</p>
+<p>With this Dockerfile done, all it’s left is to build the thing with</p>
+<pre class="bash"><code>docker build . -t name/project</code></pre>
+<p>Now that the image is built and in my machine, it’s time to publish it for anyone to download.
+You need to go to <a href="https://hub.docker.com/">dockerhub</a>, create an account and then log in locally with</p>
+<pre class="bash"><code>docker login</code></pre>
+<p>Finally, just push the image with</p>
+<pre class="bash"><code>docker push name/project</code></pre>
+<p>Since all the code is actually hosted outside the container, whoever wants to reproduce it will first have to clone the GitHub repository.
+Then, from the root of the repository, they’d run this:</p>
+<pre class="bash"><code>docker run --rm -p 8787:8787 -e DISABLE_AUTH=true -v $(pwd):/home/rstudio/shceof -v /home/rstudio/shceof/renv -v /home/rstudio/shceof/analysis/data eliocamp/shceof</code></pre>
+<p>This woudl download the image if necessary and then run it.
+And then they’d go to localhost:8787 on any browser to be greeted with an RStudio session with all the things:</p>
+<p><img src="/images/docker-rstudio.png" alt="Screenshot of a browser session with RStudio runnign inside."/></p>
+<p>The argument <code>-v $(pwd):/home/rstudio/shceof</code> mounts the current working directory (the root of the repository) to <code>/home/rstudio/shceof</code> on the container.
+But there’s the detail that <code>/home/rstudio/shceof/renv</code> and <code>/home/rstudio/shceof/analysis/data</code> were pre-populated at build time with files that are not available on github.
+To make sure that these are not replaced by the versions in the repository (which would be almost empty and completely useless), I added this to the command:</p>
+<pre class="bash"><code>-v /home/rstudio/shceof/renv -v /home/rstudio/shceof/analysis/data</code></pre>
+<p><a href="https://stackoverflow.com/questions/29181032/add-a-volume-to-docker-but-exclude-a-sub-folder">For some reason</a> this functionally excludes these folders from the mount operation and the container then uses it’s own version of the folders.</p>
+<p>I think that this setup stands in a nice place in the reproducibility – transparency spectrum.
+Using renv to manage the R dependencies makes it possible for all the code to be available publicly, including a more or less straightforward path to (approximately) replicate the computational environment.
+And docker stands as a complementary and potentially faster entry-point that doesn’t hide all of that behind another layer of abstraction.</p>
+</div>

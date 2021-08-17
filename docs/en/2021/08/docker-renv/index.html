@@ -22,23 +22,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Hugo 0.56.3 with theme Tranquilpeak 0.4.3-BETA">
-    <title>Rammstein vs. Lacrimosa</title>
+    <title>Setting up a transparent reproducible R environment with Docker &#43; renv</title>
     <meta name="author" content="Elio Campitelli">
-    <meta name="keywords" content=", R">
+    <meta name="keywords" content="development, packages, reproducible research, R">
 
     <link rel="icon" href="../../../../favicon.png">
     
 
     
-    <meta name="description" content="Some time ago, someone I follow on twitter posted about having to buy a whole book with rules to tease out grammatical gender in German. Further down the replies, someone reminisced about trying (and failing) to learn German just by listening to Rammstein’s lyrics. I studied about drei Jahre of German at the same time I started listening to Rammstein and other German-speaking bands and I’ve always found Rammstein’s lyrics to be surprisingly simple.">
-    <meta property="og:description" content="Some time ago, someone I follow on twitter posted about having to buy a whole book with rules to tease out grammatical gender in German. Further down the replies, someone reminisced about trying (and failing) to learn German just by listening to Rammstein’s lyrics. I studied about drei Jahre of German at the same time I started listening to Rammstein and other German-speaking bands and I’ve always found Rammstein’s lyrics to be surprisingly simple.">
+    <meta name="description" content="For my PhD I’m currently writing a paper using rmarkdown. Since I care about reproducibility, I’m using renv to register the versions of the R packages I use and to manage a local library that doesn’t affect the rest of my system. With that, anyone who wants to reproduce my work could download all the code, run renv::restore() and have an R environment very similar to the one I use.">
+    <meta property="og:description" content="For my PhD I’m currently writing a paper using rmarkdown. Since I care about reproducibility, I’m using renv to register the versions of the R packages I use and to manage a local library that doesn’t affect the rest of my system. With that, anyone who wants to reproduce my work could download all the code, run renv::restore() and have an R environment very similar to the one I use.">
     <meta property="og:type" content="blog">
-    <meta property="og:title" content="Rammstein vs. Lacrimosa">
-    <meta property="og:url" content="/en/2019/11/rammstein-vs-lacrimosa/">
+    <meta property="og:title" content="Setting up a transparent reproducible R environment with Docker &#43; renv">
+    <meta property="og:url" content="/en/2021/08/docker-renv/">
     <meta property="og:site_name" content="Code R">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Code R">
-    <meta name="twitter:description" content="Some time ago, someone I follow on twitter posted about having to buy a whole book with rules to tease out grammatical gender in German. Further down the replies, someone reminisced about trying (and failing) to learn German just by listening to Rammstein’s lyrics. I studied about drei Jahre of German at the same time I started listening to Rammstein and other German-speaking bands and I’ve always found Rammstein’s lyrics to be surprisingly simple.">
+    <meta name="twitter:description" content="For my PhD I’m currently writing a paper using rmarkdown. Since I care about reproducibility, I’m using renv to register the versions of the R packages I use and to manage a local library that doesn’t affect the rest of my system. With that, anyone who wants to reproduce my work could download all the code, run renv::restore() and have an R environment very similar to the one I use.">
     
       <meta name="twitter:creator" content="@d_olivaw">
     
@@ -217,26 +217,22 @@
             <div class="post-header main-content-wrap text-left">
   
     <h1 class="post-title" itemprop="headline">
-      Rammstein vs. Lacrimosa
+      Setting up a transparent reproducible R environment with Docker &#43; renv
     </h1>
   
   
-
-    
-        En español: <a href="../../../../2019/11/rammstein-vs-lacrimosa/">Rammstein vs. Lacrimosa</a>
-    
 
 
   
   <div class="postShorten-meta post-meta">
     
-      <time itemprop="datePublished" datetime="2019-11-21T00:00:00Z">
+      <time itemprop="datePublished" datetime="2021-08-17T00:00:00Z">
         
   
   
   
   
-    November 21, 2019
+    August 17, 2021
   
 
       </time>
@@ -270,268 +266,116 @@
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
               
-<script src="../../../../rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
-<script src="../../../../rmarkdown-libs/pymjs/pym.v1.js"></script>
-<script src="../../../../rmarkdown-libs/widgetframe-binding/widgetframe.js"></script>
+<script src="../../../../rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 
-<p>Some time ago, someone I follow on twitter posted about having to buy a whole book with rules to tease out grammatical gender in German. Further down the replies, someone reminisced about trying (and failing) to learn German just by listening to Rammstein’s lyrics. I studied about drei Jahre of German at the same time I started listening to Rammstein and other German-speaking bands and I’ve always found Rammstein’s lyrics to be surprisingly simple. So simple, in fact, that I suspect that Till Lindemann intentionally dumbs down his writing to cater to the English speaking word and, in particular, to beginner-level German students</p>
-<p>I decided I wanted to see if this vague idea had any merit. So I downloaded Rammstein’s lyrics and measured it’s complexity. As a benchmark, I compared them with Lacrimosa’s lyrics, another German-speaking band from my youth.</p>
-<div id="a-taste-of-the-data" class="section level2">
-<h2>A taste of the data</h2>
-<p>For those not familiar with either band, this is the chorus from Rammstein’s <a href="https://www.youtube.com/watch?v=StZcUAPRRac">Sonne</a>:</p>
-<blockquote>
-<p>Eins, hier kommt die Sonne.<br />
-Zwei, hier kommt die Sonne.<br />
-Drei, sie ist der hellste Stern von allen.<br />
-Vier, hier kommt die Sonne.</p>
-</blockquote>
-<p>Now, the song does have some complex meaning and interesting uses of metaphor, but the sentence structure is painfully simple. Not only that, but since it repeats the numbers one through ten over and over again, I cannot shake the feeling that it’s a song designed to help children learn the numbers.</p>
-<p>On the other hand, here’s a part of Lacrimosa’s <a href="https://www.youtube.com/watch?v=cSXaWvFFXuI">Warum so Tief</a>:</p>
-<blockquote>
-<p>Warum so tief - und warum gerade jetzt?<br />
-Warum vor ihr - warum diese Ironie?<br />
-Warum so hart - und warum nicht einfach besiegt?<br />
-Muss ich denn wirklich für jede Begegnung<br />
-für immer und ewig mit all meiner Liebe bezahlen?</p>
-</blockquote>
-<blockquote>
-<p>Einmal ohne das eine und endgültige Gefühl - verloren zu sein<br />
-Nur einmal bei ihr - keine Tobsucht in Ketten<br />
-Doch ich kann es nicht ’mal bestreiten - dass ich euch liebe<br />
-Mutter Angst und Vater Schmerz</p>
-</blockquote>
-<p>I believe the contrast is obvious. In particular, the last two verses of the first stanza make up a surprisingly long sentence, specially for a song.</p>
-<p>These two examples were, of course, cherry-picked to make a point. So let’s try to quantify and analyse all songs from each band.</p>
-</div>
-<div id="getting-the-data" class="section level2">
-<h2>Getting the data</h2>
-<p>I want lyrics for every studio album by each band. I could try to automate this by scrapping, say, the respective <a href="https://en.wikipedia.org/wiki/Lacrimosa_(band)">wikipedia article</a>, but it was easier to do it by hand.</p>
-<pre class="r"><code>library(data.table)
-library(magrittr)
-library(ggplot2)
+<p>For my PhD I’m currently <a href="https://github.com/eliocamp/shceof">writing a paper using rmarkdown</a>.
+Since I care about reproducibility, I’m using <a href="https://rstudio.github.io/renv/index.html">renv</a> to register the versions of the R packages I use and to manage a local library that doesn’t affect the rest of my system.
+With that, anyone who wants to reproduce my work could download all the code, run <code>renv::restore()</code> and have an R environment very similar to the one I use.</p>
+<p>But while renv is nice, it doesn’t solve the whole problem, because system dependencies and even the R version itself can change.
+Another issue is that downloading and installing all the R packages can take a while.
+Like an hour or more.
+This is not a deal-breaker, but I’d like to do better.
+People trying to reproduce work are few and far between, so it’s important to make their lives as easy as possible.</p>
+<p>Thanks to <a href="https://rweekly.fireside.fm/52">a recent episode of the R Weekly Highlights podcast</a>, which pointed me to <a href="https://rweekly.fireside.fm/52">this post</a> by Rahul Sangole on how to set up a reproducible environment with Docker, I have now a better alternative that not only is more reproducible, but it’s potentially much more user-friendly.</p>
+<p>The core idea: <a href="https://docs.docker.com/get-started/overview/">Docker</a> runs basically like a virtual machine inside your computer; you can control which R version you use and which packages are installed.
+You can also host a docker image on <a href="https://hub.docker.com/">Docker Hub</a>, so that anyone can download it and spin it up on their computer within minutes.</p>
+<p>So I could create a docker image, do all the system dependencies and R package dependencies setup that can take an hour or more, and then publish that.
+If someone wants to reproduce my work, they can just get the image, run it, and they are ready.
+And not only that, but I could also add all the necessary data that also takes hours to download!</p>
+<p>But there’s a <a href="https://youtu.be/KHMW8fV2NXo?t=1690">trade-off here between reproducibility and transparency/reusability</a>.
+I could run everything inside the docker image and be completely reproducible.
+But then the only way to access the code would be to download and run a heavy virtual machine using a particular technology that some people might not be used to or even have access to (for example, if they can’t install software on their work computers).</p>
+<p>Since I want to be a little more on the transparent side of the spectrum, I want to host the code outside the container in a way that is accessible for anyone and use docker as an easier alternative.
+Here’s what I’ve come up with.</p>
+<div id="my-docker-renv-github-solution" class="section level2">
+<h2>My Docker + renv + GitHub solution</h2>
+<p>At the heart of the docker image is the Dockerfile, a plain-text file with a series of commands that are then executed inside the image.
+Here’s the Dockerfile I built.
+I’ll explain how it works step by step:</p>
+<pre class="dockerfile"><code># get the base image, the rocker/verse has R, RStudio and pandoc
+FROM rocker/rstudio:4.1.1
 
-theme_set(hrbrthemes::theme_ipsum_rc())</code></pre>
-<pre class="r"><code>lacrimosa &lt;- data.table(
-   album = c(&quot;Angst&quot;, &quot;Einsemkeit&quot;, &quot;Satura&quot;, &quot;Inferno&quot;, &quot;Stille&quot;, &quot;Elodia&quot;, &quot;Fassade&quot;, &quot;Echos&quot;, 
-             &quot;Lichtgestalt&quot;, &quot;Sehnsucht&quot;, &quot;Revolution&quot;, &quot;Hoffnung&quot;, &quot;Testimonium&quot;),
-   year = c(1991, 1992, 1993, 1995, 1997, 1999, 2001, 2003,
-            2005, 2009, 2012, 2015, 2017)
-)
+# Get and install system dependencies
+RUN R -e &quot;install.packages(&#39;remotes&#39;)&quot; \
+ &amp;&amp; R -e &quot;remotes::install_github(&#39;r-hub/sysreqs&#39;)&quot;
 
-rammstein &lt;- data.table(
-   album = c(&quot;Herzeleid&quot;, &quot;Sehnsucht&quot;, &quot;Mutter&quot;, &quot;Reise Reise&quot;, &quot;Rosenrot&quot;, 
-             &quot;Liebe ist fur alle da&quot;,  &quot;Rammstein&quot;),
-   year = c(1995, 1997, 2001, 2004, 2005, 2009, 2019)
-)
+WORKDIR /home/rstudio/shceof
+COPY DESCRIPTION DESCRIPTION
+RUN sudo apt update \
+ &amp;&amp; R -e &quot;system(sysreqs::sysreq_commands(&#39;DESCRIPTION&#39;, &#39;linux-x86_64-ubuntu-gcc&#39;))&quot; \
+ &amp;&amp; apt install -y libmagick++-dev
 
-albums &lt;- rbindlist(list(Lacrimosa = lacrimosa, 
-                         Rammstein = rammstein), 
-                    idcol = &quot;artist&quot;)</code></pre>
-<p>Now, there’s a neat <a href="https://github.com/JosiahParry/genius">genius</a> package that can download lyrics from, you guessed it, the popular website <a href="https://genius.com/">Genius</a><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. You can “enrich” a dataframe with all the lyrics for each album of each artist like so:</p>
-<pre class="r"><code>albums &lt;- albums %&gt;% 
-   genius::add_genius(artist, album) %&gt;% 
-   as.data.table() %&gt;% 
-   .[artist == &quot;Lacrimosa&quot; &amp; album == &quot;Sehnsucht&quot;, album := &quot;Sehnsucht (L)&quot;]  
-# (Both bands have an album named Sehnsucht)</code></pre>
-<p>Now each row of <code>albums</code> holds each verse of each song of each album of each artist.</p>
-<pre class="r"><code>DT::datatable(albums) %&gt;% 
-   widgetframe::frameWidget()</code></pre>
-<div id="htmlwidget-1" style="width:100%;height:480px;" class="widgetframe html-widget"></div>
-<script type="application/json" data-for="htmlwidget-1">{"x":{"url":"/post/2019-11-20-rammstein-vs-lacrimosa.en_files/figure-html//widgets/widget_unnamed-chunk-4.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
-</div>
-<div id="readability-of-rammsteins-lyrics" class="section level2">
-<h2>Readability of Rammstein’s lyrics</h2>
-<p>With these data I can begin to test my hypothesis. But how? I’ll score the <a href="https://en.wikipedia.org/wiki/Readability">readability</a> of each song lyric. My hunch is that Rammstein’s lyrics will have a low score on readability (i.e. they are simpler) than Lacrimosa’s. The issue here is that, from what I can tell, most measures of readability are based on the English language. This is a huge problem for text analysis in any language other than English. In this case, a bit of quick googling lead me to the <a href="https://en.wikipedia.org/wiki/SMOG">SMOG</a> readability score, which has a variant adapted to German implemented in the <a href="https://quanteda.io/">quantea</a> package.</p>
-<p>Related to this, that not all songs by these bands are in German. Most albums by Lacrimosa, for example, have at least one song in English (often voiced by Anne Nurmi instead of Tilo Wolff). So I’ll need to detect them and remove them from my analysis. Again, a bit of googling lead me to the <a href="https://cran.r-project.org/web/packages/textcat/index.html">textcat</a> package, which I will consider a black box algorithm because at this point I’m done going through rabbit holes. 🐰</p>
-<pre class="r"><code># Join all verses from each song
-full_lyrics &lt;- albums %&gt;% 
-   na.omit() %&gt;% 
-   .[, .(lyric = paste0(lyric, collapse = &quot;.\n&quot;) ), 
-     by = .(artist, album, year, track_title)]
+# Get and install R packages to local library
+COPY renv.lock renv.lock
+COPY renv/activate.R renv/activate.R
+COPY .Rprofile .Rprofile
+RUN chown -R rstudio . \
+ &amp;&amp; sudo -u rstudio R -e &#39;renv::restore()&#39;
 
-# Get the language
-full_lyrics[, language := textcat::textcat(lyric), 
-            by = .(track_title, artist, album)]
-
-# How many songs for each language?
-full_lyrics %&gt;% 
-   .[, .N, by = .(artist, language)] %&gt;% 
-   .[order(-N)] %&gt;% 
-   knitr::kable()</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="left">artist</th>
-<th align="left">language</th>
-<th align="right">N</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Lacrimosa</td>
-<td align="left">german</td>
-<td align="right">81</td>
-</tr>
-<tr class="even">
-<td align="left">Rammstein</td>
-<td align="left">german</td>
-<td align="right">75</td>
-</tr>
-<tr class="odd">
-<td align="left">Lacrimosa</td>
-<td align="left">english</td>
-<td align="right">16</td>
-</tr>
-<tr class="even">
-<td align="left">Rammstein</td>
-<td align="left">scots</td>
-<td align="right">3</td>
-</tr>
-<tr class="odd">
-<td align="left">Lacrimosa</td>
-<td align="left">scots</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td align="left">Lacrimosa</td>
-<td align="left">catalan</td>
-<td align="right">1</td>
-</tr>
-<tr class="odd">
-<td align="left">Lacrimosa</td>
-<td align="left">romanian</td>
-<td align="right">1</td>
-</tr>
-<tr class="even">
-<td align="left">Lacrimosa</td>
-<td align="left">finnish</td>
-<td align="right">1</td>
-</tr>
-<tr class="odd">
-<td align="left">Rammstein</td>
-<td align="left">english</td>
-<td align="right">1</td>
-</tr>
-<tr class="even">
-<td align="left">Rammstein</td>
-<td align="left">portuguese</td>
-<td align="right">1</td>
-</tr>
-</tbody>
-</table>
-<p>As expected, most songs by either band are in German and a non negligible part of Lacrimosa’s are in English. The algorithm seems to be fooled by some lyrics, though. I inspected the individual cases. All songs marked as “scots” are actually in English. The songs allegedly in Catalan or Romanian are actually a instrumental songs which {genius} seems to have messed up. The one in “Portuguese” is actually Rammstein’s “Te quiero, Puta” which is actually in Spanish. Finally, Lacrimosa’s Vankina is really in Finnish.</p>
-<p>Note that since song lyrics are in verse and don’t have punctuation I had to make the bold choice of assuming that each verse is it’s own sentence.</p>
-<p>Another important limitation is that since these readability scores are based on prose, their validity is not garanteed in the case of poetry.</p>
-<p>In any case, computing the readability score for only the German lyrics we get this</p>
-<pre class="r"><code>full_lyrics[language == &quot;german&quot;,
-            &quot;SMOG&quot; := quanteda::textstat_readability(lyric, measure = &quot;SMOG.de&quot;)$SMOG.de]
-
-full_lyrics %&gt;%  
-   .[language %in% &quot;german&quot;] %&gt;% 
-   ggplot(aes(SMOG)) +
-   geom_density(aes(color = artist)) +
-   geom_rug(aes(color = artist)) +
-   scale_color_brewer(&quot;Artist&quot;, palette = &quot;Set1&quot;)</code></pre>
-<p><img src="../../../../post/2019-11-20-rammstein-vs-lacrimosa.en_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<p>So…hypothesis confirmed? Rammstein’s lyrics are definitely on the simple side. That said, they do own the 3 most complex songs in the dataset. However, this might be a bit misleading. Let’s look at the most complex song.</p>
-<pre class="r"><code>full_lyrics[which.max(SMOG)] %&gt;% 
-   with(cat(lyric))</code></pre>
-<pre><code>## Bewahret einander vor Herzeleid.
-## Denn kurz ist die Zeit die ihr beisammen seid.
-## Denn wenn euch auch viele Jahre vereinen.
-## Einst werden sie wie Minuten euch scheinen.
-## Herzeleid.
-## Bewahret einander vor der Zweisamkeit</code></pre>
-<p>Herzeleid is a short song (lyric-wise) and not terribly complicated. But it does feature some longer words. Ironically, these lyrics are actually based on a tradicional poem that can be found adorning several homes</p>
-<div class="figure">
-<img src="../../../../post/2019-11-20-rammstein-vs-lacrimosa_files/herzeleid.png" alt="Herzeleid poem" />
-<p class="caption">Herzeleid poem</p>
-</div>
-<p>SImilarly, the second most complex song -Zeig dich- features almost exclusively two-word verses. So really I’m not terribly confident about this result. On the other end of the spectrum, though, it really makes sense.</p>
-<pre class="r"><code>full_lyrics[which.min(SMOG)] %&gt;% 
-   with(cat(lyric))</code></pre>
-<pre><code>## Du, du hast, du hast mich.
-## Du, du hast, du hast mich.
-## Du, du hast, du hast mich.
-## Du, du hast, du hast mich.
-## Du, du hast, du hast mich, du hast mich.
-## Du hast mich gefragt, du hast mich gefragt.
-## Du hast mich gefragt und ich hab&#39; nichts gesagt.
-## Willst du bis der Tod euch scheidet.
-## Treu ihr sein für alle Tage?(Ja) Nein.
-## (Ja) Nein.
-## Willst du bis zum Tod, der scheide.
-## Sie lieben auch in schlechten Tagen?(Ja) Nein.
-## (Ja) Nein.
-## Du, du hast, du hast mich.
-## Du, du hast, du hast mich.
-## Du, du hast, du hast mich, du hast mich.
-## Du hast mich gefragt, du hast mich gefragt.
-## Du hast mich gefragt und ich hab&#39; nichts gesagt.
-## Willst du bis der Tod euch scheidet.
-## Treu ihr sein für alle Tage?(Ja) Nein.
-## (Ja) Nein.
-## Willst du bis zum Tod, der scheide.
-## Sie lieben auch in schlechten Tagen?(Ja) Nein.
-## (Ja) Nein.
-## Willst du bis der Tod euch scheidet.
-## Treu ihr sein(Ja) Nein.
-## (Ja) Nein</code></pre>
-<p>The simplest song of all is, no surprise, Du hast. It’s a rather ‘dumb’ song, at least in terms of readability. It’s got very short verses, very short words and very simple structure. What the SMOG score doesn’t capture, though, is that it’s also very repetitive. There are essentially only 3 distinct stanzas!</p>
-<p>This observation again resonates with my experience with both bands. Rammstein adheres fully to the traditional song structure of verses, choruses and bridges while Lacrimosa is no stranger to more “prose-like” lyrics with little in the way of repetition. For example, <a href="https://www.youtube.com/watch?v=qdzI88X4YZk">Der Strasse der Zeit</a> has no chorus at all and, thus, counting the proportion of unique verses in that song we see that only about 7% of the lines are duplicated.</p>
-<pre class="r"><code>albums[track_title == &quot;Die Strasse der Zeit&quot;] %&gt;% 
-   .[, mean(duplicated(lyric))]</code></pre>
-<pre><code>## [1] 0.07017544</code></pre>
-<p>Extending this counting method to both band’s respective discographies:</p>
-<pre class="r"><code>albums %&gt;% 
-   .[, .(repetition = mean(duplicated(lyric)), .N), by = .(track_title, artist)] %&gt;% 
-   ggplot(aes(repetition)) +
-   geom_density(aes(color = artist)) +
-   geom_rug(aes(color = artist)) +
-   scale_color_brewer(&quot;Artist&quot;, palette = &quot;Set1&quot;)</code></pre>
-<p><img src="../../../../post/2019-11-20-rammstein-vs-lacrimosa.en_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-<p>Woah! The difference here is outstanding! Unlike Rammstein, who happily write lyrics with 30% of repetition or higher, few of Lacrimosas’s songs repeat more than 20% of its verses. Indeed, a sizeable chunk of their songs feature no repetition at all!</p>
-<p>Putting both measures together, we get a clear separation between both bands.</p>
-<pre class="r"><code>full_lyrics %&gt;% 
-   .[language == &quot;german&quot;] %&gt;% 
-   .[, repetition := mean(duplicated(strsplit(lyric, &quot;.\n&quot;)[[1]])), 
-     by = .(track_title, artist)] %&gt;% 
-   ggplot(aes(repetition, SMOG)) +
-   geom_point(aes(color = artist)) +
-   geom_density_2d(aes(color = artist), adjust = 1.5, bins = 4) +
-   scale_color_brewer(&quot;Artist&quot;, palette = &quot;Set1&quot;)</code></pre>
-<p><img src="../../../../post/2019-11-20-rammstein-vs-lacrimosa.en_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-<p>Rammstein’s songs are generally simpler and feature a boatload more repetition.</p>
-<p>Not only Rammstein repeats verses willy-nilly, but those verses are often not even full-fledged sentences. This can be inferred by using log odds ratios between both artists to distinguish very “rammstein-like” vs “lacrimosa-like” pairs of words:</p>
-<pre class="r"><code>full_lyrics %&gt;% 
-   .[language == &quot;german&quot;] %&gt;% 
-   .[, tidytext::unnest_tokens(.SD, word, lyric, token = &quot;ngrams&quot;, n = 2), 
-     by = .(track_title, artist)] %&gt;% 
-   .[, .N, by = .(word, artist)] %&gt;% 
-   .[!is.na(word)] %&gt;% 
-   tidylo::bind_log_odds(artist, word, N) %&gt;% 
-   .[order(-log_odds)] %&gt;% 
-   .[, .SD[1:10], by = artist] %&gt;% 
-   .[, word := tidytext::reorder_within(word, log_odds, artist)] %&gt;% 
-   ggplot(aes(word, log_odds)) +
-   geom_col() +
-   tidytext::scale_x_reordered() +
-   coord_flip() +
-   facet_wrap(~artist, scales = &quot;free&quot;) </code></pre>
-<p><img src="../../../../post/2019-11-20-rammstein-vs-lacrimosa.en_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<p>The pair of words that distinguish Lacrimsoa’s lyrics are common parts of syntactically correct sentences, such as “so wie” (“such as”) or “das ist” (“this is”). Rammstein lyrics, on the other hand, are distinguished by repeated pairs of words with no syntactic structure, such as “bang bang”, “link zwo” (“left two”; the complete verse is “left two three four”), and “zwiter zwiter”.</p>
-</div>
-<div id="simplicity-lack-of-quality" class="section level2">
-<h2>Simplicity ≠ lack of quality</h2>
-<p>I had some fun learning some crude and basic tools of text data manipulation, but there’s nothing earth-shattering about the conclusion that Rammstein’s lyrics are generally simpler and more “song-like” than Lacrimosa’s. You don’t need webscrapping or R, you just need the ability to listen to music.</p>
-<p>What’s more important, no law states that longer, more complex lyrics equal better songs. Du Hast might be exceedingly simple by any measure, but it does feature some interesting word play and reversal of expectations.</p>
-</div>
-<div class="footnotes">
-<hr />
-<ol>
-<li id="fn1"><p>There is also the <a href="https://github.com/ewenme/geniusr">geniusr</a> package which makes use of the official genius API and therefore should be preferred for more intensive use. However, I discovered after I’ve already written most of this code.<a href="#fnref1" class="footnote-back">↩</a></p></li>
-</ol>
+# Copy data to image
+COPY analysis/data analysis/data</code></pre>
+<p>The first line specifies the base image to use:</p>
+<pre class="dockerfile"><code># get the base image, the rocker/verse has R, RStudio and pandoc
+FROM rocker/rstudio:4.1.1</code></pre>
+<p>In this case, I use <a href="https://hub.docker.com/r/rocker/rstudio">rocker/rstudio</a>, which comes with R and RStudio pre-installed.
+I also fixed the R version to 4.1.1 because is the same I’m using to work locally.</p>
+<p>The next step is to make sure all the necessary system dependencies are installed.
+For that, I use the <a href="https://github.com/r-hub/sysreqs">sysreqs</a> package, which can take a DESCRIPTION file and build the command that installs all the dependencies.
+Of course, first you need to install it, which first requires the <a href="https://remotes.r-lib.org/">remotes</a> package, because sysreqs is not on CRAN (yeah, it’s quite a ride).</p>
+<pre class="dockerfile"><code># Get and install system dependencies
+RUN R -e &quot;install.packages(&#39;remotes&#39;)&quot; \
+  &amp;&amp; R -e &quot;remotes::install_github(&#39;r-hub/sysreqs&#39;)&quot;</code></pre>
+<p>Notice that each line starts with <code>RUN</code> followed by a command that could be run on the command-line.
+For instance, <code>R -e "install.packages('remotes')"</code> executes <code>install.packages('remotes')</code> on an R session.</p>
+<p>Then, I use the <code>COPY</code> command to grab the DESCRIPTION file form my local computer and put it in a file called DESCRIPTION in the docker container.
+Where exactly?
+In the working directory, that I previously set up with <code>WORKDIR</code>.</p>
+<pre class="dockerfile"><code>WORKDIR /home/rstudio/shceof
+COPY DESCRIPTION DESCRIPTION</code></pre>
+<p>Finally use that DESCRIPTION file to install all the dependencies.
+For this project I also had to install libmagick++-dev, winch for some reason was necessary but not being installed.</p>
+<pre class="dockerfile"><code>RUN sudo apt update \
+ &amp;&amp; R -e &quot;system(sysreqs::sysreq_commands(&#39;DESCRIPTION&#39;, &#39;linux-x86_64-ubuntu-gcc&#39;))&quot; \
+ &amp;&amp; apt install -y libmagick++-dev</code></pre>
+<p>And now that the image has all the required system dependencies, it’s time to install the R packages.
+Since I use renv, the list of packages, along with their versions and their sources are listed on the renv.lock file, so I need to grab that.
+I also need the activate.R file in the renv folder, which is a nice little script that autoinstalls the correct version of the renv package.</p>
+<pre class="dockerfile"><code># Get and install R packages to local library
+COPY renv.lock renv.lock
+COPY renv/activate.R renv/activate.R
+COPY .Rprofile .Rprofile
+RUN chown -R rstudio . \
+ &amp;&amp; sudo -u rstudio R -e &#39;renv::restore()&#39;</code></pre>
+<p>Notice that I also had to change the owner of the files to the rstudio user and also restore the packages as the rstudio user.</p>
+<p>At this point, the docker image has an R installation with the correct packages and the correct system dependencies installed.
+As a last, optional step, I copy the data folder from my local computer to the image.</p>
+<pre class="dockerfile"><code># Copy data to image
+COPY analysis/data analysis/data</code></pre>
+<p>In my project, these are about 3 gb worth of data that are publicly available but are somewhat painful to get.
+One needs to create an account in the <a href="https://cds.climate.copernicus.eu/cdsapp#!/home">Climate Data Store website</a> and then set up the credentials as environmental variables.
+Then, the process of requesting and downloading the data can take a couple of hours.</p>
+<p>With this Dockerfile done, all it’s left is to build the thing with</p>
+<pre class="bash"><code>docker build . -t name/project</code></pre>
+<p>Now that the image is built and in my machine, it’s time to publish it for anyone to download.
+You need to go to <a href="https://hub.docker.com/">dockerhub</a>, create an account and then log in locally with</p>
+<pre class="bash"><code>docker login</code></pre>
+<p>Finally, just push the image with</p>
+<pre class="bash"><code>docker push name/project</code></pre>
+<p>Since all the code is actually hosted outside the container, whoever wants to reproduce it will first have to clone the GitHub repository.
+Then, from the root of the repository, they’d run this:</p>
+<pre class="bash"><code>docker run --rm -p 8787:8787 -e DISABLE_AUTH=true -v $(pwd):/home/rstudio/shceof -v /home/rstudio/shceof/renv -v /home/rstudio/shceof/analysis/data eliocamp/shceof</code></pre>
+<p>This woudl download the image if necessary and then run it.
+And then they’d go to localhost:8787 on any browser to be greeted with an RStudio session with all the things:</p>
+<p><img src="../../../../images/docker-rstudio.png" alt="Screenshot of a browser session with RStudio runnign inside."/></p>
+<p>The argument <code>-v $(pwd):/home/rstudio/shceof</code> mounts the current working directory (the root of the repository) to <code>/home/rstudio/shceof</code> on the container.
+But there’s the detail that <code>/home/rstudio/shceof/renv</code> and <code>/home/rstudio/shceof/analysis/data</code> were pre-populated at build time with files that are not available on github.
+To make sure that these are not replaced by the versions in the repository (which would be almost empty and completely useless), I added this to the command:</p>
+<pre class="bash"><code>-v /home/rstudio/shceof/renv -v /home/rstudio/shceof/analysis/data</code></pre>
+<p><a href="https://stackoverflow.com/questions/29181032/add-a-volume-to-docker-but-exclude-a-sub-folder">For some reason</a> this functionally excludes these folders from the mount operation and the container then uses it’s own version of the folders.</p>
+<p>I think that this setup stands in a nice place in the reproducibility – transparency spectrum.
+Using renv to manage the R dependencies makes it possible for all the code to be available publicly, including a more or less straightforward path to (approximately) replicate the computational environment.
+And docker stands as a complementary and potentially faster entry-point that doesn’t hide all of that behind another layer of abstraction.</p>
 </div>
 
               
@@ -539,16 +383,6 @@ full_lyrics %&gt;%
           </div>
           <div id="post-footer" class="post-footer main-content-wrap">
             
-              
-                
-                
-                  <div class="post-footer-tags">
-                    <span class="text-color-light text-small">TAGGED IN</span><br/>
-                    
-  <a class="tag tag--primary tag--small" href="../../../../en/tags/text/">text</a>
-
-                  </div>
-                
               
             
             
@@ -558,7 +392,7 @@ full_lyrics %&gt;%
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../en/2021/03/star-trek-rakings/" data-tooltip="Star Trek ratings on IMDB">
+                <a class="post-action-btn btn btn--disabled">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
@@ -566,7 +400,7 @@ full_lyrics %&gt;%
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../en/2019/07/why-i-love-data-table/" data-tooltip="Why I love data.table">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../en/2021/07/wrapper-stop/" data-tooltip="Make error messages your own">
               
                   <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
                   <i class="fa fa-angle-right"></i>
@@ -584,19 +418,19 @@ full_lyrics %&gt;%
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/en/2019/11/rammstein-vs-lacrimosa/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/en/2021/08/docker-renv/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/en/2019/11/rammstein-vs-lacrimosa/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/en/2021/08/docker-renv/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/en/2019/11/rammstein-vs-lacrimosa/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/en/2021/08/docker-renv/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -644,7 +478,7 @@ full_lyrics %&gt;%
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../en/2021/03/star-trek-rakings/" data-tooltip="Star Trek ratings on IMDB">
+                <a class="post-action-btn btn btn--disabled">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
@@ -652,7 +486,7 @@ full_lyrics %&gt;%
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../en/2019/07/why-i-love-data-table/" data-tooltip="Why I love data.table">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../en/2021/07/wrapper-stop/" data-tooltip="Make error messages your own">
               
                   <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
                   <i class="fa fa-angle-right"></i>
@@ -670,19 +504,19 @@ full_lyrics %&gt;%
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/en/2019/11/rammstein-vs-lacrimosa/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/en/2021/08/docker-renv/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/en/2019/11/rammstein-vs-lacrimosa/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/en/2021/08/docker-renv/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/en/2019/11/rammstein-vs-lacrimosa/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/en/2021/08/docker-renv/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -712,19 +546,19 @@ full_lyrics %&gt;%
   <ul class="share-options">
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2Fen%2F2019%2F11%2Frammstein-vs-lacrimosa%2F">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2Fen%2F2021%2F08%2Fdocker-renv%2F">
           <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2Fen%2F2019%2F11%2Frammstein-vs-lacrimosa%2F">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2Fen%2F2021%2F08%2Fdocker-renv%2F">
           <i class="fa fa-twitter"></i><span>Share on Twitter</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2Fen%2F2019%2F11%2Frammstein-vs-lacrimosa%2F">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2Fen%2F2021%2F08%2Fdocker-renv%2F">
           <i class="fa fa-google-plus"></i><span>Share on Google&#43;</span>
         </a>
       </li>
@@ -1009,9 +843,9 @@ $(document).ready(function() {
     
       <script>
         var disqus_config = function () {
-          this.page.url = '\/en\/2019\/11\/rammstein-vs-lacrimosa\/';
+          this.page.url = '\/en\/2021\/08\/docker-renv\/';
           
-            this.page.identifier = '\/en\/2019\/11\/rammstein-vs-lacrimosa\/'
+            this.page.identifier = '\/en\/2021\/08\/docker-renv\/'
           
         };
         (function() {
