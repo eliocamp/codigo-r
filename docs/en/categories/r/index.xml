@@ -5,10 +5,84 @@
     <description>Recent content in R on Code R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Tue, 17 Aug 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 19 Sep 2021 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/en/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Labeling contour lines in R with ggplot2, metR and isoband</title>
+      <link>/en/2021/09/contour-labels/</link>
+      <pubDate>Sun, 19 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/en/2021/09/contour-labels/</guid>
+      <description>
+&lt;script src=&#34;../../../rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;I started to use R full time for my research about 5 years ago when I started working on my Masters’ thesis and up until today there was one thing missing: proper contour labels.
+Now, thanks to the wonderful isoband package, I finally got what I wished for and it’s bundled in the latest release of &lt;a href=&#34;https://cran.r-project.org/package=metR&#34;&gt;metR&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;So let’s set up the stage for the problem.
+I have a 2D field that I want to visualise as a contour map.
+The canonical example in R is the volcano dataset:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(ggplot2)
+data(volcano)
+volcano_df &amp;lt;- reshape2::melt(volcano)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;With ggplot2, one would use &lt;code&gt;geom_contour()&lt;/code&gt; like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(volcano_df, aes(Var1, Var2)) +
+  geom_contour(aes(z = value)) +
+  coord_equal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2021-09-19-contour-labels.en_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;With this, one can see the overall shape of the mountain but it is impossible to know the height that each contour represents.
+Is this an Everest-size mountain or a tiny little hill?
+Where is the top of the mountain?
+Where is the crater?&lt;/p&gt;
+&lt;p&gt;One trick is to map the colour of each line to its level like this:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(volcano_df, aes(Var1, Var2)) +
+  geom_contour(aes(z = value, colour = stat(level))) +
+  scale_colour_viridis_c() +
+  coord_equal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2021-09-19-contour-labels.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This helps immensely in identifying local minimums, maximums and get a sense of the high, but it’s not super easy to pair each line with its level.
+There are some other tricks, but no workaround is as effective as just labelling those lines!
+Just look at what can be done with the &lt;code&gt;contour()&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;contour(volcano)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2021-09-19-contour-labels.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;With labels on each contour, it’s trivial to know the height of each point without having to mentally map colours to numbers.
+It would be great being able to do this with ggplot2.&lt;/p&gt;
+&lt;p&gt;One possibility is to use the old &lt;code&gt;metR::geom_text_contour()&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(metR)      # version 0.11.0
+ggplot(volcano_df, aes(Var1, Var2)) +
+  geom_contour(aes(z = value, colour = stat(level))) +
+  metR::geom_text_contour(aes(z = value)) +
+  coord_equal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2021-09-19-contour-labels.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;By default it places a label on every second contour level looking roughly for the flattest part of the contour (label placement can be tweaked with the &lt;code&gt;label.placer&lt;/code&gt; argument).
+A complicating issue is that text drawn over a line can be hard to read.
+One possible solution is to add a small stroke around the text so it pops against the background.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(volcano_df, aes(Var1, Var2)) +
+  geom_contour(aes(z = value, colour = stat(level))) +
+  metR::geom_text_contour(aes(z = value), stroke = 0.15) +
+  coord_equal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2021-09-19-contour-labels.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;But this is just a workaround and comes with its own hosts of problems.
+For example, it doesn’t work all that well when the background colour is not roughly uniform, such as when painting filled contours.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(volcano_df, aes(Var1, Var2)) +
+  metR::geom_contour_fill(aes(z = value)) +
+  geom_contour(aes(z = value), colour = &amp;quot;black&amp;quot;) +
+  metR::geom_text_contour(aes(z = value), stroke = 0.15) +
+  coord_equal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2021-09-19-contour-labels.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The truth is that there is no substitute for actually clipping contour lines so that they don’t intersect with the text.
+Which is what the isoband package by Claus Wilke &lt;a href=&#34;https://wilkelab.org/isoband/articles/isoband3.html&#34;&gt;implements&lt;/a&gt; and the new version of metR bundles with its own &lt;code&gt;geom_contor2()&lt;/code&gt;.
+Simply map the label aesthetic to the level computed variable and you get lovely labelled contours.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(volcano_df, aes(Var1, Var2)) +
+  metR::geom_contour_fill(aes(z = value)) +
+  metR::geom_contour2(aes(z = value, label = stat(level))) +
+  coord_equal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2021-09-19-contour-labels.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Setting up a transparent reproducible R environment with Docker &#43; renv</title>

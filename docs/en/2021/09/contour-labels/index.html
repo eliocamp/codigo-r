@@ -1,5 +1,9 @@
 
 
+  
+    
+  
+
 
   
 
@@ -18,25 +22,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Hugo 0.56.3 with theme Tranquilpeak 0.4.3-BETA">
-    <title>statistics</title>
+    <title>Labeling contour lines in R with ggplot2, metR and isoband</title>
     <meta name="author" content="Elio Campitelli">
-    <meta name="keywords" content=", R">
+    <meta name="keywords" content="development, packages, R">
 
-    <link rel="icon" href="../../../favicon.png">
-    
-      <link rel="alternate" type="application/rss+xml" title="RSS" href="../../../en/categories/statistics/index.xml">
+    <link rel="icon" href="../../../../favicon.png">
     
 
     
-    <meta name="description" content="Blog about the R language">
-    <meta property="og:description" content="Blog about the R language">
+    <meta name="description" content="I started to use R full time for my research about 5 years ago when I started working on my Masters’ thesis and up until today there was one thing missing: proper contour labels. Now, thanks to the wonderful isoband package, I finally got what I wished for and it’s bundled in the latest release of metR.
+So let’s set up the stage for the problem. I have a 2D field that I want to visualise as a contour map.">
+    <meta property="og:description" content="I started to use R full time for my research about 5 years ago when I started working on my Masters’ thesis and up until today there was one thing missing: proper contour labels. Now, thanks to the wonderful isoband package, I finally got what I wished for and it’s bundled in the latest release of metR.
+So let’s set up the stage for the problem. I have a 2D field that I want to visualise as a contour map.">
     <meta property="og:type" content="blog">
-    <meta property="og:title" content="statistics">
-    <meta property="og:url" content="/en/categories/statistics/">
+    <meta property="og:title" content="Labeling contour lines in R with ggplot2, metR and isoband">
+    <meta property="og:url" content="/en/2021/09/contour-labels/">
     <meta property="og:site_name" content="Code R">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Code R">
-    <meta name="twitter:description" content="Blog about the R language">
+    <meta name="twitter:description" content="I started to use R full time for my research about 5 years ago when I started working on my Masters’ thesis and up until today there was one thing missing: proper contour labels. Now, thanks to the wonderful isoband package, I finally got what I wished for and it’s bundled in the latest release of metR.
+So let’s set up the stage for the problem. I have a 2D field that I want to visualise as a contour map.">
     
       <meta name="twitter:creator" content="@d_olivaw">
     
@@ -61,11 +66,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
     
     
-    <link rel="stylesheet" href="../../../css/style-jsjn0006wyhpyzivf6yceb31gvpjatbcs3qzjvlumobfnugccvobqwxnnaj8.min.css" />
+    <link rel="stylesheet" href="../../../../css/style-jsjn0006wyhpyzivf6yceb31gvpjatbcs3qzjvlumobfnugccvobqwxnnaj8.min.css" />
     
     
       
-        <link rel="stylesheet"  href="../../../css/custom.css">
+        <link rel="stylesheet"  href="../../../../css/custom.css">
       
     
 
@@ -80,12 +85,12 @@
       <header id="header" data-behavior="2">
   <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
   <div class="header-title">
-    <a class="header-title-link" href="../../../en">Code R</a>
+    <a class="header-title-link" href="../../../../en">Code R</a>
   </div>
   
     
       <a class="header-right-picture "
-         href="../../../#about">
+         href="../../../../#about">
     
     
     
@@ -101,7 +106,7 @@
   <div class="sidebar-container">
     
       <div class="sidebar-profile">
-        <a href="../../../#about">
+        <a href="../../../../#about">
           <img class="sidebar-profile-picture" src="//www.gravatar.com/avatar/2376976935665241d1fd5a1fb8124a81?s=110" alt="Author&#39;s picture" />
         </a>
         <h4 class="sidebar-profile-name">Elio Campitelli</h4>
@@ -112,7 +117,7 @@
       
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="../../../en">
+      <a class="sidebar-button-link " href="../../../../en">
     
       <i class="sidebar-button-icon fa fa-lg fa-home"></i>
       
@@ -122,7 +127,7 @@
 
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="../../../en/categories">
+      <a class="sidebar-button-link " href="../../../../en/categories">
     
       <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
       
@@ -132,7 +137,7 @@
 
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="../../../en/archives">
+      <a class="sidebar-button-link " href="../../../../en/archives">
     
       <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
       
@@ -142,7 +147,7 @@
 
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="../../../en/#about">
+      <a class="sidebar-button-link " href="../../../../en/#about">
     
       <i class="sidebar-button-icon fa fa-lg fa-question"></i>
       
@@ -190,7 +195,7 @@
       
   <li class="sidebar-button">
     
-      <a class="sidebar-button-link " href="../../../en/index.xml">
+      <a class="sidebar-button-link " href="../../../../en/index.xml">
     
       <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
       
@@ -204,48 +209,33 @@
 </nav>
 
       
-        
 
-      
       <div id="main" data-behavior="2"
         class="
                hasCoverMetaIn
                ">
-        
-          <section class="postShorten-group main-content-wrap">
-            
-            
-              
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
   
-    
-      
-        
-      
-    
+    <h1 class="post-title" itemprop="headline">
+      Labeling contour lines in R with ggplot2, metR and isoband
+    </h1>
+  
   
 
 
   
-
-<article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-  <div class="postShorten-wrap">
-    
-    <div class="postShorten-header">
-      <h1 class="postShorten-title" itemprop="headline">
-        <a class="link-unstyled" href="../../../en/2019/01/statistical-metamerism/">
-          Statistical metamerism
-        </a>
-      </h1>
-      
   <div class="postShorten-meta post-meta">
     
-      <time itemprop="datePublished" datetime="2019-01-03T00:00:00Z">
+      <time itemprop="datePublished" datetime="2021-09-19T00:00:00Z">
         
   
   
   
   
-    January 3, 2019
+    September 19, 2021
   
 
       </time>
@@ -255,32 +245,180 @@
   
     <span>in</span>
     
-      <a class="category-link" href="../../../en/categories/r">R</a>, 
-    
-      <a class="category-link" href="../../../en/categories/statistics">statistics</a>
+      <a class="category-link" href="../../../../en/categories/r">R</a>
     
   
 
   </div>
 
-    </div>
-    <div class="postShorten-excerpt" itemprop="articleBody">
+</div>
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    });
+    </script>
+    <script type="text/javascript"
+      src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+<script src="../../../../rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>I started to use R full time for my research about 5 years ago when I started working on my Masters’ thesis and up until today there was one thing missing: proper contour labels.
+Now, thanks to the wonderful isoband package, I finally got what I wished for and it’s bundled in the latest release of <a href="https://cran.r-project.org/package=metR">metR</a>.</p>
+<p>So let’s set up the stage for the problem.
+I have a 2D field that I want to visualise as a contour map.
+The canonical example in R is the volcano dataset:</p>
+<pre class="r"><code>library(ggplot2)
+data(volcano)
+volcano_df &lt;- reshape2::melt(volcano)</code></pre>
+<p>With ggplot2, one would use <code>geom_contour()</code> like this:</p>
+<pre class="r"><code>ggplot(volcano_df, aes(Var1, Var2)) +
+  geom_contour(aes(z = value)) +
+  coord_equal()</code></pre>
+<p><img src="../../../../post/2021-09-19-contour-labels.en_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>With this, one can see the overall shape of the mountain but it is impossible to know the height that each contour represents.
+Is this an Everest-size mountain or a tiny little hill?
+Where is the top of the mountain?
+Where is the crater?</p>
+<p>One trick is to map the colour of each line to its level like this:</p>
+<pre class="r"><code>ggplot(volcano_df, aes(Var1, Var2)) +
+  geom_contour(aes(z = value, colour = stat(level))) +
+  scale_colour_viridis_c() +
+  coord_equal()</code></pre>
+<p><img src="../../../../post/2021-09-19-contour-labels.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>This helps immensely in identifying local minimums, maximums and get a sense of the high, but it’s not super easy to pair each line with its level.
+There are some other tricks, but no workaround is as effective as just labelling those lines!
+Just look at what can be done with the <code>contour()</code> function.</p>
+<pre class="r"><code>contour(volcano)</code></pre>
+<p><img src="../../../../post/2021-09-19-contour-labels.en_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>With labels on each contour, it’s trivial to know the height of each point without having to mentally map colours to numbers.
+It would be great being able to do this with ggplot2.</p>
+<p>One possibility is to use the old <code>metR::geom_text_contour()</code> function.</p>
+<pre class="r"><code>library(metR)      # version 0.11.0
+ggplot(volcano_df, aes(Var1, Var2)) +
+  geom_contour(aes(z = value, colour = stat(level))) +
+  metR::geom_text_contour(aes(z = value)) +
+  coord_equal()</code></pre>
+<p><img src="../../../../post/2021-09-19-contour-labels.en_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>By default it places a label on every second contour level looking roughly for the flattest part of the contour (label placement can be tweaked with the <code>label.placer</code> argument).
+A complicating issue is that text drawn over a line can be hard to read.
+One possible solution is to add a small stroke around the text so it pops against the background.</p>
+<pre class="r"><code>ggplot(volcano_df, aes(Var1, Var2)) +
+  geom_contour(aes(z = value, colour = stat(level))) +
+  metR::geom_text_contour(aes(z = value), stroke = 0.15) +
+  coord_equal()</code></pre>
+<p><img src="../../../../post/2021-09-19-contour-labels.en_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>But this is just a workaround and comes with its own hosts of problems.
+For example, it doesn’t work all that well when the background colour is not roughly uniform, such as when painting filled contours.</p>
+<pre class="r"><code>ggplot(volcano_df, aes(Var1, Var2)) +
+  metR::geom_contour_fill(aes(z = value)) +
+  geom_contour(aes(z = value), colour = &quot;black&quot;) +
+  metR::geom_text_contour(aes(z = value), stroke = 0.15) +
+  coord_equal()</code></pre>
+<p><img src="../../../../post/2021-09-19-contour-labels.en_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>The truth is that there is no substitute for actually clipping contour lines so that they don’t intersect with the text.
+Which is what the isoband package by Claus Wilke <a href="https://wilkelab.org/isoband/articles/isoband3.html">implements</a> and the new version of metR bundles with its own <code>geom_contor2()</code>.
+Simply map the label aesthetic to the level computed variable and you get lovely labelled contours.</p>
+<pre class="r"><code>ggplot(volcano_df, aes(Var1, Var2)) +
+  metR::geom_contour_fill(aes(z = value)) +
+  metR::geom_contour2(aes(z = value, label = stat(level))) +
+  coord_equal()</code></pre>
+<p><img src="../../../../post/2021-09-19-contour-labels.en_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+            
+            
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../en/2021/08/docker-renv/" data-tooltip="Setting up a transparent reproducible R environment with Docker &#43; renv">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
       
-       The <a href="https://github.com/eliocamp/metamer">metamer</a> package implements Matejka y Fitzmaurice (2017) algorithm for generating datasets with distinct appearance but identical statistical properties. I propose to call them &ldquo;metamers&rdquo; as an analogy with the colorimetry concept. 
-      <p>
-        <a href="../../../en/2019/01/statistical-metamerism/" class="postShorten-excerpt_link link">Continue reading</a>
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
         
-      </p>
-    </div>
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/en/2021/09/contour-labels/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/en/2021/09/contour-labels/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/en/2021/09/contour-labels/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
   </div>
-  
-</article>
+
 
             
+              
+                <div id="disqus_thread">
+  <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+              
             
-
-          </section>
-        
+          </div>
+        </article>
         <footer id="footer" class="main-content-wrap">
   <span class="copyrights">
     &copy; 2021 Elio Campitelli. All Rights Reserved
@@ -288,6 +426,102 @@
 </footer>
 
       </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="2">
+        
+  <div class="post-actions-wrap">
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../en/2021/08/docker-renv/" data-tooltip="Setting up a transparent reproducible R environment with Docker &#43; renv">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+        <li class="post-action hide-lg hide-md hide-sm">
+          <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions">
+            <i class="fa fa-share-alt"></i>
+          </a>
+        </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/en/2021/09/contour-labels/">
+              <i class="fa fa-facebook-official"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/en/2021/09/contour-labels/">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        
+          <li class="post-action hide-xs">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/en/2021/09/contour-labels/">
+              <i class="fa fa-google-plus"></i>
+            </a>
+          </li>
+        
+      
+      
+        <li class="post-action">
+          <a class="post-action-btn btn btn--default" href="#disqus_thread">
+            <i class="fa fa-comment-o"></i>
+          </a>
+        </li>
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="2">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2Fen%2F2021%2F09%2Fcontour-labels%2F">
+          <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2Fen%2F2021%2F09%2Fcontour-labels%2F">
+          <i class="fa fa-twitter"></i><span>Share on Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2Fen%2F2021%2F09%2Fcontour-labels%2F">
+          <i class="fa fa-google-plus"></i><span>Share on Google&#43;</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
     </div>
     
     <div id="about">
@@ -339,7 +573,7 @@
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2021/09/contour-labels/">
+              <a class="link-unstyled" href="../../../../en/2021/09/contour-labels/">
                 <h3 class="media-heading">Labeling contour lines in R with ggplot2, metR and isoband</h3>
               </a>
               <span class="media-meta">
@@ -357,7 +591,7 @@ So let’s set up the stage for the problem. I have a 2D field that I want to vi
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2021/08/docker-renv/">
+              <a class="link-unstyled" href="../../../../en/2021/08/docker-renv/">
                 <h3 class="media-heading">Setting up a transparent reproducible R environment with Docker &#43; renv</h3>
               </a>
               <span class="media-meta">
@@ -374,7 +608,7 @@ So let’s set up the stage for the problem. I have a 2D field that I want to vi
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2021/07/wrapper-stop/">
+              <a class="link-unstyled" href="../../../../en/2021/07/wrapper-stop/">
                 <h3 class="media-heading">Make error messages your own</h3>
               </a>
               <span class="media-meta">
@@ -393,7 +627,7 @@ real_root &lt;- function(x) { if (x &lt; 0) { stop(&quot;&#39;x&#39; cannot be n
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2021/05/r-pipa-nativa/">
+              <a class="link-unstyled" href="../../../../en/2021/05/r-pipa-nativa/">
                 <h3 class="media-heading">The new R pipe</h3>
               </a>
               <span class="media-meta">
@@ -412,7 +646,7 @@ library(dplyr) mtcars %&gt;% group_by(cyl) %&gt;% summarise(mpg = mean(mpg))  ##
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2021/03/star-trek-rakings/">
+              <a class="link-unstyled" href="../../../../en/2021/03/star-trek-rakings/">
                 <h3 class="media-heading">Star Trek ratings on IMDB</h3>
               </a>
               <span class="media-meta">
@@ -429,7 +663,7 @@ library(dplyr) mtcars %&gt;% group_by(cyl) %&gt;% summarise(mpg = mean(mpg))  ##
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2019/11/rammstein-vs-lacrimosa/">
+              <a class="link-unstyled" href="../../../../en/2019/11/rammstein-vs-lacrimosa/">
                 <h3 class="media-heading">Rammstein vs. Lacrimosa</h3>
               </a>
               <span class="media-meta">
@@ -446,7 +680,7 @@ library(dplyr) mtcars %&gt;% group_by(cyl) %&gt;% summarise(mpg = mean(mpg))  ##
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2019/07/why-i-love-data-table/">
+              <a class="link-unstyled" href="../../../../en/2019/07/why-i-love-data-table/">
                 <h3 class="media-heading">Why I love data.table</h3>
               </a>
               <span class="media-meta">
@@ -464,7 +698,7 @@ library(data.table) My memory issues I started working on my licenciate thesis (
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2019/04/ecmwfr-global-warming/">
+              <a class="link-unstyled" href="../../../../en/2019/04/ecmwfr-global-warming/">
                 <h3 class="media-heading">Using ecmwfr to measure global warming</h3>
               </a>
               <span class="media-meta">
@@ -481,7 +715,7 @@ library(data.table) My memory issues I started working on my licenciate thesis (
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2019/01/statistical-metamerism/">
+              <a class="link-unstyled" href="../../../../en/2019/01/statistical-metamerism/">
                 <h3 class="media-heading">Statistical metamerism</h3>
               </a>
               <span class="media-meta">
@@ -498,7 +732,7 @@ library(data.table) My memory issues I started working on my licenciate thesis (
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../en/2018/09/multiple-color-fill-scales-ggplot2/">
+              <a class="link-unstyled" href="../../../../en/2018/09/multiple-color-fill-scales-ggplot2/">
                 <h3 class="media-heading">Multiple color (and fill) scales with ggplot2</h3>
               </a>
               <span class="media-meta">
@@ -545,7 +779,7 @@ Unfortunately, this deluge of questions is met with a shortage of conclusive ans
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
 
 
-<script src="../../../js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
+<script src="../../../../js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
 
 
 
@@ -561,6 +795,32 @@ $(document).ready(function() {
 });
 </script>
 
+
+  
+    
+      <script>
+        var disqus_config = function () {
+          this.page.url = '\/en\/2021\/09\/contour-labels\/';
+          
+            this.page.identifier = '\/en\/2021\/09\/contour-labels\/'
+          
+        };
+        (function() {
+          
+          
+          if (window.location.hostname == "localhost") {
+            return;
+          }
+          var d = document, s = d.createElement('script');
+          var disqus_shortname = 'codigo-r';
+          s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+      </script>
+    
+  
 
 
 
