@@ -58,7 +58,7 @@ Por ejemplo, probá el *endpoint* `echo`.
 
 <p align="center">
 
-<video width="400" controls>
+<video width="100%" controls>
 
 <source src="/images/swagger.webm" type="video/webm">
 

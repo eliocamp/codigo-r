@@ -45,7 +45,7 @@ Esto es una herramienta llamada Swagger que permite probar la API localmente usa
 &lt;p&gt;Cada API contiene varios &lt;em&gt;endpoints&lt;/em&gt; que son como funciones específicas.
 Por ejemplo, probá el &lt;em&gt;endpoint&lt;/em&gt; &lt;code&gt;echo&lt;/code&gt;.&lt;/p&gt;
 &lt;p align=&#34;center&#34;&gt;
-&lt;video width=&#34;400&#34; controls&gt;
+&lt;video width=&#34;100%&#34; controls&gt;
 &lt;source src=&#34;../../images/swagger.webm&#34; type=&#34;video/webm&#34;&gt;
 &lt;p&gt;Your browser does not support the video tag.
 &lt;/video&gt;&lt;/p&gt;
