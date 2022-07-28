@@ -22,29 +22,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Hugo 0.56.3 with theme Tranquilpeak 0.4.3-BETA">
-    <title>How to make a shaded relief in R</title>
+    <title>Guía pobre Creando una API con plumber y hostearla en Heroku</title>
     <meta name="author" content="Elio Campitelli">
-    <meta name="keywords" content=", R">
+    <meta name="keywords" content="desarrollo, API, plumber, R">
 
     <link rel="icon" href="../../../favicon.png">
     
 
     
-    <meta name="description" content="Spanish version of this post
-While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
-What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun.">
-    <meta property="og:description" content="Spanish version of this post
-While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
-What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun.">
+    <meta name="description" content="Uno de los subproductos de mi tesis de doctorado es la descomposición del índice del SAM (un indicador del estado de la atmósfera muy usado y monitoreado) en dos partes que tienen distintas propiedades e impactos.
+Como investigadore, yo sé que para para que un índice de adopte, éste tiene que ser fácil de descargar de manera actualizada. Por esto es que estoy armando una página con gráficos y acceso a los datos actualizados mensualmente.">
+    <meta property="og:description" content="Uno de los subproductos de mi tesis de doctorado es la descomposición del índice del SAM (un indicador del estado de la atmósfera muy usado y monitoreado) en dos partes que tienen distintas propiedades e impactos.
+Como investigadore, yo sé que para para que un índice de adopte, éste tiene que ser fácil de descargar de manera actualizada. Por esto es que estoy armando una página con gráficos y acceso a los datos actualizados mensualmente.">
     <meta property="og:type" content="blog">
-    <meta property="og:title" content="How to make a shaded relief in R">
-    <meta property="og:url" content="/2018/02/how-to-make-shaded-relief-in-r/">
+    <meta property="og:title" content="Guía pobre Creando una API con plumber y hostearla en Heroku">
+    <meta property="og:url" content="/2022/07/plumber-heroku/">
     <meta property="og:site_name" content="Código R">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Código R">
-    <meta name="twitter:description" content="Spanish version of this post
-While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
-What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun.">
+    <meta name="twitter:description" content="Uno de los subproductos de mi tesis de doctorado es la descomposición del índice del SAM (un indicador del estado de la atmósfera muy usado y monitoreado) en dos partes que tienen distintas propiedades e impactos.
+Como investigadore, yo sé que para para que un índice de adopte, éste tiene que ser fácil de descargar de manera actualizada. Por esto es que estoy armando una página con gráficos y acceso a los datos actualizados mensualmente.">
     
       <meta name="twitter:creator" content="@d_olivaw">
     
@@ -223,7 +220,7 @@ What I accidentally discovered is that one way of approximating this look is by 
             <div class="post-header main-content-wrap text-left">
   
     <h1 class="post-title" itemprop="headline">
-      How to make a shaded relief in R
+      Guía pobre Creando una API con plumber y hostearla en Heroku
     </h1>
   
   
@@ -232,9 +229,9 @@ What I accidentally discovered is that one way of approximating this look is by 
   
   <div class="postShorten-meta post-meta">
     
-      <time itemprop="datePublished" datetime="2018-02-04T00:00:00Z">
+      <time itemprop="datePublished" datetime="2022-07-28T00:00:00Z">
         
-  Febrero 4, 2018
+  Julio 28, 2022
 
       </time>
     
@@ -266,215 +263,138 @@ What I accidentally discovered is that one way of approximating this look is by 
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              <p><a href="../../../2018/02/como-hacer-efecto-de-relieve-en-r">Spanish version of this post</a></p>
+              
 
-<p>While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:</p>
 
-<p><img src="../../../images/shading.jpg" alt="" /></p>
+<p>Uno de los subproductos de mi tesis de doctorado es <a href="https://eliocamp.github.io/scrapbook/posts/2021-08-09-asymsam/">la descomposición del índice del SAM</a> (un indicador del estado de la atmósfera muy usado y monitoreado) en dos partes que tienen distintas propiedades e impactos.</p>
+<p>Como investigadore, yo sé que para para que un índice de adopte, éste tiene que ser fácil de descargar de manera actualizada.
+Por esto es que estoy armando <a href="http://www.cima.fcen.uba.ar/~elio.campitelli/asymsam/monitoreo/">una página</a> con gráficos y acceso a los datos actualizados mensualmente.
+Esta página en principio es muy simple; un archivo html estático con algunos gráficos que se actualizan periódicamente.
+Es el tipo de página que puede hostearse en GitHub Pages.</p>
+<p>Pero una de las cosas que quería agregar era una forma de descargar los datos de forma programática especificando un rango de fechas, un paso de tiempo (diario, mensual, estacional) y potencialmente otros parámetros.
+Esto ya requiere un servidor corriendo R que tome los parámetros y realice los cómputos (filtrar y promediar en la forma más básica).</p>
+<p>Gracias al paquete <a href="https://www.rplumber.io/index.html"><strong>plumber</strong></a> y el servicio de hosting <a href="http://heroku.com"><strong>Heroku</strong></a>, pude hacer esto en un día.
+Actualmente los datos se pueden obtener yendo a</p>
+<p><a href="https://frozen-journey-02456.herokuapp.com/getsam?mindate=1989-01-01&amp;maxdate=1989-12-31&amp;timestep=daily" class="uri">https://frozen-journey-02456.herokuapp.com/getsam?mindate=1989-01-01&amp;maxdate=1989-12-31&amp;timestep=daily</a></p>
+<p>Donde pueden modificar los parámetros <code>mindate</code>, <code>maxdate</code> y <code>timestep</code> (los valores posibles son “daily”, “montly” y “seasonally”) para modificar los datos obtenidos.</p>
+<p>Este post describe los pasos para llegar hasta este punto.</p>
+<div id="appr" class="section level2">
+<h2>Programando la API con plumber</h2>
+<p><a href="https://www.rplumber.io/index.html">plumber</a> es un paquete de R que permite crear APIs (Application Programming Interface) usando R y es el paso más fácil de todo el proceso.</p>
+<p>Primero hay que instalar el paquete</p>
+<pre class="r"><code>install.packages(&quot;plumber&quot;)</code></pre>
+<p>Una vez instalado, reiniciar RStudio (creo que es necesario para el siguiente paso) e ir a File -&gt; New Project… -&gt; New Directory.
+En la sección de Project Type, buscar “New Plumber API Project” y luego seleccionar la carpeta donde se va a crear.</p>
+<p>Esto va a crear una carpeta con un archivo .Rproject y un archivo llamado “plumber.R” con unas funciones de ejemplo.
+Podés probarla haciendo clik en el botón “Run API” que está arriba.</p>
+<p>Te va a aparecer una ventana como esta.
+Esto es una herramienta llamada Swagger que permite probar la API localmente usando una interfaz gráfica.</p>
+<p>Cada API contiene varios <em>endpoints</em> que son como funciones específicas.
+Por ejemplo, probá el <em>endpoint</em> <code>echo</code>.</p>
+<p align="center">
+<video width="400" controls>
+<source src="../../../images/swagger.webm" type="video/webm">
+<p>Your browser does not support the video tag.
+</video></p>
+</p>
+<p>Como se ve, lo que hace es devolver el mensaje que recibe.
+Este <em>endpoint</em> está definido en el archivo “plumber.R” con este código:</p>
+<pre class="r"><code>#* Echo back the input
+#* @param msg The message to echo
+#* @get /echo
+function(msg = &quot;&quot;) {
+  list(msg = paste0(&quot;The message is: &#39;&quot;, msg, &quot;&#39;&quot;))
+}</code></pre>
+<p>Lo hermoso de plumber es que lo único que se necesita es código de R y algunos comentarios especiales.</p>
+<p>Lo principal es la función.
+Acá es donde tenés que centrar todo el esfuerzo y es lo que realmente hace el trabajo.
+Notá que a diferencia del código de R “normal” esta función no se asigna a ninguna variable.</p>
+<p>Luego, los comentarios anteriores que empiezan con <code>#*</code> son los que definen el comportamiento en el contexto de la API.
+El primero es la descripción del endpoint; qué es lo que hace.
+El segundo documenta los argumentos de la función usando <code>@param</code>, seguido por el nombre del argumento y la descripción.
+El tercero es el que define el nombre del endpoint y el <a href="https://developer.mozilla.org/es/docs/Web/HTTP/Methods">método</a> que se usa para acceder a él.
+En este caso, <code>@get</code> define que hay que usar el método <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET">GET</a> y <code>/echo</code> define el nombre del endpoint.
+Honestamente no conozco mucho las diferencias entre los distintos métodos.
+Yo usé GET porque es el que se usa por default en los formularios de HTML.</p>
+<p>Una última cosa a tener en cuenta es cómo definir el tipo de objeto que devuelve.
+Esto se hace usando un “serializador”.
+Por ejemplo, el endpoint <code>/plot</code> tiene este código</p>
+<pre class="r"><code>#* Plot a histogram
+#* @serializer png
+#* @get /plot
+function(){
+  rand &lt;- rnorm(100)
+  hist(rand)
+}</code></pre>
+<p>El segundo comentario de plumber define que este endpoint va a devolver un archivo png.
+En el caso de mi API, que devuelve una tabla, usé <code>#* @serializer csv</code> para devolver un archivo .csv.
+En <a href="https://www.rplumber.io/articles/rendering-output.html#serializers">la documentación de plumber</a> se listan todos los serializadores posibles.</p>
+<p>Si bien seguro que hay un montón de detalles y cosas avanzadas, esto es literalmente todo lo que se necesita saber para armar una API con plumber:</p>
+<ol style="list-style-type: decimal">
+<li>Escribí las funciones que encapsulen la lógica de la AIP como lo harías normalmente.</li>
+<li>“Decoralas” con comentarios de plumber que definan el serializador, el nombre y el método del endpoint y documente los argumentos.</li>
+</ol>
+<p>Eso es todo.</p>
+</div>
+<div id="hosteando-con-heroku" class="section level2">
+<h2>Hosteando con Heroku</h2>
+<p>Una vez que tenés una API funcionando, es momento de hacerla pública para que no quede en tu laptop.
+Esto requiere un servicio de hosting que corra un servidor y todo eso.</p>
+<p>Seguro hay muchas alternativas pero <a href="https://www.heroku.com/">Heroku</a> me convenció principalmente porque tiene un nivel gratuito para hobby y testeo, que es precisamente lo que estoy haciendo.
+Además, encontré <a href="https://segar.me/projects/heroku/">este artículo</a> que explica cómo hostear una API de plumber en muy pocos pasos.</p>
+<p>Para hostear APIs en Heroku, primero hay que <a href="https://signup.heroku.com/">crearse una cuenta</a>.
+Una vez creada, descargarse la aplicación <a href="https://devcenter.heroku.com/articles/heroku-cli">heroku-cli</a> para hacer cosas desde la terminal (quizás hay otra forma, pero esta es la que aprendí siguiendo los consejos del artículo anterior).</p>
+<p>(Heroku funciona con git, así que también hay que tener esta utilidad instalada. Yo trabajo con git y GitHub casi por default en todos mis proyectos así que no fue un cambio.)</p>
+<p>Vamos a usar un “buildpack” de R, que según entiendo son scripts que se encargan de compilar y generar todo lo necesario para que un determinado tipo de programa funcione en Heroku.
+De nuevo, no tengo mucha idea de todo esto pero como alguien ya armó un <a href="https://github.com/virtualstaticvoid/heroku-buildpack-r">buildpack para aplicaciones que usan R</a>, no necesito tenerla.</p>
+<p>A la API hay que agregarle un par de archivos para que funcione.</p>
+<p>Obligatoriamente hay que agregar un archivo llamado “app.R” que es el código que inicia la API de plumber.
+De la documentación del buildpack de R podemos obtener un ejemplo mínimo que funciona:</p>
+<pre class="r"><code># app.R
+library(plumber)
 
-<p>What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun. After some further research I learned that this is actually done in cartography and is called <a href="http://www.reliefshading.com/analytical/shading-methods/"><em>aspect-based shading</em></a>. I also learned that it&rsquo;s not the best method, and I&rsquo;m itching to try others. But for now, let&rsquo;s keep things simple and <a href="https://kkulma.github.io/2017-12-29-end-of-year-thoughts/">get stuff actually done</a>.</p>
+port &lt;- Sys.getenv(&#39;PORT&#39;)  # obligatorio!
 
-<p>Just as an example, I will be using our old friend, the <code>volcano</code> database. I will be also using <code>data.table</code> syntax because that how I roll. Deal with it, <code>dplyr</code> lovers 😎.</p>
+server &lt;- plumb(&quot;plumber.R&quot;)
 
-<pre><code class="language-r">library(data.table)
-library(ggplot2)
-data(volcano)
-volcano &lt;- as.data.table(melt(volcano, varnames = c(&quot;x&quot;, &quot;y&quot;),
-                              value.name = &quot;h&quot;))
-</code></pre>
+server$run(
+  host = &#39;0.0.0.0&#39;,
+  port = as.numeric(port)
+)</code></pre>
+<p>Opcionalmente, se puede agregar un archivo “init.R” que, si existe, se corre primero para instalar los paquete necesarios para que la API funcione.
+En mi proyecto usé <a href="https://rstudio.github.io/renv/">renv</a> para manejar eso así que no fue necesario, pero quien no quiera meterse en la complejidad de usar renv (aunque lo recomiendo!) puede adaptar el script de ejemplo de la documentación del buildpack</p>
+<pre id="initr" class="r"><code># init.R
+my_packages = c(&quot;package_name_1&quot;, &quot;package_name_2&quot;, ...)
 
-<p>So then I take the derivative (this is a function I made in my personal package, but bear with me 🙏) and take the angle. The minus sign are there&hellip; well, because it works &ndash;I&rsquo;m not sure about the exact maths here.</p>
-
-<pre><code class="language-r">volcano[, c(&quot;dx&quot;, &quot;dy&quot;) := metR::Derivate(h ~ x + y)]
-volcano[, angle := atan2(-dy, -dx)]
-</code></pre>
-
-<p>And with that, we can set the angle from which the Sun is shinning (usually from the top left) and with a little bit of code, we get an acceptable result.</p>
-
-<pre><code class="language-r">sun.angle &lt;- pi/3
-ggplot(volcano, aes(x, y)) +
-   geom_raster(aes(fill = cos(angle + sun.angle)), alpha = 1, interpolate = TRUE) +
-   scale_fill_gradient2(low = &quot;white&quot;, high = &quot;white&quot;, mid = &quot;gray20&quot;, 
-                        midpoint = sun.angle, guide = &quot;none&quot;) +
-   coord_fixed() +
-   theme_void() 
-</code></pre>
-
-<p><img src="../../../post/2018-02-04-how-to-make-a-shaded-relief-in-r_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-
-<p>Excellent! 💜</p>
-
-<p>But hey, don&rsquo;t leave, there&rsquo;s more. What if you want to use this <em>gorgeous</em> shading as a background to map <em>other</em> data? For example, let&rsquo;s say you had surface temperature readings, or sulphur concentration data. Since our <code>scale_fill</code> is being taken by the shading and <code>ggplot2</code> does not allow for more than one scale per aesthetic, you couldn&rsquo;t use another <code>geom_raster()</code> to &ldquo;paint&rdquo; the data over this background.</p>
-
-<p>One solution is to take the plot we made above, extract the raster grob (GRaphical OBject) and put it over another plot as an annotation. This is akin to a plot transplant and &ndash;just as organ transplants&ndash; it&rsquo;s an ugly mess that will become a forgotten practice of a less civilized age once we master 3D printing of organs. But it works and is the best we&rsquo;ve got so far.</p>
-
-<pre><code class="language-r">shade &lt;- ggplot(volcano, aes(x, y)) +
-   geom_raster(aes(fill = cos(angle + sun.angle)), alpha = 0.5, interpolate = TRUE) +
-   scale_fill_gradient2(low = &quot;white&quot;, high = &quot;white&quot;, mid = &quot;black&quot;, 
-                        midpoint = sun.angle, guide = &quot;none&quot;)
-
-grob.shade &lt;- ggplotGrob(shade)
-grob.shade &lt;- grob.shade$grobs[[6]]$children[[3]]
-
-ggplot(volcano, aes(x, y)) +
-   geom_raster(aes(fill = h), alpha = 1, interpolate = TRUE) +
-   annotation_custom(grob = grob.shade) +
-   scale_fill_viridis_c(guide = &quot;none&quot;, option = &quot;A&quot;) +
-   coord_fixed() +
-   theme_void() 
-</code></pre>
-
-<p><img src="../../../post/2018-02-04-how-to-make-a-shaded-relief-in-r_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-
-<p>Lucky for us, at least for this kind of plot transplant, there&rsquo;s already a better way: just make a <code>geom</code>! Once we are inside the guts of <code>ggplot2</code> we are no longer bound by the tyranny of scales can do the craziest things. In this case, we use a modified version of <code>geom_tile()</code> that performs all the calculations we need and builds the grayscale pattern (modifiable by the user via the <code>light</code> and <code>dark</code> aesthetics). It allows changing <code>sun.angle</code> and decide whether to use <code>raster</code> or <code>rect</code> and whether to interpolate for a smoother finish. I give to you <code>geom_relief()</code>:</p>
-
-<pre><code class="language-r">geom_relief &lt;- function(mapping = NULL, data = NULL,
-                        stat = &quot;identity&quot;, position = &quot;identity&quot;,
-                        ...,
-                        raster = TRUE,
-                        interpolate = TRUE,
-                        na.rm = FALSE,
-                        show.legend = NA,
-                        inherit.aes = TRUE) {
-   ggplot2::layer(
-      data = data,
-      mapping = mapping,
-      stat = stat,
-      geom = GeomRelief,
-      position = position,
-      show.legend = show.legend,
-      inherit.aes = inherit.aes,
-      params = list(
-         raster = raster,
-         interpolate = interpolate,
-         na.rm = na.rm,
-         ...
-      )
-   )
-}
-
-GeomRelief &lt;- ggplot2::ggproto(&quot;GeomRelief&quot;, GeomTile,
-  required_aes = c(&quot;x&quot;, &quot;y&quot;, &quot;z&quot;),
-  default_aes = ggplot2::aes(color = NA, fill = &quot;grey35&quot;, size = 0.5, linetype = 1,
-                             alpha = NA, light = &quot;white&quot;, dark = &quot;gray20&quot;, sun.angle = 60),
-  draw_panel = function(data, panel_scales, coord, raster, interpolate) {
-     if (!coord$is_linear()) {
-        stop(&quot;non lineal coordinates are not implemented in GeomRelief&quot;, call. = FALSE)
-     } else {
-        coords &lt;- as.data.table(coord$transform(data, panel_scales))
-        
-        # This is the only part that's actually new. The rest is essentially 
-        # copy-pasted from geom_raster and geom_tile
-        coords[, sun.angle := (sun.angle + 90)*pi/180]
-        coords[, dx := .derv(z, x), by = y]
-        coords[, dy := .derv(z, y), by = x]
-        coords[, shade := (cos(atan2(-dy, -dx) - sun.angle) + 1)/2]
-        coords[is.na(shade), shade := 0]
-        coords[, fill := .rgb2hex(colorRamp(c(dark, light), space = &quot;Lab&quot;)(shade)),
-               by = .(dark, light)]
-        
-        # From geom_raster and geom_tile
-        if (raster == TRUE){
-           if (!inherits(coord, &quot;CoordCartesian&quot;)) {
-              stop(&quot;geom_raster only works with Cartesian coordinates&quot;, call. = FALSE)
-           }
-           # Convert vector of data to raster
-           x_pos &lt;- as.integer((coords$x - min(coords$x)) / resolution(coords$x, FALSE))
-           y_pos &lt;- as.integer((coords$y - min(coords$y)) / resolution(coords$y, FALSE))
-           
-           nrow &lt;- max(y_pos) + 1
-           ncol &lt;- max(x_pos) + 1
-           
-           raster &lt;- matrix(NA_character_, nrow = nrow, ncol = ncol)
-           raster[cbind(nrow - y_pos, x_pos + 1)] &lt;- alpha(coords$fill, coords$alpha)
-           
-           # Figure out dimensions of raster on plot
-           x_rng &lt;- c(min(coords$xmin, na.rm = TRUE), max(coords$xmax, na.rm = TRUE))
-           y_rng &lt;- c(min(coords$ymin, na.rm = TRUE), max(coords$ymax, na.rm = TRUE))
-           
-           grid::rasterGrob(raster,
-                            x = mean(x_rng), y = mean(y_rng),
-                            width = diff(x_rng), height = diff(y_rng),
-                            default.units = &quot;native&quot;, interpolate = interpolate
-           )
-           
-        } else {
-           ggplot2:::ggname(&quot;geom_rect&quot;, grid::rectGrob(
-              coords$xmin, coords$ymax,
-              width = coords$xmax - coords$xmin,
-              height = coords$ymax - coords$ymin,
-              default.units = &quot;native&quot;,
-              just = c(&quot;left&quot;, &quot;top&quot;),
-              gp = grid::gpar(
-                 col = coords$fill,
-                 fill = alpha(coords$fill, coords$alpha),
-                 lwd = coords$size * .pt,
-                 lty = coords$linetype,
-                 lineend = &quot;butt&quot;
-              )
-           ))
-           
-        }
-     }
+install_if_missing = function(p) {
+  if (p %in% rownames(installed.packages()) == FALSE) {
+    install.packages(p, clean=TRUE, quiet=TRUE)
   }
-)
-
-rect_to_poly &lt;- function(xmin, xmax, ymin, ymax) {
-   data.frame(
-      y = c(ymax, ymax, ymin, ymin, ymax),
-      x = c(xmin, xmax, xmax, xmin, xmin)
-   )
 }
 
-.rgb2hex &lt;- function(array) {
-   rgb(array[, 1], array[, 2], array[, 3], maxColorValue = 255)
-}
-
-
-.derv &lt;- function(x, y, order = 1, cyclical = FALSE, fill = FALSE) {
-   N &lt;- length(x)
-   d &lt;- y[2] - y[1]
-   if (order &gt;= 3) {
-      dxdy &lt;- .derv(.derv(x, y, order = 2, cyclical = cyclical, fill = fill),
-                    y, order = order - 2, cyclical = cyclical, fill = fill)
-   } else {
-      if (order == 1) {
-         dxdy &lt;- (x[c(2:N, 1)] - x[c(N, 1:(N-1))])/(2*d)
-      } else if (order == 2) {
-         dxdy &lt;- (x[c(2:N, 1)] + x[c(N, 1:(N-1))] - 2*x)/d^2
-      }
-      if (!cyclical) {
-         if (!fill) {
-            dxdy[c(1, N)] &lt;- NA
-         }
-         if (fill) {
-            dxdy[1] &lt;- (-11/6*x[1] + 3*x[2] - 3/2*x[3] + 1/3*x[4])/d
-            dxdy[N] &lt;- (11/6*x[N] - 3*x[N-1] + 3/2*x[N-2] - 1/3*x[N-3])/d
-         }
-      }
-      
-   }
-   return(dxdy)
-}
-</code></pre>
-
-<p>Let&rsquo;s use it to show real topographic data from The Andes near the Aconcagua, courtesy of <a href="https://www.ngdc.noaa.gov/mgg/global/">NOAA&rsquo;s ETOPO1</a>.</p>
-
-<pre><code class="language-r">aconcagua &lt;- metR::GetTopography(-70.0196223 - 3 + 360, -70.0196223 + 3 + 360,
-                                 -32.6531782 + 2, -32.6531782 - 2, 
-                                 resolution = 1/60)
-aconcagua[, c(&quot;light&quot;, &quot;dark&quot;) := .(ifelse(h &gt; 0, &quot;white&quot;, &quot;slategray2&quot;),
-                                ifelse(h &gt; 0, &quot;gray20&quot;, &quot;midnightblue&quot;))] 
-ggplot(aconcagua, aes(lon, lat)) +
-   geom_relief(aes(z = h, light = light, dark = dark), 
-               raster = TRUE, interpolate = TRUE, sun.angle = 60) +
-   coord_fixed(expand = FALSE) +
-   theme_void()
-</code></pre>
-
-<p><img src="../../../post/2018-02-04-how-to-make-a-shaded-relief-in-r_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-
-<p>The result, if you ask me: delicious  👌</p>
+invisible(sapply(my_packages, install_if_missing))</code></pre>
+<p>En resumen, el directorio tiene que tener:</p>
+<ul>
+<li>plumber.R: con la API, endpoints y demás. Es lo que expliqué en <a href="#appr">la sección anterior</a>.</li>
+<li><a href="#appr">app.R</a>: con el código para iniciar la API</li>
+<li>(opcional) <a href="#initr">init.R</a>: con el código para instalar paquetes.</li>
+</ul>
+<p>Una vez que está todo eso, hay que correr un par de líneas en la consola.</p>
+<p>Primero, convertir la carpeta en un proyecto de git si no lo era:</p>
+<pre class="bash"><code>git init -b main
+git add --all
+git commit -m &quot;Primer commit&quot;</code></pre>
+<p>Luego, crear una nueva aplicación de Heroku y setear el buildpack:</p>
+<pre class="bash"><code>heroku create --stack=heroku-20 --buildpack vsv/heroku-buildpack-r</code></pre>
+<p>Una vez creada, va a aparacer <a href="https://dashboard.heroku.com/apps">en el dashboard</a>.</p>
+<p>Finalmente, mandar el código a la aplicación:</p>
+<pre class="bash"><code>git push heroku main</code></pre>
+<p>Esto va a iniciar un montón de texto a medida que Heroku instala R, los paquetes necesarios e inicia la API.
+Si todo salió bien, es hora de testearla.
+Con</p>
+<pre class="bash"><code>heroku open /__docs__/</code></pre>
+<p>va a abrir una ventana de explorador con la interfaz de Swagger ya conocida.</p>
+</div>
 
               
             </div>
@@ -490,7 +410,7 @@ ggplot(aconcagua, aes(lon, lat)) +
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/05/how-to-make-a-generic-stat-in-ggplot2/" data-tooltip="How to make a generic stat in ggplot2">
+                <a class="post-action-btn btn btn--disabled">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
@@ -498,7 +418,7 @@ ggplot(aconcagua, aes(lon, lat)) +
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/01/como-hacer-efecto-de-relieve-en-r/" data-tooltip="Cómo hacer un efecto de relieve en R">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2021/07/wrapper-stop/" data-tooltip="Cómo maniuplar mensajes de error">
               
                   <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
                   <i class="fa fa-angle-right"></i>
@@ -516,19 +436,19 @@ ggplot(aconcagua, aes(lon, lat)) +
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2018/02/how-to-make-shaded-relief-in-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2022/07/plumber-heroku/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2018/02/how-to-make-shaded-relief-in-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2022/07/plumber-heroku/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2018/02/how-to-make-shaded-relief-in-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2022/07/plumber-heroku/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -576,7 +496,7 @@ ggplot(aconcagua, aes(lon, lat)) +
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/05/how-to-make-a-generic-stat-in-ggplot2/" data-tooltip="How to make a generic stat in ggplot2">
+                <a class="post-action-btn btn btn--disabled">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">SIGUIENTE</span>
@@ -584,7 +504,7 @@ ggplot(aconcagua, aes(lon, lat)) +
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2018/01/como-hacer-efecto-de-relieve-en-r/" data-tooltip="Cómo hacer un efecto de relieve en R">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../2021/07/wrapper-stop/" data-tooltip="Cómo maniuplar mensajes de error">
               
                   <span class="hide-xs hide-sm text-small icon-mr">ANTERIOR</span>
                   <i class="fa fa-angle-right"></i>
@@ -602,19 +522,19 @@ ggplot(aconcagua, aes(lon, lat)) +
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2018/02/how-to-make-shaded-relief-in-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/2022/07/plumber-heroku/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2018/02/how-to-make-shaded-relief-in-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/2022/07/plumber-heroku/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2018/02/how-to-make-shaded-relief-in-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/2022/07/plumber-heroku/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -644,19 +564,19 @@ ggplot(aconcagua, aes(lon, lat)) +
   <ul class="share-options">
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2F2018%2F02%2Fhow-to-make-shaded-relief-in-r%2F">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2F2022%2F07%2Fplumber-heroku%2F">
           <i class="fa fa-facebook-official"></i><span>Compartir en Facebook</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2F2018%2F02%2Fhow-to-make-shaded-relief-in-r%2F">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2F2022%2F07%2Fplumber-heroku%2F">
           <i class="fa fa-twitter"></i><span>Compartir en Twitter</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2F2018%2F02%2Fhow-to-make-shaded-relief-in-r%2F">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2F2022%2F07%2Fplumber-heroku%2F">
           <i class="fa fa-google-plus"></i><span>Compartir en Google&#43;</span>
         </a>
       </li>
@@ -940,9 +860,9 @@ $(document).ready(function() {
     
       <script>
         var disqus_config = function () {
-          this.page.url = '\/2018\/02\/how-to-make-shaded-relief-in-r\/';
+          this.page.url = '\/2022\/07\/plumber-heroku\/';
           
-            this.page.identifier = '\/2018\/02\/how-to-make-shaded-relief-in-r\/'
+            this.page.identifier = '\/2022\/07\/plumber-heroku\/'
           
         };
         (function() {

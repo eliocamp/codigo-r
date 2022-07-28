@@ -5,10 +5,151 @@
     <description>Recent content in R on Código R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Tue, 13 Jul 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 28 Jul 2022 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Guía pobre Creando una API con plumber y hostearla en Heroku</title>
+      <link>/2022/07/plumber-heroku/</link>
+      <pubDate>Thu, 28 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/2022/07/plumber-heroku/</guid>
+      <description>
+
+
+&lt;p&gt;Uno de los subproductos de mi tesis de doctorado es &lt;a href=&#34;https://eliocamp.github.io/scrapbook/posts/2021-08-09-asymsam/&#34;&gt;la descomposición del índice del SAM&lt;/a&gt; (un indicador del estado de la atmósfera muy usado y monitoreado) en dos partes que tienen distintas propiedades e impactos.&lt;/p&gt;
+&lt;p&gt;Como investigadore, yo sé que para para que un índice de adopte, éste tiene que ser fácil de descargar de manera actualizada.
+Por esto es que estoy armando &lt;a href=&#34;http://www.cima.fcen.uba.ar/~elio.campitelli/asymsam/monitoreo/&#34;&gt;una página&lt;/a&gt; con gráficos y acceso a los datos actualizados mensualmente.
+Esta página en principio es muy simple; un archivo html estático con algunos gráficos que se actualizan periódicamente.
+Es el tipo de página que puede hostearse en GitHub Pages.&lt;/p&gt;
+&lt;p&gt;Pero una de las cosas que quería agregar era una forma de descargar los datos de forma programática especificando un rango de fechas, un paso de tiempo (diario, mensual, estacional) y potencialmente otros parámetros.
+Esto ya requiere un servidor corriendo R que tome los parámetros y realice los cómputos (filtrar y promediar en la forma más básica).&lt;/p&gt;
+&lt;p&gt;Gracias al paquete &lt;a href=&#34;https://www.rplumber.io/index.html&#34;&gt;&lt;strong&gt;plumber&lt;/strong&gt;&lt;/a&gt; y el servicio de hosting &lt;a href=&#34;http://heroku.com&#34;&gt;&lt;strong&gt;Heroku&lt;/strong&gt;&lt;/a&gt;, pude hacer esto en un día.
+Actualmente los datos se pueden obtener yendo a&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://frozen-journey-02456.herokuapp.com/getsam?mindate=1989-01-01&amp;amp;maxdate=1989-12-31&amp;amp;timestep=daily&#34; class=&#34;uri&#34;&gt;https://frozen-journey-02456.herokuapp.com/getsam?mindate=1989-01-01&amp;amp;maxdate=1989-12-31&amp;amp;timestep=daily&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Donde pueden modificar los parámetros &lt;code&gt;mindate&lt;/code&gt;, &lt;code&gt;maxdate&lt;/code&gt; y &lt;code&gt;timestep&lt;/code&gt; (los valores posibles son “daily”, “montly” y “seasonally”) para modificar los datos obtenidos.&lt;/p&gt;
+&lt;p&gt;Este post describe los pasos para llegar hasta este punto.&lt;/p&gt;
+&lt;div id=&#34;appr&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Programando la API con plumber&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.rplumber.io/index.html&#34;&gt;plumber&lt;/a&gt; es un paquete de R que permite crear APIs (Application Programming Interface) usando R y es el paso más fácil de todo el proceso.&lt;/p&gt;
+&lt;p&gt;Primero hay que instalar el paquete&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;install.packages(&amp;quot;plumber&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Una vez instalado, reiniciar RStudio (creo que es necesario para el siguiente paso) e ir a File -&amp;gt; New Project… -&amp;gt; New Directory.
+En la sección de Project Type, buscar “New Plumber API Project” y luego seleccionar la carpeta donde se va a crear.&lt;/p&gt;
+&lt;p&gt;Esto va a crear una carpeta con un archivo .Rproject y un archivo llamado “plumber.R” con unas funciones de ejemplo.
+Podés probarla haciendo clik en el botón “Run API” que está arriba.&lt;/p&gt;
+&lt;p&gt;Te va a aparecer una ventana como esta.
+Esto es una herramienta llamada Swagger que permite probar la API localmente usando una interfaz gráfica.&lt;/p&gt;
+&lt;p&gt;Cada API contiene varios &lt;em&gt;endpoints&lt;/em&gt; que son como funciones específicas.
+Por ejemplo, probá el &lt;em&gt;endpoint&lt;/em&gt; &lt;code&gt;echo&lt;/code&gt;.&lt;/p&gt;
+&lt;p align=&#34;center&#34;&gt;
+&lt;video width=&#34;400&#34; controls&gt;
+&lt;source src=&#34;../../images/swagger.webm&#34; type=&#34;video/webm&#34;&gt;
+&lt;p&gt;Your browser does not support the video tag.
+&lt;/video&gt;&lt;/p&gt;
+&lt;/p&gt;
+&lt;p&gt;Como se ve, lo que hace es devolver el mensaje que recibe.
+Este &lt;em&gt;endpoint&lt;/em&gt; está definido en el archivo “plumber.R” con este código:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#* Echo back the input
+#* @param msg The message to echo
+#* @get /echo
+function(msg = &amp;quot;&amp;quot;) {
+  list(msg = paste0(&amp;quot;The message is: &amp;#39;&amp;quot;, msg, &amp;quot;&amp;#39;&amp;quot;))
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Lo hermoso de plumber es que lo único que se necesita es código de R y algunos comentarios especiales.&lt;/p&gt;
+&lt;p&gt;Lo principal es la función.
+Acá es donde tenés que centrar todo el esfuerzo y es lo que realmente hace el trabajo.
+Notá que a diferencia del código de R “normal” esta función no se asigna a ninguna variable.&lt;/p&gt;
+&lt;p&gt;Luego, los comentarios anteriores que empiezan con &lt;code&gt;#*&lt;/code&gt; son los que definen el comportamiento en el contexto de la API.
+El primero es la descripción del endpoint; qué es lo que hace.
+El segundo documenta los argumentos de la función usando &lt;code&gt;@param&lt;/code&gt;, seguido por el nombre del argumento y la descripción.
+El tercero es el que define el nombre del endpoint y el &lt;a href=&#34;https://developer.mozilla.org/es/docs/Web/HTTP/Methods&#34;&gt;método&lt;/a&gt; que se usa para acceder a él.
+En este caso, &lt;code&gt;@get&lt;/code&gt; define que hay que usar el método &lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET&#34;&gt;GET&lt;/a&gt; y &lt;code&gt;/echo&lt;/code&gt; define el nombre del endpoint.
+Honestamente no conozco mucho las diferencias entre los distintos métodos.
+Yo usé GET porque es el que se usa por default en los formularios de HTML.&lt;/p&gt;
+&lt;p&gt;Una última cosa a tener en cuenta es cómo definir el tipo de objeto que devuelve.
+Esto se hace usando un “serializador”.
+Por ejemplo, el endpoint &lt;code&gt;/plot&lt;/code&gt; tiene este código&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#* Plot a histogram
+#* @serializer png
+#* @get /plot
+function(){
+  rand &amp;lt;- rnorm(100)
+  hist(rand)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El segundo comentario de plumber define que este endpoint va a devolver un archivo png.
+En el caso de mi API, que devuelve una tabla, usé &lt;code&gt;#* @serializer csv&lt;/code&gt; para devolver un archivo .csv.
+En &lt;a href=&#34;https://www.rplumber.io/articles/rendering-output.html#serializers&#34;&gt;la documentación de plumber&lt;/a&gt; se listan todos los serializadores posibles.&lt;/p&gt;
+&lt;p&gt;Si bien seguro que hay un montón de detalles y cosas avanzadas, esto es literalmente todo lo que se necesita saber para armar una API con plumber:&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Escribí las funciones que encapsulen la lógica de la AIP como lo harías normalmente.&lt;/li&gt;
+&lt;li&gt;“Decoralas” con comentarios de plumber que definan el serializador, el nombre y el método del endpoint y documente los argumentos.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Eso es todo.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;hosteando-con-heroku&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Hosteando con Heroku&lt;/h2&gt;
+&lt;p&gt;Una vez que tenés una API funcionando, es momento de hacerla pública para que no quede en tu laptop.
+Esto requiere un servicio de hosting que corra un servidor y todo eso.&lt;/p&gt;
+&lt;p&gt;Seguro hay muchas alternativas pero &lt;a href=&#34;https://www.heroku.com/&#34;&gt;Heroku&lt;/a&gt; me convenció principalmente porque tiene un nivel gratuito para hobby y testeo, que es precisamente lo que estoy haciendo.
+Además, encontré &lt;a href=&#34;https://segar.me/projects/heroku/&#34;&gt;este artículo&lt;/a&gt; que explica cómo hostear una API de plumber en muy pocos pasos.&lt;/p&gt;
+&lt;p&gt;Para hostear APIs en Heroku, primero hay que &lt;a href=&#34;https://signup.heroku.com/&#34;&gt;crearse una cuenta&lt;/a&gt;.
+Una vez creada, descargarse la aplicación &lt;a href=&#34;https://devcenter.heroku.com/articles/heroku-cli&#34;&gt;heroku-cli&lt;/a&gt; para hacer cosas desde la terminal (quizás hay otra forma, pero esta es la que aprendí siguiendo los consejos del artículo anterior).&lt;/p&gt;
+&lt;p&gt;(Heroku funciona con git, así que también hay que tener esta utilidad instalada. Yo trabajo con git y GitHub casi por default en todos mis proyectos así que no fue un cambio.)&lt;/p&gt;
+&lt;p&gt;Vamos a usar un “buildpack” de R, que según entiendo son scripts que se encargan de compilar y generar todo lo necesario para que un determinado tipo de programa funcione en Heroku.
+De nuevo, no tengo mucha idea de todo esto pero como alguien ya armó un &lt;a href=&#34;https://github.com/virtualstaticvoid/heroku-buildpack-r&#34;&gt;buildpack para aplicaciones que usan R&lt;/a&gt;, no necesito tenerla.&lt;/p&gt;
+&lt;p&gt;A la API hay que agregarle un par de archivos para que funcione.&lt;/p&gt;
+&lt;p&gt;Obligatoriamente hay que agregar un archivo llamado “app.R” que es el código que inicia la API de plumber.
+De la documentación del buildpack de R podemos obtener un ejemplo mínimo que funciona:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# app.R
+library(plumber)
+
+port &amp;lt;- Sys.getenv(&amp;#39;PORT&amp;#39;)  # obligatorio!
+
+server &amp;lt;- plumb(&amp;quot;plumber.R&amp;quot;)
+
+server$run(
+  host = &amp;#39;0.0.0.0&amp;#39;,
+  port = as.numeric(port)
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Opcionalmente, se puede agregar un archivo “init.R” que, si existe, se corre primero para instalar los paquete necesarios para que la API funcione.
+En mi proyecto usé &lt;a href=&#34;https://rstudio.github.io/renv/&#34;&gt;renv&lt;/a&gt; para manejar eso así que no fue necesario, pero quien no quiera meterse en la complejidad de usar renv (aunque lo recomiendo!) puede adaptar el script de ejemplo de la documentación del buildpack&lt;/p&gt;
+&lt;pre id=&#34;initr&#34; class=&#34;r&#34;&gt;&lt;code&gt;# init.R
+my_packages = c(&amp;quot;package_name_1&amp;quot;, &amp;quot;package_name_2&amp;quot;, ...)
+
+install_if_missing = function(p) {
+  if (p %in% rownames(installed.packages()) == FALSE) {
+    install.packages(p, clean=TRUE, quiet=TRUE)
+  }
+}
+
+invisible(sapply(my_packages, install_if_missing))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En resumen, el directorio tiene que tener:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;plumber.R: con la API, endpoints y demás. Es lo que expliqué en &lt;a href=&#34;#appr&#34;&gt;la sección anterior&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#appr&#34;&gt;app.R&lt;/a&gt;: con el código para iniciar la API&lt;/li&gt;
+&lt;li&gt;(opcional) &lt;a href=&#34;#initr&#34;&gt;init.R&lt;/a&gt;: con el código para instalar paquetes.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Una vez que está todo eso, hay que correr un par de líneas en la consola.&lt;/p&gt;
+&lt;p&gt;Primero, convertir la carpeta en un proyecto de git si no lo era:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;git init -b main
+git add --all
+git commit -m &amp;quot;Primer commit&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Luego, crear una nueva aplicación de Heroku y setear el buildpack:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;heroku create --stack=heroku-20 --buildpack vsv/heroku-buildpack-r&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Una vez creada, va a aparacer &lt;a href=&#34;https://dashboard.heroku.com/apps&#34;&gt;en el dashboard&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Finalmente, mandar el código a la aplicación:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;git push heroku main&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Esto va a iniciar un montón de texto a medida que Heroku instala R, los paquetes necesarios e inicia la API.
+Si todo salió bien, es hora de testearla.
+Con&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;heroku open /__docs__/&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;va a abrir una ventana de explorador con la interfaz de Swagger ya conocida.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Cómo maniuplar mensajes de error</title>
