@@ -24,6 +24,11 @@
   </url>
   
   <url>
+    <loc>/2022/07/plumber-heroku/</loc>
+    <lastmod>2022-07-28T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/</loc>
     <lastmod>2022-07-28T00:00:00+00:00</lastmod>
     <priority>0</priority>
@@ -42,11 +47,6 @@
                 hreflang="es-es"
                 href="/"
                 />
-  </url>
-  
-  <url>
-    <loc>/2022/07/plumber-heroku/</loc>
-    <lastmod>2022-07-28T00:00:00+00:00</lastmod>
   </url>
   
   <url>
