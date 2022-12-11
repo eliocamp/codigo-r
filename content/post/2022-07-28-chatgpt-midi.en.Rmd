@@ -1,0 +1,1085 @@
+---
+title: "MIDI madness with ChatGPT: the AI-powered tunes that will make you laugh, cry, and dance"
+author: Elio Campitelli
+date: '2022-12-11'
+slug: chatpgt-midi-music
+categories:
+  - GPT
+keywords:
+   - music
+   - art
+   - GPT
+   - chatGPT
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+[ChatGPT](chat.openai.com/) seems to be taking the world by storm.
+This is version of the GPT3 language model which is somehow optimised for chat dominates my Mastodon feed and inspired countless articles and discussion. [^popularity]
+
+[^popularity]: I think that the reason it's become so popular has less to do with the technical details and more with the fact that is free to use with no token restrictions.
+
+A decent chunk of the discourse has been about how the outputs of the models sound very plausible and even authoritative but lack any connection with reality because the model is train to mimic language, not to give truth. 
+Another chunk of the discourse is dominated by funny responses and creations.
+Things like poems, stories, limericks.
+
+This convinced me that that we should treat GPT like we treat image generation models: tools to create art, which is, in principle, unconcerned with truth.
+I've been playing with Stable Diffusion (you can check [my gallery](https://eliocamp.github.io/art/) so I was interested to know if I could use GPT to create other things beside text.
+
+Sure, GPT's will only respond with text, but since anything can be potentially encoded in (enough) text, it could potentially create anything. 
+
+## GPT can't create images
+
+My first thought was to try to create images using [Base64 encoding](https://en.wikipedia.org/wiki/Base64).
+Since images can be base64 encoded, then I could potentially ask GPT something like "Give me the base64 representation of a house at the foot of a mountain".
+
+First I checked if GPT could understand base64 encoding at all.
+It turns out, [it can](https://mastodon.social/@eliocamp/109475795739588085)!
+However, in my tests it seems that GPT's ability to decode from and encode to base64 was limited to short sentences and didn't extend to images.
+
+I gave it the base64 representation of a 50px by 50px image of a black square and asked it to describe the image.
+Even though GPT recognised the encoded image as a PNG file, it didn't describe it properly, it just gave bullshit answers.
+Furthermore, when asked to generate a base64-encoded image the resulting text wasn't even valid and I think it was larger that the limit of tokens for each response.
+
+So images are a bust.
+
+## GPT can create music
+
+Having failed with images, I turned my attention to music.
+There are several ways to represent music with text.
+At first I tried with [ABC Notation](https://en.wikipedia.org/wiki/ABC_notation), but asking it to create the ABC notation of the Happy Birthday tune resulted in invalid notation and I wasn't able to nudge it to correct it.
+I don't know enough of ABC notation, though, so that could be also my fault.
+
+Then, I remembered that MIDI files can be encoded as text, so I asked it to create a MIDI text for the tune.
+Unfortunately it didn't work very well.
+I could get valid MIDI notation, but it was just gibberish.
+
+But then I remembered a trick I'd seen posted on twitter: GPT can be bad at giving answers, but it can be good at creating code that returns the answer.
+So I tried combinations of "Write a program in R/python/bash that crates a simple tune."
+(I couldn't get it to play Happy Birthday.)
+Eventually I settled for python and got my first song!
+
+Below is the full annotated conversation. Note that at some points I had to edit previous sections of the conversation, so what you're seeing is just the end result. 
+
+### Making GPT sing 
+
+#### Creating a python program to write midi files
+
+After a few tries I decided to use python. 
+In some examples, GPT wrote code that added each note manually, so I had to ask it explicitly to use a for loop. 
+
+::: conversation
+::: question
+I want to write a midi file.
+Can you provide python3 code that writes a simple tune using a for loop to add each note?
+:::
+
+::: answer
+Here is a simple example using the python-midi library:
+
+```python
+from midiutil.MidiFile import MIDIFile
+
+# create the MIDIFile object with 1 track
+midi = MIDIFile(1)
+
+# add the track name and tempo
+midi.addTrackName(0, 0, "My Simple Tune")
+midi.addTempo(0, 0, 120)
+
+# create a list of notes to add to the track
+notes = [60, 62, 64, 65, 67, 69, 71]
+
+# use a for loop to add each note to the track
+for i, note in enumerate(notes):
+   # add the note on event
+   midi.addNote(0, 0, note, i, 1, 100)
+   # add the note off event
+   midi.addNote(0, 0, note, i+1, 1, 0)
+
+# write the MIDIFile to a file
+with open("simple_tune.mid", "wb") as output_file:
+   midi.writeFile(output_file)
+```
+
+This code will create a simple tune with a single track and 7 notes, with each note lasting for 1 beat at 120 beats per minute.
+The resulting MIDI file can be played back using a MIDI player or imported into a DAW for further editing.
+:::
+:::
+
+Here's out first tune! 
+
+<div class='audio-container'>
+
+<audio controls>
+<source src="/post/gptsong/tune1.mp3" type="audio/mpeg"> 
+Your browser does not support the audio element.
+
+</audio>
+
+
+</div>
+
+
+Now let's start improving to the script by adding more options.  
+
+::: conversation
+::: question
+Great! Can you modify the program so each note has a potentially different length?
+
+::: 
+::: answer
+Sure, we can use the `duration` parameter in the `addNote` method to specify the length of each note. Here is an updated version of the code that allows for different note lengths:
+
+```python
+from midiutil.MidiFile import MIDIFile
+
+# create the MIDIFile object with 1 track
+midi = MIDIFile(1)
+
+# add the track name and tempo
+midi.addTrackName(0, 0, "My Simple Tune")
+midi.addTempo(0, 0, 120)
+
+# create a list of notes and durations to add to the track
+notes = [60, 62, 64, 65, 67, 69, 71]
+durations = [1, 0.5, 0.25, 1, 0.75, 0.5, 2]
+
+# use a for loop to add each note to the track
+for i, (note, duration) in enumerate(zip(notes, durations)):
+   # add the note on event
+   midi.addNote(0, 0, note, i, duration, 100)
+   # add the note off event
+   midi.addNote(0, 0, note, i+duration, duration, 0)
+
+# write the MIDIFile to a file
+with open("simple_tune.mid", "wb") as output_file:
+   midi.writeFile(output_file)
+```
+
+In this code, we have added a `durations` list which specifies the length of each note in beats. We then use this list in the for loop to set the duration of each note. Note that we also need to update the time of the note off event to account for the different note lengths.
+:::
+
+
+::: question
+Fantastic. One thing, though is that I don't think the program needs note on and note off events, because the addNote method already defines the duration of each note, let's remove that and only have one addNote in the for loop.
+
+::: 
+::: answer
+You are correct - the `addNote` method already includes the duration of each note, so we don't need to add separate note on and note off events. Here is an updated version of the code that only uses the `addNote` method once per note:
+
+```python
+from midiutil.MidiFile import MIDIFile
+
+# create the MIDIFile object with 1 track
+midi = MIDIFile(1)
+
+# add the track name and tempo
+midi.addTrackName(0, 0, "My Simple Tune")
+midi.addTempo(0, 0, 120)
+
+# create a list of notes and durations to add to the track
+notes = [60, 62, 64, 65, 67, 69, 71]
+durations = [1, 0.5, 0.25, 1, 0.75, 0.5, 2]
+
+# use a for loop to add each note to the track
+for i, (note, duration) in enumerate(zip(notes, durations)):
+   # add the note with the specified duration
+   midi.addNote(0, 0, note, i, duration, 100)
+
+# write the MIDIFile to a file
+with open("simple_tune.mid", "wb") as output_file:
+   midi.writeFile(output_file)
+```
+
+In this code, we only use the `addNote` method once per note, and the duration of each note is specified in the `duration` parameter. This allows us to create a simple tune with varying note lengths.
+
+:::
+:::
+
+
+Note that I had to do a little thinking about the script and also looking at [midiutil's documentation](https://midiutil.readthedocs.io/en/1.2.1/common.html#adding-notes) to find that subtle issue with the program. 
+
+The next bit fixes an issue that I only noticed after trying to create some more stuff with the script. 
+
+::: conversation
+::: question
+Great. However, now that notes can have different duration, the timing of each note is not constant. Let's compute the timing based on the duration of each note. 
+
+::: 
+::: answer
+To compute the timing of each note based on its duration, we can keep track of the total time elapsed and use that as the starting time of each note. Here is an updated version of the code that does this:
+
+```python
+from midiutil.MidiFile import MIDIFile
+
+# create the MIDIFile object with 1 track
+midi = MIDIFile(1)
+
+# add the track name and tempo
+midi.addTrackName(0, 0, "My Simple Tune")
+midi.addTempo(0, 0, 120)
+
+# create a list of notes and durations to add to the track
+notes = [60, 62, 64, 65, 67, 69, 71]
+durations = [1, 0.5, 0.25, 1, 0.75, 0.5, 2]
+
+# initialize a variable to keep track of the total time elapsed
+total_time = 0
+
+# use a for loop to add each note to the track
+for i, (note, duration) in enumerate(zip(notes, durations)):
+   # add the note with the specified duration starting at the current total time
+   midi.addNote(0, 0, note, total_time, duration, 100)
+   # increment the total time by the duration of the current note
+   total_time += duration
+
+# write the MIDIFile to a file
+with open("simple_tune.mid", "wb") as output_file:
+   midi.writeFile(output_file)
+```
+
+In this code, we initialize a `total_time` variable to keep track of the time elapsed so far. Then, in the for loop, we use the `total_time` variable as the starting time of each note, and increment it by the duration of the current note. This ensures that each note is spaced out according to its duration.
+:::
+::: question
+Fantastic. Let's now add the option of having a different volume for each note. 
+
+::: 
+::: answer
+To add the option of having a different volume for each note, we can add a `volumes` list that specifies the volume of each note, and use that in the `addNote` method. Here is an updated version of the code that does this:
+
+```python
+from midiutil.MidiFile import MIDIFile
+
+# create the MIDIFile object with 1 track
+midi = MIDIFile(1)
+
+# add the track name and tempo
+midi.addTrackName(0, 0, "My Simple Tune")
+midi.addTempo(0, 0, 120)
+
+# create a list of notes, durations, and volumes to add to the track
+notes = [60, 62, 64, 65, 67, 69, 71]
+durations = [1, 0.5, 0.25, 1, 0.75, 0.5, 2]
+volumes = [100, 80, 60, 50, 40, 30, 20]
+
+# initialize a variable to keep track of the total time elapsed
+total_time = 0
+
+# use a for loop to add each note to the track
+for i, (note, duration, volume) in enumerate(zip(notes, durations, volumes)):
+   # add the note with the specified duration and volume starting at the current total time
+   midi.addNote(0, 0, note, total_time, duration, volume)
+   # increment the total time by the duration of the current note
+   total_time += duration
+
+# write the MIDIFile to a file
+with open("simple_tune.mid", "wb") as output_file:
+   midi.writeFile(output_file)
+```
+
+In this code, we have added a `volumes` list that specifies the volume of each note, and we use this in the `addNote` method as the `volume` parameter. This allows us to have different volumes for each note in the tune.
+:::
+
+::: question
+Great. Now, what's the maximum volume?
+
+::: 
+::: answer
+In MIDI files, the maximum volume is represented by the value 127. This is the maximum value that can be used in the `volume` parameter of the `addNote` method. In the code above, we have used the values 100, 80, 60, 50, 40, 30, and 20 for the volumes of each note, which are all less than the maximum value of 127. If you want to use the maximum volume for any of the notes, you can simply use the value 127 in the `volumes` list. For example:
+
+```css
+volumes = [100, 80, 60, 127, 40, 30, 20]
+```
+
+This would set the volume of the 4th note to the maximum value of 127.
+:::
+:::
+
+
+
+So now I had a script that could create a tune with many interesting note variations. 
+Here's the tune so far:
+
+
+<div class='audio-container'>
+
+<audio controls>
+<source src="/post/gptsong/tune2.mp3" type="audio/mpeg"> 
+Your browser does not support the audio element.
+
+</audio>
+
+</div>
+
+
+So now I wanted to go a bit further. 
+
+
+::: conversation
+
+::: question
+Perfect. Now, I will be using the program to create midi files of piano songs, which have a right hand part playing the melody and a left hand part that plays the base. Let's modify the program to play each hand in it's own track.
+
+::: 
+::: answer
+To create a MIDI file with multiple tracks, we can simply create a `MIDIFile` object with multiple tracks and use the `addNote` method for each track. Here is an updated version of the code that creates a MIDI file with two tracks for a piano song:
+
+```python
+from midiutil.MidiFile import MIDIFile
+
+# create the MIDIFile object with 2 tracks
+midi = MIDIFile(2)
+
+# add the track names and tempo
+midi.addTrackName(0, 0, "Right Hand")
+midi.addTrackName(1, 0, "Left Hand")
+midi.addTempo(0, 0, 120)
+
+# create a list of notes, durations, and volumes for the right hand part
+right_notes = [60, 62, 64, 65, 67, 69, 71]
+right_durations = [1, 0.5, 0.25, 1, 0.75, 0.5, 2]
+right_volumes = [100, 80, 60, 50, 40, 30, 20]
+
+# create a list of notes, durations, and volumes for the left hand part
+left_notes = [48, 50, 52, 53, 55, 57, 59]
+left_durations = [1, 0.5, 0.25, 1, 0.75, 0.5, 2]
+left_volumes = [100, 80, 60, 50, 40, 30, 20]
+
+# initialize a variable to keep track of the total time elapsed
+total_time = 0
+
+# use a for loop to add each note to the right hand track
+for i, (note, duration, volume) in enumerate(zip(right_notes, right_durations, right_volumes)):
+   # add the note with the specified duration and volume starting at the current total time
+   midi.addNote(0, 0, note, total_time, duration, volume)
+   # increment the total time by the duration of the current note
+   total_time += duration
+
+# reset the total time to 0 for the left hand track
+total_time = 0
+
+# use a for loop to add each note to the left hand track
+for i, (note, duration, volume) in enumerate(zip(left_notes, left_durations, left_volumes)):
+   # add the note with the specified duration and volume starting at the current total time
+   midi.addNote(1, 0, note, total_time, duration, volume)
+   # increment the total time by the duration of the current note
+   total_time += duration
+
+# write the MIDIFile to a file
+with open("piano_song.mid", "wb") as output_file:
+   midi.writeFile(output_file)
+```
+
+In this code, we create a `MIDIFile` object with 2 tracks and add track names for each track. We then create separate lists of notes, durations, and volumes for each track, and use a for loop to add each note to the appropriate track. This allows us to create a MIDI file with multiple tracks for a piano song with a right hand and left hand part.
+
+:::
+:::
+
+
+Not the most elegant script ever crated, but it works!
+I was quite surprised by the fact that GPT actually used notes with lower pitch for the left hand part!
+Also notice that the name of the output file is now "piano_song.mid".
+
+This was going so well that I decided to try go further.
+
+
+::: conversation
+
+::: question
+Great. Now, can you add an option to change the instrument. Let's test it with a flute. 
+
+::: 
+::: answer
+To change the instrument of a track in a MIDI file, we can use the `addProgramChange` method to specify the instrument for each track. Here is an updated version of the code that adds this option:
+
+```python
+from midiutil.MidiFile import MIDIFile
+
+# create the MIDIFile object with 2 tracks
+midi = MIDIFile(2)
+
+# add the track names and tempo
+midi.addTrackName(0, 0, "Right Hand")
+midi.addTrackName(1, 0, "Left Hand")
+midi.addTempo(0, 0, 120)
+
+# set the instrument for each track
+midi.addProgramChange(0, 0, 0, 74)  # flute for right hand track
+midi.addProgramChange(1, 0, 0, 74)  # flute for left hand track
+
+# create a list of notes, durations, and volumes for the right hand part
+right_notes = [60, 62, 64, 65, 67, 69, 71]
+right_durations = [1, 0.5, 0.25, 1, 0.75, 0.5, 2]
+right_volumes = [100, 80, 60, 50, 40, 30, 20]
+
+# create a list of notes, durations, and volumes for the left hand part
+left_notes = [48, 50, 52, 53, 55, 57, 59]
+left_durations = [1, 0.5, 0.25, 1, 0.75, 0.5, 2]
+left_volumes = [100, 80, 60, 50, 40, 30, 20]
+
+# initialize a variable to keep track of the total time elapsed
+total_time = 0
+
+# use a for loop to add each note to the right hand track
+for i, (note, duration, volume) in enumerate(zip(right_notes, right_durations, right_volumes)):
+   # add the note with the specified duration and volume starting at the current total time
+   midi.addNote(0, 0, note, total_time, duration, volume)
+   # increment the total time by the duration of the current note
+   total_time += duration
+
+# reset the total time to 0 for the left hand track
+total_time = 0
+
+# use a for loop to add each note to the left hand track
+for i, (note, duration, volume) in enumerate(zip(left_notes, left_durations, left_volumes)):
+   # add the note with the specified duration and volume starting at the current total time
+   midi.addNote(1, 0, note, total_time, duration, volume)
+   # increment the total time by the duration of the current note
+   total_time += duration
+
+# write the MIDIFile to a file
+with open("piano_song.mid", "wb") as output_file:
+   midi.writeFile(output_file)
+```
+
+In this code, we have added two `addProgramChange` calls to set the instrument for each track. We have used the value 74 for the instrument, which corresponds to the flute. You can use a different instrument by specifying a different value in the `addProgramChange` method. A list of available instruments and their corresponding values can be found here: [https://www.midi.org/specifications/item/gm-level](https://www.midi.org/specifications/item/gm-level)
+:::
+
+:::
+
+That was incredible! 
+GPT actually correctly decoded the number corresponding to the Flute. 
+The link it gave wasn't very helpful, so had to google the list of midi instruments. 
+
+Now I wanted my program to decode that list so I could just use the name of the instrument instead of the number. 
+My idea was to have a csv with the data and load it in python. 
+As you will see, GPT had other idea.
+
+
+::: conversation
+::: question
+Great. Can you give me a csv string with columns "instrument" and "value" with the name and value of instruments 0 to 23? The names of the instruments should be quoted.
+
+::: 
+::: answer
+Sure, here is a CSV string with the names and values of instruments 0 to 23:
+
+```csv
+"instrument","value"
+"Acoustic Grand Piano","0"
+"Bright Acoustic Piano","1"
+"Electric Grand Piano","2"
+"Honky-tonk Piano","3"
+"Electric Piano 1","4"
+"Electric Piano 2","5"
+"Harpsichord","6"
+"Clavi","7"
+"Celesta","8"
+"Glockenspiel","9"
+"Music Box","10"
+"Vibraphone","11"
+"Marimba","12"
+"Xylophone","13"
+"Tubular Bells","14"
+"Dulcimer","15"
+"Drawbar Organ","16"
+"Percussive Organ","17"
+"Rock Organ","18"
+"Church Organ","19"
+"Reed Organ","20"
+"Accordion","21"
+"Harmonica","22"
+"Tango Accordion","23"
+```
+
+In this CSV string, the first column contains the name of the instrument, and the second column contains its corresponding value. You can use this string to create a lookup table for the available instruments and their values.
+:::
+::: question
+Fantastic. I saved this information in a file called "instruments.csv". Can you write a python function called decode_instrument that takes a string with the name of the instrument and returns its value?
+
+::: 
+::: answer
+Sure, here is a python function called `decode_instrument` that takes a string with the name of the instrument and returns its value:
+
+```python
+def decode_instrument(instrument_name):
+    # create a dictionary mapping instrument names to their values
+    instrument_values = {
+        "Acoustic Grand Piano": 0,
+        "Bright Acoustic Piano": 1,
+        "Electric Grand Piano": 2,
+        "Honky-tonk Piano": 3,
+        "Electric Piano 1": 4,
+        "Electric Piano 2": 5,
+        "Harpsichord": 6,
+        "Clavi": 7,
+        "Celesta": 8,
+        "Glockenspiel": 9,
+        "Music Box": 10,
+        "Vibraphone": 11,
+        "Marimba": 12,
+        "Xylophone": 13,
+        "Tubular Bells": 14,
+        "Dulcimer": 15,
+        "Drawbar Organ": 16,
+        "Percussive Organ": 17,
+        "Rock Organ": 18,
+        "Church Organ": 19,
+        "Reed Organ": 20,
+        "Accordion": 21,
+        "Harmonica": 22,
+        "Tango Accordion": 23
+    }
+
+    # return the value corresponding to the given instrument name
+    return instrument_values[instrument_name]
+```
+
+In this function, we have created a dictionary that maps instrument names to their values. We then use the given instrument name to look up the corresponding value in this dictionary and return it. You can use this function to quickly lookup the value of a given instrument name. For example, calling `decode_instrument("Acoustic Grand Piano")` would return the value 0, and calling `decode_instrument("Electric Piano 2")` would return the value 5.
+:::
+:::
+
+Well, using code as data wasn't what I was looking for, but I'll take it. 
+Now I had to go back to the code and add this decoder. 
+
+
+::: conversation
+::: question
+Excellent. I saved this function into a file called decode_instrument.py. Can you now modify the program we were working on to import this function and use it to decode the instrument from a string?
+
+::: 
+::: answer
+Sure, here is an updated version of the code that imports the `decode_instrument` function and uses it to decode the instrument from a string:
+
+```python
+from midiutil.MidiFile import MIDIFile
+
+# import the decode_instrument function
+from decode_instrument import decode_instrument
+
+# create the MIDIFile object with 2 tracks
+midi = MIDIFile(2)
+
+# add the track names and tempo
+midi.addTrackName(0, 0, "Right Hand")
+midi.addTrackName(1, 0, "Left Hand")
+midi.addTempo(0, 0, 120)
+
+# set the instrument for each track using the decode_instrument function
+right_instrument = "Electric Piano 1"
+left_instrument = "Electric Piano 2"
+midi.addProgramChange(0, 0, 0, decode_instrument(right_instrument))
+midi.addProgramChange(1, 0, 0, decode_instrument(left_instrument))
+
+# create a list of notes, durations, and volumes for the right hand part
+right_notes = [60, 62, 64, 65, 67, 69, 71]
+right_durations = [1, 0.5, 0.25, 1, 0.75, 0.5, 2]
+right_volumes = [100, 80, 60, 50, 40, 30, 20]
+
+# create a list of notes, durations, and volumes for the left hand part
+left_notes = [48, 50, 52, 53, 55, 57, 59]
+left_durations = [1, 0.5, 0.25, 1, 0.75, 0.5, 2]
+left_volumes = [100, 80, 60, 50, 40, 30, 20]
+
+# initialize a variable to keep track of the total time elapsed
+total_time
+```
+:::
+:::
+
+Oops. 
+I got intro trouble. 
+I think that I was once again coming up to the limit of tokens GPT will respond with. 
+The script is now too long for it to fit into one response. 
+Fortunately, I could get the rest.
+
+::: conversation
+
+::: question
+Oops, you didn't finish the code there. That's fine, can you write the code beginning from line 27?
+
+::: 
+::: answer
+Sure, here is the code starting from line 27:
+
+```python
+# initialize a variable to keep track of the total time elapsed
+total_time = 0
+
+# use a for loop to add each note to the right hand track
+for i, (note, duration, volume) in enumerate(zip(right_notes, right_durations, right_volumes)):
+# add the note with the specified duration and volume starting at the current total time
+midi.addNote(0, 0, note, total_time, duration, volume)
+# increment the total time by the duration of the current note
+total_time += duration
+
+# reset the total time to 0 for the left hand track
+total_time = 0
+
+# use a for loop to add each note to the left hand track
+for i, (note, duration, volume) in enumerate(zip(left_notes, left_durations, left_volumes)):
+   # add the note with the specified duration and volume starting at the current total time
+   midi.addNote(1, 0, note, total_time, duration, volume)
+   # increment the total time by the duration of the current note
+   total_time += duration
+
+# write the MIDIFile to a file
+with open("piano_song.mid", "wb") as output_file:
+   midi.writeFile(output_file)      
+```
+
+In this code, we import the `decode_instrument` function and use it to decode the instrument from a string. We then use the `addProgramChange` method to set the instrument for each track using the decoded values. This allows us to specify the instrument for each track using its name
+:::
+:::
+
+At this point I should've started to refactor the code to make it more concise and split things in different functions. 
+This would make each part fit into a single response and also better overall. 
+In the end I decided I was happy with the script as it was except for one detail. 
+
+::: conversation
+
+
+::: question
+Awesome. Now let's assume that I have a file called song.py which has the notes, durations and volumes and instrument of each track. Modify the program to load the values from that file. 
+
+::: 
+::: answer
+Sure, here is an updated version of the code that loads the values for the notes, durations, volumes, and instruments from a file called `song.py`:
+
+```python
+from midiutil.MidiFile import MIDIFile
+
+# import the decode_instrument function
+from decode_instrument import decode_instrument
+
+# create the MIDIFile object with 2 tracks
+midi = MIDIFile(2)
+
+# add the track names and tempo
+midi.addTrackName(0, 0, "Right Hand")
+midi.addTrackName(1, 0, "Left Hand")
+midi.addTempo(0, 0, 120)
+
+# load the notes, durations, volumes, and instruments from the song.py file
+from song import right_notes, right_durations, right_volumes, right_instrument
+from song import left_notes, left_durations, left_volumes, left_instrument
+
+# set the instrument for each track using the decode_instrument function
+midi.addProgramChange(0, 0, 0, decode_instrument(right_instrument))
+midi.addProgramChange(1, 0, 0, decode_instrument(left_instrument))
+
+# initialize a variable to keep track of the total time elapsed
+total_time = 0
+
+# use a for loop to add each note to the right hand track
+for i, (note, duration, volume) in enumerate(zip(right_notes, right_durations, right_volumes)):
+   # add the note with the specified duration and volume starting at the current total time
+   midi.addNote(0, 0, note, total_time,
+```
+:::
+::: question
+Repeat the program starting from line 25.
+[Again, hitting the limits]
+::: 
+::: answer
+Sure, here is the code starting from line 25:
+
+```python
+# initialize a variable to keep track of the total time elapsed
+total_time = 0
+
+# use a for loop to add each note to the right hand track
+for i, (note, duration, volume) in enumerate(zip(right_notes, right_durations, right_volumes)):
+   # add the note with the specified duration and volume starting at the current total time
+   midi.addNote(0, 0, note, total_time, duration, volume)
+   # increment the total time by the duration of the current note
+   total_time += duration
+
+# reset the total time to 0 for the left hand track
+total_time = 0
+
+# use a for loop to add each note to the left hand track
+for i, (note, duration, volume) in enumerate(zip(left_notes, left_durations, left_volumes)):
+   # add the note with the specified duration and volume starting at the current total time
+   midi.addNote(1, 0, note, total_time, duration, volume)
+   # increment the total time by the duration of the current note
+   total_time += duration
+
+# write the MIDIFile to a file
+with open("piano_song.mid", "wb") as output_file:
+   midi.writeFile(output_file)
+```
+
+In this code, we load the values for the notes, durations, volumes, and instruments from the `song.py` file using the `from` keyword. We then use these values to set the instruments and add the notes to each track. This allows us to specify the notes, durations, volumes, and instruments for the song in a separate file, and use this code to generate the MIDI file.
+:::
+:::
+
+#### Writing a song with GPT
+
+At this point I was happy enough with the program and annoyed at hitting the limit that I decided to leave it as it was. 
+Now it was time to write some music. 
+
+The previous experience had convinced me that asking for a specific melody was a lost cause (there's probably some prompt hack to do it, though) so I decided to go for a (mostly) original composition. 
+
+::: conversation
+
+::: question
+Excellent! Let's write a song for this program. 
+
+First, the chord progression should be D major, A major, B minor, F# minor, G major, D major, G major, and A major. Can you create a left hand part that plays those notes with whole notes? Remember that each beat is 1 duration, so whole notes should be 4 durations. 
+
+::: 
+::: answer
+Sure, here is a left hand part that plays the chord progression using whole notes (4 durations):
+
+```python
+# create a list of notes, durations, and volumes for the left hand part
+left_notes = [62, 57, 59, 54, 55, 62, 55, 57]
+left_durations = [4, 4, 4, 4, 4, 4, 4, 4]
+left_volumes = [100, 100, 100, 100, 100, 100, 100, 100]
+```
+
+In this code, we have created a list of notes that correspond to the chord progression (D major, A major, B minor, F# minor, G major, D major, G major, and A major). We have also specified a duration of 4 for each note, which corresponds to a whole note. Finally, we have set the volume for each note to 100, which is the maximum value. You can use this code as the left hand part of the song.
+:::
+::: question
+Good, but can you lower it an octave? 
+
+::: 
+::: answer
+Sure, here is a left hand part that plays the chord progression using whole notes (4 durations) in a lower octave:
+
+```python
+# create a list of notes, durations, and volumes for the left hand part
+left_notes = [50, 45, 47, 42, 43, 50, 43, 45]
+left_durations = [4, 4, 4, 4, 4, 4, 4, 4]
+left_volumes = [100, 100, 100, 100, 100, 100, 100, 100]
+```
+
+In this code, we have created a list of notes that correspond to the chord progression in a lower octave (D major, A major, B minor, F# minor, G major, D major, G major, and A major). We have also specified a duration of 4 for each note, which corresponds to a whole note. Finally, we have set the volume for each note to 100, which is the maximum value. You can use this code as the left hand part of the song, which will be played in a lower octave compared to the original version.
+:::
+
+:::
+
+So far, this is our song. 
+The right hand part is the same random tune from before; pay attention to the left hand part. 
+Notice that it did a pretty good job translating my description into midi notes! 
+Pretty amazing. 
+
+
+<div class='audio-container'>
+
+<audio controls>
+<source src="/post/gptsong/song1.mp3" type="audio/mpeg"> 
+Your browser does not support the audio element.
+
+</audio>
+
+</div>
+
+
+You might recognise this chord progression [from somewhere else](https://www.youtube.com/watch?v=uxC1fPE1QEE). 
+
+::: conversation
+
+::: question
+Perfect. Now lets move to the right hand part. 
+Each bar has 4 fourths. So in each bar let's play an arpeggio of the corresponding triad plus the next octave. This is 4 fourths in each bar. 
+
+::: 
+::: answer
+Sure, here is a right hand part that plays an arpeggio of the corresponding triad plus the next octave for each chord in the progression:
+
+```python
+# create a list of notes, durations, and volumes for the right hand part
+right_notes = [
+62, 65, 69, 72,  # D major
+57, 60, 64, 67,  # A major
+59, 62, 66, 69,  # B minor
+54, 57, 61, 64,  # F# minor
+55, 58, 62, 65,  # G major
+62, 65, 69, 72,  # D major
+55, 58, 62, 65,  # G major
+57, 60, 64, 67   # A major
+]
+right_durations = [1, 1, 1, 1] * 8  # each note is 1 beat
+right_volumes = [100, 90, 80, 70] * 8  # each note has a different volume
+```
+
+In this code, we have created a list of notes that correspond to the arpeggios of each chord in the progression. We have also specified a duration of 1 for each note, which corresponds to a beat. Finally, we have set the volume for each note to a different value, which allows each note to have a different volume. You can use this code as the right hand part of the song, which will play the arpeggios of each chord in the progression.
+:::
+:::
+
+Now is when the cracks in my music theory formation were starting to show. 
+I bet that "main triad plus next octave" must have a name, but I don't know it. 
+But in any case, GPT translated my ramblings into what I wanted.
+
+
+<div class='audio-container'>
+
+<audio controls>
+<source src="/post/gptsong/song2.mp3" type="audio/mpeg"> 
+Your browser does not support the audio element.
+
+</audio>
+
+</div>
+
+(I think there's some dissonance somewhere; I could've looked closely at the notes to check it, but I decided that I wasn't going to mess with GPT's "vision".)
+
+So far I was using GPT to translate a fairly strict description of what I wanted into python code. 
+But now for the real challenge.
+
+::: conversation
+
+::: question
+This sounds pretty good! 
+This is is good for a first verse. Describe a possible second verse that plays on this theme but adds some variation. Don't show me the code, just describe it musically. 
+
+::: 
+::: answer
+For the second verse, we can keep the same chord progression and left hand part, but add some variation to the right hand part. One possible variation is to play the arpeggio of each chord in the progression using sixteenth notes instead of fourths. This will make the right hand part sound more energetic and lively. We can also add some notes in between the arpeggios to fill out the harmony and create a more complex melody. For example, we can add some chromatic passing notes or add a note from the chord a beat before the arpeggio starts. This will create a more interesting and varied melody. Overall, the second verse will have the same overall structure and harmony as the first verse, but with some added variation and complexity in the right hand part.
+:::
+
+:::
+
+Well, that was interesting, I guess. 
+Let's see how it works...
+
+
+::: conversation
+
+::: question
+Sounds good. Since the left hand part repeats I only need you to show me the code for the right hand part (both verses).
+
+::: 
+::: answer
+Sure, here is the code for the right hand part of both verses:
+
+```python
+# create a list of notes, durations, and volumes for the right hand part (first verse)
+right_notes_1 = [
+62, 65, 69, 72,  # D major
+57, 60, 64, 67,  # A major
+59, 62, 66, 69,  # B minor
+54, 57, 61, 64,  # F# minor
+55, 58, 62, 65,  # G major
+62, 65, 69, 72,  # D major
+55, 58, 62, 65,  # G major
+57, 60, 64, 67   # A major
+]
+right_durations_1 = [1, 1, 1, 1] * 8  # each note is 1 beat
+right_volumes_1 = [100, 90, 80, 70] * 8  # each note has a different volume
+
+# create a list of notes, durations, and volumes for the right hand part (second verse)
+right_notes_2 = [
+62, 63, 65, 66, 67, 69, 70, 72,  # D major
+57, 58, 60, 61, 62, 64, 65, 67,  # A major
+59, 60, 62, 63, 64, 66, 67, 69,  # B minor
+54, 55, 57, 58, 59, 61, 62, 64,  # F# minor
+55, 56, 58, 59, 60, 62, 63, 65,  # G major
+62, 63, 65, 66, 67, 69, 70, 72,  # D major
+55, 56, 58, 59, 60, 62, 63, 65,  # G major
+57, 58, 60, 61, 62, 64, 65, 67   # A major
+]
+right_durations_2 = [0.25, 0.25, 0.25, 0.25] * 32  # each note is 1/4 beat
+right_volumes_2 = [100, 90, 80, 70] * 32  # each note has a different volume
+```
+
+In this code, we have created two lists of notes for the right hand part, one for each verse. The first verse uses the same arpeggio pattern as the original version, with a duration of 1 beat for each note. The second verse uses the same arpeggio pattern but with sixteenth notes, which have a duration of 1/4 beat. We have also specified different volumes for each note, which allows each note to have a different volume. You can use this code to generate the right hand part for both verses of the song.
+:::
+::: question
+Ok, I have the right_notes_1 and right_notes_2. How do I combine them into one variable called right_notes?
+
+::: 
+::: answer
+To combine the `right_notes_1` and `right_notes_2` variables into one variable called `right_notes`, you can use the `+` operator to concatenate the two lists. Here is an example of how to do this:
+
+```python
+right_notes = right_notes_1 + right_notes_2
+```
+
+In this code, we use the `+` operator to concatenate the `right_notes_1` and `right_notes_2` lists, and store the result in a new list called `right_notes`. You can then use this `right_notes` list as the input for the `addNote` method to add the notes to the MIDI file. This will combine the notes from both verses into one list, which can be used to generate the MIDI file for the entire song.
+:::
+:::
+
+Notice that GPT split each verse in its own variable, which was great for readability but bad for the code because I'm a dummy who doesn't know python. 
+I could've googled how to concatenate lists in python, but I for this experiment I wanted to do as much as I could with GPT alone. 
+
+
+At I'm writing this post I realise that GPT actually made a mistake. 
+`right_notes_2` has 64 elements, which corresponds to 8 bars when played with eighths. 
+But then `right_durations_2` has 128 elements with value 0.25 (sixteenth notes) instead of 64 elements with value of 0.5. 
+Re-reading GPT's description, which mentioned using sixteenths, it seems that GPT actually didn't add enough notes in the arpeggios.
+There are two was to fix it: duplicate every row in `right_notes_2` or change `right_durations_2` to be eighths. 
+I'll fix it by using eighths because it sounds much better to my ears. [^music]
+
+
+[^music]: Writing about music in English is ugly as hell. In Spanish notes and durations have cool, interesting names like "*corcheas*" instead of "eighths" and Do, Re, Mi, Fa, Sol, La, Si instead of C, D, E, F, G, A, B. I guess the English nomenclature is more clear and doesn't require you to memorise names, but still, ugly and boring. 
+
+Anyway, here's the funky new song by GPT (ft. me). 
+
+<div class='audio-container'>
+
+<audio controls>
+<source src="/post/gptsong/song3.mp3" type="audio/mpeg"> 
+Your browser does not support the audio element.
+
+</audio>
+
+</div>
+
+
+
+
+## Coda
+
+As a final part of the conversation I wanted to probe GPT for next steps forward and also get a title for this post. 
+Here's the rest of the conversation. 
+
+::: conversation
+
+::: question
+Great. I will share this song with my friends.
+
+:::
+::: answer
+I'm glad to hear that! I hope your friends enjoy the song. Let me know if you need any further assistance.
+:::
+::: question
+Yes, I think there's still things to improve in our program. Can you suggest 5 things to change in our code to make it better in order or more to least important?
+
+:::
+::: answer
+Sure, here are 5 suggestions to improve the code we have been working on:
+
+1. Use a class to organize the code and make it more modular and reusable. Instead of using global variables and functions, we can define a Song class that has attributes and methods to represent the data and operations for the song. This will allow us to create multiple songs and manipulate them independently, as well as make the code easier to understand and maintain.
+
+2. Handle errors and exceptions gracefully. Currently, the code does not handle any errors or exceptions that may occur during execution. For example, if the song.py file does not exist or if the decode_instrument function fails to decode a valid instrument, the code will crash and produce an error message. To improve the code, we can add try-except blocks to catch and handle common errors and exceptions, and provide useful feedback and instructions to the user.
+
+3. Use more descriptive and meaningful variable names. Some of the variable names used in the code are not very descriptive or meaningful, which can make it difficult to understand the code. For example, the midi variable is used to represent the MIDI file object, but this does not provide much information about its purpose or contents. To improve the code, we can use more descriptive and meaningful variable names that accurately reflect their purpose and contents. For example, we can use midi_file instead of midi to represent the MIDI file object.
+
+4. Use standard Python formatting and style conventions. The code currently uses a mix of different formatting and style conventions, which can make it difficult to read and understand. For example, the indentation is not consistent, some lines are too long, and some variable names are not written in snake_case. To improve the code, we can follow the standard Python formatting and style conventions, such as using 4 spaces for indentation, splitting long lines into multiple lines, and using snake_case for variable names. This will make the code more readable and consistent, and improve its overall quality.
+
+5. Add more comments and documentation to the code. The code currently has very few comments and no documentation, which can make it difficult to understand and use. For example, it is not clear what the decode_instrument function does, or how to use the addNote method to add a note to the MIDI file. To improve the code, we can add more comments and documentation to explain the purpose and usage of each component of the code. This will make it easier for other people to understand and use the code, and improve its overall maintainability and reliability.`
+:::
+::: question
+Good suggestions. We might work on these in our next session, but now it's getting late.
+
+:::
+
+::: answer
+
+Sure, we can work on these improvements in our next session. In the meantime, I hope you have a good rest and I look forward to our next session. Let me know if you have any further questions or need any assistance. Have a great day!
+
+:::
+
+::: question
+Thanks. Just to finish, can you summarise what we did in this session?
+:::
+
+::: answer
+
+In this session, we created a Python program that generates a MIDI file with a simple tune using a for loop to add each note. The program allows each note to have a different duration and volume, and it uses a function to decode the instrument from a string. We also discussed some suggestions to improve the code and make it more modular, error-resistant, readable, and documented. Finally, we discussed a possible second verse for the song, and provided the code for the right hand part of both verses.
+
+:::
+
+::: question
+
+I want to write a blog post publishing this conversation and adding my comments. Can you suggests 5 possible titles? I want something somewhat funny, puns are particularly appreciated but not necessary. 
+
+::: 
+
+::: answer
+
+Sure, here are 5 possible titles for the blog post that incorporate some humour or puns:
+
+1. "AI-generated tunes: the MIDI-nightmare that's taking over the music world"
+2. "Pythoning a MIDI masterpiece: how AI is changing the way we create music"
+3. "MIDI madness: the AI-powered tunes that will make you laugh, cry, and dance"
+4. "AI, MIDI, and you: the future of music is here, and it's hilarious"
+5. "Python and MIDI: the perfect duo for creating the craziest tunes you've ever heard"
+
+These titles are meant to be humorous and playful, and incorporate some puns related to the topic of the blog post. You can choose the one that you like the most or modify them to better fit your needs and preferences.
+
+:::
+
+::: question
+
+Those are great. Can you suggest 5 more with ChatGPT in the title. 
+
+:::
+
+::: answer
+
+Sure, here are 5 more possible titles for the blog post that incorporate the term "ChatGPT":
+
+1. "ChatGPT: the AI chatbot that helps you write MIDI tunes"
+2. "Creating music with ChatGPT: a step-by-step guide to MIDI madness"
+3. "ChatGPT and MIDI: the perfect combination for making the craziest tunes"
+4. "ChatGPT's MIDI masterpieces: how AI is changing the way we create music"
+5. "ChatGPT's MIDI magic: the AI chatbot that will make you dance and sing"
+
+These titles all incorporate the term "ChatGPT" and highlight its role in creating MIDI tunes. You can choose the one that you like the most or modify them to better fit your needs and preferences.
+
+:::
+
+::: question
+
+Can you create 10 titles combining these 5 with the previous 5?
+
+:::
+
+::: answer
+
+Sure, here are 10 possible titles that combine the previous 5 titles with the 5 new titles:
+
+1. "AI-generated tunes with ChatGPT: the MIDI-nightmare that's taking over the music world"
+1. "Pythoning a MIDI masterpiece with ChatGPT: how AI is changing the way we create music"
+1. "MIDI madness with ChatGPT: the AI-powered tunes that will make you laugh, cry, and dance"
+1. "AI, MIDI, and ChatGPT: the future of music is here, and it's hilarious"
+1. "Python, MIDI, and ChatGPT: the perfect trio for creating the craziest tunes you've ever heard"
+1. "ChatGPT: the AI chatbot that helps you write MIDI tunes like a pro"
+1. "Creating music with ChatGPT and MIDI: a step-by-step guide to MIDI madness"
+1. "ChatGPT and MIDI: the perfect combination for making the wildest, wackiest tunes"
+1. "ChatGPT's MIDI masterpieces: how AI is revolutionizing the way we create music"
+1. "ChatGPT's MIDI magic: the AI chatbot that will make your feet move and your heart sing"
+
+These titles incorporate the previous 5 titles and the new 5 titles, and highlight the role of ChatGPT in creating MIDI tunes. You can choose the one that you like the most or modify them to better fit your needs and preferences.
+
+:::
+
+:::
+
+
+
+<style>
+
+.audio-container {
+   margin: 2rem 0 0 0;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.conversation {
+   margin: 1rem 3rem 0 3rem;
+}
+.question {
+   background-color: #F7F7F8;
+   padding: 0.5rem 2rem 0.5rem 2rem;   
+   font-weight: bold;
+   border-bottom: 1px solid rgba(0,0,0,.1);
+
+}
+
+.answer {
+   background-color: #F7F7F8;
+   padding: 0.5rem 2rem 0.5rem 4rem;
+   border-bottom: 1px solid rgba(0,0,0,.1);
+}
+
+
+</style>
