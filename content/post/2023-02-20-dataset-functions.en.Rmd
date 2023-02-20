@@ -1,0 +1,126 @@
+---
+title: "Making data available with dataset functions"
+author: Elio Campitelli
+date: '2023-02-20'
+slug: dataset-functions
+categories:
+  - R
+keywords:
+   - reproducibility
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+An important part of a scientific project, such as a journal paper or a PhD thesis, is accessing datasets.
+To keep things reproducible datasets should be accessible, either provided in the repository itself or in a remote location.
+Also for reproducibility, it's important to be able to check if the data you get is the same as the data you expect.
+
+I wanted to share my technique for downloading and accessing datasets that strives for maximum reproducibility and user-friendliness.
+
+## The short version
+
+![Downloading data from "The Cloud" automatically.](/images/data-cloud.png){alt="A drawing of a cloud with mechanical bits, such as a pump and tubing."}
+
+Instead of having a specific script that downloads all the necessary data, I create a function for each dataset.
+This function checks if the data exists and downloads it if needed.
+To ensure data integrity, it hashes the file compares the checksum with an expected hash , warning the user if they don't match.
+Finally, it returns the location on disk of the file to be read.
+
+I like this automated approach.
+The data is downloaded the first time is needed and I don't need to keep a separate download script in sync with the data requirements of my project.
+If after trying things out I decide to chuck away a dataset, I just delete the code that uses that function inside my analysis script and that's all.
+
+## How it works
+
+The core of the whole process is this function:
+
+```{r}
+new_dataset <- function(name,
+                        file,
+                        source) {
+   dataset <- list(
+      name = name,
+      file = file,
+      source = source
+   )
+   
+   # Returns a function. 
+   function(force_download = FALSE) {
+      # Download only if the user forces download or if 
+      # the file doesn't exist. 
+      will_download <- isTRUE(force_download) || !file.exists(dataset$file)
+      
+      if (will_download) {
+         dir.create(dirname(dataset$file), showWarnings = FALSE, recursive = TRUE)
+         message("Downloading dataset ", dataset$name, " from remote source.")
+         dataset$source(dataset$file)
+      } 
+      
+      # Check or create md5 checksum
+      md5_file <- paste0(dataset$file, ".md5")
+      md5 <- digest::digest(file = dataset$file, algo = "md5")
+      
+      if (file.exists(md5_file)) {
+         md5_previous <- readLines(md5_file)
+         
+         if (md5_previous != md5) {
+            warning("File for dataset ", dataset$name, " has incorrect checksum.")
+         }
+         
+      } else {
+         message("Creating md5 file for dataset ", dataset$name, ".")
+         writeLines(md5, md5_file)
+      }
+      
+      return(dataset$file)
+   }
+}
+```
+
+This is a [function factory](https://adv-r.hadley.nz/function-factories.html), which is a fancy name for a function that returns a function.
+It takes the name of the dataset, the file location and the source function, which is a function that takes a file location and downloads the data there.
+
+It returns a function that the user can call inside their analysis script and which will do all the heavy lifting before returning the file location.
+
+For example, the backbone of my research is the [ERA5 reanalysis](https://www.ecmwf.int/en/forecasts/datasets/reanalysis-datasets/era5), which is a big global gridded dataset of the atmosphere and the surface of the planet.
+These data are too big to share but, luckily, they are easy to get.
+The [Climate Data Store](https://cds.climate.copernicus.eu/#!/home) serves these datasets to anyone for free.
+
+So let's say I have a function called `download_era5()` which takes a file location and downloads the relevant data using [the ecwmfr package](https://bluegreen-labs.github.io/ecmwfr/).
+Then I can define my dataset with
+
+```{r, eval = FALSE}
+ERA5 <- new_dataset(
+   name = "era5",
+   file = "data_raw/era5.mon.mean.nc",
+   source = download_era5
+)
+```
+
+I'd put this on my project package or where I put my scripts.
+Then, in the main Rmd I just load the dataset with
+
+```{r, eval = FALSE}
+data <- ERA5() |> 
+   metR::ReadNetCDF()
+```
+
+The first time I run this line or knit the file on a new computer it will automatically download the dataset and check that the checksum is correct (the .md5 files need to be shared with the repository).
+
+An important note is to make sure that your source function always returns the same data.
+This means being very explicit about things like date ranges.
+
+## Conclusions
+
+This usage pattern can be extended a lot, which is why I like it.
+If the dataset is a function, you can go crazy and make it do a lot of background work!
+For instance, you could include citation information in your function and make it populate the relevant .bib file only if the function is used and with the exact date the data was downloaded on.
+
+It can also be extended to add a Zenodo repository as a secondary source.
+The first time you download from the original source, and then you create a Zenodo repository.
+This will ensure better reproducibility, since the original source might change the data (in case of errors in the data, for instance) while also having a clear paper trail of how the dataset was obtained from the primary source.
+
+A small price to pay for not having a "download-data.R" file is that you can't just download everything once and then go on to running or modifying the analysis.
+This can be annoying as you might run the analysis expecting a quick look at the results and instead get to stare at a progress bar while part of the data is downloaded.
