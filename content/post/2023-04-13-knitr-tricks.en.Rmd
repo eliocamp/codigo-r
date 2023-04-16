@@ -1,0 +1,238 @@
+---
+title: "11 tricks to level up your rmarkdown documents"
+author: Elio Campitelli
+date: '2023-04-16'
+slug: knitr-rmarkdown-tricks
+categories:
+  - R
+keywords:
+   - reproducibility
+   - knitr
+   - rmarkdown
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, eval = FALSE)
+```
+
+For a while I wanted to write a post to compile some of the tricks I've learnt over the years of using rmarkdown.
+I also wanted other people's input so [I asked for suggestions on Mastodon](https://mastodon.social/@eliocamp/110192939201292092).
+So here are the 12 tips I decided to include in no particular order.
+
+## Make chunk options non-optional
+
+I use this trick to force myself to write captions to all figures:
+
+```{r}
+knitr::opts_hooks$set(label = function(options) {
+   if (is.null(options$fig.cap)) {
+    stop("Every figure has to have a caption!")  
+   }
+   return(options)
+})
+```
+
+This "[hook](https://yihui.org/knitr/hooks/)" runs once for each chunk in which `label` is not `NULL` --which is all of them-- and throws an error if the `fig.cap` option is `NULL` (missing).
+This will absolutely force your lazy ass to actually put captions in all your figures.
+
+Inspired by [Zhian N Kamvar](https://fosstodon.org/@zkamvar/110188164791881811) I'm now also using this to force myself to always name all my chunks:
+
+```{r}
+knitr::opts_hooks$set(label = function(options) {
+  # Check if the label comes from the default label for unnamed chuncks
+  default_label <- knitr::opts_knit$get("unnamed.chunk.label")
+  has_default_label <- grepl(default_label, options$label)
+  
+  if (has_default_label) {
+    stop("Name your chunks!")
+  }
+  return(options)
+})
+```
+
+This code can't just check for `is.NULL(options$label)` because unnamed chunks get default labels, so it gets the default label with `knitr::opts_knit$get("unnamed.chunk.label")` and then checks if the name of the chunk is auto-generated.
+This fails in the ridiculously edge case of manually-defined labels that contain the same text as the default label.
+
+You can use these principles to run all kinds of checks on your chunk options.
+The only issue with this approach is that the knitting process ends when it finds the first "bad" instance.
+It might be better to record all the offending chunks and their reasons and then throw a message or error at the end.
+
+## Captions using text references
+
+Good captions tend to be long and they sometimes include complex strings like $\LaTeX$ notation or references to previous figures (e.g. "Same as Fig. 2 but for clowns with red noses.").
+These kinds of captions can be hard to parse visually as chunk options and need a lot of escaped characters if written as a string.
+Bookdown offers [text references](https://bookdown.org/yihui/bookdown/markdown-extensions-by-bookdown.html#text-references) as a solution.
+
+You can start a line of text with `(ref:label)` and then use `(ref:label)` to refer to it in your chunk options.
+So you can write
+
+```         
+(ref:red-noses-cap) Same as Figure \@ref(fig:blue-noses) but for clowns with *red* noses. And this is a mathematical formula just as an example: $\pi=3$.
+```
+
+And then write the chunk as
+
+````{verbatim}
+```{r, fig.cap = "(ref:red-noses-cap)"}
+plot(red_noses)
+```
+````
+
+## Default caption
+
+When using text references to define captions, I've found that it's a bit annoying and redundant to explicitly set the `fig.cap` option.
+Instead I prefer to set up a default caption of the form `(ref:label-cap)` like this:
+
+```{r}
+knitr::opts_hooks$set(label = function(options) {
+  if (is.null(options$fig.cap)) {
+    options$fig.cap <- paste0("(ref:", options$label, "-cap)")
+  }
+})
+```
+
+With this, every chunk will have a default text-referenced caption with a predictable name.
+
+## Save plots in multiple formats
+
+Did you know that the `dev` chunk option can be a vector of formats?
+This enables you to save figures in multiple formats at once.
+
+```{r}
+knitr::opts_chunk$set(dev = c('png', 'svg'))
+```
+
+This simple but possibly overlook feature (suggested by [Robert Flight](https://mastodon.social/@rmflight/110193102637427843)) can be useful if you want to use vector graphics in your document but also need raster versions to share more easily with your colleges or online.
+
+## Exit prematurely
+
+With long and complex documents sometimes come weird errors that are hard to pin down.
+Or you might want to work on some early part of the document even if some later parts are unfinished and don't knit.
+Both [Mickaël CANOUIL](https://mastodon.social/@MickaelCanouil@fosstodon.org/110192950640461658) and [superboreen](https://mastodon.social/@superboreen/110192967243702258) pointed out that you can use `knitr::knit_exit()` to end document rendering "before it gets to the hideous code I haven't fixed yet".
+
+```{r}
+knitr::knit_exit()
+```
+
+## Get the output format
+
+While the promise of rmarkdown is to have portable code that can be rendered into any document, but [abstractions are leaky](https://en.wikipedia.org/wiki/Leaky_abstraction) and this doesn't always work out.
+For example, I've found that there's not a single table-generating package that does a good job of rendering decent-looking LaTeX, HTML and Word tables without changes in the code.
+So sometimes the code needs to know to which document format it's going to render.
+
+The function `knitr::pandoc_to()` returns the "final destination" of the document, which can be "latex", "html" or "docx".
+
+```{r}
+knitr::pandoc_to()
+```
+
+It can also return a logical indicating if the output format is the one specified in the argument.
+This enables code that only runs for some formats and not others:
+
+```{r}
+if (knitr::pandoc_to("docx")) {
+   # Something to do only if the output is docx
+}
+```
+
+Beware that `knitr::pandoc_to()` will return `NULL` when run interactively, so you might want to catch that case.
+
+Other similar functions are `is_latex_output()` and `is_html_output()`.
+
+## Configure cache path
+
+My documents often have some code that takes a while to run so I make liberal use of the cache feature.
+But sometimes I like to control **where** that cache is stored.
+That can be done with `knitr::opts_chunk$set(cache.path = path)`.
+
+This is a good solution when rendering to multiple formats, since changing the format seems to invalidate the cache and make it useless.
+So what I do is set up one cache for each format:
+
+```{r}
+format <- knitr::pandoc_to()
+
+knitr::opts_chunk$set(
+  cache.path = file.path("cache", format, "")  # The last "" is necessary
+)
+```
+
+## Get current file
+
+The `knitr::current_input()` returns the input file being rendered by knitr.
+This can be useful in a bunch of cases, but I use it to, again, control cache and figure locations.
+
+On a bookdown document, I like each chapter to use its own folder for cache and figures, so I have this in my setup chunk:
+
+```{r}
+format <- knitr::pandoc_to() 
+chapter <- tools::file_path_sans_ext(knitr::current_input())
+
+knitr::opts_chunk$set(
+  fig.path   = file.path("figures", chapter, ""),
+  cache.path = file.path("cache", chapter, format, "")
+)
+```
+
+## Easily invalidate cache
+
+Speaking of cache, sometimes I want to run your document from scratch without the cache.
+Either as a final test that all the code runs well, or when faced with strange bugs that I suspect might be cache-related.
+
+So I almost always set up a `cache.extra` chunk option that will invalidate the cache each time it changes.
+
+```{r}
+knitr::opts_chunk$set(cache.extra = 42)  # Change the number to invalidate cache
+```
+
+## Do stuff after knitting
+
+Knitr runs the "document" hook after knitting.
+You can customise that hook to do whatever you want:
+
+```{r}
+# First save the default hook to use later. 
+knit_doc <- knitr::knit_hooks$get("document")
+
+knitr::knit_hooks$set(document = function(x) {
+   # So stufff
+   knit_doc(x)  # Then do whatever knitr was going to do anyway
+})
+
+```
+
+For example, I sometimes like to add this so I get a desktop notification when my computer finishes knitting
+
+```{r}
+# This needs the notify-send cli. 
+# https://manpages.ubuntu.com/manpages/bionic/man1/notify-send.1.html
+notify <- function(title = "title", text = NULL, time = 2) {
+   time <- time*1000
+   system(paste0('notify-send "', title, '" "', text, '" -t ', time, ' -a rstudio'))
+}
+
+
+start_time <- unclass(Sys.time())
+min_time <- 5*3600  # Only notify for long-running jobs (5 minutes)
+
+knit_doc <- knitr::knit_hooks$get("document")
+knitr::knit_hooks$set(document = function(x) {
+   
+   took <- unclass(Sys.time()) - start_time
+   if (took >= min_time) {
+      notify("Done knitting!", 
+             paste0("Took ", round(took), " seconds"),
+             time = 5)
+   }  
+   
+   
+   knit_doc(x)
+})
+```
+
+You might use this to get notifications to your phone with [RPushbullet](https://eddelbuettel.github.io/rpushbullet/) or send emails with [emayili](https://datawookie.github.io/emayili/).
+You might also want to check the [notifier](https://github.com/gaborcsardi/notifier) package.
+
+## Scripts to and from RMarkdown
+
+Finally, [Katie](https://mastodon.social/@katieontheridge@fosstodon.org/110194745010839834) highlighted the `knitr::spin()` function, which turns specially formatted R scripts and turns them into RMarkdown documents.
+And for the exact opposite workflow, [Ken Butler](https://mastodon.social/@nxskok@mastodon.cloud/110194991404418910) points out the `knitr::purl()` function.
