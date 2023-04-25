@@ -24,16 +24,19 @@ So here are the 12 tips I decided to include in no particular order.
 I use this trick to force myself to write captions to all figures:
 
 ```{r}
-knitr::opts_hooks$set(label = function(options) {
+knit_plot <- knitr::knit_hooks$get("plot")
+
+knitr::knit_hooks$set(plot = function(x, options) {
    if (is.null(options$fig.cap)) {
     stop("Every figure has to have a caption!")  
    }
-   return(options)
+   knit_plot(x, options)
 })
 ```
 
-This "[hook](https://yihui.org/knitr/hooks/)" runs once for each chunk in which `label` is not `NULL` --which is all of them-- and throws an error if the `fig.cap` option is `NULL` (missing).
+This "[hook](https://yihui.org/knitr/hooks/)" runs once for each chunk in which produces a plot and throws an error if the `fig.cap` option is `NULL` (missing).
 This will absolutely force your lazy ass to actually put captions in all your figures.
+(Thanks to Zhian N Kamvar [for finding an issue](https://phanpy.social/#/mastodon.social/s/110260724284838610) with a previous version of this code.)
 
 Inspired by [Zhian N Kamvar](https://fosstodon.org/@zkamvar/110188164791881811) I'm now also using this to force myself to always name all my chunks:
 

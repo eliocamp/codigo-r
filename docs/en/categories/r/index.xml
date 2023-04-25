@@ -25,14 +25,17 @@ So here are the 12 tips I decided to include in no particular order.&lt;/p&gt;
 &lt;div id=&#34;make-chunk-options-non-optional&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Make chunk options non-optional&lt;/h2&gt;
 &lt;p&gt;I use this trick to force myself to write captions to all figures:&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;knitr::opts_hooks$set(label = function(options) {
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;knit_plot &amp;lt;- knitr::knit_hooks$get(&amp;quot;plot&amp;quot;)
+
+knitr::knit_hooks$set(plot = function(x, options) {
    if (is.null(options$fig.cap)) {
     stop(&amp;quot;Every figure has to have a caption!&amp;quot;)  
    }
-   return(options)
+   knit_plot(x, options)
 })&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;This “&lt;a href=&#34;https://yihui.org/knitr/hooks/&#34;&gt;hook&lt;/a&gt;” runs once for each chunk in which &lt;code&gt;label&lt;/code&gt; is not &lt;code&gt;NULL&lt;/code&gt; –which is all of them– and throws an error if the &lt;code&gt;fig.cap&lt;/code&gt; option is &lt;code&gt;NULL&lt;/code&gt; (missing).
-This will absolutely force your lazy ass to actually put captions in all your figures.&lt;/p&gt;
+&lt;p&gt;This “&lt;a href=&#34;https://yihui.org/knitr/hooks/&#34;&gt;hook&lt;/a&gt;” runs once for each chunk in which produces a plot and throws an error if the &lt;code&gt;fig.cap&lt;/code&gt; option is &lt;code&gt;NULL&lt;/code&gt; (missing).
+This will absolutely force your lazy ass to actually put captions in all your figures.
+(Thanks to Zhian N Kamvar &lt;a href=&#34;https://phanpy.social/#/mastodon.social/s/110260724284838610&#34;&gt;for finding an issue&lt;/a&gt; with a previous version of this code.)&lt;/p&gt;
 &lt;p&gt;Inspired by &lt;a href=&#34;https://fosstodon.org/@zkamvar/110188164791881811&#34;&gt;Zhian N Kamvar&lt;/a&gt; I’m now also using this to force myself to always name all my chunks:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;knitr::opts_hooks$set(label = function(options) {
   # Check if the label comes from the default label for unnamed chuncks

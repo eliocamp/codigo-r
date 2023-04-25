@@ -19,14 +19,17 @@ So here are the 12 tips I decided to include in no particular order.</p>
 <div id="make-chunk-options-non-optional" class="section level2">
 <h2>Make chunk options non-optional</h2>
 <p>I use this trick to force myself to write captions to all figures:</p>
-<pre class="r"><code>knitr::opts_hooks$set(label = function(options) {
+<pre class="r"><code>knit_plot &lt;- knitr::knit_hooks$get(&quot;plot&quot;)
+
+knitr::knit_hooks$set(plot = function(x, options) {
    if (is.null(options$fig.cap)) {
     stop(&quot;Every figure has to have a caption!&quot;)  
    }
-   return(options)
+   knit_plot(x, options)
 })</code></pre>
-<p>This “<a href="https://yihui.org/knitr/hooks/">hook</a>” runs once for each chunk in which <code>label</code> is not <code>NULL</code> –which is all of them– and throws an error if the <code>fig.cap</code> option is <code>NULL</code> (missing).
-This will absolutely force your lazy ass to actually put captions in all your figures.</p>
+<p>This “<a href="https://yihui.org/knitr/hooks/">hook</a>” runs once for each chunk in which produces a plot and throws an error if the <code>fig.cap</code> option is <code>NULL</code> (missing).
+This will absolutely force your lazy ass to actually put captions in all your figures.
+(Thanks to Zhian N Kamvar <a href="https://phanpy.social/#/mastodon.social/s/110260724284838610">for finding an issue</a> with a previous version of this code.)</p>
 <p>Inspired by <a href="https://fosstodon.org/@zkamvar/110188164791881811">Zhian N Kamvar</a> I’m now also using this to force myself to always name all my chunks:</p>
 <pre class="r"><code>knitr::opts_hooks$set(label = function(options) {
   # Check if the label comes from the default label for unnamed chuncks
