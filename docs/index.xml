@@ -5,10 +5,187 @@
     <description>Recent content on Código R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Thu, 28 Jul 2022 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 16 Apr 2023 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>11 trucos para mejorar tus documentos de rmarkdown</title>
+      <link>/2023/04/trucos-knitr-rmarkdown/</link>
+      <pubDate>Sun, 16 Apr 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/2023/04/trucos-knitr-rmarkdown/</guid>
+      <description>
+
+
+&lt;p&gt;Hace tiempo que quería escribir un post con una lista de algunos de los trucos de rmarkdown que fui aprendiendo a lo largo de los años.
+También quería oír consejos de otras personas, así &lt;a href=&#34;https://mastodon.social/@eliocamp/110192939201292092&#34;&gt;que pregunté en Mastodon&lt;/a&gt;.
+En fin, acá les presento los 11 trucos que decidí incluir sin ningún orden definido.&lt;/p&gt;
+&lt;div id=&#34;hacer-obligatorias-algunas-opciones-de-bloque&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Hacer obligatorias algunas opciones de bloque&lt;/h2&gt;
+&lt;p&gt;A veces uso este truco para obligarme a escribir epígrafes en todas las figuras.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;knit_plot &amp;lt;- knitr::knit_hooks$get(&amp;quot;plot&amp;quot;)
+
+knitr::knit_hooks$set(plot = function(x, options) {
+   if (is.null(options$fig.cap)) {
+    stop(&amp;quot;¡Escribí un epígrafe para todas las figuras!&amp;quot;)  
+   }
+   knit_plot(x, options)
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Este “&lt;a href=&#34;https://yihui.org/knitr/hooks/&#34;&gt;hook&lt;/a&gt;” corre una vez por cada bloque que produce un gráfico y salta con un error si la opción &lt;code&gt;fig.cap&lt;/code&gt; es &lt;code&gt;NULL&lt;/code&gt; (o sea, que no existe).
+Si esto no te obliga a remangarte y escribir epígrafes en todas tus figuras, nada lo hará.
+(Gracias a Zhian N Kamvar &lt;a href=&#34;https://phanpy.social/#/mastodon.social/s/110260724284838610&#34;&gt;por encontrar un problema&lt;/a&gt; en la versión anterior de este código).&lt;/p&gt;
+&lt;p&gt;También inspirado por &lt;a href=&#34;https://fosstodon.org/@zkamvar/110188164791881811&#34;&gt;Zhian N Kamvar&lt;/a&gt;, ahora uso esto para obligarme a ponerle nombre a todos mis bloques:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;knitr::opts_hooks$set(label = function(options) {
+  # Fijarse si la etiqueta viene de la etiqueta por defecto
+  default_label &amp;lt;- knitr::opts_knit$get(&amp;quot;unnamed.chunk.label&amp;quot;)
+  has_default_label &amp;lt;- grepl(default_label, options$label)
+  
+  if (has_default_label) {
+    stop(&amp;quot;¡Ponele nombre a los bloques!&amp;quot;)
+  }
+  return(options)
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Este código no puede fijarse si &lt;code&gt;is.NULL(options$label)&lt;/code&gt; porque los bloques sin nombre son nombrados con una etiqueta por defecto.
+Entonces se fija cuál es esta etiqueta por defecto con &lt;code&gt;knitr::opts_knit$get(&#34;unnamed.chunk.label&#34;)&lt;/code&gt; y luego se fija si el nombre del bloque fue generado automáticamente.
+Esto no sirve en el caso totalmente ridículo de un bloque con un nombre que, de casualidad, es igual que la etiqueta por defecto.&lt;/p&gt;
+&lt;p&gt;Estos principios se pueden extender a cualquier otra opción.
+El único problema es que el error salta a penas knitr encuentra un caso problemático.
+Sería mejor registrar todos esos casos y luego tirar el error al final.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;epígrafes-usando-referencias-textuales&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Epígrafes usando referencias textuales&lt;/h2&gt;
+&lt;p&gt;Un buen epígrafe suele ser largo e incluso tener cosas complicadas como código de &lt;span class=&#34;math inline&#34;&gt;\(\LaTeX\)&lt;/span&gt; o referencias a figuras anteriores (tipo “Igual que la Figura 2 pero para payasos con narices rojas”).
+Estos epígrafes son difíciles de entender cuando están apretados en las opciones del bloque y necesitan muchos caracteres de escape.
+La solución de Bookdown es usar referencias textuales (&lt;a href=&#34;https://bookdown.org/yihui/bookdown/markdown-extensions-by-bookdown.html#text-references&#34;&gt;text references&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;Si una línea de texto empieza con &lt;code&gt;(ref:etiqueta)&lt;/code&gt;, luego &lt;code&gt;(ref:etiqueta)&lt;/code&gt; va a ser reemplazado por ese texto en otro lado.
+Entonces se puede escribir&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;(ref:nariz-roja-cap) Igual que la Figura \@ref(fig:nariz-azul) pero para payasos con narices *rojas*. Y acá tenés una fórmula matemática para mostrar que funciona: $\pi=3$.&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Y luego escribir el bloque de código así:&lt;/p&gt;
+&lt;pre class=&#34;default&#34;&gt;&lt;code&gt;```{r, fig.cap = &amp;quot;(ref:nariz-roja-cap)&amp;quot;}
+plot(nariz_roja)
+```&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;epígrafe-por-defecto&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Epígrafe por defecto&lt;/h2&gt;
+&lt;p&gt;Al usar referencias textuales, une termina teniendo que poner &lt;code&gt;fig.cap = &#34;(ref:etiqueta&#34;)&lt;/code&gt; en todos los bloques, y es bastante molesto.
+En vez de eso, lo que suelo hacer es hacer que la opción &lt;code&gt;fig.cap&lt;/code&gt; tenga un valor por defecto de la forma &lt;code&gt;(ref:etiqueta-cap)&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;knitr::opts_hooks$set(label = function(options) {
+  if (is.null(options$fig.cap)) {
+    options$fig.cap &amp;lt;- paste0(&amp;quot;(ref:&amp;quot;, options$label, &amp;quot;-cap)&amp;quot;)
+  }
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Así, todos los bloques tienen un epígrafe asociada a una referencia con un nombre predecible.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;guardar-figuras-en-múltiples-formatos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Guardar figuras en múltiples formatos&lt;/h2&gt;
+&lt;p&gt;¿Sabías que la opción &lt;code&gt;dev&lt;/code&gt; puede ser un vector?
+Esto permite guardar figuras en más de un formato al mismo tiempo.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;knitr::opts_chunk$set(dev = c(&amp;#39;png&amp;#39;, &amp;#39;svg&amp;#39;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Esta funcionalidad (sugerida por &lt;a href=&#34;https://mastodon.social/@rmflight/110193102637427843&#34;&gt;Robert Flight&lt;/a&gt;) es simple, posiblemente desconocida pero también muy útil, ya que te permite usar formatos vectoriales en el documento pero tener versiones raster para compartirlas más fácil.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;terminar-de-knitear-antes-del-final&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Terminar de knitear antes del final&lt;/h2&gt;
+&lt;p&gt;A medida que un documento se hace más largo y complicado, crece la certeza de que van a aparecer errores estrafalarios y difíciles de debugear.
+También puede que quieras pulir alguna parte inicial del documento aún cuando hay código roto más adelantes.
+&lt;a href=&#34;https://mastodon.social/@MickaelCanouil@fosstodon.org/110192950640461658&#34;&gt;Mickaël CANOUIL&lt;/a&gt; y &lt;a href=&#34;https://mastodon.social/@superboreen/110192967243702258&#34;&gt;superboreen&lt;/a&gt; comentaron que se puede usar &lt;code&gt;knitr::knit_exit()&lt;/code&gt; para que knitr deje de renderizar un documento “antes de que llegue al horripilante código que todavía no arreglé”.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;knitr::knit_exit()&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;obtener-el-formato-de-salida&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Obtener el formato de salida&lt;/h2&gt;
+&lt;p&gt;Si bien la promesa de rmardown es que el mismo código se puede renderizar a cualquier formato de salida, pero las &lt;a href=&#34;https://en.wikipedia.org/wiki/Leaky_abstraction&#34;&gt;abstracciones son coladores&lt;/a&gt; y esta promesa no siempre se cumple.
+Por ejemplo, no encontré ningún paquete para generar tablas que genere buenas tablas de LaTeX, HTML y Word sin tener que cambiar el código.
+En cualquier caso, a veces el código tiene que saber el formato de salida del documento.&lt;/p&gt;
+&lt;p&gt;La función &lt;code&gt;knitr::pandoc_to()&lt;/code&gt; de vuelve el “destino final” del documento, que puede ser “latex”, “html” or “docx”.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;knitr::pandoc_to()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;También puede devolver un valor lógico indicando si el formato de salida es alguno de los especificados como argumento.
+Esto permite crear código que corre sólo en algunos formatos:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;if (knitr::pandoc_to(&amp;quot;docx&amp;quot;)) {
+   # Hacer algo sólo si el formato es docx.
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Ojo que &lt;code&gt;knitr::pandoc_to()&lt;/code&gt; devuelve &lt;code&gt;NULL&lt;/code&gt; cuando se lo corre en una sesión de R interactiva, así que deberías considerar ese caso.&lt;/p&gt;
+&lt;p&gt;Otras funciones relacionadas son &lt;code&gt;is_latex_output()&lt;/code&gt; y &lt;code&gt;is_html_output()&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;configurar-la-ubicación-de-la-caché&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Configurar la ubicación de la caché&lt;/h2&gt;
+&lt;p&gt;Mis documentos muchas veces tienen código que tarda bastante en correr, así que uso mucho la caché y a veces necesito controlar &lt;strong&gt;dónde&lt;/strong&gt; se guarda.
+Esto se puede lograr con &lt;code&gt;knitr::opts_chunk$set(cache.path = direccion)&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Esta es una posible solución cuando une renderiza más de un formato.
+Me di cuenta que cambiar el formato invalida la caché, por lo que termina no sirviendo.
+Entonces lo que hago es configurar una ubicación para cada formato:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;formato &amp;lt;- knitr::pandoc_to()
+
+knitr::opts_chunk$set(
+  cache.path = file.path(&amp;quot;cache&amp;quot;, formato, &amp;quot;&amp;quot;)  # El último &amp;quot;&amp;quot; es necesario
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;obtener-el-archivo-actual&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Obtener el archivo actual&lt;/h2&gt;
+&lt;p&gt;La función &lt;code&gt;knitr::current_input()&lt;/code&gt; devuelve el archivo de entrada que está siendo renderizado.
+Hay un montón de casos donde esto puede servir pero yo lo uso, nuevamente, para controlar la ubicación de la caché y las figuras.&lt;/p&gt;
+&lt;p&gt;En un documento de bookdown, me gusta que cada capítulo tenga su propia carpeta con caché y figuras, así que pongo esto en mi bloque de setup:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;formato &amp;lt;- knitr::pandoc_to() 
+capitulo &amp;lt;- tools::file_path_sans_ext(knitr::current_input())
+
+knitr::opts_chunk$set(
+  fig.path   = file.path(&amp;quot;figures&amp;quot;, capitulo, &amp;quot;&amp;quot;),
+  cache.path = file.path(&amp;quot;cache&amp;quot;, capitulo, formato, &amp;quot;&amp;quot;)
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;invalidar-la-caché-rápidamente&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Invalidar la caché rápidamente&lt;/h2&gt;
+&lt;p&gt;Siguiendo con el tema de caché, a veces es necesario renderizar todo el documento de cero sin usarla.
+Ya sea para una última corrida que se asegure de que todo el código anda bien o para resolver problemas que une sospecha que pueden estar relacionados con la caché.&lt;/p&gt;
+&lt;p&gt;Casi siempre uso la opción &lt;code&gt;cache.extra&lt;/code&gt;, la cual invalida la caché cada vez que cambia.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;knitr::opts_chunk$set(cache.extra = 42)  # Cambiá el nombre para invalidar la caché&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ejecutar-código-luego-de-knitear&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Ejecutar código luego de knitear&lt;/h2&gt;
+&lt;p&gt;Knitr ejecuta un hook llamado “document” al terminar de knitear.
+Este hook se puede personalizar para hacer lo que une queria:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Primero guardar el hook por defecto
+knit_doc &amp;lt;- knitr::knit_hooks$get(&amp;quot;document&amp;quot;)
+
+knitr::knit_hooks$set(document = function(x) {
+   # Hacer cualquier cosa
+   knit_doc(x)  # Luego hacer lo qeu knitr iba a hacer
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Por ejemplo, a veces agrego esto para obtener una notidifación de escritorio cuando mi computadora termina de knitear:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Esto necesita la utilidad notify-send.
+# https://manpages.ubuntu.com/manpages/bionic/man1/notify-send.1.html
+notify &amp;lt;- function(title = &amp;quot;title&amp;quot;, text = NULL, time = 2) {
+   time &amp;lt;- time*1000
+   system(paste0(&amp;#39;notify-send &amp;quot;&amp;#39;, title, &amp;#39;&amp;quot; &amp;quot;&amp;#39;, text, &amp;#39;&amp;quot; -t &amp;#39;, time, &amp;#39; -a rstudio&amp;#39;))
+}
+
+
+start_time &amp;lt;- unclass(Sys.time())
+min_time &amp;lt;- 5*3600  # Sólo notificar el código que toma más de 5 minutos
+
+knit_doc &amp;lt;- knitr::knit_hooks$get(&amp;quot;document&amp;quot;)
+knitr::knit_hooks$set(document = function(x) {
+   
+   took &amp;lt;- unclass(Sys.time()) - start_time
+   if (took &amp;gt;= min_time) {
+      notify(&amp;quot;¡Terminé de knitear!&amp;quot;, 
+             paste0(&amp;quot;Tardó &amp;quot;, round(took), &amp;quot; segundos&amp;quot;),
+             time = 5)
+   }  
+   
+   
+   knit_doc(x)
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Esto mismo se puede usar para enviar notificaciones en el teléfono con &lt;a href=&#34;https://eddelbuettel.github.io/rpushbullet/&#34;&gt;RPushbullet&lt;/a&gt; o mandar mails con &lt;a href=&#34;https://datawookie.github.io/emayili/&#34;&gt;emayili&lt;/a&gt;.
+También está bueno el paquete &lt;a href=&#34;https://github.com/gaborcsardi/notifier&#34;&gt;notifier&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;convertir-scripts-a-y-desde-rmarkdown&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Convertir scripts a y desde RMarkdown&lt;/h2&gt;
+&lt;p&gt;Por último, &lt;a href=&#34;https://mastodon.social/@katieontheridge@fosstodon.org/110194745010839834&#34;&gt;Katie&lt;/a&gt; resaltó la función &lt;code&gt;knitr::spin()&lt;/code&gt;, la cual convierte un script de R con un formato especial a un archivo de RMarkdown.
+El flujo opuesto se consigue con la función &lt;code&gt;knitr::purl()&lt;/code&gt;, usada por &lt;a href=&#34;https://mastodon.social/@nxskok@mastodon.cloud/110194991404418910&#34;&gt;Ken Butler&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Como crear una API con plumber y hostearla en Heroku</title>

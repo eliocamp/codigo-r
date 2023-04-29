@@ -21,7 +21,7 @@
 
 &lt;p&gt;For a while I wanted to write a post to compile some of the tricks I’ve learnt over the years of using rmarkdown.
 I also wanted other people’s input so &lt;a href=&#34;https://mastodon.social/@eliocamp/110192939201292092&#34;&gt;I asked for suggestions on Mastodon&lt;/a&gt;.
-So here are the 12 tips I decided to include in no particular order.&lt;/p&gt;
+So here are the 11 tips I decided to include in no particular order.&lt;/p&gt;
 &lt;div id=&#34;make-chunk-options-non-optional&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Make chunk options non-optional&lt;/h2&gt;
 &lt;p&gt;I use this trick to force myself to write captions to all figures:&lt;/p&gt;
