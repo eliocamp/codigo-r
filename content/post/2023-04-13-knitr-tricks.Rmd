@@ -19,7 +19,7 @@ Hace tiempo que quería escribir un post con una lista de algunos de los trucos 
 También quería oír consejos de otras personas, así [que pregunté en Mastodon](https://mastodon.social/@eliocamp/110192939201292092).
 En fin, acá les presento los 11 trucos que decidí incluir sin ningún orden definido.
 
-## Hacer obligatorias algunas opciones de bloque 
+## Hacer obligatorias algunas opciones de bloque
 
 A veces uso este truco para obligarme a escribir epígrafes en todas las figuras.
 
@@ -240,3 +240,5 @@ También está bueno el paquete [notifier](https://github.com/gaborcsardi/notifi
 
 Por último, [Katie](https://mastodon.social/@katieontheridge@fosstodon.org/110194745010839834) resaltó la función `knitr::spin()`, la cual convierte un script de R con un formato especial a un archivo de RMarkdown.
 El flujo opuesto se consigue con la función `knitr::purl()`, usada por [Ken Butler](https://mastodon.social/@nxskok@mastodon.cloud/110194991404418910).
+
+![](/post/truzazo.jpg){alt="Captura de Los Simpsons cuando Moe le pega un codazo a Ned y le dice 'Que trucazo, no?'"}

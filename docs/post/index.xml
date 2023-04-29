@@ -183,6 +183,7 @@ También está bueno el paquete &lt;a href=&#34;https://github.com/gaborcsardi/n
 &lt;h2&gt;Convertir scripts a y desde RMarkdown&lt;/h2&gt;
 &lt;p&gt;Por último, &lt;a href=&#34;https://mastodon.social/@katieontheridge@fosstodon.org/110194745010839834&#34;&gt;Katie&lt;/a&gt; resaltó la función &lt;code&gt;knitr::spin()&lt;/code&gt;, la cual convierte un script de R con un formato especial a un archivo de RMarkdown.
 El flujo opuesto se consigue con la función &lt;code&gt;knitr::purl()&lt;/code&gt;, usada por &lt;a href=&#34;https://mastodon.social/@nxskok@mastodon.cloud/110194991404418910&#34;&gt;Ken Butler&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../post/truzazo.jpg&#34; alt=&#34;Captura de Los Simpsons cuando Moe le pega un codazo a Ned y le dice &amp;#39;Que trucazo, no?&amp;#39;&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
