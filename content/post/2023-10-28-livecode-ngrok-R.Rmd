@@ -1,0 +1,110 @@
+---
+title: "Como compartir tu código en tiempo real con livecode y ngrok"
+author: Elio Campitelli
+date: '2023-04-16'
+slug: livecode-ngrok-r
+categories:
+  - R
+keywords:
+   - rmarkdown
+   - enseñanza
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, eval = FALSE)
+```
+
+Una de las cosas que aprendí de The Carpentries que más me gustan es codear en vivo.
+Además de obligarme a ir más despacio y permitir que mis estudiantes vean mis errores, simplemente me resulta mucho más divertido que leer diapositivas o ir siguiendo un script ya escrito.
+
+Pero en cuanto empecé a hacer codeo en vivo me encontré con algunos problemas.
+Durante las clases era muy común que algune estudiante parara la clase para decir que el código no le funcionaba.
+Entonces tenía que pedirle que copiara el código en el chat para verlo y encontrar el error de tipeo que inevitablemente le estaba dando problemas.
+Paréntesis no cerrados y nombre de variables mal escritos eran errores comunes que rompían el flujo de la clase y agregaban carga cognitiva y frustración extra sin sumar mucho pedagógicamente.
+
+Para solucionar estos problemas, empecé a compartir el archivo en tiempo real utilizando el paquete [livecode](https://github.com/rundel/livecode) de Colin Rundel y el servicio [ngrok](https://ngrok.com/).
+
+Uso `livecode::serve_file("archivo.Rmd", upgrade_content_security_policy = TRUE)` en una terminal corriendo R.
+El paquete livecode va a iniciar un servidor que publica el archivo en una IP local y se mantiene actualizado.
+Luego en otra terminal uso `ngrok http <ip>` para crear una URL pública que comparto a les estudiantes y así pueden ver una versión del archivo que estoy modificando de la cual puede seleccionar el texto.
+
+## Instalar y setear ngrok
+
+Una vez [que te create una cuenta](#0) en ngrok, andá al dashboard y seguí [las instrucciones de instalacion](https://dashboard.ngrok.com/get-started/setup) según tu sistema operativo.
+
+![](/images/Screenshot%20from%202023-10-28%2018.39.07.png){alt="Captura de pantalla de la pantalla de Setup e instalación de ngrok. Muestra un título grande que dice \"Download ngrok\" y un botón que dice \"Download for linux\". A la derecha, un listado de distintos sistemas operativos."}
+
+Luego de la instalación, hay que autenticarse buscando la contaseña (el Authtoken) en la siguiente sección
+
+![](/images/Screenshot%20from%202023-10-28%2018.39.45.png){alt="Captura de pantalla de la sección \"Your Authtoken\" de ngrok. Debajo del título hay una serie de caracteres aparentemente aleatorios. Más abajo, hay un título que dice \"Command line\" y el código \"ngrok config add-authtoken\" seguido de la misma seire de caracteres."}
+
+Lo más fácil es correr la línea de código que muestra ahí en la terminal.
+Por ejemplo:
+
+``` bash
+ngrok config add-authtoken 1jHXu6CoMQRfdRvLqN9exqUwETs_6kAJC9v7ELubcDk5QHkE5
+```
+
+Y tiene que devolver algo como
+
+```         
+Authtoken saved to configuration file: /home/elio/.ngrok2/ngrok.yml
+```
+
+## Instalar livecode
+
+Para poder usar livecode con ngrok hay que instalar [este fork](https://github.com/nareal/livecode), que agrega el argumento `upgrade_content_security_policy`:
+
+``` r
+remotes::install_github("nareal/livecode")
+```
+
+Una vez instalado, probá creando un archivo cualquiera en RStudio y corriendo
+
+``` r
+livecode::serve_file(upgrade_content_security_policy = TRUE)
+```
+
+En la consola de R.
+(El argumento `upgrade_content_security_policy` es necesario para usar ngrok).
+Vas a ver un mensaje como este
+
+```         
+#> ✔ Started sharing '2023-10-28-livecode-ngrok-R.Rmd' at 'http://192.168.100.7:32868'.
+#> ✖ The current ip address ('192.168.100.7') for the server is private, only users on the same local network are likely to be able to connect.
+#> Error: 'markdownExtensions' is not an exported object from 'namespace:markdown'
+```
+
+Y se te va a abrir una ventana de explorador.
+Nos dice que estamos compartiendo el archivo en <http://192.168.100.7:32868/> y nos advierte de que esta dirección es privada y sólo accesible a dispositivos conectados a la misma red local.
+Esto es lo que vamos a arreglar con ngrok.
+
+Copiá la dirección y abrí una terminal y corré
+
+``` bash
+ngrok http http://192.168.100.7:32868/
+```
+
+(Usando la dirección que te dio livecode).
+
+Te va a aparecer algo así en la terminal:
+
+![](/images/Screenshot%20from%202023-10-28%2019.00.37.png){alt="Captura de pantalla de una terminal. Hay un servicio corriendo y dice \"Session Status                online\" así como una serie de otras entradas. Una dice \"Forwarding\" y tiene una dirección web larg que temrina con ngrok-free.app"}
+
+Lo importante ahí es la dirección que está en la línea que dice "Forrwarding".
+Esa es la URL pública que le vas a compartir a tus estudiantes.
+Si entrás, vas a ver que es una página web con una versión del documento que está en RStudio que se puede seleccionar y copiar.
+
+![](/images/Screenshot%20from%202023-10-28%2019.03.00.png){alt="Captura de pantalla de una ventana de Firefox con un documento de RMarkdown de ese mismo post."}
+
+## Consejos
+
+No recomiendo correr `livecode::serve_file()` en la misma sesión de R donde se está enseñando.
+En vez de eso, abrí una terminal extra, corré R y usá `livecode::serve_file("ruta al archivo", upgrade_content_security_policy = TRUE)`.
+Las ventajas de esto es que el proceso que publica el archivo es independiente del proceso de R que usamos para enseñar, de modo que no se pierde todo si la sesión de R se cuelga o la reiniciás por alguna razón.
+
+Tené en cuenta que tus estudiantes van a acceder a la versión en disco del archivo, por lo que no van a ver cualquier cambio que no guardes.
+Podés usar esto para evitar que les estudiantes copien y peguen sin pensarlo.
+Guardá el archivo al final de secciones donde se terminó de explicar algún concepto y evitá guardar el archivo si estás haciendo algún ejercicio formativo en el que escribís código en pantalla y preguntás cuál va a ser el resultado.
+
+Espero que esta combinación de livecode y ngrok les sea útil para limar las asperezas del codeo en vivo.

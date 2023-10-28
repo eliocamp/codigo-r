@@ -189,6 +189,75 @@ El flujo opuesto se consigue con la función &lt;code&gt;knitr::purl()&lt;/code&
     </item>
     
     <item>
+      <title>Como compartir tu código en tiempo real con livecode y ngrok</title>
+      <link>/2023/04/livecode-ngrok-r/</link>
+      <pubDate>Sun, 16 Apr 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/2023/04/livecode-ngrok-r/</guid>
+      <description>
+
+
+&lt;p&gt;Una de las cosas que aprendí de The Carpentries que más me gustan es codear en vivo.
+Además de obligarme a ir más despacio y permitir que mis estudiantes vean mis errores, simplemente me resulta mucho más divertido que leer diapositivas o ir siguiendo un script ya escrito.&lt;/p&gt;
+&lt;p&gt;Pero en cuanto empecé a hacer codeo en vivo me encontré con algunos problemas.
+Durante las clases era muy común que algune estudiante parara la clase para decir que el código no le funcionaba.
+Entonces tenía que pedirle que copiara el código en el chat para verlo y encontrar el error de tipeo que inevitablemente le estaba dando problemas.
+Paréntesis no cerrados y nombre de variables mal escritos eran errores comunes que rompían el flujo de la clase y agregaban carga cognitiva y frustración extra sin sumar mucho pedagógicamente.&lt;/p&gt;
+&lt;p&gt;Para solucionar estos problemas, empecé a compartir el archivo en tiempo real utilizando el paquete &lt;a href=&#34;https://github.com/rundel/livecode&#34;&gt;livecode&lt;/a&gt; de Colin Rundel y el servicio &lt;a href=&#34;https://ngrok.com/&#34;&gt;ngrok&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Uso &lt;code&gt;livecode::serve_file(&#34;archivo.Rmd&#34;, upgrade_content_security_policy = TRUE)&lt;/code&gt; en una terminal corriendo R.
+El paquete livecode va a iniciar un servidor que publica el archivo en una IP local y se mantiene actualizado.
+Luego en otra terminal uso &lt;code&gt;ngrok http &amp;lt;ip&amp;gt;&lt;/code&gt; para crear una URL pública que comparto a les estudiantes y así pueden ver una versión del archivo que estoy modificando de la cual puede seleccionar el texto.&lt;/p&gt;
+&lt;div id=&#34;instalar-y-setear-ngrok&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Instalar y setear ngrok&lt;/h2&gt;
+&lt;p&gt;Una vez &lt;a href=&#34;#id_0&#34;&gt;que te create una cuenta&lt;/a&gt; en ngrok, andá al dashboard y seguí &lt;a href=&#34;https://dashboard.ngrok.com/get-started/setup&#34;&gt;las instrucciones de instalacion&lt;/a&gt; según tu sistema operativo.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/Screenshot%20from%202023-10-28%2018.39.07.png&#34; alt=&#34;Captura de pantalla de la pantalla de Setup e instalación de ngrok. Muestra un título grande que dice &amp;quot;Download ngrok&amp;quot; y un botón que dice &amp;quot;Download for linux&amp;quot;. A la derecha, un listado de distintos sistemas operativos.&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Luego de la instalación, hay que autenticarse buscando la contaseña (el Authtoken) en la siguiente sección&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/Screenshot%20from%202023-10-28%2018.39.45.png&#34; alt=&#34;Captura de pantalla de la sección &amp;quot;Your Authtoken&amp;quot; de ngrok. Debajo del título hay una serie de caracteres aparentemente aleatorios. Más abajo, hay un título que dice &amp;quot;Command line&amp;quot; y el código &amp;quot;ngrok config add-authtoken&amp;quot; seguido de la misma seire de caracteres.&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Lo más fácil es correr la línea de código que muestra ahí en la terminal.
+Por ejemplo:&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;ngrok config add-authtoken 1jHXu6CoMQRfdRvLqN9exqUwETs_6kAJC9v7ELubcDk5QHkE5&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Y tiene que devolver algo como&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Authtoken saved to configuration file: /home/elio/.ngrok2/ngrok.yml&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;instalar-livecode&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Instalar livecode&lt;/h2&gt;
+&lt;p&gt;Para poder usar livecode con ngrok hay que instalar &lt;a href=&#34;https://github.com/nareal/livecode&#34;&gt;este fork&lt;/a&gt;, que agrega el argumento &lt;code&gt;upgrade_content_security_policy&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;remotes::install_github(&amp;quot;nareal/livecode&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Una vez instalado, probá creando un archivo cualquiera en RStudio y corriendo&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;livecode::serve_file(upgrade_content_security_policy = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En la consola de R.
+(El argumento &lt;code&gt;upgrade_content_security_policy&lt;/code&gt; es necesario para usar ngrok).
+Vas a ver un mensaje como este&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#&amp;gt; ✔ Started sharing &amp;#39;2023-10-28-livecode-ngrok-R.Rmd&amp;#39; at &amp;#39;http://192.168.100.7:32868&amp;#39;.
+#&amp;gt; ✖ The current ip address (&amp;#39;192.168.100.7&amp;#39;) for the server is private, only users on the same local network are likely to be able to connect.
+#&amp;gt; Error: &amp;#39;markdownExtensions&amp;#39; is not an exported object from &amp;#39;namespace:markdown&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Y se te va a abrir una ventana de explorador.
+Nos dice que estamos compartiendo el archivo en &lt;a href=&#34;http://192.168.100.7:32868/&#34; class=&#34;uri&#34;&gt;http://192.168.100.7:32868/&lt;/a&gt; y nos advierte de que esta dirección es privada y sólo accesible a dispositivos conectados a la misma red local.
+Esto es lo que vamos a arreglar con ngrok.&lt;/p&gt;
+&lt;p&gt;Copiá la dirección y abrí una terminal y corré&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;ngrok http http://192.168.100.7:32868/&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;(Usando la dirección que te dio livecode).&lt;/p&gt;
+&lt;p&gt;Te va a aparecer algo así en la terminal:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/Screenshot%20from%202023-10-28%2019.00.37.png&#34; alt=&#34;Captura de pantalla de una terminal. Hay un servicio corriendo y dice &amp;quot;Session Status                online&amp;quot; así como una serie de otras entradas. Una dice &amp;quot;Forwarding&amp;quot; y tiene una dirección web larg que temrina con ngrok-free.app&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Lo importante ahí es la dirección que está en la línea que dice “Forrwarding”.
+Esa es la URL pública que le vas a compartir a tus estudiantes.
+Si entrás, vas a ver que es una página web con una versión del documento que está en RStudio que se puede seleccionar y copiar.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;../../images/Screenshot%20from%202023-10-28%2019.03.00.png&#34; alt=&#34;Captura de pantalla de una ventana de Firefox con un documento de RMarkdown de ese mismo post.&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;consejos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Consejos&lt;/h2&gt;
+&lt;p&gt;No recomiendo correr &lt;code&gt;livecode::serve_file()&lt;/code&gt; en la misma sesión de R donde se está enseñando.
+En vez de eso, abrí una terminal extra, corré R y usá &lt;code&gt;livecode::serve_file(&#34;ruta al archivo&#34;, upgrade_content_security_policy = TRUE)&lt;/code&gt;.
+Las ventajas de esto es que el proceso que publica el archivo es independiente del proceso de R que usamos para enseñar, de modo que no se pierde todo si la sesión de R se cuelga o la reiniciás por alguna razón.&lt;/p&gt;
+&lt;p&gt;Tené en cuenta que tus estudiantes van a acceder a la versión en disco del archivo, por lo que no van a ver cualquier cambio que no guardes.
+Podés usar esto para evitar que les estudiantes copien y peguen sin pensarlo.
+Guardá el archivo al final de secciones donde se terminó de explicar algún concepto y evitá guardar el archivo si estás haciendo algún ejercicio formativo en el que escribís código en pantalla y preguntás cuál va a ser el resultado.&lt;/p&gt;
+&lt;p&gt;Espero que esta combinación de livecode y ngrok les sea útil para limar las asperezas del codeo en vivo.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Como crear una API con plumber y hostearla en Heroku</title>
       <link>/2022/07/plumber-heroku/</link>
       <pubDate>Thu, 28 Jul 2022 00:00:00 +0000</pubDate>
@@ -330,13 +399,12 @@ Con&lt;/p&gt;
     </item>
     
     <item>
-      <title>Cómo maniuplar mensajes de error</title>
+      <title>Cómo manipular mensajes de error</title>
       <link>/2021/07/wrapper-stop/</link>
       <pubDate>Tue, 13 Jul 2021 00:00:00 +0000</pubDate>
       
       <guid>/2021/07/wrapper-stop/</guid>
       <description>
-&lt;script src=&#34;../../rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;La función &lt;code&gt;stop()&lt;/code&gt; permite terminar la ejecución de una función si hay algún problema mortal.&lt;/p&gt;
