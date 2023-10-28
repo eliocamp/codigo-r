@@ -107,4 +107,6 @@ Tené en cuenta que tus estudiantes van a acceder a la versión en disco del arc
 Podés usar esto para evitar que les estudiantes copien y peguen sin pensarlo.
 Guardá el archivo al final de secciones donde se terminó de explicar algún concepto y evitá guardar el archivo si estás haciendo algún ejercicio formativo en el que escribís código en pantalla y preguntás cuál va a ser el resultado.
 
-Espero que esta combinación de livecode y ngrok les sea útil para limar las asperezas del codeo en vivo.
+Espero que esta combinación de livecode y ngrok te sea útil para limar las asperezas del codeo en vivo.
+
+Grabé una charla mostrando cómo funciona para CarpentryCon2022 que podés ver acá: https://www.youtube.com/watch?v=idFpvvH1JyI&t=1s
