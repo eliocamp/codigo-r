@@ -3,23 +3,8 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>/2023/04/trucos-knitr-rmarkdown/</loc>
-    <lastmod>2023-04-16T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="/en/2023/04/knitr-rmarkdown-tricks/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="es-es"
-                href="/2023/04/trucos-knitr-rmarkdown/"
-                />
-  </url>
-  
-  <url>
     <loc>/categories/</loc>
-    <lastmod>2023-04-16T00:00:00+00:00</lastmod>
+    <lastmod>2023-10-28T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -39,13 +24,13 @@
   </url>
   
   <url>
-    <loc>/2023/04/livecode-ngrok-r/</loc>
-    <lastmod>2023-04-16T00:00:00+00:00</lastmod>
+    <loc>/2023/10/livecode-ngrok-r/</loc>
+    <lastmod>2023-10-28T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>/</loc>
-    <lastmod>2023-04-16T00:00:00+00:00</lastmod>
+    <lastmod>2023-10-28T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -66,7 +51,7 @@
   
   <url>
     <loc>/post/</loc>
-    <lastmod>2023-04-16T00:00:00+00:00</lastmod>
+    <lastmod>2023-10-28T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -82,7 +67,7 @@
   
   <url>
     <loc>/categories/r/</loc>
-    <lastmod>2023-04-16T00:00:00+00:00</lastmod>
+    <lastmod>2023-10-28T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -93,6 +78,21 @@
                 rel="alternate"
                 hreflang="es-es"
                 href="/categories/r/"
+                />
+  </url>
+  
+  <url>
+    <loc>/2023/04/trucos-knitr-rmarkdown/</loc>
+    <lastmod>2023-04-16T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="/en/2023/04/knitr-rmarkdown-tricks/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="es-es"
+                href="/2023/04/trucos-knitr-rmarkdown/"
                 />
   </url>
   
