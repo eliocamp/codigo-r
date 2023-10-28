@@ -7,13 +7,13 @@
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
-                hreflang="es-es"
-                href="/"
+                hreflang="en"
+                href="/en/"
                 />
     <xhtml:link
                 rel="alternate"
-                hreflang="en"
-                href="/en/"
+                hreflang="es-es"
+                href="/"
                 />
     <xhtml:link
                 rel="alternate"
@@ -47,13 +47,13 @@
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
-                hreflang="es-es"
-                href="/categories/"
+                hreflang="en"
+                href="/en/categories/"
                 />
     <xhtml:link
                 rel="alternate"
-                hreflang="en"
-                href="/en/categories/"
+                hreflang="es-es"
+                href="/categories/"
                 />
     <xhtml:link
                 rel="alternate"

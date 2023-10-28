@@ -1,22 +1,19 @@
 ---
 title: "Taking dependencies is actually good"
 author: Elio Campitelli
-date: '2023-04-16'
-draft: true
+date: '2023-10-28'
 slug: dependencies-in-R
 categories:
   - R
 keywords:
-   - package devleopment
+   - package development
    - dependencies
 ---
 
 
 
-<p>One of the recurring debates in some spaces of the R community is the talk about dependencies.
-After a few posts on Mastodon I wanted to capture my opinions on the subject to help my understand them better, and because long-form articles are much better to talk about contentious topics than short-burst posts.</p>
-<div id="dependencies-are-good" class="section level2">
-<h2>Dependencies are good</h2>
+<p>One of the recurring debates in some spaces of the R community is about dependencies.
+After a few posts on Mastodon I wanted to capture my opinions on the subject to help me understand them better, and because long-form articles are much better to talk about contentious topics than short-burst posts.</p>
 <div id="dependencies-are-invitations-for-other-people-to-collaborate-with-you" class="section level3">
 <h3>Dependencies are invitations for other people to collaborate with you</h3>
 <p>Many thinkers have marvelled at the magic inside books.
@@ -33,50 +30,48 @@ A book is proof that humans are capable of working magic.</p>
 <p>And its true.
 Writing is a fantastic technology that allows strangers to learn from each other, to collaborate, to build upon each other’s work.</p>
 <p>Software packages are kind of like books.
-By effortlessly typing <code>library(ggplot2)</code> I get to use and build upon the thousands of people-hours devoted to developing and polishing a great, solid package.
+By typing <code>library(ggplot2)</code> I get to effortlessly use and build upon the thousands of people-hours devoted to developing and polishing a great, solid package.
 When I write code that uses ggplot2, in some sense all its developers –awesome people who write great quality code– are now collaborators on my project without them even knowing me.</p>
 <p>And that’s simply awesome.</p>
-<p>Other people don’t see it that way.
-They think that the minute you depend on someone else’s work, you are actually inviting them to break things.
-They are terrified that those “virtual collaborators” might make some change that breaks their code and forces them to update.</p>
-<p>This makes me think of how every other romantic film is about someone who refuses to love for fear of being harmed, but by the end they grow and learn that opening oneself to being loved it’s worth the risk of heartbreak.</p>
 <p>Yes, sometimes collaboration is hard, especially when it’s not intended.
 The next version of ggplot2 might break my code and I will need to update it to fix it.
-But that’s a small price to pay for getting to use one of the best plotting libraries around.</p>
-<p>Besides, if you really need your code to last, there are currently several options to isolate it from future (but not past!) development, such as <a href="https://rstudio.github.io/renv/index.html">renv</a>, <a href="https://groundhogr.com/">groundhog</a>, or containers.
-Also packages on CRAN are checked for reverse dependencies breakage, so if a package has good test coverage, these changes will be caught early and everyone will have time to negotiate and change things accordingly.</p>
+But like a romcom protagonist who needs to learn that opening themselves to being loved is worth the risk of heartbreak, I think the occasional breaking change is a small price to pay for getting to collaborate with the community.</p>
+</div>
+<div id="dependencies-make-better-programmers" class="section level3">
+<h3>Dependencies make better programmers</h3>
+<p><a href="https://fosstodon.org/@milesmcbain/110732808942232428">As Miles McBain said on mastodon</a>, taking dependencies exposes you to other people’s code, different ideas and different design patterns.</p>
+<p>Just <em>using</em> other people’s code will introduce to the various naming conventions, argument types and return classes.
+If you take a step further and read the internals, you get to know a lot of writing styles, levels of function abstraction, etc.</p>
+<p>This also works from the package maintainer’s perspective.
+Athanasia Mowinckel describes <a href="https://posit.co/resources/videos/make-a-package-make-some-friends/">in her 2021 talk</a> how developing and publishing a package made her aware of many programming good practices thanks to people that opened issues and Pull Requests.
+And it’s true; how can a developer improve their package is nobody uses and depends on it?</p>
 </div>
 <div id="a-dependency-rich-project-is-better-than-no-project" class="section level3">
 <h3>A dependency-rich project is better than no project</h3>
-<p>Even if I where to grant that having a project with many dependencies is bad, still a brittle project is better than no project.
-All kinds of people do amazing things with R and not every project needs (or can) be a 10X project that follows all the best practices.</p>
-<p>People that use R come from very different backgrounds and have vastly different levels of expertise in software development.
+<p>Even if I were to grant that a project with many dependencies is bad, still a brittle project is better than no project.
+All kinds of people do amazing things and not every project needs (or can) be a “10X project” that follows all the best practices.</p>
+<p>R users come from very different backgrounds and have vastly different levels of expertise in software development.
 A lot of us are scientists who want to do their research and collaborate with the community.
-We probably wouldn’t be able to do our work or publish our first package without depending on code written by others.</p>
-<p>And I’d rather see a thousand imperfect and dependency-heavy projects boom than to have just a few polished packages that follow all the best practices to a tee.</p>
+We probably wouldn’t be able to do our work or publish our first packages without depending on code written by others.</p>
+<p>And I’d rather see a thousand imperfect and dependency-heavy projects bloom than to have just a few monolithic packages.</p>
 <p>Good enough is infinitely better than nothing.</p>
 </div>
-</div>
-<div id="dependency-counts-are-meaningless" class="section level2">
-<h2>Dependency counts are meaningless</h2>
-<p>Not only dependencies are good, but obsessing about dependency counts is rather silly.</p>
 <div id="dependency-counts-are-barely-a-proxy-for-whats-important" class="section level3">
 <h3>Dependency counts are barely a proxy for what’s important</h3>
-<p>The tidyverse package has dozens of dependencies, but each package is relatively focused on a single set of functionality.
-But the tidyverse team could easily decide to actually merge all the code that’s present in all the different packages into one single monolithic package.
+<p>The tidyverse package has dozens of dependencies, but each package is relatively focused on a small set of functionalities.
+But the tidyverse team could easily decide to merge all the code in all the different packages into one single monolithic package.
 Then the whole tidyverse could theoretically claim to be “dependency free” but it would consist on (roughly) the same code, written by the same developers, and with the same probability of breakage.</p>
 <p>Conversely, the data.table package has no dependencies, but its codebase is massive.
 It’s got functions for data manipulation (~dplyr), data reshaping (~tidyr), reading and writing to files (~readr), some date manipulation (~lubridate), rolling functions and even functions to format columns (~pillar).
-All that functionality could conceivably be broken up into several other packages and then the data.table package might have a dozen or so dependencies but, again, would consist on (roughly) the same code, written by the same developers, and with the same probability of breakage.</p>
-<p>Moreover, code depending on a single experimental or actively developed package might break a lot, whereas code depending on multiple stable and slowly-updating packages might work for ages.</p>
-<p>Obsessing over dependency counts is rather silly.
-So counting dependencies doesn’t really provide a good sense of dependency complexity or the probability of things breaking.
+All that functionality could conceivably be broken up into several other packages and then the data.table package might have half a dozen or so dependencies but, again, would consist on (roughly) the same code, written by the same developers, and with the same probability of breakage.</p>
+<p>Moreover, code depending on a single package that is experimental or in active development might break a lot, whereas code depending on multiple stable and slowly-updating packages might work for ages.</p>
+<p>So counting dependencies doesn’t really give you a good sense of dependency complexity or the probability of breakage.
 At best it’s a rough and indirect proxy that, in my opinion, doesn’t warrant being obsessed with.</p>
 </div>
 <div id="dependency-counts-fall-victim-of-goodharts-law" class="section level3">
 <h3>Dependency counts fall victim of Goodhart’s Law</h3>
 <p>At some point CRAN put a soft limit on the number of packages a package could list in “Imports”.
-Those are packages that are needed to be installed for the package to function; what we would colloquially call, dependencies.
+Those are packages that are needed to be installed for the package to function; what we would colloquially call dependencies.
 Use more than 20 packages and CRAN will shout at you (<a href="https://cran.r-project.org/doc/manuals/r-devel/R-ints.html#index-_005fR_005fCHECK_005fEXCESSIVE_005fIMPORTS_005f">issue a “Note”</a>) and make your life a bit harder.</p>
 <p>So let me tell you about the SCpubr package.
 This is an R package that “aims to provide a streamlined way of generating publication ready plots for known Single-Cell visualizations”.
@@ -84,22 +79,22 @@ By the looks of it, it’s a rather complex package that wraps a lot of function
 However, it hasn’t got a single dependency listed under Imports.
 Indeed, all its 61 dependencies are listed under “Suggest”, the field reserved for packages that “are not necessarily needed” and are instead “used only in examples, tests or vignettes”.
 However, almost every single function in the SCpubr package uses some of those suggested packages.</p>
-<p>There might be perfectly reasonable reasons for this package to list all its many dependencies as Suggests, but this example shows you how a package can have a massive amount of dependencies and still come clear from the dependency counters.</p>
+<p>There might be perfectly reasonable reasons for this package to list all its many dependencies as Suggests, but this example shows you how a package can have a massive amount of dependencies and still come clear at the dependency counting.</p>
 <p>There are other options.
 Because CRAN counts the number of direct dependencies, one could easily create two dummy packages that depend on 15 other packages, and then have the main package depend on those.
-Now the package appears to have only 2 dependencies but in reality has more than 30 dependencies.</p>
+Now the package appears to have only 2 dependencies but in reality it depends on more than 30 packages.</p>
 <p>So imposing a limit on the number of dependencies can change how developers list their dependencies in order to avoid that limit and thus the number of dependencies turns into an even worse indicator of dependency complexity.
 This is a clear example of how <a href="https://en.wikipedia.org/wiki/Goodhart%27s_law">when a proxy measure becomes a target, it ceases to be a good proxy measure</a>.</p>
 </div>
-</div>
 <div id="conclusions" class="section level2">
 <h2>Conclusions</h2>
-<p>So, taking dependencies is a great way of levering the power of the community and getting to collaborate with great developers.
+<p>So, taking dependencies is a great way of averaging the power of the community and getting to collaborate with great developers.
+It makes you and the maintainer of those packages into better developers.
 It empowers people to create tools and write code they couldn’t otherwise create.
-And even if you want to increase the stability and reproducibility of code, just counting the number of dependencies is rather silly and meaningless.</p>
+And even if you want to increase the stability and reproducibility of code, just counting the number of dependencies is not a very meaningful exercise.</p>
 <p>When writing a package, do be mindful of the dependencies you take.
 I do agree that it’s not good practice to depend on a gigantic package just to use a single function that can be easily replicated using base R.</p>
-<p>Remember that when taking a dependency you are essentially forcing all your users to install another package, so I think it’s polite to only do so if necessary, particularly for packages with compiled code and/or system dependencies which can fail to install.
+<p>Remember that when taking a dependency you are essentially forcing all your users to install another package, so I think it’s polite to do so only if necessary, particularly for packages with compiled code and/or system dependencies which can fail to install.
 This is less important for very popular packages that most R users probably already have or for packages that are dependencies of your dependencies (i.e. if your package imports ggplot2, then there’s no point in avoiding taking a dependency on tibble, which is imported by ggplot2 itself).</p>
 <p>Much more important than the number of dependencies, consider who are developing the packages you depend on.
 Are they trusted developers that write good software or someone who might write even worse code than you?
@@ -107,7 +102,7 @@ Can they be trusted to continue development and not orphan the package?</p>
 <p>When writing code for you, go nuts, do whatever you want.
 It’s your project and your machine, so install whatever package you want and be happy.
 You still have to be mindful of installing external code, especially from random GitHub repositories.
-And if you want your code to be reproducible on the long term, <a href="https://eliocamp.github.io/codigo-r/en/2021/08/docker-renv/">use renv</a> to pin the package versions for each project.</p>
+And if you want your code to be reproducible on the long term, <a href="https://eliocamp.github.io/codigo-r/en/2021/08/docker-renv/">use renv</a> to pin the package versions for each project (you can check other strategies on our online course <a href="http://reproducibility.rocks/">Reproducibility with R</a>).</p>
 <p>At the end of the day, take the dependencies you need to get the job done and create useful and fun projects with clean code that <strong>you</strong> can understand, extend, debug and maintain easily.
 Don’t obsess over the number of dependencies in your or anyone else’s package.</p>
 </div>
