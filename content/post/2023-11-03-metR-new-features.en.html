@@ -11,7 +11,7 @@ keywords:
 
 
 
-<p>Say yo have data measured at different weather stations, which in Argentina might look something like this</p>
+<p>Say you have data measured at different weather stations, which in Argentina might look something like this</p>
 <pre class="r"><code>estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; 
    ggplot(aes(lon, lat)) +
    geom_point(aes(color = t)) +

@@ -48,7 +48,7 @@ argentina_provincias <- rnaturalearth::ne_states(country = c("argentina", "falkl
 argentina_provincias_sin_malvinas <- rnaturalearth::ne_states(country = c("argentina"), returnclass = "sf")
 ```
 
-Say yo have data measured at different weather stations, which in Argentina might look something like this
+Say you have data measured at different weather stations, which in Argentina might look something like this
 
 ```{r}
 estaciones[data, on = c("nombre" = "station")] |> 

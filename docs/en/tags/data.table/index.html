@@ -346,7 +346,7 @@ library(data.table) My memory issues I started working on my licenciate thesis (
                   Nov 11, 2023
                 </span>
               </span>
-              <div class="media-content hide-xs font-merryweather">Say yo have data measured at different weather stations, which in Argentina might look something like this
+              <div class="media-content hide-xs font-merryweather">Say you have data measured at different weather stations, which in Argentina might look something like this
 estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; ggplot(aes(lon, lat)) + geom_point(aes(color = t)) + geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + scale_color_viridis_c() Because this is not a regular grid, it’s not possible to visualise this data with contours as is. Instead, it’s necessary to interpolate it into a regular grid.</div>
             </div>
             <div style="clear:both;"></div>

@@ -19,7 +19,7 @@
       <description>
 
 
-&lt;p&gt;Say yo have data measured at different weather stations, which in Argentina might look something like this&lt;/p&gt;
+&lt;p&gt;Say you have data measured at different weather stations, which in Argentina might look something like this&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;estaciones[data, on = c(&amp;quot;nombre&amp;quot; = &amp;quot;station&amp;quot;)] |&amp;gt; 
    ggplot(aes(lon, lat)) +
    geom_point(aes(color = t)) +
