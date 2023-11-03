@@ -4,7 +4,7 @@
   
   <url>
     <loc>/en/categories/</loc>
-    <lastmod>2023-10-28T00:00:00+00:00</lastmod>
+    <lastmod>2023-11-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -25,7 +25,7 @@
   
   <url>
     <loc>/en/</loc>
-    <lastmod>2023-10-28T00:00:00+00:00</lastmod>
+    <lastmod>2023-11-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -45,8 +45,13 @@
   </url>
   
   <url>
+    <loc>/en/2023/11/kriging-metr-r/</loc>
+    <lastmod>2023-11-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/en/post/</loc>
-    <lastmod>2023-10-28T00:00:00+00:00</lastmod>
+    <lastmod>2023-11-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"
@@ -62,7 +67,7 @@
   
   <url>
     <loc>/en/categories/r/</loc>
-    <lastmod>2023-10-28T00:00:00+00:00</lastmod>
+    <lastmod>2023-11-02T00:00:00+00:00</lastmod>
     <priority>0</priority>
     <xhtml:link
                 rel="alternate"

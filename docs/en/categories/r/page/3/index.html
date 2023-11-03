@@ -232,6 +232,66 @@
     
     <div class="postShorten-header">
       <h1 class="postShorten-title" itemprop="headline">
+        <a class="link-unstyled" href="../../../../../en/2018/08/periodic-data-ggplot2-ggperiodic/">
+          Wrapping around ggplot2 with ggperiodic
+        </a>
+      </h1>
+      
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2018-08-21T00:00:00Z">
+        
+  
+  
+  
+  
+    August 21, 2018
+  
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="../../../../../en/categories/r">R</a>
+    
+  
+
+  </div>
+
+    </div>
+    <div class="postShorten-excerpt" itemprop="articleBody">
+      
+       As an atmospheric scientists, a lot of my research consists on plotting and looking at global fields of atmospheric variables like pressure, temperature and the like. Since our planet is a sphere (well, almost), it is unbound and so longitude is a periodic dimension. That is, to the right of 180°E you go back to 180°W. But ggplot2 and other plotting systems, for the most part, assume linear dimensions. 
+      <p>
+        <a href="../../../../../en/2018/08/periodic-data-ggplot2-ggperiodic/" class="postShorten-excerpt_link link">Continue reading</a>
+        
+      </p>
+    </div>
+  </div>
+  
+</article>
+
+            
+              
+  
+    
+      
+        
+      
+    
+  
+
+
+  
+
+<article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+  <div class="postShorten-wrap">
+    
+    <div class="postShorten-header">
+      <h1 class="postShorten-title" itemprop="headline">
         <a class="link-unstyled" href="../../../../../en/2018/05/how-to-make-a-generic-stat-in-ggplot2/">
           How to make a generic stat in ggplot2
         </a>
@@ -415,6 +475,24 @@ What I accidentally discovered is that one way of approximating this look is by 
           <div class="media">
             
             <div class="media-body">
+              <a class="link-unstyled" href="../../../../../en/2023/11/kriging-metr-r/">
+                <h3 class="media-heading">Kriging with metR</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Nov 11, 2023
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Say yo have data measured at different weather stations, which in Argentina might look something like this
+estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; ggplot(aes(lon, lat)) + geom_point(aes(color = t)) + geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + scale_color_viridis_c() Because this is not a regular grid, it’s not possible to visualise this data with contours as is. Instead, it’s necessary to interpolate it into a regular grid.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
               <a class="link-unstyled" href="../../../../../en/2023/10/dependencies-in-r/">
                 <h3 class="media-heading">Taking dependencies is actually good</h3>
               </a>
@@ -575,23 +653,6 @@ library(dplyr) mtcars %&gt;% group_by(cyl) %&gt;% summarise(mpg = mean(mpg))  ##
             <hr>
           </div>
         
-          <div class="media">
-            
-            <div class="media-body">
-              <a class="link-unstyled" href="../../../../../en/2019/11/rammstein-vs-lacrimosa/">
-                <h3 class="media-heading">Rammstein vs. Lacrimosa</h3>
-              </a>
-              <span class="media-meta">
-                <span class="media-date text-small">
-                  Nov 11, 2019
-                </span>
-              </span>
-              <div class="media-content hide-xs font-merryweather">Some time ago, someone I follow on twitter posted about having to buy a whole book with rules to tease out grammatical gender in German. Further down the replies, someone reminisced about trying (and failing) to learn German just by listening to Rammstein’s lyrics. I studied about drei Jahre of German at the same time I started listening to Rammstein and other German-speaking bands and I’ve always found Rammstein’s lyrics to be surprisingly simple.</div>
-            </div>
-            <div style="clear:both;"></div>
-            <hr>
-          </div>
-        
       </div>
     </div>
     <div class="modal-footer">
@@ -599,7 +660,7 @@ library(dplyr) mtcars %&gt;% group_by(cyl) %&gt;% summarise(mpg = mean(mpg))  ##
          data-message-zero="no post found"
          data-message-one="1 post found"
          data-message-other="{n} posts found">
-         17 posts found
+         18 posts found
       </p>
     </div>
   </div>

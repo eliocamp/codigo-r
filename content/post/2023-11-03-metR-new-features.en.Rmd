@@ -1,0 +1,115 @@
+---
+title: "Kriging with metR"
+author: Elio Campitelli
+date: '2023-11-02'
+slug: kriging-metR-R
+categories:
+  - R
+keywords:
+  - package development
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+library(data.table)
+library(ggplot2)
+library(metR)
+```
+
+```{r data, include = FALSE}
+data <- metR::GetSMNData("2023-01-01", "hourly") |> 
+   _[, .(t = mean(t, na.rm = TRUE)), by = station]
+
+estaciones_url <- "https://ssl.smn.gob.ar/dpd/zipopendata.php?dato=estaciones"
+estaciones_zip <- tempfile()
+estaciones_dir <- file.path(tempdir(), "estaciones")
+download.file(estaciones_url, estaciones_zip)
+unzip(estaciones_zip, exdir = estaciones_dir)
+estaciones_file <- list.files(estaciones_dir, full.names = TRUE)
+
+gm2dd <- function(grados, minutos) {
+   grados <- as.numeric(grados) 
+   minutos <- as.numeric(minutos)
+   
+   (abs(grados) + minutos/60)*sign(grados)
+}
+
+estaciones <- read.fwf(estaciones_file, skip = 2, fileEncoding = "ISO-8859-1",
+                       widths =    c(31,               37,           9,         9,          9,         9,        6,     6,      4),
+                       col.names = c("nombre", "provincia", "lat_grad", "lat_min", "lon_grad", "lon_min", "altura", "nro", "oaci")) |> 
+   
+   lapply(trimws) |> 
+   as.data.table() |> 
+   _[, `:=`(lat = gm2dd(lat_grad, lat_min), 
+            lon = gm2dd(lon_grad, lon_min))] |> 
+   _[lat > -60]
+
+argentina_provincias <- rnaturalearth::ne_states(country = c("argentina", "falkland islands"), returnclass = "sf")
+argentina_provincias_sin_malvinas <- rnaturalearth::ne_states(country = c("argentina"), returnclass = "sf")
+```
+
+Say yo have data measured at different weather stations, which in Argentina might look something like this
+
+```{r}
+estaciones[data, on = c("nombre" = "station")] |> 
+   ggplot(aes(lon, lat)) +
+   geom_point(aes(color = t)) +
+   geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + 
+   scale_color_viridis_c()
+```
+
+Because this is not a regular grid, it's not possible to visualise this data with contours as is.
+Instead, it's necessary to interpolate it into a regular grid.
+
+There are many ways to go from irregular measurement locations to a regular grid and it comes with a bunch of assumptions.
+But for quick an dirty visualisations, `metR::geom_contour_fill()` can use kriging by setting `kriging = TRUE`
+
+```{r}
+estaciones[data, on = c("nombre" = "station")] |> 
+   ggplot(aes(lon, lat)) +
+   metR::geom_contour_fill(aes(z = t), 
+                           kriging = TRUE) +
+   geom_point(aes(fill = t), shape = 21) +
+   geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + 
+   scale_color_viridis_c(aesthetics = c("fill", "colour")) 
+```
+
+One big problem with this is that by default it estimates values in the bounding box of the data, which in this case includes a bunch of the Atlantic Ocean.
+So it would be nice to be able to only show the contours over land.
+
+In a desperate attempt to procrastinate from writing my thesis I implemented this functionality.
+Now, the `clip` argument takes a polygon which clips the contours. 
+
+```{r}
+estaciones[data, on = c("nombre" = "station")] |> 
+   ggplot(aes(lon, lat)) +
+   metR::geom_contour_fill(aes(z = t), 
+                           kriging = TRUE, 
+                           clip = argentina_provincias_sin_malvinas) +
+   geom_point(aes(fill = t), shape = 21) +
+   geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + 
+   scale_color_viridis_c(aesthetics = c("fill", "colour")) 
+
+```
+
+Another small issue is that the default interpolates to a 40-pixel wide grid, which is a bit too coarse and doesn't reach the top corners of the map.
+The `kriging` argument now can take a numeric, which defines number of gridpoints each direction.
+
+```{r}
+estaciones[data, on = c("nombre" = "station")] |> 
+   ggplot(aes(lon, lat)) +
+   metR::geom_contour_fill(aes(z = t), 
+                           kriging = 100, 
+                           clip = argentina_provincias_sin_malvinas) +
+   geom_point(aes(fill = t), shape = 21) +
+   geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + 
+   scale_color_viridis_c(aesthetics = c("fill", "colour")) 
+```
+
+Much better!
+
+You can install the development version of [metR](https://eliocamp.github.io/metR/) with
+
+```{r, eval = FALSE}
+install.packages("metR", repos = c("https://eliocamp.github.io/metR", getOption("repos")))
+```

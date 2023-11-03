@@ -229,6 +229,68 @@
     
     <div class="postShorten-header">
       <h1 class="postShorten-title" itemprop="headline">
+        <a class="link-unstyled" href="../../../../en/2021/07/wrapper-stop/">
+          Make error messages your own
+        </a>
+      </h1>
+      
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2021-07-13T00:00:00Z">
+        
+  
+  
+  
+  
+    July 13, 2021
+  
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="../../../../en/categories/r">R</a>
+    
+  
+
+  </div>
+
+    </div>
+    <div class="postShorten-excerpt" itemprop="articleBody">
+      
+       The stop() function allows you to terminate the execution of a function if there is a fatal problem.
+For example, imagine this code that calculates the square root of a number but only if the input number is positive.
+real_root &lt;- function(x) { if (x &lt; 0) { stop(&quot;&#39;x&#39; cannot be negative.&quot;) } sqrt(x) } real_root(2) ## [1] 1.414214 real_root(-2) ## Error in real_root(-2): &#39;x&#39; cannot be negative. If x is negative, the function throws an error. 
+      <p>
+        <a href="../../../../en/2021/07/wrapper-stop/" class="postShorten-excerpt_link link">Continue reading</a>
+        
+      </p>
+    </div>
+  </div>
+  
+</article>
+
+          
+            
+  
+    
+      
+        
+      
+    
+  
+
+
+  
+
+<article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+  <div class="postShorten-wrap">
+    
+    <div class="postShorten-header">
+      <h1 class="postShorten-title" itemprop="headline">
         <a class="link-unstyled" href="../../../../en/2021/05/r-pipa-nativa/">
           The new R pipe
         </a>
@@ -577,69 +639,6 @@ library(data.table) My memory issues I started working on my licenciate thesis (
 </article>
 
           
-            
-  
-    
-      
-        
-      
-    
-  
-
-
-  
-
-<article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
-  <div class="postShorten-wrap">
-    
-    <div class="postShorten-header">
-      <h1 class="postShorten-title" itemprop="headline">
-        <a class="link-unstyled" href="../../../../en/2018/09/multiple-color-fill-scales-ggplot2/">
-          Multiple color (and fill) scales with ggplot2
-        </a>
-      </h1>
-      
-  <div class="postShorten-meta post-meta">
-    
-      <time itemprop="datePublished" datetime="2018-09-18T00:00:00Z">
-        
-  
-  
-  
-  
-    September 18, 2018
-  
-
-      </time>
-    
-    
-  
-  
-    <span>in</span>
-    
-      <a class="category-link" href="../../../../en/categories/r">R</a>
-    
-  
-
-  </div>
-
-    </div>
-    <div class="postShorten-excerpt" itemprop="articleBody">
-      
-       tl;dr: The functionality shown in this post is now on the ggnewscale package! 📦. You can find the original code in this gist.
-A somewhat common annoyance for some ggplot2 users is the lack of support for multiple colour and fill scales. Perusing StackOverflow you can find many questions relating to this issue:
-
-Unfortunately, this deluge of questions is met with a shortage of conclusive answers, most of them being some variation of &ldquo;you can&rsquo;t, but here&rsquo;s how to hack it or visualise the data differently&rdquo;. 
-      <p>
-        <a href="../../../../en/2018/09/multiple-color-fill-scales-ggplot2/" class="postShorten-excerpt_link link">Continue reading</a>
-        
-      </p>
-    </div>
-  </div>
-  
-</article>
-
-          
           
   <div class="pagination-bar">
     <ul class="pagination">
@@ -721,6 +720,24 @@ Unfortunately, this deluge of questions is met with a shortage of conclusive ans
       <div class="no-result text-color-light text-center">no post found</div>
       <div class="results">
         
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../../en/2023/11/kriging-metr-r/">
+                <h3 class="media-heading">Kriging with metR</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Nov 11, 2023
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Say yo have data measured at different weather stations, which in Argentina might look something like this
+estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; ggplot(aes(lon, lat)) + geom_point(aes(color = t)) + geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + scale_color_viridis_c() Because this is not a regular grid, it’s not possible to visualise this data with contours as is. Instead, it’s necessary to interpolate it into a regular grid.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
         
           <div class="media">
             
@@ -885,23 +902,6 @@ library(dplyr) mtcars %&gt;% group_by(cyl) %&gt;% summarise(mpg = mean(mpg))  ##
             <hr>
           </div>
         
-          <div class="media">
-            
-            <div class="media-body">
-              <a class="link-unstyled" href="../../../../en/2019/11/rammstein-vs-lacrimosa/">
-                <h3 class="media-heading">Rammstein vs. Lacrimosa</h3>
-              </a>
-              <span class="media-meta">
-                <span class="media-date text-small">
-                  Nov 11, 2019
-                </span>
-              </span>
-              <div class="media-content hide-xs font-merryweather">Some time ago, someone I follow on twitter posted about having to buy a whole book with rules to tease out grammatical gender in German. Further down the replies, someone reminisced about trying (and failing) to learn German just by listening to Rammstein’s lyrics. I studied about drei Jahre of German at the same time I started listening to Rammstein and other German-speaking bands and I’ve always found Rammstein’s lyrics to be surprisingly simple.</div>
-            </div>
-            <div style="clear:both;"></div>
-            <hr>
-          </div>
-        
       </div>
     </div>
     <div class="modal-footer">
@@ -909,7 +909,7 @@ library(dplyr) mtcars %&gt;% group_by(cyl) %&gt;% summarise(mpg = mean(mpg))  ##
          data-message-zero="no post found"
          data-message-one="1 post found"
          data-message-other="{n} posts found">
-         17 posts found
+         18 posts found
       </p>
     </div>
   </div>

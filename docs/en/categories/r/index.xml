@@ -5,10 +5,68 @@
     <description>Recent content in R on Code R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Sat, 28 Oct 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 02 Nov 2023 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/en/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Kriging with metR</title>
+      <link>/en/2023/11/kriging-metr-r/</link>
+      <pubDate>Thu, 02 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>/en/2023/11/kriging-metr-r/</guid>
+      <description>
+
+
+&lt;p&gt;Say yo have data measured at different weather stations, which in Argentina might look something like this&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;estaciones[data, on = c(&amp;quot;nombre&amp;quot; = &amp;quot;station&amp;quot;)] |&amp;gt; 
+   ggplot(aes(lon, lat)) +
+   geom_point(aes(color = t)) +
+   geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + 
+   scale_color_viridis_c()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2023-11-03-metR-new-features.en_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Because this is not a regular grid, it’s not possible to visualise this data with contours as is.
+Instead, it’s necessary to interpolate it into a regular grid.&lt;/p&gt;
+&lt;p&gt;There are many ways to go from irregular measurement locations to a regular grid and it comes with a bunch of assumptions.
+But for quick an dirty visualisations, &lt;code&gt;metR::geom_contour_fill()&lt;/code&gt; can use kriging by setting &lt;code&gt;kriging = TRUE&lt;/code&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;estaciones[data, on = c(&amp;quot;nombre&amp;quot; = &amp;quot;station&amp;quot;)] |&amp;gt; 
+   ggplot(aes(lon, lat)) +
+   metR::geom_contour_fill(aes(z = t), 
+                           kriging = TRUE) +
+   geom_point(aes(fill = t), shape = 21) +
+   geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + 
+   scale_color_viridis_c(aesthetics = c(&amp;quot;fill&amp;quot;, &amp;quot;colour&amp;quot;)) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2023-11-03-metR-new-features.en_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;One big problem with this is that by default it estimates values in the bounding box of the data, which in this case includes a bunch of the Atlantic Ocean.
+So it would be nice to be able to only show the contours over land.&lt;/p&gt;
+&lt;p&gt;In a desperate attempt to procrastinate from writing my thesis I implemented this functionality.
+Now, the &lt;code&gt;clip&lt;/code&gt; argument takes a polygon which clips the contours.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;estaciones[data, on = c(&amp;quot;nombre&amp;quot; = &amp;quot;station&amp;quot;)] |&amp;gt; 
+   ggplot(aes(lon, lat)) +
+   metR::geom_contour_fill(aes(z = t), 
+                           kriging = TRUE, 
+                           clip = argentina_provincias_sin_malvinas) +
+   geom_point(aes(fill = t), shape = 21) +
+   geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + 
+   scale_color_viridis_c(aesthetics = c(&amp;quot;fill&amp;quot;, &amp;quot;colour&amp;quot;)) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2023-11-03-metR-new-features.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Another small issue is that the default interpolates to a 40-pixel wide grid, which is a bit too coarse and doesn’t reach the top corners of the map.
+The &lt;code&gt;kriging&lt;/code&gt; argument now can take a numeric, which defines number of gridpoints each direction.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;estaciones[data, on = c(&amp;quot;nombre&amp;quot; = &amp;quot;station&amp;quot;)] |&amp;gt; 
+   ggplot(aes(lon, lat)) +
+   metR::geom_contour_fill(aes(z = t), 
+                           kriging = 100, 
+                           clip = argentina_provincias_sin_malvinas) +
+   geom_point(aes(fill = t), shape = 21) +
+   geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + 
+   scale_color_viridis_c(aesthetics = c(&amp;quot;fill&amp;quot;, &amp;quot;colour&amp;quot;)) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../../../post/2023-11-03-metR-new-features.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Much better!&lt;/p&gt;
+&lt;p&gt;You can install the development version of &lt;a href=&#34;https://eliocamp.github.io/metR/&#34;&gt;metR&lt;/a&gt; with&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;install.packages(&amp;quot;metR&amp;quot;, repos = c(&amp;quot;https://eliocamp.github.io/metR&amp;quot;, getOption(&amp;quot;repos&amp;quot;)))&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>Taking dependencies is actually good</title>

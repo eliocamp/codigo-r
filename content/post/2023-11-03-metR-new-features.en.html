@@ -1,0 +1,59 @@
+---
+title: "Kriging with metR"
+author: Elio Campitelli
+date: '2023-11-02'
+slug: kriging-metR-R
+categories:
+  - R
+keywords:
+  - package development
+---
+
+
+
+<p>Say yo have data measured at different weather stations, which in Argentina might look something like this</p>
+<pre class="r"><code>estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; 
+   ggplot(aes(lon, lat)) +
+   geom_point(aes(color = t)) +
+   geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + 
+   scale_color_viridis_c()</code></pre>
+<p><img src="/post/2023-11-03-metR-new-features.en_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Because this is not a regular grid, it’s not possible to visualise this data with contours as is.
+Instead, it’s necessary to interpolate it into a regular grid.</p>
+<p>There are many ways to go from irregular measurement locations to a regular grid and it comes with a bunch of assumptions.
+But for quick an dirty visualisations, <code>metR::geom_contour_fill()</code> can use kriging by setting <code>kriging = TRUE</code></p>
+<pre class="r"><code>estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; 
+   ggplot(aes(lon, lat)) +
+   metR::geom_contour_fill(aes(z = t), 
+                           kriging = TRUE) +
+   geom_point(aes(fill = t), shape = 21) +
+   geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + 
+   scale_color_viridis_c(aesthetics = c(&quot;fill&quot;, &quot;colour&quot;)) </code></pre>
+<p><img src="/post/2023-11-03-metR-new-features.en_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>One big problem with this is that by default it estimates values in the bounding box of the data, which in this case includes a bunch of the Atlantic Ocean.
+So it would be nice to be able to only show the contours over land.</p>
+<p>In a desperate attempt to procrastinate from writing my thesis I implemented this functionality.
+Now, the <code>clip</code> argument takes a polygon which clips the contours.</p>
+<pre class="r"><code>estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; 
+   ggplot(aes(lon, lat)) +
+   metR::geom_contour_fill(aes(z = t), 
+                           kriging = TRUE, 
+                           clip = argentina_provincias_sin_malvinas) +
+   geom_point(aes(fill = t), shape = 21) +
+   geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + 
+   scale_color_viridis_c(aesthetics = c(&quot;fill&quot;, &quot;colour&quot;)) </code></pre>
+<p><img src="/post/2023-11-03-metR-new-features.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Another small issue is that the default interpolates to a 40-pixel wide grid, which is a bit too coarse and doesn’t reach the top corners of the map.
+The <code>kriging</code> argument now can take a numeric, which defines number of gridpoints each direction.</p>
+<pre class="r"><code>estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; 
+   ggplot(aes(lon, lat)) +
+   metR::geom_contour_fill(aes(z = t), 
+                           kriging = 100, 
+                           clip = argentina_provincias_sin_malvinas) +
+   geom_point(aes(fill = t), shape = 21) +
+   geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + 
+   scale_color_viridis_c(aesthetics = c(&quot;fill&quot;, &quot;colour&quot;)) </code></pre>
+<p><img src="/post/2023-11-03-metR-new-features.en_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Much better!</p>
+<p>You can install the development version of <a href="https://eliocamp.github.io/metR/">metR</a> with</p>
+<pre class="r"><code>install.packages(&quot;metR&quot;, repos = c(&quot;https://eliocamp.github.io/metR&quot;, getOption(&quot;repos&quot;)))</code></pre>

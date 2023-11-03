@@ -22,26 +22,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Hugo 0.56.3 with theme Tranquilpeak 0.4.3-BETA">
-    <title>How to make a shaded relief in R</title>
+    <title>Kriging with metR</title>
     <meta name="author" content="Elio Campitelli">
-    <meta name="keywords" content=", R">
+    <meta name="keywords" content="package development, R">
 
     <link rel="icon" href="../../../../favicon.png">
     
 
     
-    <meta name="description" content="While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
-What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun.">
-    <meta property="og:description" content="While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
-What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun.">
+    <meta name="description" content="Say yo have data measured at different weather stations, which in Argentina might look something like this
+estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; ggplot(aes(lon, lat)) &#43; geom_point(aes(color = t)) &#43; geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) &#43; scale_color_viridis_c() Because this is not a regular grid, it’s not possible to visualise this data with contours as is. Instead, it’s necessary to interpolate it into a regular grid.">
+    <meta property="og:description" content="Say yo have data measured at different weather stations, which in Argentina might look something like this
+estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; ggplot(aes(lon, lat)) &#43; geom_point(aes(color = t)) &#43; geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) &#43; scale_color_viridis_c() Because this is not a regular grid, it’s not possible to visualise this data with contours as is. Instead, it’s necessary to interpolate it into a regular grid.">
     <meta property="og:type" content="blog">
-    <meta property="og:title" content="How to make a shaded relief in R">
-    <meta property="og:url" content="/codigo-r/en/2018/02/how-to-make-shaded-relief-in-r/">
+    <meta property="og:title" content="Kriging with metR">
+    <meta property="og:url" content="/codigo-r/en/2023/11/kriging-metr-r/">
     <meta property="og:site_name" content="Code R">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Code R">
-    <meta name="twitter:description" content="While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:
-What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun.">
+    <meta name="twitter:description" content="Say yo have data measured at different weather stations, which in Argentina might look something like this
+estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; ggplot(aes(lon, lat)) &#43; geom_point(aes(color = t)) &#43; geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) &#43; scale_color_viridis_c() Because this is not a regular grid, it’s not possible to visualise this data with contours as is. Instead, it’s necessary to interpolate it into a regular grid.">
     
       <meta name="twitter:creator" content="@d_olivaw">
     
@@ -220,26 +220,22 @@ What I accidentally discovered is that one way of approximating this look is by 
             <div class="post-header main-content-wrap text-left">
   
     <h1 class="post-title" itemprop="headline">
-      How to make a shaded relief in R
+      Kriging with metR
     </h1>
   
   
-
-    
-        En español: <a href="../../../../2018/01/como-hacer-efecto-de-relieve-en-r/">Cómo hacer un efecto de relieve en R</a>
-    
 
 
   
   <div class="postShorten-meta post-meta">
     
-      <time itemprop="datePublished" datetime="2018-02-04T00:00:00Z">
+      <time itemprop="datePublished" datetime="2023-11-02T00:00:00Z">
         
   
   
   
   
-    February 4, 2018
+    November 2, 2023
   
 
       </time>
@@ -272,213 +268,55 @@ What I accidentally discovered is that one way of approximating this look is by 
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              <p>While trying to build a circular colour scale to plot angles and wind direction, I stumbled upon an easy way to make shaded reliefs in R. You known, when you look at cool maps of mountain areas where peaks and valleys are easily distinguishable from their shadows like this:</p>
-
-<p><img src="../../../../images/shading.jpg" alt="" /></p>
-
-<p>What I accidentally discovered is that one way of approximating this look is by taking the directional derivatives of height and then plotting the cosine of its angle from the sun. After some further research I learned that this is actually done in cartography and is called <a href="http://www.reliefshading.com/analytical/shading-methods/"><em>aspect-based shading</em></a>. I also learned that it&rsquo;s not the best method, and I&rsquo;m itching to try others. But for now, let&rsquo;s keep things simple and <a href="https://kkulma.github.io/2017-12-29-end-of-year-thoughts/">get stuff actually done</a>.</p>
-
-<p>Just as an example, I will be using our old friend, the <code>volcano</code> database. I will be also using <code>data.table</code> syntax because that how I roll. Deal with it, <code>dplyr</code> lovers 😎.</p>
-
-<pre><code class="language-r">library(data.table)
-library(ggplot2)
-data(volcano)
-volcano &lt;- as.data.table(melt(volcano, varnames = c(&quot;x&quot;, &quot;y&quot;),
-                              value.name = &quot;h&quot;))
-</code></pre>
-
-<p>So then I take the derivative (this is a function I made in my personal package, but bear with me 🙏) and take the angle. The minus sign are there&hellip; well, because it works &ndash;I&rsquo;m not sure about the exact maths here.</p>
-
-<pre><code class="language-r">volcano[, c(&quot;dx&quot;, &quot;dy&quot;) := metR::Derivate(h ~ x + y)]
-volcano[, angle := atan2(-dy, -dx)]
-</code></pre>
-
-<p>And with that, we can set the angle from which the Sun is shinning (usually from the top left) and with a little bit of code, we get an acceptable result.</p>
-
-<pre><code class="language-r">sun.angle &lt;- pi/3
-ggplot(volcano, aes(x, y)) +
-   geom_raster(aes(fill = cos(angle + sun.angle)), alpha = 1, interpolate = TRUE) +
-   scale_fill_gradient2(low = &quot;white&quot;, high = &quot;white&quot;, mid = &quot;gray20&quot;, 
-                        midpoint = sun.angle, guide = &quot;none&quot;) +
-   coord_fixed() +
-   theme_void() 
-</code></pre>
-
-<p><img src="2018-01-24-como-hacer-efecto-de-relieve-en-r.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-
-<p>Excellent! 💜</p>
-
-<p>But hey, don&rsquo;t leave, there&rsquo;s more. What if you want to use this <em>gorgeous</em> shading as a background to map <em>other</em> data? For example, let&rsquo;s say you had surface temperature readings, or sulphur concentration data. Since our <code>scale_fill</code> is being taken by the shading and <code>ggplot2</code> does not allow for more than one scale per aesthetic, you couldn&rsquo;t use another <code>geom_raster()</code> to &ldquo;paint&rdquo; the data over this background.</p>
-
-<p>One solution is to take the plot we made above, extract the raster grob (GRaphical OBject) and put it over another plot as an annotation. This is akin to a plot transplant and &ndash;just as organ transplants&ndash; it&rsquo;s an ugly mess that will become a forgotten practice of a less civilized age once we master 3D printing of organs. But it works and is the best we&rsquo;ve got so far.</p>
-
-<pre><code class="language-r">shade &lt;- ggplot(volcano, aes(x, y)) +
-   geom_raster(aes(fill = cos(angle + sun.angle)), alpha = 0.5, interpolate = TRUE) +
-   scale_fill_gradient2(low = &quot;white&quot;, high = &quot;white&quot;, mid = &quot;black&quot;, 
-                        midpoint = sun.angle, guide = &quot;none&quot;)
-
-grob.shade &lt;- ggplotGrob(shade)
-grob.shade &lt;- grob.shade$grobs[[6]]$children[[3]]
-
-ggplot(volcano, aes(x, y)) +
-   geom_raster(aes(fill = h), alpha = 1, interpolate = TRUE) +
-   annotation_custom(grob = grob.shade) +
-   scale_fill_viridis_c(guide = &quot;none&quot;, option = &quot;A&quot;) +
-   coord_fixed() +
-   theme_void() 
-</code></pre>
-
-<p><img src="2018-01-24-como-hacer-efecto-de-relieve-en-r.en_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-
-<p>Lucky for us, at least for this kind of plot transplant, there&rsquo;s already a better way: just make a <code>geom</code>! Once we are inside the guts of <code>ggplot2</code> we are no longer bound by the tyranny of scales can do the craziest things. In this case, we use a modified version of <code>geom_tile()</code> that performs all the calculations we need and builds the grayscale pattern (modifiable by the user via the <code>light</code> and <code>dark</code> aesthetics). It allows changing <code>sun.angle</code> and decide whether to use <code>raster</code> or <code>rect</code> and whether to interpolate for a smoother finish. I give to you <code>geom_relief()</code>:</p>
-
-<pre><code class="language-r">geom_relief &lt;- function(mapping = NULL, data = NULL,
-                        stat = &quot;identity&quot;, position = &quot;identity&quot;,
-                        ...,
-                        raster = TRUE,
-                        interpolate = TRUE,
-                        na.rm = FALSE,
-                        show.legend = NA,
-                        inherit.aes = TRUE) {
-   ggplot2::layer(
-      data = data,
-      mapping = mapping,
-      stat = stat,
-      geom = GeomRelief,
-      position = position,
-      show.legend = show.legend,
-      inherit.aes = inherit.aes,
-      params = list(
-         raster = raster,
-         interpolate = interpolate,
-         na.rm = na.rm,
-         ...
-      )
-   )
-}
-
-GeomRelief &lt;- ggplot2::ggproto(&quot;GeomRelief&quot;, GeomTile,
-  required_aes = c(&quot;x&quot;, &quot;y&quot;, &quot;z&quot;),
-  default_aes = ggplot2::aes(color = NA, fill = &quot;grey35&quot;, size = 0.5, linetype = 1,
-                             alpha = NA, light = &quot;white&quot;, dark = &quot;gray20&quot;, sun.angle = 60),
-  draw_panel = function(data, panel_scales, coord, raster, interpolate) {
-     if (!coord$is_linear()) {
-        stop(&quot;non lineal coordinates are not implemented in GeomRelief&quot;, call. = FALSE)
-     } else {
-        coords &lt;- as.data.table(coord$transform(data, panel_scales))
-        
-        # This is the only part that's actually new. The rest is essentially 
-        # copy-pasted from geom_raster and geom_tile
-        coords[, sun.angle := (sun.angle + 90)*pi/180]
-        coords[, dx := .derv(z, x), by = y]
-        coords[, dy := .derv(z, y), by = x]
-        coords[, shade := (cos(atan2(-dy, -dx) - sun.angle) + 1)/2]
-        coords[is.na(shade), shade := 0]
-        coords[, fill := .rgb2hex(colorRamp(c(dark, light), space = &quot;Lab&quot;)(shade)),
-               by = .(dark, light)]
-        
-        # From geom_raster and geom_tile
-        if (raster == TRUE){
-           if (!inherits(coord, &quot;CoordCartesian&quot;)) {
-              stop(&quot;geom_raster only works with Cartesian coordinates&quot;, call. = FALSE)
-           }
-           # Convert vector of data to raster
-           x_pos &lt;- as.integer((coords$x - min(coords$x)) / resolution(coords$x, FALSE))
-           y_pos &lt;- as.integer((coords$y - min(coords$y)) / resolution(coords$y, FALSE))
-           
-           nrow &lt;- max(y_pos) + 1
-           ncol &lt;- max(x_pos) + 1
-           
-           raster &lt;- matrix(NA_character_, nrow = nrow, ncol = ncol)
-           raster[cbind(nrow - y_pos, x_pos + 1)] &lt;- alpha(coords$fill, coords$alpha)
-           
-           # Figure out dimensions of raster on plot
-           x_rng &lt;- c(min(coords$xmin, na.rm = TRUE), max(coords$xmax, na.rm = TRUE))
-           y_rng &lt;- c(min(coords$ymin, na.rm = TRUE), max(coords$ymax, na.rm = TRUE))
-           
-           grid::rasterGrob(raster,
-                            x = mean(x_rng), y = mean(y_rng),
-                            width = diff(x_rng), height = diff(y_rng),
-                            default.units = &quot;native&quot;, interpolate = interpolate
-           )
-           
-        } else {
-           ggplot2:::ggname(&quot;geom_rect&quot;, grid::rectGrob(
-              coords$xmin, coords$ymax,
-              width = coords$xmax - coords$xmin,
-              height = coords$ymax - coords$ymin,
-              default.units = &quot;native&quot;,
-              just = c(&quot;left&quot;, &quot;top&quot;),
-              gp = grid::gpar(
-                 col = coords$fill,
-                 fill = alpha(coords$fill, coords$alpha),
-                 lwd = coords$size * .pt,
-                 lty = coords$linetype,
-                 lineend = &quot;butt&quot;
-              )
-           ))
-           
-        }
-     }
-  }
-)
-
-rect_to_poly &lt;- function(xmin, xmax, ymin, ymax) {
-   data.frame(
-      y = c(ymax, ymax, ymin, ymin, ymax),
-      x = c(xmin, xmax, xmax, xmin, xmin)
-   )
-}
-
-.rgb2hex &lt;- function(array) {
-   rgb(array[, 1], array[, 2], array[, 3], maxColorValue = 255)
-}
+              
 
 
-.derv &lt;- function(x, y, order = 1, cyclical = FALSE, fill = FALSE) {
-   N &lt;- length(x)
-   d &lt;- y[2] - y[1]
-   if (order &gt;= 3) {
-      dxdy &lt;- .derv(.derv(x, y, order = 2, cyclical = cyclical, fill = fill),
-                    y, order = order - 2, cyclical = cyclical, fill = fill)
-   } else {
-      if (order == 1) {
-         dxdy &lt;- (x[c(2:N, 1)] - x[c(N, 1:(N-1))])/(2*d)
-      } else if (order == 2) {
-         dxdy &lt;- (x[c(2:N, 1)] + x[c(N, 1:(N-1))] - 2*x)/d^2
-      }
-      if (!cyclical) {
-         if (!fill) {
-            dxdy[c(1, N)] &lt;- NA
-         }
-         if (fill) {
-            dxdy[1] &lt;- (-11/6*x[1] + 3*x[2] - 3/2*x[3] + 1/3*x[4])/d
-            dxdy[N] &lt;- (11/6*x[N] - 3*x[N-1] + 3/2*x[N-2] - 1/3*x[N-3])/d
-         }
-      }
-      
-   }
-   return(dxdy)
-}
-</code></pre>
-
-<p>Let&rsquo;s use it to show real topographic data from The Andes near the Aconcagua, courtesy of <a href="https://www.ngdc.noaa.gov/mgg/global/">NOAA&rsquo;s ETOPO1</a>.</p>
-
-<pre><code class="language-r">aconcagua &lt;- metR::GetTopography(-70.0196223 - 3 + 360, -70.0196223 + 3 + 360,
-                                 -32.6531782 + 2, -32.6531782 - 2, 
-                                 resolution = 1/60)
-aconcagua[, c(&quot;light&quot;, &quot;dark&quot;) := .(ifelse(h &gt; 0, &quot;white&quot;, &quot;slategray2&quot;),
-                                ifelse(h &gt; 0, &quot;gray20&quot;, &quot;midnightblue&quot;))] 
-ggplot(aconcagua, aes(lon, lat)) +
-   geom_relief(aes(z = h, light = light, dark = dark), 
-               raster = TRUE, interpolate = TRUE, sun.angle = 60) +
-   coord_fixed(expand = FALSE) +
-   theme_void()
-</code></pre>
-
-<p><img src="2018-01-24-como-hacer-efecto-de-relieve-en-r.en_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-
-<p>The result, if you ask me: delicious  👌</p>
+<p>Say yo have data measured at different weather stations, which in Argentina might look something like this</p>
+<pre class="r"><code>estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; 
+   ggplot(aes(lon, lat)) +
+   geom_point(aes(color = t)) +
+   geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + 
+   scale_color_viridis_c()</code></pre>
+<p><img src="../../../../post/2023-11-03-metR-new-features.en_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Because this is not a regular grid, it’s not possible to visualise this data with contours as is.
+Instead, it’s necessary to interpolate it into a regular grid.</p>
+<p>There are many ways to go from irregular measurement locations to a regular grid and it comes with a bunch of assumptions.
+But for quick an dirty visualisations, <code>metR::geom_contour_fill()</code> can use kriging by setting <code>kriging = TRUE</code></p>
+<pre class="r"><code>estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; 
+   ggplot(aes(lon, lat)) +
+   metR::geom_contour_fill(aes(z = t), 
+                           kriging = TRUE) +
+   geom_point(aes(fill = t), shape = 21) +
+   geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + 
+   scale_color_viridis_c(aesthetics = c(&quot;fill&quot;, &quot;colour&quot;)) </code></pre>
+<p><img src="../../../../post/2023-11-03-metR-new-features.en_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>One big problem with this is that by default it estimates values in the bounding box of the data, which in this case includes a bunch of the Atlantic Ocean.
+So it would be nice to be able to only show the contours over land.</p>
+<p>In a desperate attempt to procrastinate from writing my thesis I implemented this functionality.
+Now, the <code>clip</code> argument takes a polygon which clips the contours.</p>
+<pre class="r"><code>estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; 
+   ggplot(aes(lon, lat)) +
+   metR::geom_contour_fill(aes(z = t), 
+                           kriging = TRUE, 
+                           clip = argentina_provincias_sin_malvinas) +
+   geom_point(aes(fill = t), shape = 21) +
+   geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + 
+   scale_color_viridis_c(aesthetics = c(&quot;fill&quot;, &quot;colour&quot;)) </code></pre>
+<p><img src="../../../../post/2023-11-03-metR-new-features.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Another small issue is that the default interpolates to a 40-pixel wide grid, which is a bit too coarse and doesn’t reach the top corners of the map.
+The <code>kriging</code> argument now can take a numeric, which defines number of gridpoints each direction.</p>
+<pre class="r"><code>estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; 
+   ggplot(aes(lon, lat)) +
+   metR::geom_contour_fill(aes(z = t), 
+                           kriging = 100, 
+                           clip = argentina_provincias_sin_malvinas) +
+   geom_point(aes(fill = t), shape = 21) +
+   geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + 
+   scale_color_viridis_c(aesthetics = c(&quot;fill&quot;, &quot;colour&quot;)) </code></pre>
+<p><img src="../../../../post/2023-11-03-metR-new-features.en_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Much better!</p>
+<p>You can install the development version of <a href="https://eliocamp.github.io/metR/">metR</a> with</p>
+<pre class="r"><code>install.packages(&quot;metR&quot;, repos = c(&quot;https://eliocamp.github.io/metR&quot;, getOption(&quot;repos&quot;)))</code></pre>
 
               
             </div>
@@ -494,7 +332,7 @@ ggplot(aconcagua, aes(lon, lat)) +
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../en/2018/05/how-to-make-a-generic-stat-in-ggplot2/" data-tooltip="How to make a generic stat in ggplot2">
+                <a class="post-action-btn btn btn--disabled">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
@@ -502,7 +340,7 @@ ggplot(aconcagua, aes(lon, lat)) +
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--disabled">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../en/2023/10/dependencies-in-r/" data-tooltip="Taking dependencies is actually good">
               
                   <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
                   <i class="fa fa-angle-right"></i>
@@ -520,19 +358,19 @@ ggplot(aconcagua, aes(lon, lat)) +
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/en/2018/02/how-to-make-shaded-relief-in-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/en/2023/11/kriging-metr-r/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/en/2018/02/how-to-make-shaded-relief-in-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/en/2023/11/kriging-metr-r/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/en/2018/02/how-to-make-shaded-relief-in-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/en/2023/11/kriging-metr-r/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -580,7 +418,7 @@ ggplot(aconcagua, aes(lon, lat)) +
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../en/2018/05/how-to-make-a-generic-stat-in-ggplot2/" data-tooltip="How to make a generic stat in ggplot2">
+                <a class="post-action-btn btn btn--disabled">
               
                   <i class="fa fa-angle-left"></i>
                   <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
@@ -588,7 +426,7 @@ ggplot(aconcagua, aes(lon, lat)) +
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--disabled">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../en/2023/10/dependencies-in-r/" data-tooltip="Taking dependencies is actually good">
               
                   <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
                   <i class="fa fa-angle-right"></i>
@@ -606,19 +444,19 @@ ggplot(aconcagua, aes(lon, lat)) +
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/en/2018/02/how-to-make-shaded-relief-in-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/en/2023/11/kriging-metr-r/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/en/2018/02/how-to-make-shaded-relief-in-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/en/2023/11/kriging-metr-r/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/en/2018/02/how-to-make-shaded-relief-in-r/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/en/2023/11/kriging-metr-r/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -648,19 +486,19 @@ ggplot(aconcagua, aes(lon, lat)) +
   <ul class="share-options">
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2Fen%2F2018%2F02%2Fhow-to-make-shaded-relief-in-r%2F">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2Fen%2F2023%2F11%2Fkriging-metr-r%2F">
           <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2Fen%2F2018%2F02%2Fhow-to-make-shaded-relief-in-r%2F">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2Fen%2F2023%2F11%2Fkriging-metr-r%2F">
           <i class="fa fa-twitter"></i><span>Share on Twitter</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2Fen%2F2018%2F02%2Fhow-to-make-shaded-relief-in-r%2F">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2Fen%2F2023%2F11%2Fkriging-metr-r%2F">
           <i class="fa fa-google-plus"></i><span>Share on Google&#43;</span>
         </a>
       </li>
@@ -948,9 +786,9 @@ $(document).ready(function() {
     
       <script>
         var disqus_config = function () {
-          this.page.url = '\/en\/2018\/02\/how-to-make-shaded-relief-in-r\/';
+          this.page.url = '\/en\/2023\/11\/kriging-metr-r\/';
           
-            this.page.identifier = '\/en\/2018\/02\/how-to-make-shaded-relief-in-r\/'
+            this.page.identifier = '\/en\/2023\/11\/kriging-metr-r\/'
           
         };
         (function() {
