@@ -22,26 +22,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Hugo 0.56.3 with theme Tranquilpeak 0.4.3-BETA">
-    <title>Kriging with metR</title>
+    <title>A wrapper for the Climate Data Operators in R</title>
     <meta name="author" content="Elio Campitelli">
-    <meta name="keywords" content="package development, R">
+    <meta name="keywords" content="package development, climate data operators, cdo, R">
 
     <link rel="icon" href="../../../../favicon.png">
     
 
     
-    <meta name="description" content="The other day I was on a meeting with a colleague and she mentioned having problems trying to plot station-based data. She had data measured at different weather stations, which in Argentina might look something like this
-estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; ggplot(aes(lon, lat)) &#43; geom_point(aes(color = t)) &#43; geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) &#43; scale_color_viridis_c() Because this is not a regular grid, it’s not possible to visualise this data with contours as is.">
-    <meta property="og:description" content="The other day I was on a meeting with a colleague and she mentioned having problems trying to plot station-based data. She had data measured at different weather stations, which in Argentina might look something like this
-estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; ggplot(aes(lon, lat)) &#43; geom_point(aes(color = t)) &#43; geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) &#43; scale_color_viridis_c() Because this is not a regular grid, it’s not possible to visualise this data with contours as is.">
+    <meta name="description" content="Today I’m extremely happy because I’ve finally been able to fulfil a dream of mine. And yes, by the end of this blogpost you might be worried about me for having such a weird, niche and, frankly, dumb dream, but I swear I’m fine!
+My dream was to create an R wrapper for the Climate Data Operators (CDO) automatically from its documentation.
+CDO is a command-line utility that provides a plethora of functionality common to climate science.">
+    <meta property="og:description" content="Today I’m extremely happy because I’ve finally been able to fulfil a dream of mine. And yes, by the end of this blogpost you might be worried about me for having such a weird, niche and, frankly, dumb dream, but I swear I’m fine!
+My dream was to create an R wrapper for the Climate Data Operators (CDO) automatically from its documentation.
+CDO is a command-line utility that provides a plethora of functionality common to climate science.">
     <meta property="og:type" content="blog">
-    <meta property="og:title" content="Kriging with metR">
-    <meta property="og:url" content="/codigo-r/en/2023/11/metr-new-features/">
+    <meta property="og:title" content="A wrapper for the Climate Data Operators in R">
+    <meta property="og:url" content="/codigo-r/en/2024/07/rcdo-climate-data-operators-in-r.en/">
     <meta property="og:site_name" content="Code R">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Code R">
-    <meta name="twitter:description" content="The other day I was on a meeting with a colleague and she mentioned having problems trying to plot station-based data. She had data measured at different weather stations, which in Argentina might look something like this
-estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; ggplot(aes(lon, lat)) &#43; geom_point(aes(color = t)) &#43; geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) &#43; scale_color_viridis_c() Because this is not a regular grid, it’s not possible to visualise this data with contours as is.">
+    <meta name="twitter:description" content="Today I’m extremely happy because I’ve finally been able to fulfil a dream of mine. And yes, by the end of this blogpost you might be worried about me for having such a weird, niche and, frankly, dumb dream, but I swear I’m fine!
+My dream was to create an R wrapper for the Climate Data Operators (CDO) automatically from its documentation.
+CDO is a command-line utility that provides a plethora of functionality common to climate science.">
     
       <meta name="twitter:creator" content="@d_olivaw">
     
@@ -220,7 +223,7 @@ estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; ggplot(
             <div class="post-header main-content-wrap text-left">
   
     <h1 class="post-title" itemprop="headline">
-      Kriging with metR
+      A wrapper for the Climate Data Operators in R
     </h1>
   
   
@@ -229,13 +232,13 @@ estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; ggplot(
   
   <div class="postShorten-meta post-meta">
     
-      <time itemprop="datePublished" datetime="2023-11-02T00:00:00Z">
+      <time itemprop="datePublished" datetime="2024-07-02T00:00:00Z">
         
   
   
   
   
-    November 2, 2023
+    July 2, 2024
   
 
       </time>
@@ -271,53 +274,104 @@ estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; ggplot(
               
 
 
-<p>The other day I was on a meeting with a colleague and she mentioned having problems trying to plot station-based data.
-She had data measured at different weather stations, which in Argentina might look something like this</p>
-<pre class="r"><code>estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; 
+<p>Today I’m extremely happy because I’ve finally been able to fulfil a dream of mine.
+And yes, by the end of this blogpost you might be worried about me for having such a weird, niche and, frankly, dumb dream, but I swear I’m fine!</p>
+<p>My dream was to create an R wrapper for the <a href="https://code.mpimet.mpg.de/projects/cdo">Climate Data Operators (CDO)</a> automatically from its documentation.</p>
+<p>CDO is a command-line utility that provides a plethora of functionality common to climate science.
+Things like computing monthly means, interpolating to grids, computing correlations, etc.
+It’s incredibly fast and convenient, can work with larger-than-RAM data for many operations as long as one horizontal field fits into memory, and can even run in parallel.</p>
+<p>The only rub is that using CDO from R is kind of a pain.
+It means building system commands by <code>paste0</code>ing files and names of operators and managing the input and output files.
+Dreadful, unreadable code like this</p>
+<pre class="r"><code>in_file &lt;- &quot;input_file.nc&quot;
+out_file &lt;- &quot;climatology.nc&quot;
+system(paste0(&quot;cdo ymonmean &quot;, in_file, &quot; &quot;, out_file))</code></pre>
+<p>Oof.
+The stuff of nightmares, indeed.</p>
+<p>Having a package that did all that for me including documentation and auto completion would be incredibly cool, but CDO has literally hundreds of different operators; wrapping all of them would be an herculean task.
+It’s just not worth it…</p>
+<p>Is it?</p>
+<p>A few years ago I watched <a href="https://www.youtube.com/watch?v=LGy5kPWMJnQ">a talk by Alicia Schep</a> in which she explained how she built an R interface to the Vega-lite visualisation library.
+This javascript library creates interactive plots based on a json specification of the various geometries, axis and scales.
+There was a vegalite R package that created these json files from R, but it was outdated and it took a lot of work to get it up to speed.
+She realised that keeping the package in sync with Vega-lite development was not sustainable.
+So she actually created a package that took the vega-lite schema and automatically created the R functions that conformed to them.</p>
+<p>Neat idea.
+A wrapper package created automatically from the documentation…
+could I apply this concept to my dream of running CDO from within R?</p>
+<p>Yes and no.
+It turns out that the CDO API is very straightforward; each operator has a fixed number of inputs and outputs and potentially a couple of required and/or optional parameters.
+Creating a function that took the name of the operator, the number of inputs and outputs and the parameters was not that hard — there was a lot of reusable code.
+But unlike Vega-lite, CDO doesn’t have a nicely machine-readable schema that I could ingest; the documentation is in the form of <a href="https://code.mpimet.mpg.de/projects/cdo/embedded/cdo.pdf">a massive PDF</a> with a lot of little inconsistencies that made automatic parsing very hard.</p>
+<div class="float">
+<img src="../../../../images/cdo_documentation.png" alt="Screenshot of the documentation for MERSTAT - Meridional statistical values" />
+<div class="figcaption">Screenshot of the documentation for MERSTAT - Meridional statistical values</div>
+</div>
+<p>I did try it, though.
+I found bit of documentation in the CDO source code and with some text-wrangling I was able to extract part of the needed information.
+But it was hard and I wasn’t using CDO as much, so eventually I gave up.</p>
+<p>The dream laid dormant for a few years.</p>
+<p>A few months ago I got my PhD and was fortunate enough to immediately get a postdoc position.
+In my new job I had to get used to completely different infrastructure and I’m back to analysing relatively large datasets that are not as easy to handle with R.
+The situation thrust me back into CDO’s arms, where our love bloomed again, along with my desire to wrap it in a cosy blanket made of R.</p>
+<p>So these few days, with renewed vigour and 4 more years of R experience, I went at it again.
+I honestly had all but forgotten that I had already tried this so it was a surprise to see that I already had an rdco repo with an very similar implementation waiting for me.
+I integrated some of that old code with the new one and <a href="https://github.com/eliocamp/rcdo">the new rcdo</a> package was born.</p>
+<p>The rcdo package wraps most CDO operators in a pipable interface.
+Each operator is its own function with parameters as arguments, enabling autocomplete and documentation right in the R session.</p>
+<p>For example, let’s take geopotential height from the NCEP reanalysis.</p>
+<pre class="r"><code>library(rcdo)
+ncep &lt;- &quot;data/hgt_ncep.nc&quot;</code></pre>
+<p>We can compute the monthly annual cycle with the ymonmean operator, which is wrapped by <code>rcdo::cdo_ymonmean()</code></p>
+<pre class="r"><code>ncep |&gt; 
+  cdo_ymonmean()</code></pre>
+<pre><code>## CDO command:
+##    cdo ymonmean [ data/hgt_ncep.nc ] {{output}}</code></pre>
+<p>Running this doesn’t do anything other than to print the command, with the output as a place-holder.
+To execute the operator, one needs to use <code>cdo_execute()</code>.</p>
+<pre class="r"><code>ncep |&gt; 
+  cdo_ymonmean() |&gt; 
+  cdo_excecute()</code></pre>
+<pre><code>## [1] &quot;/tmp/RtmpNmkEms/file10cc641f84c1f&quot;</code></pre>
+<p>By default the output is saved in a temporary file.</p>
+<p>Operators can be chained.
+Let’s select just the Southern Hemisphere, only look at 500 hPa and compute the seasonal means.
+I will also pipe that to <code>metR::ReadNetCDF()</code> to read the data and plot it with ggplot2.</p>
+<pre class="r"><code>ncep |&gt; 
+   cdo_sellonlatbox(lon1 = 0, lon2 = 360, lat1 = -90, lat2 = 0) |&gt; 
+   cdo_sellevel(level = 500) |&gt; 
+   cdo_yseasmean() |&gt; 
+   cdo_excecute() |&gt; 
+   metR::ReadNetCDF(vars = &quot;hgt&quot;) |&gt; 
    ggplot(aes(lon, lat)) +
-   geom_point(aes(color = t)) +
-   geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + 
-   scale_color_viridis_c()</code></pre>
-<p><img src="../../../../post/2023-11-03-metR-new-features.en_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<p>Because this is not a regular grid, it’s not possible to visualise this data with contours as is.
-Instead, it’s necessary to interpolate it into a regular grid.</p>
-<p>There are many ways to go from irregular measurement locations to a regular grid and it comes with a bunch of assumptions.
-But for quick an dirty visualisations, <code>metR::geom_contour_fill()</code> can use kriging by setting <code>kriging = TRUE</code></p>
-<pre class="r"><code>estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; 
+   metR::geom_contour_fill(aes(z = hgt)) +
+   facet_wrap(metR::season(time) ~ .)</code></pre>
+<p><img src="../../../../post/2024-07-02-rcdo-climate-data-operators-in-R.en_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Nice!</p>
+<p>Some operators take two or more inputs, which can be files or other CDO operations.
+For example, to compute monthly anomalies with respect to the 1981 to 2011 climatology first we need to compute the monthly climatology (<code>cdo_ymonmean()</code>) and then subtract it from the data (<code>cdo_ymonsub()</code>):</p>
+<pre class="r"><code>climatology &lt;- ncep |&gt; 
+   cdo_selyear(years = 1981:2011) |&gt; 
+   cdo_ymonmean() 
+    
+anomalies &lt;- ncep |&gt; 
+   cdo_ymonsub(ifile2 = climatology) |&gt; 
+   cdo_excecute()</code></pre>
+<p>Notice that <code>climatology</code> is not a file but a CDO command.
+Just for fun, let’s read just one level and one month and plot it.</p>
+<pre class="r"><code>anomalies |&gt; 
+   ReadNetCDF(&quot;hgt&quot;, subset = list(level = 500, 
+                                   time = &quot;2024-01-01&quot;)) |&gt; 
    ggplot(aes(lon, lat)) +
-   metR::geom_contour_fill(aes(z = t), 
-                           kriging = TRUE) +
-   geom_point(aes(fill = t), shape = 21) +
-   geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + 
-   scale_color_viridis_c(aesthetics = c(&quot;fill&quot;, &quot;colour&quot;)) </code></pre>
-<p><img src="../../../../post/2023-11-03-metR-new-features.en_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<p>One big problem with this is that by default it estimates values in the bounding box of the data, which in this case includes a bunch of the Atlantic Ocean.
-So it would be nice to be able to only show the contours over land.</p>
-<p>In a desperate attempt to procrastinate from writing my thesis I implemented this functionality.
-Now, the <code>clip</code> argument takes a polygon removes contours outside the polygon.</p>
-<pre class="r"><code>estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; 
-   ggplot(aes(lon, lat)) +
-   metR::geom_contour_fill(aes(z = t), 
-                           kriging = TRUE, 
-                           clip = argentina_provincias_sin_malvinas) +
-   geom_point(aes(fill = t), shape = 21) +
-   geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + 
-   scale_color_viridis_c(aesthetics = c(&quot;fill&quot;, &quot;colour&quot;)) </code></pre>
-<p><img src="../../../../post/2023-11-03-metR-new-features.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>Another small issue is that the default interpolates to a 40-pixel wide grid, which is a bit too coarse and doesn’t reach the top corners of the map.
-The <code>kriging</code> argument now can take a numeric, which defines number of gridpoints each direction.</p>
-<pre class="r"><code>estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; 
-   ggplot(aes(lon, lat)) +
-   metR::geom_contour_fill(aes(z = t), 
-                           kriging = 100, 
-                           clip = argentina_provincias_sin_malvinas) +
-   geom_point(aes(fill = t), shape = 21) +
-   geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + 
-   scale_color_viridis_c(aesthetics = c(&quot;fill&quot;, &quot;colour&quot;)) </code></pre>
-<p><img src="../../../../post/2023-11-03-metR-new-features.en_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>Much better!</p>
-<p>You can install the development version of metR with</p>
-<pre class="r"><code>install.packages(&quot;metR&quot;, repos = c(&quot;https://eliocamp.github.io/metR&quot;, getOption(&quot;repos&quot;)))</code></pre>
+   geom_contour_fill(aes(z = hgt)) +
+   scale_fill_divergent()</code></pre>
+<p><img src="../../../../post/2024-07-02-rcdo-climate-data-operators-in-R.en_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Lovely!</p>
+<p>Now, the dream is not 100% complete.
+As I mentioned before, it’s not trivial to parse the CDO documentation, so there are still some issues.
+Some rcdo functions take extra arguments that do not correspond to their corresponding CDO operator and some arguments are just plain wrong.
+Some operators are also not supported, such as operators with zero output arguments and some with very hard-to-parse documentation.
+I’ll be ironing out those kinks, but I’m very proud of how this turned out.</p>
 
               
             </div>
@@ -341,7 +395,7 @@ The <code>kriging</code> argument now can take a numeric, which defines number o
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../en/2023/10/dependencies-in-r/" data-tooltip="Taking dependencies is actually good">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../en/2023/11/kriging-metr-r/" data-tooltip="Kriging with metR">
               
                   <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
                   <i class="fa fa-angle-right"></i>
@@ -359,19 +413,19 @@ The <code>kriging</code> argument now can take a numeric, which defines number o
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/en/2023/11/metr-new-features/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/en/2024/07/rcdo-climate-data-operators-in-r.en/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/en/2023/11/metr-new-features/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/en/2024/07/rcdo-climate-data-operators-in-r.en/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/en/2023/11/metr-new-features/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/en/2024/07/rcdo-climate-data-operators-in-r.en/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -406,7 +460,7 @@ The <code>kriging</code> argument now can take a numeric, which defines number o
         </article>
         <footer id="footer" class="main-content-wrap">
   <span class="copyrights">
-    &copy; 2023 Elio Campitelli. All Rights Reserved
+    &copy; 2024 Elio Campitelli. All Rights Reserved
   </span>
 </footer>
 
@@ -427,7 +481,7 @@ The <code>kriging</code> argument now can take a numeric, which defines number o
             </li>
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../en/2023/10/dependencies-in-r/" data-tooltip="Taking dependencies is actually good">
+                <a class="post-action-btn btn btn--default tooltip--top" href="../../../../en/2023/11/kriging-metr-r/" data-tooltip="Kriging with metR">
               
                   <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
                   <i class="fa fa-angle-right"></i>
@@ -445,19 +499,19 @@ The <code>kriging</code> argument now can take a numeric, which defines number o
         </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/en/2023/11/metr-new-features/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=/en/2024/07/rcdo-climate-data-operators-in-r.en/">
               <i class="fa fa-facebook-official"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/en/2023/11/metr-new-features/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=/en/2024/07/rcdo-climate-data-operators-in-r.en/">
               <i class="fa fa-twitter"></i>
             </a>
           </li>
         
           <li class="post-action hide-xs">
-            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/en/2023/11/metr-new-features/">
+            <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=/en/2024/07/rcdo-climate-data-operators-in-r.en/">
               <i class="fa fa-google-plus"></i>
             </a>
           </li>
@@ -487,19 +541,19 @@ The <code>kriging</code> argument now can take a numeric, which defines number o
   <ul class="share-options">
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2Fen%2F2023%2F11%2Fmetr-new-features%2F">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=%2Fen%2F2024%2F07%2Frcdo-climate-data-operators-in-r.en%2F">
           <i class="fa fa-facebook-official"></i><span>Share on Facebook</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2Fen%2F2023%2F11%2Fmetr-new-features%2F">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=%2Fen%2F2024%2F07%2Frcdo-climate-data-operators-in-r.en%2F">
           <i class="fa fa-twitter"></i><span>Share on Twitter</span>
         </a>
       </li>
     
       <li class="share-option">
-        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2Fen%2F2023%2F11%2Fmetr-new-features%2F">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=%2Fen%2F2024%2F07%2Frcdo-climate-data-operators-in-r.en%2F">
           <i class="fa fa-google-plus"></i><span>Share on Google&#43;</span>
         </a>
       </li>
@@ -558,7 +612,26 @@ The <code>kriging</code> argument now can take a numeric, which defines number o
           <div class="media">
             
             <div class="media-body">
-              <a class="link-unstyled" href="../../../../en/2023/11/metr-new-features/">
+              <a class="link-unstyled" href="../../../../en/2024/07/rcdo-climate-data-operators-in-r.en/">
+                <h3 class="media-heading">A wrapper for the Climate Data Operators in R</h3>
+              </a>
+              <span class="media-meta">
+                <span class="media-date text-small">
+                  Jul 7, 2024
+                </span>
+              </span>
+              <div class="media-content hide-xs font-merryweather">Today I’m extremely happy because I’ve finally been able to fulfil a dream of mine. And yes, by the end of this blogpost you might be worried about me for having such a weird, niche and, frankly, dumb dream, but I swear I’m fine!
+My dream was to create an R wrapper for the Climate Data Operators (CDO) automatically from its documentation.
+CDO is a command-line utility that provides a plethora of functionality common to climate science.</div>
+            </div>
+            <div style="clear:both;"></div>
+            <hr>
+          </div>
+        
+          <div class="media">
+            
+            <div class="media-body">
+              <a class="link-unstyled" href="../../../../en/2023/11/kriging-metr-r/">
                 <h3 class="media-heading">Kriging with metR</h3>
               </a>
               <span class="media-meta">
@@ -566,8 +639,8 @@ The <code>kriging</code> argument now can take a numeric, which defines number o
                   Nov 11, 2023
                 </span>
               </span>
-              <div class="media-content hide-xs font-merryweather">The other day I was on a meeting with a colleague and she mentioned having problems trying to plot station-based data. She had data measured at different weather stations, which in Argentina might look something like this
-estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; ggplot(aes(lon, lat)) + geom_point(aes(color = t)) + geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + scale_color_viridis_c() Because this is not a regular grid, it’s not possible to visualise this data with contours as is.</div>
+              <div class="media-content hide-xs font-merryweather">Say you have data measured at different weather stations, which in Argentina might look something like this
+estaciones[data, on = c(&quot;nombre&quot; = &quot;station&quot;)] |&gt; ggplot(aes(lon, lat)) + geom_point(aes(color = t)) + geom_sf(data = argentina_provincias, inherit.aes = FALSE, fill = NA) + scale_color_viridis_c() Because this is not a regular grid, it’s not possible to visualise this data with contours as is. Instead, it’s necessary to interpolate it into a regular grid.</div>
             </div>
             <div style="clear:both;"></div>
             <hr>
@@ -719,23 +792,6 @@ library(dplyr) mtcars %&gt;% group_by(cyl) %&gt;% summarise(mpg = mean(mpg))  ##
             <hr>
           </div>
         
-          <div class="media">
-            
-            <div class="media-body">
-              <a class="link-unstyled" href="../../../../en/2021/03/star-trek-rakings/">
-                <h3 class="media-heading">Star Trek ratings on IMDB</h3>
-              </a>
-              <span class="media-meta">
-                <span class="media-date text-small">
-                  Mar 3, 2021
-                </span>
-              </span>
-              <div class="media-content hide-xs font-merryweather">My girlfriend and I are watching Star Trek: The Next Generation (TNG). The first season it’s pretty lame, but it gets better further down the line. That piqued my curiosity – is that impression shared by the rest of The Internets? So I decided to download the rating of every TNG episode from IDMB. I quickly realised that IMDB provides much more than just mean reating, it also has the full rating histogram and also demographic breakdowns.</div>
-            </div>
-            <div style="clear:both;"></div>
-            <hr>
-          </div>
-        
       </div>
     </div>
     <div class="modal-footer">
@@ -743,7 +799,7 @@ library(dplyr) mtcars %&gt;% group_by(cyl) %&gt;% summarise(mpg = mean(mpg))  ##
          data-message-zero="no post found"
          data-message-one="1 post found"
          data-message-other="{n} posts found">
-         18 posts found
+         19 posts found
       </p>
     </div>
   </div>
@@ -787,9 +843,9 @@ $(document).ready(function() {
     
       <script>
         var disqus_config = function () {
-          this.page.url = '\/en\/2023\/11\/metr-new-features\/';
+          this.page.url = '\/en\/2024\/07\/rcdo-climate-data-operators-in-r.en\/';
           
-            this.page.identifier = '\/en\/2023\/11\/metr-new-features\/'
+            this.page.identifier = '\/en\/2024\/07\/rcdo-climate-data-operators-in-r.en\/'
           
         };
         (function() {

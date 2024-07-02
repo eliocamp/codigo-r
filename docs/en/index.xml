@@ -5,10 +5,120 @@
     <description>Recent content on Code R</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>es-es</language>
-    <lastBuildDate>Thu, 02 Nov 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 02 Jul 2024 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/en/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>A wrapper for the Climate Data Operators in R</title>
+      <link>/en/2024/07/rcdo-climate-data-operators-in-r.en/</link>
+      <pubDate>Tue, 02 Jul 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/en/2024/07/rcdo-climate-data-operators-in-r.en/</guid>
+      <description>
+
+
+&lt;p&gt;Today I’m extremely happy because I’ve finally been able to fulfil a dream of mine.
+And yes, by the end of this blogpost you might be worried about me for having such a weird, niche and, frankly, dumb dream, but I swear I’m fine!&lt;/p&gt;
+&lt;p&gt;My dream was to create an R wrapper for the &lt;a href=&#34;https://code.mpimet.mpg.de/projects/cdo&#34;&gt;Climate Data Operators (CDO)&lt;/a&gt; automatically from its documentation.&lt;/p&gt;
+&lt;p&gt;CDO is a command-line utility that provides a plethora of functionality common to climate science.
+Things like computing monthly means, interpolating to grids, computing correlations, etc.
+It’s incredibly fast and convenient, can work with larger-than-RAM data for many operations as long as one horizontal field fits into memory, and can even run in parallel.&lt;/p&gt;
+&lt;p&gt;The only rub is that using CDO from R is kind of a pain.
+It means building system commands by &lt;code&gt;paste0&lt;/code&gt;ing files and names of operators and managing the input and output files.
+Dreadful, unreadable code like this&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;in_file &amp;lt;- &amp;quot;input_file.nc&amp;quot;
+out_file &amp;lt;- &amp;quot;climatology.nc&amp;quot;
+system(paste0(&amp;quot;cdo ymonmean &amp;quot;, in_file, &amp;quot; &amp;quot;, out_file))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Oof.
+The stuff of nightmares, indeed.&lt;/p&gt;
+&lt;p&gt;Having a package that did all that for me including documentation and auto completion would be incredibly cool, but CDO has literally hundreds of different operators; wrapping all of them would be an herculean task.
+It’s just not worth it…&lt;/p&gt;
+&lt;p&gt;Is it?&lt;/p&gt;
+&lt;p&gt;A few years ago I watched &lt;a href=&#34;https://www.youtube.com/watch?v=LGy5kPWMJnQ&#34;&gt;a talk by Alicia Schep&lt;/a&gt; in which she explained how she built an R interface to the Vega-lite visualisation library.
+This javascript library creates interactive plots based on a json specification of the various geometries, axis and scales.
+There was a vegalite R package that created these json files from R, but it was outdated and it took a lot of work to get it up to speed.
+She realised that keeping the package in sync with Vega-lite development was not sustainable.
+So she actually created a package that took the vega-lite schema and automatically created the R functions that conformed to them.&lt;/p&gt;
+&lt;p&gt;Neat idea.
+A wrapper package created automatically from the documentation…
+could I apply this concept to my dream of running CDO from within R?&lt;/p&gt;
+&lt;p&gt;Yes and no.
+It turns out that the CDO API is very straightforward; each operator has a fixed number of inputs and outputs and potentially a couple of required and/or optional parameters.
+Creating a function that took the name of the operator, the number of inputs and outputs and the parameters was not that hard — there was a lot of reusable code.
+But unlike Vega-lite, CDO doesn’t have a nicely machine-readable schema that I could ingest; the documentation is in the form of &lt;a href=&#34;https://code.mpimet.mpg.de/projects/cdo/embedded/cdo.pdf&#34;&gt;a massive PDF&lt;/a&gt; with a lot of little inconsistencies that made automatic parsing very hard.&lt;/p&gt;
+&lt;div class=&#34;float&#34;&gt;
+&lt;img src=&#34;../images/cdo_documentation.png&#34; alt=&#34;Screenshot of the documentation for MERSTAT - Meridional statistical values&#34; /&gt;
+&lt;div class=&#34;figcaption&#34;&gt;Screenshot of the documentation for MERSTAT - Meridional statistical values&lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;I did try it, though.
+I found bit of documentation in the CDO source code and with some text-wrangling I was able to extract part of the needed information.
+But it was hard and I wasn’t using CDO as much, so eventually I gave up.&lt;/p&gt;
+&lt;p&gt;The dream laid dormant for a few years.&lt;/p&gt;
+&lt;p&gt;A few months ago I got my PhD and was fortunate enough to immediately get a postdoc position.
+In my new job I had to get used to completely different infrastructure and I’m back to analysing relatively large datasets that are not as easy to handle with R.
+The situation thrust me back into CDO’s arms, where our love bloomed again, along with my desire to wrap it in a cosy blanket made of R.&lt;/p&gt;
+&lt;p&gt;So these few days, with renewed vigour and 4 more years of R experience, I went at it again.
+I honestly had all but forgotten that I had already tried this so it was a surprise to see that I already had an rdco repo with an very similar implementation waiting for me.
+I integrated some of that old code with the new one and &lt;a href=&#34;https://github.com/eliocamp/rcdo&#34;&gt;the new rcdo&lt;/a&gt; package was born.&lt;/p&gt;
+&lt;p&gt;The rcdo package wraps most CDO operators in a pipable interface.
+Each operator is its own function with parameters as arguments, enabling autocomplete and documentation right in the R session.&lt;/p&gt;
+&lt;p&gt;For example, let’s take geopotential height from the NCEP reanalysis.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(rcdo)
+ncep &amp;lt;- &amp;quot;data/hgt_ncep.nc&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can compute the monthly annual cycle with the ymonmean operator, which is wrapped by &lt;code&gt;rcdo::cdo_ymonmean()&lt;/code&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ncep |&amp;gt; 
+  cdo_ymonmean()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## CDO command:
+##    cdo ymonmean [ data/hgt_ncep.nc ] {{output}}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Running this doesn’t do anything other than to print the command, with the output as a place-holder.
+To execute the operator, one needs to use &lt;code&gt;cdo_execute()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ncep |&amp;gt; 
+  cdo_ymonmean() |&amp;gt; 
+  cdo_excecute()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;/tmp/RtmpNmkEms/file10cc641f84c1f&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;By default the output is saved in a temporary file.&lt;/p&gt;
+&lt;p&gt;Operators can be chained.
+Let’s select just the Southern Hemisphere, only look at 500 hPa and compute the seasonal means.
+I will also pipe that to &lt;code&gt;metR::ReadNetCDF()&lt;/code&gt; to read the data and plot it with ggplot2.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ncep |&amp;gt; 
+   cdo_sellonlatbox(lon1 = 0, lon2 = 360, lat1 = -90, lat2 = 0) |&amp;gt; 
+   cdo_sellevel(level = 500) |&amp;gt; 
+   cdo_yseasmean() |&amp;gt; 
+   cdo_excecute() |&amp;gt; 
+   metR::ReadNetCDF(vars = &amp;quot;hgt&amp;quot;) |&amp;gt; 
+   ggplot(aes(lon, lat)) +
+   metR::geom_contour_fill(aes(z = hgt)) +
+   facet_wrap(metR::season(time) ~ .)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../post/2024-07-02-rcdo-climate-data-operators-in-R.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Nice!&lt;/p&gt;
+&lt;p&gt;Some operators take two or more inputs, which can be files or other CDO operations.
+For example, to compute monthly anomalies with respect to the 1981 to 2011 climatology first we need to compute the monthly climatology (&lt;code&gt;cdo_ymonmean()&lt;/code&gt;) and then subtract it from the data (&lt;code&gt;cdo_ymonsub()&lt;/code&gt;):&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;climatology &amp;lt;- ncep |&amp;gt; 
+   cdo_selyear(years = 1981:2011) |&amp;gt; 
+   cdo_ymonmean() 
+    
+anomalies &amp;lt;- ncep |&amp;gt; 
+   cdo_ymonsub(ifile2 = climatology) |&amp;gt; 
+   cdo_excecute()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Notice that &lt;code&gt;climatology&lt;/code&gt; is not a file but a CDO command.
+Just for fun, let’s read just one level and one month and plot it.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;anomalies |&amp;gt; 
+   ReadNetCDF(&amp;quot;hgt&amp;quot;, subset = list(level = 500, 
+                                   time = &amp;quot;2024-01-01&amp;quot;)) |&amp;gt; 
+   ggplot(aes(lon, lat)) +
+   geom_contour_fill(aes(z = hgt)) +
+   scale_fill_divergent()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;../post/2024-07-02-rcdo-climate-data-operators-in-R.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Lovely!&lt;/p&gt;
+&lt;p&gt;Now, the dream is not 100% complete.
+As I mentioned before, it’s not trivial to parse the CDO documentation, so there are still some issues.
+Some rcdo functions take extra arguments that do not correspond to their corresponding CDO operator and some arguments are just plain wrong.
+Some operators are also not supported, such as operators with zero output arguments and some with very hard-to-parse documentation.
+I’ll be ironing out those kinks, but I’m very proud of how this turned out.&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Kriging with metR</title>
